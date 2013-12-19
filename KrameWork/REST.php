@@ -9,7 +9,7 @@
 		 * @param int $options A bitwise conjunction flag for the filter.
 		 * @return mixed|null The filtered value, FALSE if the filter failed or NULL if the key does not exist.
 		 */
-		public static function Post($key, $filter = null, $options = 0)
+		public static function Post($key, $filter = FILTER_DEFAULT, $options = 0)
 		{
 			return filter_input(INPUT_POST, $key, $filter, $options);
 		}
@@ -22,7 +22,7 @@
 		 * @param int $options A bitwise conjunction flag for the filter.
 		 * @return mixed|null The filtered value, FALSE if the filter failed or NULL if the key does not exist.
 		 */
-		public static function Get($key, $filter = null, $options = 0)
+		public static function Get($key, $filter = FILTER_DEFAULT, $options = 0)
 		{
 			return filter_input(INPUT_GET, $key, $filter, $options);
 		}
