@@ -17,7 +17,7 @@
 			$this->classLoader->addClassPath(dirname(__FILE__));
 			spl_autoload_register(array($this->classLoader, 'loadClass'));
 
-			if ($flags & KW_ENABLE_SESSIONS)
+			if (($flags & KW_ENABLE_SESSIONS) && session_status() == PHP_SESSION_NONE)
 				session_start();
 		}
 
