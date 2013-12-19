@@ -1,5 +1,5 @@
 <?php
-	abstract class Enum
+	abstract class KW_Enum
 	{
 		private static $constants;
 

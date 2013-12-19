@@ -1,10 +1,7 @@
 <?php
-	namespace tests;
-	use \KrameWork as Core;
 
 	require_once('../KrameWork/KrameSystem.php');
+	new KrameSystem();
 
-	$core = new Core\KrameSystem();
-
-	new \SomeClass();
+	new KW_Debugger();
 ?>
