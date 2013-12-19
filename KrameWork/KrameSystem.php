@@ -16,6 +16,16 @@
 				session_start();
 		}
 
+		public function addAutoLoadPath($classPath)
+		{
+			$this->classLoader->addClassPath($classPath);
+		}
+
+		public function setAutoLoadExtensions($extensionString)
+		{
+			$this->classLoader->setAllowedExtensions($extensionString);
+		}
+
 		/**
 		 * @var KW_ClassLoader
 		 */
