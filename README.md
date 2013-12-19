@@ -4,6 +4,10 @@
 
 Place the **KrameWork** directory with its contents somewhere accessible to your website and in your bootstrap construct a new *KrameSystem* object. You are all good to go!
 
+```php
+$system = new KrameSystem();
+```
+
 ### Setting flags.
 
 The *KrameSystem* constructor takes a bitwise flag which can be manually provided to change the behavior from what KrameWork defaults with. The flags are detailed below.
