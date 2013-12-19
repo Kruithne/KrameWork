@@ -1,6 +1,11 @@
 <?php
 	class KW_ClassLoader
 	{
+		/**
+		 * Loads a file with matching class name (case-sensitive) from the linked class paths.
+		 *
+		 * @param string $className The name of the class.
+		 */
 		public function loadClass($className)
 		{
 			foreach ($this->classPaths as $classPath)
@@ -23,11 +28,21 @@
 			}
 		}
 
+		/**
+		 * Sets which file extensions can be automatically loaded by the class loader.
+		 *
+		 * @param String $extensionString A comma-separated list of extensions with period included.
+		 */
 		public function setAllowedExtensions($extensionString)
 		{
 			$this->allowedExtensions = explode(',', $extensionString);
 		}
 
+		/**
+		 * Adds a directory to the loader which will be checked for matching class files.
+		 *
+		 * @param String $classPath The directory to add to the loader.
+		 */
 		public function addClassPath($classPath)
 		{
 			$this->classPaths[] = $classPath;
