@@ -1,6 +1,8 @@
 <?php
 	class Session
 	{
+		// ToDo: Throw error/exception if these are called while sessions are disabled in KrameWork.
+
 		/**
 		 * Retrieves a value set in the current session.
 		 *
