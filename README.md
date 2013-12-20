@@ -7,7 +7,6 @@
 * Simple conforming static interfaces for REST, Session and Cookie control.
 * Provides a simple dependency injection system.
 * MVC framework and templates to build a simple structure.
-* More to be added soon.
 
 ### Setting Up
 
