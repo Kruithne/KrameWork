@@ -24,6 +24,7 @@
 
 		/**
 		 * Adds a sub-module to the module.
+		 *
 		 * @param IModule $sub_module A sub-module to add.
 		 */
 		public function addSubModule($sub_module)

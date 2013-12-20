@@ -3,6 +3,7 @@
 	{
 		/**
 		 * Appends a string to the end of the string builder.
+		 *
 		 * @param string $string A string to append.
 		 * @return StringBuilder $this The string builder instance.
 		 */
@@ -14,6 +15,7 @@
 
 		/**
 		 * Prepends a string to the start of the string builder.
+		 *
 		 * @param string $string The string to prepend.
 		 * @return StringBuilder $this The string builder instance.
 		 */
@@ -25,6 +27,7 @@
 
 		/**
 		 * Called when this object is cast to a string.
+		 *
 		 * @return string The string contained by the builder.
 		 */
 		public function __toString()

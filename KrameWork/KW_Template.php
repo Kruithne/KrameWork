@@ -3,6 +3,7 @@
 	{
 		/**
 		 * Construct the template object.
+		 *
 		 * @param string $file Path of the file to use for this template.
 		 */
 		public function __construct($file)
@@ -14,6 +15,7 @@
 
 		/**
 		 * Get a value stored in this template.
+		 *
 		 * @param mixed $key The key of the value to get.
 		 * @return mixed|null The value or NULL if nothing is set at the provided key.
 		 */
@@ -24,6 +26,7 @@
 
 		/**
 		 * Sets a value for this template which will be interjected into the underlying file.
+		 *
 		 * @param mixed $key The key to store the value under.
 		 * @param mixed $value The value to store in the template.
 		 */
@@ -34,6 +37,7 @@
 
 		/**
 		 * Compiles the template; interjecting the template values into the file and returning the result.
+		 *
 		 * @return string The file output with injected values.
 		 */
 		public function __toString()
