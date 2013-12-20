@@ -3,7 +3,6 @@
 	{
 		/**
 		 * Get a value from the POST array with applied filters.
-		 *
 		 * @param mixed $key The key of the value to return.
 		 * @param int|null $filter
 		 * @param int $options A bitwise conjunction flag for the filter.
@@ -16,7 +15,6 @@
 
 		/**
 		 * Get a value from the GET array with applied filters.
-		 *
 		 * @param mixed $key The key of the value to return.
 		 * @param int|null $filter
 		 * @param int $options A bitwise conjunction flag for the filter.

@@ -6,7 +6,6 @@
 	{
 		/**
 		 * Initialize a new KrameWork system.
-		 *
 		 * @param int $flags Flags to control the behavior of the system.
 		 */
 		public function __construct($flags = KW_DEFAULT_FLAGS)
@@ -23,7 +22,6 @@
 
 		/**
 		 * Adds a directory to the loader which will be checked for matching class files.
-		 *
 		 * @param String $classPath The directory to add to the loader.
 		 */
 		public function addAutoLoadPath($classPath)
@@ -33,7 +31,6 @@
 
 		/**
 		 * Sets which file extensions can be automatically loaded by the class loader.
-		 *
 		 * @param String $extensionString A comma-separated list of extensions with period included.
 		 */
 		public function setAutoLoadExtensions($extensionString)

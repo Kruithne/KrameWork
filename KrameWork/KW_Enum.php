@@ -5,7 +5,6 @@
 
 		/**
 		 * Retrieves a key->value array representing this enums values.
-		 *
 		 * @return array The constants for this enum.
 		 */
 		private static function getConstants()
@@ -20,7 +19,6 @@
 
 		/**
 		 * Get the value of a key in the enum object.
-		 *
 		 * @param string $name The key to check.
 		 * @param bool $caseSensitive Should we be case-sensitive?
 		 * @return object|null The value from the enum, null if it does not exist.

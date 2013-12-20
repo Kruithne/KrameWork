@@ -5,7 +5,6 @@
 
 		/**
 		 * Retrieves a value set in the current session.
-		 *
 		 * @param mixed $key The key of the value to retrieve.
 		 * @return mixed|null The value, will be null if it does not exist.
 		 */
@@ -16,7 +15,6 @@
 
 		/**
 		 * Sets a value with the given key in the current session.
-		 *
 		 * @param mixed $key The key to use.
 		 * @param mixed $value The value to set.
 		 */
@@ -27,7 +25,6 @@
 
 		/**
 		 * Delete the value stored in the current session at the given key.
-		 *
 		 * @param mixed $key The key of the value to delete.
 		 */
 		public static function Delete($key)
