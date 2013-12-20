@@ -35,4 +35,4 @@ KrameWork is simple enough to be self-explanatory for the most part. Start by ch
 
 #### Something could be better or added...
 
-If you have any suggestions, ideas or feedback, feel free to [post an issue](issues) or e-mail me, whichever is more appropriate. Please provide as much information or reasoning as needed.
+If you have any suggestions, ideas or feedback, feel free to post an issue or e-mail me, whichever is more appropriate. Please provide as much information or reasoning as needed.
