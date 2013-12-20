@@ -1,21 +1,17 @@
 <?php
 	abstract class KW_Module implements IModule
 	{
-		public function __construct()
-		{
-			$this->buildModule();
-		}
-
+		/**
+		 * Compiles the module and its sub-modules and returns the output.
+		 *
+		 * @return string The output from the compiled module.
+		 */
 		public function __toString()
 		{
-			$this->buildModule();
 			$data = new StringBuilder();
 
 			foreach ($this->sub_modules as $sub_module)
-			{
-				$sub_module->buildModule();
 				$data->append($sub_module->renderModule());
-			}
 
 			$data->append($this->renderModule());
 
