@@ -17,15 +17,9 @@ Place the **KrameWork** directory with its contents somewhere accessible to your
 $system = new KrameSystem();
 ```
 
-### Setting flags.
-
-The *KrameSystem* constructor takes a bitwise flag which can be manually provided to change the behavior from what KrameWork defaults with. The flags are detailed below.
-
-* KW_ENABLE_SESSIONS: Automatically sets up a session when KrameWork is initialized. [Default]
-* KW_ERROR_HANDLER: Enables the KrameWork error handler, see [error handling](docs/error_handling.md). [Default]
-
 ### Guides
 
+* [Flags](docs/flags.md)
 * [Auto-loading](docs/auto_loading.md)
 * [Error Handling](docs/error_handling.md)
 
@@ -37,4 +31,8 @@ Personally I dislike namespaces in PHP, if this causes problems for you, KrameWo
 
 #### How does X feature work?
 
-KrameWork is simple enough to be self-explanatory for the most part. Start by checking out the guides linked above and the [examples](examples) directory, if something is still confusing let me know and I will assist you and add more documentation/support.
+KrameWork is simple enough to be self-explanatory for the most part. Start by checking out the [guides](docs) linked above and the [examples](examples) directory, if something is still confusing let me know and I will assist you and add more documentation/support.
+
+#### Something could be better or added...
+
+If you have any suggestions, ideas or feedback, feel free to [post an issue](issues) or e-mail me, whichever is more appropriate. Please provide as much information or reasoning as needed.
