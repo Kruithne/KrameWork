@@ -1,0 +1,1 @@
+This is a random page! Praise the <?php echo $what; ?>!
