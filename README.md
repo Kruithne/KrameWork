@@ -1,13 +1,5 @@
 ## KrameWork - A simple web framework for PHP
 
-### Setting Up
-
-Place the **KrameWork** directory with its contents somewhere accessible to your website and in your bootstrap construct a new *KrameSystem* object. You are all good to go!
-
-```php
-$system = new KrameSystem();
-```
-
 ### What does KrameWork provide?
 
 * Auto-loading which defaults to the KrameWork directory and just PHP files. See below for options.
@@ -17,18 +9,12 @@ $system = new KrameSystem();
 * MVC framework and templates to build a simple structure.
 * More to be added soon.
 
-### Manipulate auto-loading.
+### Setting Up
 
-#### Add paths to auto-load from.
-
-```php
-$system->addAutoLoadPath("directory/relative/to/my/project");
-```
-
-#### Set which extensions get auto-loaded.
+Place the **KrameWork** directory with its contents somewhere accessible to your website and in your bootstrap construct a new *KrameSystem* object. You are all good to go!
 
 ```php
-$system->setAutoLoadExtensions(".php,.lua"); // Comma-separated.
+$system = new KrameSystem();
 ```
 
 ### Setting flags.
@@ -36,6 +22,12 @@ $system->setAutoLoadExtensions(".php,.lua"); // Comma-separated.
 The *KrameSystem* constructor takes a bitwise flag which can be manually provided to change the behavior from what KrameWork defaults with. The flags are detailed below.
 
 * KW_ENABLE_SESSIONS: Automatically sets up a session when KrameWork is initialized. [Default]
+* KW_ERROR_HANDLER: Enables the KrameWork error handler, see [error handling](docs/error_handling.md). [Default]
+
+### Guides
+
+* [Auto-loading](docs/auto_loading.md)
+* [Error Handling](docs/error_handling.md)
 
 ### FAQ
 
@@ -45,4 +37,4 @@ Personally I dislike namespaces in PHP, if this causes problems for you, KrameWo
 
 #### How does X feature work?
 
-KrameWork is simple enough to be self-explanatory for the most part. Start by checking out the *examples* directory, if something is still confusing let me know and I will assist you and add more documentation/support.
+KrameWork is simple enough to be self-explanatory for the most part. Start by checking out the guides linked above and the [examples](examples) directory, if something is still confusing let me know and I will assist you and add more documentation/support.
