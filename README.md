@@ -37,6 +37,12 @@ The *KrameSystem* constructor takes a bitwise flag which can be manually provide
 
 * KW_ENABLE_SESSIONS: Automatically sets up a session when KrameWork is initialized. [Default]
 
-### Namespaces?
+### FAQ
 
-Currently, KrameWork does not use namespaces and I have no intentions for it to do so, sorry.
+#### Why does KrameWork not use namespaces?
+
+Personally I dislike namespaces in PHP, if this causes problems for you, KrameWork isn't for you!
+
+#### How does X feature work?
+
+KrameWork is simple enough to be self-explanatory for the most part. Start by checking out the *examples* directory, if something is still confusing let me know and I will assist you and add more documentation/support.
