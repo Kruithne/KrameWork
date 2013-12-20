@@ -13,6 +13,7 @@ $system = new KrameSystem();
 * Auto-loading which defaults to the KrameWork directory and just PHP files. See below for options.
 * Automatic session set-up by default along with session utilities provided by the *Session* global.
 * REST utilities provided by the *REST* global.
+* Provides a simple dependency injection system.
 * MVC framework and templates to build a simple structure.
 * More to be added soon.
 
