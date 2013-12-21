@@ -38,6 +38,14 @@
 		}
 
 		/**
+		 * Clears the StringBuilder, wiping all data held within.
+		 */
+		public function clear()
+		{
+			$this->string = '';
+		}
+
+		/**
 		 * Called when this object is cast to a string.
 		 *
 		 * @return string The string contained by the builder.
