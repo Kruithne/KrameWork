@@ -71,6 +71,8 @@
 			$report->addKeyedValue('Error', $string);
 			$report->setSubject('Error (' . $type . ') - ' . date("Y-m-d H:i:s"));
 
+			$this->sendErrorReport($report);
+
 			return true;
 		}
 
