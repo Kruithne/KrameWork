@@ -84,7 +84,7 @@
 		public function sendErrorReport($report)
 		{
 			$this->mail->clear();
-			$this->mail->append($report);
+			$this->mail->append((string) $report);
 
 			if ($this->mail->getSubject() === NULL)
 				$this->mail->setSubject($report->getSubject());
