@@ -46,3 +46,7 @@ $system->getErrorHandler()->setOutputLog('../logs/website_errors.log');
 // Attempt to log reports as separate files inside the error_reports directory.
 $system->getErrorHandler()->setOutputLog('../logs/error_reports');
 ```
+
+#### What is contained in an error report?
+
+An error report contains information regarding the error (type, line, file, message) as per standard along with the version of PHP running, the operating system for the server and the output of the SESSION, GET and POST global arrays at the time of the error. The ability to customize an error report is not yet available however if requested this may be expanded upon.
