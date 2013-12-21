@@ -1,5 +1,5 @@
 <?php
-	require_once('../KrameWork/KrameSystem.php'); // We need this.
+	require_once('../../KrameWork/KrameSystem.php'); // We need this.
 
 	$system = new KrameSystem(KW_DEFAULT_FLAGS & ~KW_ENABLE_SESSIONS); // Create a system without sessions.
 
