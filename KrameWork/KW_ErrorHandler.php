@@ -127,6 +127,37 @@
 				if ($this->mail->getRecipientCount() > 0)
 					$this->mail->send();
 			}
+
+			if ($this->log !== NULL)
+			{
+				if (@is_file($this->log))
+				{
+					file_put_contents($this->log, (string) $report, FILE_APPEND);
+				}
+				else if (@is_dir($this->log))
+				{
+					$log_file = $this->createLogFileName($this->log);
+					file_put_contents($log_file, (string) $report);
+				}
+			}
+		}
+
+		private function getLogName($number)
+		{
+			return time() . '_' . $number . '.log';
+		}
+
+		private function createLogFileName($directory)
+		{
+			$number = 0;
+			$file_name = $this->getLogName($number);
+			while (file_exists($directory . DIRECTORY_SEPARATOR . $file_name))
+			{
+				$number++;
+				$file_name = $this->getLogName($number);
+			}
+
+			return $directory . DIRECTORY_SEPARATOR . $file_name;
 		}
 
 		/**
