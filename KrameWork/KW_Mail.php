@@ -14,6 +14,16 @@
 		}
 
 		/**
+		 * Get the amount of recipients this mail will be sent to.
+		 *
+		 * @return int Amount of recipients.
+		 */
+		public function getRecipientCount()
+		{
+			return count($this->recipients);
+		}
+
+		/**
 		 * Set the subject of the mail to be sent.
 		 *
 		 * @param string $subject The subject for the mail.
