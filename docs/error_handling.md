@@ -28,7 +28,7 @@ $system->getErrorHandler()->setOutputEmail('someone@somewhere.net', 'A wild erro
 The third parameter can be used to control the address from which the error reports are sent from. If neglected, the default address for your mail server/PHP installation will be used.
 
 ```php
-$system->getErrorHandler()->setOutputEmail('someone@somewhere.net', null, 'noreply@somewhere.net');
+$system->getErrorHandler()->setOutputEmail('someone@somewhere.net', null, 'Error Handler <noreply@somewhere.net>');
 ```
 
 ##### File Logging
