@@ -100,7 +100,7 @@
 			$this->bundleReportInformation();
 			$this->prepareOutputData($this->data, $output);
 
-			return $output->__toString();
+			return (string) $output;
 		}
 
 		/**
@@ -120,7 +120,7 @@
 				}
 				else
 				{
-					$output->append($data);
+					$output->append($node)->append("\r\n");
 				}
 			}
 		}
