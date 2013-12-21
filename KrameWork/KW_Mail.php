@@ -36,6 +36,16 @@
 		}
 
 		/**
+		 * Get the subject for this mail object.
+		 *
+		 * @return string|null Subject for this object, will be NULL if not yet set.
+		 */
+		public function getSubject()
+		{
+			return $this->subject;
+		}
+
+		/**
 		 * Set the address for which this mail originated from.
 		 *
 		 * @param string $sender The address of the sender.
