@@ -38,9 +38,14 @@
 			return $this->mail;
 		}
 
+		/**
+		 * Set the path which will be used for logging errors.
+		 *
+		 * @param string $log Path to a directory or file.
+		 */
 		public function setOutputLog($log)
 		{
-			// TODO: Implement me.
+			$this->log = $log;
 		}
 
 		/**
@@ -125,5 +130,10 @@
 		 * @var KW_Mail
 		 */
 		private $mail;
+
+		/**
+		 * @var string|null Will be NULL if not yet set.
+		 */
+		private $log;
 	}
 ?>
