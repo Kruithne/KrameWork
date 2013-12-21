@@ -2,6 +2,16 @@
 	class StringBuilder
 	{
 		/**
+		 * Create a StringBuilder instance with an initial value.
+		 *
+		 * @param string|null $string An optional string to initialize with.
+		 */
+		public function __construct($string = NULL)
+		{
+			$this->string = $string === NULL ? '' : $string;
+		}
+
+		/**
 		 * Appends a string to the end of the string builder.
 		 *
 		 * @param string $string A string to append.
