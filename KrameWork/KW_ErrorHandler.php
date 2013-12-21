@@ -12,6 +12,7 @@
 				error_reporting(E_ALL);
 
 			set_error_handler(array($this, "handleError"));
+			set_exception_handler(array($this, "handleException"));
 		}
 
 		/**
@@ -66,16 +67,41 @@
 				default: $type = 'UNKNOWN'; break;
 			}
 
+			$this->sendErrorReport($this->generateErrorReport($type, $line, $file, $string));
+			return true;
+		}
+
+		/**
+		 * Handles an exception in the PHP runtime.
+		 *
+		 * @param Exception $exception The uncaught exception.
+		 */
+		public function handleException($exception)
+		{
+			$this->sendErrorReport($this->generateErrorReport(
+				'EXCEPTION', $exception->getLine(), $exception->getFile(), $exception->getMessage())
+			);
+		}
+
+		/**
+		 * Generate an error report.
+		 *
+		 * @param string $type Describe the error in roughly one word, such as EXCEPTION.
+		 * @param int $line The line where this error occurred.
+		 * @param string $file The file where this error occurred.
+		 * @param string $error A description of the error.
+		 * @return KW_ErrorReport An error report object ready for use.
+		 */
+		private function generateErrorReport($type, $line, $file, $error)
+		{
 			$report = new KW_ErrorReport();
+			$report->setSubject('Error (' . $type . ') - ' . date("Y-m-d H:i:s"));
 			$report->Type = $type;
 			$report->Line = $line;
 			$report->File = $file;
-			$report->Error = $string;
-			$report->setSubject('Error (' . $type . ') - ' . date("Y-m-d H:i:s"));
+			$report->Error = $error;
 
-			$this->sendErrorReport($report);
-
-			return true;
+			return $report;
 		}
 
 		/**

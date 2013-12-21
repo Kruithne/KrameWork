@@ -8,4 +8,7 @@
 
 	// Throw an error to test.
 	trigger_error('This is a random error that might occur', E_USER_WARNING);
+
+	// Let's throw an exception.
+	throw new KW_Exception('Something very bad happened here.');
 ?>
