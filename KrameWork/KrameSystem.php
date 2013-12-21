@@ -20,6 +20,9 @@
 
 			if (($flags & KW_ENABLE_SESSIONS) && session_status() == PHP_SESSION_NONE)
 				session_start();
+
+			if ($flags & KW_ERROR_HANDLER)
+				$this->errorHandler = new KW_ErrorHandler(!($flags & KW_LEAVE_ERROR_LEVEL));
 		}
 
 		/**
@@ -43,8 +46,23 @@
 		}
 
 		/**
+		 * Returns the error handler for this KrameWork system instance.
+		 *
+		 * @return null|KW_ErrorHandler The error handler, will be NULL if error handling is disabled in this instance.
+		 */
+		public function getErrorHandler()
+		{
+			return $this->errorHandler;
+		}
+
+		/**
 		 * @var KW_ClassLoader
 		 */
 		private $classLoader;
+
+		/**
+		 * @var KW_ErrorHandler
+		 */
+		private $errorHandler;
 	}
 ?>

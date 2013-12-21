@@ -16,13 +16,13 @@ By default, errors and exceptions collected by the error handler are silent. Bel
 Route error reports to an address.
 
 ```php
-$system->getErrorHandler()->setOutputEmail('someone@somewhere.net');
+$system->getErrorHandler()->appendEmailOutputRecipient('someone@somewhere.net');
 ```
 
-Set a custom subject for the error e-mails. For the subject string, the wildcards *%time%* and *%type%* will be replaced with a timestamp and the error type, respectively.
+For more advanced control over the e-mail output, the KW_Mail object can be accessed as shown below which allows for direct manipulation of the output such as changing the subject.
 
 ```php
-$system->getErrorHandler()->setOutputEmail('someone@somewhere.net', 'A wild error has appeared at %time%');
+$system->getErrorHandler()->getMailObject()->setSubject('This is a custom subject!');
 ```
 
 The third parameter can be used to control the address from which the error reports are sent from. If neglected, the default address for your mail server/PHP installation will be used.
