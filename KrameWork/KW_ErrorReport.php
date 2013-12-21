@@ -31,20 +31,22 @@
 		}
 
 		/**
-		 * Pushes helpful information into the report.
+		 * Pushes helpful information into the array given.
+		 *
+		 * @param array $array The array to push the information into.
 		 */
-		private function bundleReportInformation()
+		private function bundleReportInformation(&$array)
 		{
-			$this->addInfo(Array(
+			$array[] = Array(
 				$this->formatValue('PHP Version', PHP_VERSION),
 				$this->formatValue('Server OS', PHP_OS)
-			));
+			);
 
 			if (session_status() === PHP_SESSION_ACTIVE)
-				$this->addInfo(Array('SESSION' => $this->bundleArray($_SESSION)));
+				$array[] = Array('SESSION' => $this->bundleArray($_SESSION));
 
-			$this->addInfo(Array('GET' => $this->bundleArray($_GET)));
-			$this->addInfo(Array('POST' => $this->bundleArray($_POST)));
+			$array[] = Array('GET' => $this->bundleArray($_GET));
+			$array[] = Array('POST' => $this->bundleArray($_POST));
 		}
 
 		/**
@@ -97,8 +99,10 @@
 		public function __toString()
 		{
 			$output = new StringBuilder();
-			$this->bundleReportInformation();
-			$this->prepareOutputData($this->data, $output);
+			$data = $this->data;
+
+			$this->bundleReportInformation($data);
+			$this->prepareOutputData($data, $output);
 
 			return (string) $output;
 		}
