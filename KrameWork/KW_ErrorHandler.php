@@ -116,14 +116,17 @@
 		 */
 		public function sendErrorReport($report)
 		{
-			$this->mail->clear();
-			$this->mail->append((string) $report);
+			if ($this->mail !== NULL)
+			{
+				$this->mail->clear();
+				$this->mail->append((string) $report);
 
-			if ($this->mail->getSubject() === NULL)
-				$this->mail->setSubject($report->getSubject());
+				if ($this->mail->getSubject() === NULL)
+					$this->mail->setSubject($report->getSubject());
 
-			if ($this->mail->getRecipientCount() > 0)
-				$this->mail->send();
+				if ($this->mail->getRecipientCount() > 0)
+					$this->mail->send();
+			}
 		}
 
 		/**
