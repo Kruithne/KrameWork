@@ -8,6 +8,7 @@
 		 */
 		public function loadClass($className)
 		{
+			// ToDo: Allow recursive searching for auto-loading.
 			foreach ($this->classPaths as $classPath)
 			{
 				foreach (scandir($classPath) as $node)
