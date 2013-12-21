@@ -56,16 +56,16 @@
 			if (!error_reporting() & $type)
 				return true;
 
-			$type = 'UNKNOWN';
+			$type_name = 'UNKNOWN';
 			switch ($type)
 			{
-				case E_USER_ERROR: $type = 'FATAL'; break;
-				case E_USER_WARNING: $type = 'WARNING'; break;
-				case E_USER_NOTICE: $type = 'NOTICE'; break;
+				case E_USER_ERROR: $type_name = 'FATAL'; break;
+				case E_USER_WARNING: $type_name = 'WARNING'; break;
+				case E_USER_NOTICE: $type_name = 'NOTICE'; break;
 			}
 
 			$report = new KW_ErrorReport();
-			$report->addKeyedValue('Type', $type);
+			$report->addKeyedValue('Type', $type_name);
 			$report->addKeyedValue('Line', $line);
 			$report->addKeyedValue('File', $file);
 			$report->addKeyedValue('Error', $string);
