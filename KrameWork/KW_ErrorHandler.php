@@ -61,6 +61,8 @@
 				case E_USER_ERROR: $type = 'FATAL'; break;
 				case E_USER_WARNING: $type = 'WARNING'; break;
 				case E_USER_NOTICE: $type = 'NOTICE'; break;
+				case E_STRICT: $type = 'STRICT'; break;
+				case E_USER_DEPRECATED: $type = 'DEPRECATED'; break;
 				default: $type = 'UNKNOWN'; break;
 			}
 
