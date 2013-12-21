@@ -67,10 +67,10 @@
 			}
 
 			$report = new KW_ErrorReport();
-			$report->addKeyedValue('Type', $type);
-			$report->addKeyedValue('Line', $line);
-			$report->addKeyedValue('File', $file);
-			$report->addKeyedValue('Error', $string);
+			$report->Type = $type;
+			$report->Line = $line;
+			$report->File = $file;
+			$report->Error = $string;
 			$report->setSubject('Error (' . $type . ') - ' . date("Y-m-d H:i:s"));
 
 			$this->sendErrorReport($report);

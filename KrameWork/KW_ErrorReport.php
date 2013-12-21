@@ -25,7 +25,7 @@
 		 * @param string $key The key for the value.
 		 * @param string $value They value.
 		 */
-		public function addKeyedValue($key, $value)
+		public function __set($key, $value)
 		{
 			$this->addInfo($this->formatValue($key, $value));
 		}
