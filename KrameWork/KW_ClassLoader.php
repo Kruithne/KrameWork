@@ -46,7 +46,7 @@
 		 */
 		public function addClassPath($classPath)
 		{
-			$this->classPaths[] = $classPath;
+			$this->classPaths[] = rtrim($classPath, "/");
 		}
 
 		private $allowedExtensions = Array();
