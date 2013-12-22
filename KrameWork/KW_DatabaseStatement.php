@@ -41,6 +41,7 @@
 		 *
 		 * @param KW_DatabaseRow $row A row to extract from.
 		 * @param string $prependChar Character to prepend each key with.
+		 * @return KW_DatabaseStatement Statement instance.
 		 */
 		public function copyValuesFromRow($row, $prependChar = ':')
 		{
@@ -48,6 +49,8 @@
 
 			foreach ($row_array as $key => $value)
 				$this->setValue($prependChar . $key, $value);
+
+			return $this;
 		}
 
 		/**
