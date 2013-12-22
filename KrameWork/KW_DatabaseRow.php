@@ -24,7 +24,7 @@
 		}
 
 		/**
-		 * Returns the row as an array.
+		 * Returns the row as an associative array.
 		 *
 		 * @return array
 		 */
