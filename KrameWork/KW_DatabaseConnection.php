@@ -31,7 +31,7 @@
 		 * @param string $sql An SQL query string.
 		 * @return int Amount of rows effected by the execution of this query.
 		 */
-		public function executeQuery($sql)
+		public function execute($sql)
 		{
 			return $this->connection->exec($sql);
 		}
