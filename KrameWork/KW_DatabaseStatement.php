@@ -37,6 +37,20 @@
 		}
 
 		/**
+		 * Copies the values already stored inside a row.
+		 *
+		 * @param KW_DatabaseRow $row A row to extract from.
+		 * @param string $prependChar Character to prepend each key with.
+		 */
+		public function copyValuesFromRow($row, $prependChar = ':')
+		{
+			$row_array = $row->getAsArray();
+
+			foreach ($row_array as $key => $value)
+				$this->setValue($prependChar . $key, $value);
+		}
+
+		/**
 		 * Executes the statement and collects retrieved rows.
 		 *
 		 * @return KW_DatabaseStatement $this Database statement instance.
