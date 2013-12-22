@@ -23,6 +23,16 @@
 			return array_key_exists($key, $this->values) ? $this->values[$key] : NULL;
 		}
 
+		/**
+		 * Returns the row as an array.
+		 *
+		 * @return array
+		 */
+		public function getAsArray()
+		{
+			return $this->values;
+		}
+
 		private $values = Array();
 	}
 ?>
