@@ -20,7 +20,7 @@
 		 * @param string $sql An SQL query for this statement.
 		 * @return KW_DatabaseStatement A database statement.
 		 */
-		public function prepareStatement($sql)
+		public function prepare($sql)
 		{
 			return new KW_DatabaseStatement($sql, $this->connection);
 		}
