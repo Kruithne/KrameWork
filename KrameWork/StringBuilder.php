@@ -5,12 +5,10 @@
 		 * Create a StringBuilder instance with an initial value.
 		 *
 		 * @param string|null $string An optional string to initialize with.
-		 * @return StringBuilder $this The string builder instance.
 		 */
 		public function __construct($string = NULL)
 		{
 			$this->string = $string === NULL ? '' : $string;
-			return $this;
 		}
 
 		/**
