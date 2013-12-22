@@ -3,8 +3,6 @@
 
 	$system = new KrameSystem(KW_DEFAULT_FLAGS & ~KW_ENABLE_SESSIONS); // Create a system without sessions.
 
-	$system->getErrorHandler()->addEmailOutputRecipient('kruithne@gmail.com');
-
 	// Start a new database connection.
 	$db = new KW_DatabaseConnection('sqlite:test_database.sq3', null, null);
 
