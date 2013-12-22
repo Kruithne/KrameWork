@@ -24,8 +24,13 @@
 	// Get every row and reverse the value.
 	foreach (getTestRows() as $row)
 	{
+		// Reverse the string (makes for a repeatable example)
 		$row->test_column = $row->test_column == 'Hello, world!' ? 'World, hello!' : 'Hello, world!';
+
+		// Prepare a query to persist this change.
 		$update = $db->prepare('UPDATE test_table SET test_column = :test_column');
+
+		// Pack the statement with values from our row object and execute the statement.
 		$update->copyValuesFromRow($row)->execute();
 	}
 
