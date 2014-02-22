@@ -18,7 +18,7 @@
 			$this->classLoader->addClassPath(dirname(__FILE__));
 			spl_autoload_register(array($this->classLoader, 'loadClass'));
 
-			if (($flags & KW_ENABLE_SESSIONS) && !$this->sessionIsStarted())
+			if (($flags & KW_ENABLE_SESSIONS) && !self::sessionIsStarted())
 				session_start();
 
 			if ($flags & KW_ERROR_HANDLER)
@@ -55,7 +55,7 @@
 			return $this->errorHandler;
 		}
 
-		private function sessionIsStarted()
+		public static function sessionIsStarted()
 		{
 			if (php_sapi_name() == 'cli')
 				return false;

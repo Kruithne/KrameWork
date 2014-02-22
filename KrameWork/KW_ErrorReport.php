@@ -42,7 +42,7 @@
 				$this->formatValue('Server OS', PHP_OS)
 			);
 
-			if (session_status() === PHP_SESSION_ACTIVE)
+			if (KrameSystem::sessionIsStarted())
 				$array[] = Array('SESSION' => $this->bundleArray($_SESSION));
 
 			$array[] = Array('GET' => $this->bundleArray($_GET));
