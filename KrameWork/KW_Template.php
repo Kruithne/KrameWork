@@ -8,6 +8,7 @@
 		 */
 		public function __construct($file)
 		{
+			$this->data = Array();
 			// ToDo: If the file does not exist, we should throw an error.
 			if (file_exists($file))
 				$this->file = $file;
