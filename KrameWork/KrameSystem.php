@@ -18,7 +18,7 @@
 			$this->classLoader->addClassPath(dirname(__FILE__));
 			spl_autoload_register(array($this->classLoader, 'loadClass'));
 
-			if (($flags & KW_ENABLE_SESSIONS) && session_status() == PHP_SESSION_NONE)
+			if (($flags & KW_ENABLE_SESSIONS) && !$this->sessionIsStarted())
 				session_start();
 
 			if ($flags & KW_ERROR_HANDLER)
@@ -53,6 +53,17 @@
 		public function getErrorHandler()
 		{
 			return $this->errorHandler;
+		}
+
+		private function sessionIsStarted()
+		{
+			if (php_sapi_name() == 'cli')
+				return false;
+
+			if (function_exists('session_status'))
+				return session_status() == PHP_SESSION_ACTIVE;
+			else
+				return session_id() === '' ? false : true;
 		}
 
 		/**
