@@ -71,6 +71,7 @@
 
 			$this->statement->execute();
 			$this->executed = true;
+			$this->rows = null;
 			return $this;
 		}
 
@@ -84,13 +85,17 @@
 			if (!$this->executed)
 				$this->execute();
 
-			while ($raw_row = $this->statement->fetch(PDO::FETCH_ASSOC))
+			if ($this->rows == null)
 			{
-				$row = new KW_DatabaseRow();
-				foreach ($raw_row as $column => $field)
-					$row->__set($column, $field);
+				$this->rows = array();
+				while ($raw_row = $this->statement->fetch(PDO::FETCH_ASSOC))
+				{
+					$row = new KW_DatabaseRow();
+					foreach ($raw_row as $column => $field)
+						$row->__set($column, $field);
 
-				$this->rows[] = $row;
+					$this->rows[] = $row;
+				}
 			}
 
 			return $this->rows;
