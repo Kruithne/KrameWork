@@ -11,6 +11,7 @@
 		{
 			$this->sql = $sql;
 			$this->connection = $connection;
+			$this->statement = $this->connection->prepare($this->sql);
 		}
 
 		/**
@@ -60,13 +61,12 @@
 		 */
 		public function execute()
 		{
-			$pdo_statement = $this->connection->prepare($this->sql);
 			foreach ($this->values as $key => $value)
-				$pdo_statement->bindValue($key, $value);
+				$this->statement->bindValue($key, $value);
 
-			$pdo_statement->execute();
+			$this->statement->execute();
 
-			while ($raw_row = $pdo_statement->fetch(PDO::FETCH_ASSOC))
+			while ($raw_row = $this->statement->fetch(PDO::FETCH_ASSOC))
 			{
 				$row = new KW_DatabaseRow();
 				foreach ($raw_row as $column => $field)
@@ -126,5 +126,10 @@
 		 * @var PDO
 		 */
 		private $connection;
+
+		/**
+		 * @var PDOStatement
+		 */
+		private $statement;
 	}
 ?>
