@@ -37,6 +37,11 @@
 			return $this;
 		}
 
+		public function __set($key, $value)
+		{
+			$this->setValue(':'.$key, $value);
+		}
+
 		/**
 		 * Copies the values already stored inside a row.
 		 *
@@ -65,16 +70,7 @@
 				$this->statement->bindValue($key, $value);
 
 			$this->statement->execute();
-
-			while ($raw_row = $this->statement->fetch(PDO::FETCH_ASSOC))
-			{
-				$row = new KW_DatabaseRow();
-				foreach ($raw_row as $column => $field)
-					$row->__set($column, $field);
-
-				$this->rows[] = $row;
-			}
-
+			$this->executed = true;
 			return $this;
 		}
 
@@ -85,6 +81,18 @@
 		 */
 		public function getRows()
 		{
+			if (!$this->executed)
+				$this->execute();
+
+			while ($raw_row = $this->statement->fetch(PDO::FETCH_ASSOC))
+			{
+				$row = new KW_DatabaseRow();
+				foreach ($raw_row as $column => $field)
+					$row->__set($column, $field);
+
+				$this->rows[] = $row;
+			}
+
 			return $this->rows;
 		}
 
@@ -131,5 +139,7 @@
 		 * @var PDOStatement
 		 */
 		private $statement;
+
+		private $executed;
 	}
 ?>
