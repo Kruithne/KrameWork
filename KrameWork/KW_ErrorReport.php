@@ -58,6 +58,17 @@
 		 */
 		private function formatValue($key, $value)
 		{
+			if($key == 'trace')
+			{
+				$out = array();
+				foreach($value as $step)
+				{
+					$file = isset($step['file']) ? $step['file'] : 'unknown';
+					$line = isset($step['line']) ? $step['line'] : 0;
+					$out[] = sprintf('In function %s%s%s at %s:%d', $step['class'], $step['type'], $step['function'], $file, $line);
+				}
+				return 'Backtrace: '.join("\r\n", $out);
+			}
 			return $key . ': ' . $value;
 		}
 

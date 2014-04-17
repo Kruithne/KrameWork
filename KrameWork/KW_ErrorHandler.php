@@ -72,7 +72,7 @@
 				default: $type = 'UNKNOWN'; break;
 			}
 
-			$this->sendErrorReport($this->generateErrorReport($type, $line, $file, $string));
+			$this->sendErrorReport($this->generateErrorReport($type, $line, $file, $string, debug_backtrace()));
 			return true;
 		}
 
@@ -84,7 +84,7 @@
 		public function handleException($exception)
 		{
 			$this->sendErrorReport($this->generateErrorReport(
-				'EXCEPTION', $exception->getLine(), $exception->getFile(), $exception->getMessage())
+				'EXCEPTION', $exception->getLine(), $exception->getFile(), $exception->getMessage(), $exception->getTrace())
 			);
 		}
 
@@ -97,7 +97,7 @@
 		 * @param string $error A description of the error.
 		 * @return KW_ErrorReport An error report object ready for use.
 		 */
-		private function generateErrorReport($type, $line, $file, $error)
+		private function generateErrorReport($type, $line, $file, $error, $trace = null)
 		{
 			$report = new KW_ErrorReport();
 			$report->setSubject('Error (' . $type . ') - ' . date("Y-m-d H:i:s"));
@@ -105,6 +105,7 @@
 			$report->Line = $line;
 			$report->File = $file;
 			$report->Error = $error;
+			$report->trace = $trace;
 
 			return $report;
 		}
