@@ -65,7 +65,10 @@
 				{
 					$file = isset($step['file']) ? $step['file'] : 'unknown';
 					$line = isset($step['line']) ? $step['line'] : 0;
-					$out[] = sprintf('In function %s%s%s at %s:%d', $step['class'], $step['type'], $step['function'], $file, $line);
+					$class = isset($step['class']) ? $step['class'] : '';
+					$type = isset($step['type']) ? $step['type'] : '';
+					$function = isset($step['function']) ? $step['function'] : 'none';
+					$out[] = sprintf('In function %s%s%s at %s:%d', $class, $type, $function, $file, $line);
 				}
 				return 'Backtrace: '.join("\r\n", $out);
 			}
