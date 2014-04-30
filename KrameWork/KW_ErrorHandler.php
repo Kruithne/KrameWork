@@ -5,9 +5,11 @@
 		 * Construct an error handler for the KrameWork system.
 		 *
 		 * @param bool $alterLevel Can we alter the runtime error level?
+		 * @param integer $maxErrors How many errors do we abort after, per execution?
 		 */
-		public function __construct($alterLevel = true)
+		public function __construct($alterLevel = true, $maxErrors = 10)
 		{
+			$this->maxErrors = $maxErrors;
 			if ($alterLevel)
 				error_reporting(E_ALL);
 
@@ -59,6 +61,8 @@
 		 */
 		public function handleError($type, $string, $file, $line)
 		{
+			if($this->errorCount++ > $this->maxErrors)
+				die('Excessive errors, aborting');
 			if (!error_reporting() & $type)
 				return true;
 
@@ -83,6 +87,8 @@
 		 */
 		public function handleException($exception)
 		{
+			if($this->errorCount++ > $this->maxErrors)
+				die('Excessive errors, aborting');
 			$this->sendErrorReport($this->generateErrorReport(
 				'EXCEPTION', $exception->getLine(), $exception->getFile(), $exception->getMessage(), $exception->getTrace())
 			);
@@ -170,5 +176,15 @@
 		 * @var string|null Will be NULL if not yet set.
 		 */
 		private $log;
+
+		/**
+		 * @var maxErrors Number of errors to process before aborting exection.
+		 */
+		private $maxErrors = 10;
+
+		/**
+		 * @var integer Number of errors this execution.
+		 */
+		private $errorCount = 0;
 	}
 ?>
