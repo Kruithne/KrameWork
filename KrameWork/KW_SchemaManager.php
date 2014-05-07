@@ -87,6 +87,8 @@
 		 */
 		public function loadVersionTable()
 		{
+			if(!$this->_metatable->exists->execute()->getRows())
+				return;
 			foreach($this->_metatable->load->execute()->getRows() as $row)
 				$this->version[$row->table] = $row->version;
 		}

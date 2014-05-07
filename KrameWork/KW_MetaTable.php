@@ -3,6 +3,7 @@
 	{
 		public function prepare()
 		{
+			$this->exists = $this->db->prepare('SHOW TABLES LIKE \'_metatable\'');
 			$this->load = $this->db->prepare('SELECT * FROM `_metatable`');
 			$this->save = $this->db->prepare('
 INSERT INTO `_metatable` (`table`,`version`) VALUES (:table,:version)
