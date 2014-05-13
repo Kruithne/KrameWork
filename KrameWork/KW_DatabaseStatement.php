@@ -107,7 +107,8 @@
 		 */
 		public function getFirstRow()
 		{
-			return isset($this->rows[0]) ? $this->rows[0] : null;
+			$rows = $this->getRows();
+			return isset($rows[0]) ? $rows[0] : null;
 		}
 
 		/**
