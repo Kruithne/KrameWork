@@ -9,7 +9,7 @@
 		public static function loadClass($className)
 		{
 			// ToDo: Allow recursive searching for auto-loading.
-			foreach (self::classPaths as $classPath)
+			foreach (self::$classPaths as $classPath)
 			{
 				foreach (scandir($classPath) as $node)
 				{
