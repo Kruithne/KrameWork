@@ -16,7 +16,7 @@
 					if ($node === '.' || $node === '..')
 						continue;
 
-					foreach (self::allowedExtensions as $extension)
+					foreach (self::$allowedExtensions as $extension)
 					{
 						$path = $classPath . DIRECTORY_SEPARATOR . $className . $extension;
 						if (file_exists($path))
