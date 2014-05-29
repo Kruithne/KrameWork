@@ -16,7 +16,10 @@
 			$this->classLoader = new KW_ClassLoader();
 			$this->classLoader->setAllowedExtensions('.php');
 			$this->classLoader->addClassPath(dirname(__FILE__));
-			spl_autoload_register(array($this->classLoader, 'loadClass'));
+
+			$loadClassFunction = array($this->classLoader, 'loadClass');
+			spl_autoload_register($loadClassFunction);
+			ini_set('unserialize_callback_func', $loadClassFunction);
 
 			if (($flags & KW_ENABLE_SESSIONS) && !self::sessionIsStarted())
 				session_start();
