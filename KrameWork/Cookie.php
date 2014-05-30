@@ -10,7 +10,7 @@
 		 */
 		public static function Set($name, $value, $expires)
 		{
-			setcookie($name, $value, time() - $expires);
+			setcookie($name, $value, time() + $expires);
 		}
 
 		/**
