@@ -11,6 +11,7 @@
 		 */
 		public static function Post($key, $filter = FILTER_DEFAULT, $options = 0)
 		{
+			$options = $options & FILTER_NULL_ON_FAILURE;
 			return filter_input(INPUT_POST, $key, $filter, $options);
 		}
 
@@ -24,6 +25,7 @@
 		 */
 		public static function Get($key, $filter = FILTER_DEFAULT, $options = 0)
 		{
+			$options = $options & FILTER_NULL_ON_FAILURE;
 			return filter_input(INPUT_GET, $key, $filter, $options);
 		}
 	}
