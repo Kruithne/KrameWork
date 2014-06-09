@@ -2,31 +2,56 @@
 	class REST
 	{
 		/**
-		 * Get a value from the POST array with applied filters.
+		 * Runs a value through various sanitizing functions.
 		 *
-		 * @param mixed $key The key of the value to return.
-		 * @param int|null $filter
-		 * @param int $options A bitwise conjunction flag for the filter.
-		 * @return mixed|null The filtered value, FALSE if the filter failed or NULL if the key does not exist.
+		 * @param $data mixed The data to be sanitized.
+		 * @return string The clean and shiny result.
 		 */
-		public static function Post($key, $filter = FILTER_DEFAULT, $options = 0)
+		private static function cleanData($data)
 		{
-			$options = $options & FILTER_NULL_ON_FAILURE;
-			return filter_input(INPUT_POST, $key, $filter, $options);
+			return htmlentities(utf8_decode(trim($data)));
 		}
 
 		/**
-		 * Get a value from the GET array with applied filters.
+		 * Return a value from an array after sanitizing it.
+		 *
+		 * @param $array array Array of which to pull the value from.
+		 * @param $key string Key of the value with the array.
+		 * @return null|string
+		 */
+		private static function getData($array, $key)
+		{
+			if (array_key_exists($array, $key))
+			{
+				$data = self::cleanData($array[$key]);
+				if (!empty($data))
+					return $data;
+			}
+
+			return null;
+		}
+
+		/**
+		 * Get a value from the POST array after sanitizing.
 		 *
 		 * @param mixed $key The key of the value to return.
-		 * @param int|null $filter
-		 * @param int $options A bitwise conjunction flag for the filter.
-		 * @return mixed|null The filtered value, FALSE if the filter failed or NULL if the key does not exist.
+		 * @return mixed|null The filtered value or NULL if the key does not exist or is empty.
 		 */
-		public static function Get($key, $filter = FILTER_DEFAULT, $options = 0)
+		public static function Post($key)
 		{
-			$options = $options & FILTER_NULL_ON_FAILURE;
-			return filter_input(INPUT_GET, $key, $filter, $options);
+			return self::getData($_POST, $key);
+
+		}
+
+		/**
+		 * Get a value from the GET array after sanitizing.
+		 *
+		 * @param mixed $key The key of the value to return.
+		 * @return mixed|null The filtered value or NULL if the key does not exist or is empty.
+		 */
+		public static function Get($key)
+		{
+			return self::getData($_GET, $key);
 		}
 
 		/**
