@@ -28,7 +28,7 @@
 					return $data;
 			}
 
-			return null;
+			return NULL;
 		}
 
 		/**
