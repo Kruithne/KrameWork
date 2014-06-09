@@ -3,7 +3,7 @@
 
 	$system = new KrameSystem(KW_DEFAULT_FLAGS & ~KW_ENABLE_SESSIONS); // Create a system without sessions.
 
-	$value = REST::Get('test', FILTER_VALIDATE_EMAIL);
+	$value = REST::Get('test');
 
 	if ($value === null)
 		print('No test value was given, add &test=bob@nowhere.net to the end of this page URL.');
