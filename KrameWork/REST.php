@@ -28,5 +28,18 @@
 			$options = $options & FILTER_NULL_ON_FAILURE;
 			return filter_input(INPUT_GET, $key, $filter, $options);
 		}
+
+		/**
+		 * Checks all arguments passed to it are not null.
+		 * @return bool
+		 */
+		public static function Check()
+		{
+			foreach (func_get_args() as $arg)
+				if ($arg === NULL)
+					return false;
+
+			return true;
+		}
 	}
 ?>
