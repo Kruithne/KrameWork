@@ -101,6 +101,7 @@
 		 * @param int $line The line where this error occurred.
 		 * @param string $file The file where this error occurred.
 		 * @param string $error A description of the error.
+		 * @param null|string $trace
 		 * @return KW_ErrorReport An error report object ready for use.
 		 */
 		private function generateErrorReport($type, $line, $file, $error, $trace = null)
