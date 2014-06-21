@@ -18,6 +18,16 @@
 		}
 
 		/**
+		 * Add a parameter to the e-mail.
+		 * @param string $parameter Parameter key
+		 * @param string $value Value of the parameter
+		 */
+		public function addParameter($parameter, $value)
+		{
+			$this->parameters[$parameter] = $value;
+		}
+
+		/**
 		 * Load the text from a file.
 		 * @param string $file File to load.
 		 */
@@ -99,7 +109,11 @@
 			foreach ($this->headers as $header => $value)
 				$headers[] = $header . ': ' . $value;
 
-			mail(implode(',', $this->recipients), $this->subject, $this->__toString(), implode("\r\n", $headers));
+			$parameters = Array();
+			foreach ($this->parameters as $key => $value)
+				$parameters[] = $key . ' ' . $value;
+
+			mail(implode(',', $this->recipients), $this->subject, $this->__toString(), implode("\r\n", $headers), implode(" ", $parameters));
 		}
 
 		/**
@@ -116,5 +130,10 @@
 		 * @var array
 		 */
 		private $headers = Array();
+
+		/**
+		 * @var array
+		 */
+		private $parameters = Array();
 	}
 ?>
