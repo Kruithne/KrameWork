@@ -129,7 +129,8 @@
 				$this->mail->clear();
 				$this->mail->append((string) $report);
 
-				$this->mail->setSubject($report->getSubject());
+				if ($this->mail->getSubject() === NULL)
+					$this->mail->setSubject($report->getSubject());
 
 				if ($this->mail->getRecipientCount() > 0)
 					$this->mail->send();
