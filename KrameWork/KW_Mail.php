@@ -83,7 +83,7 @@
 			if (!count($this->recipients))
 				throw new KW_Exception("Mail cannot be sent without recipients");
 
-			if ($this->headers['From'] !== NULL)
+			if (!array_key_exists('From', $this->headers))
 				throw new KW_Exception("You must set a sender.");
 
 			$headers = Array();
