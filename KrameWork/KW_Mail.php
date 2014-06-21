@@ -56,8 +56,7 @@
 		 */
 		public function setSender($sender)
 		{
-			$this->setHeader("From", $sender);
-			return $this;
+			return $this->setHeader("From", $sender);
 		}
 
 		/**
