@@ -7,7 +7,7 @@
 		 * @param string|array $recipients The address of the recipient.
 		 * @return KW_Mail $this Instance of the object mail.
 		 */
-		public function addRecipients($recipients)
+		public function addRecipient($recipients)
 		{
 			if (is_array($recipients))
 				$this->recipients = array_merge($this->recipients, $recipients);
@@ -15,16 +15,6 @@
 				$this->recipients[] = $recipients;
 
 			return $this;
-		}
-
-		/**
-		 * Add a parameter to the e-mail.
-		 * @param string $parameter Parameter key
-		 * @param string $value Value of the parameter
-		 */
-		public function addParameter($parameter, $value)
-		{
-			$this->parameters[$parameter] = $value;
 		}
 
 		/**
@@ -54,18 +44,8 @@
 		 */
 		public function setSubject($subject)
 		{
-			$this->subject = $subject;
+			$this->setHeader('Subject', $subject);
 			return $this;
-		}
-
-		/**
-		 * Get the subject for this mail object.
-		 *
-		 * @return string|null Subject for this object, will be NULL if not yet set.
-		 */
-		public function getSubject()
-		{
-			return $this->subject;
 		}
 
 		/**
@@ -102,29 +82,90 @@
 			if (!count($this->recipients))
 				throw new KW_Exception("Mail cannot be sent without recipients");
 
-			if ($this->subject === NULL)
-				throw new KW_Exception("Mail cannot be sent without a subject");
+			if (!array_key_exists('From', $this->headers))
+				throw new KW_Exception("You must set a sender.");
 
 			$headers = Array();
 			foreach ($this->headers as $header => $value)
 				$headers[] = $header . ': ' . $value;
 
-			$parameters = Array();
-			foreach ($this->parameters as $key => $value)
-				$parameters[] = $key . ' ' . $value;
+			$headers[] = 'To: ' . implode(';', $this->recipients);
 
-			mail(implode(',', $this->recipients), $this->subject, $this->__toString(), implode("\r\n", $headers), implode(" ", $parameters));
+			$conn = new KW_SMTP(self::$host, self::$port);
+
+			if ($conn === FALSE)
+				throw new KW_Exception("Unable to connect to SMTP mailer.");
+
+			$commands = Array();
+
+			$commands[] = 0; // Poke
+			$commands[] = 'EHLO ' . self::$host; // Greeting
+
+			if (self::$auth_user !== NULL)
+			{
+				$commands[] = 'AUTH LOGIN';
+				$commands[] = base64_encode(self::$auth_user);
+				$commands[] = base64_encode(self::$auth_pass);
+			}
+
+			$commands[] = 'MAIL FROM: ' . $this->headers['From'];
+
+			foreach ($this->recipients as $recipient)
+				$commands[] = 'RCPT TO: ' . $recipient;
+
+			$commands[] = 'DATA';
+			$commands[] = implode("\r\n" . $headers);
+			$commands[] = 'QUIT';
+
+			$conn->listen(); // Poke.
+
+			foreach ($commands as $command)
+			{
+				$command && $conn->talk($command);
+				while ($conn->listen() !== NULL){};
+			}
+		}
+
+		/**
+		 * Set which host to use for SMTP mailing.
+		 * @param string $host
+		 */
+		public static function setHost($host)
+		{
+			self::$host = $host;
+		}
+
+		/**
+		 * Set which port to use for SMTP mailing.
+		 * @param int $port
+		 */
+		public static function setPort($port)
+		{
+			self::$port = $port;
+		}
+
+		/**
+		 * Set which user to authentication with for SMTP mailing.
+		 * @param string $user
+		 */
+		public static function setAuthUser($user)
+		{
+			self::$auth_user = $user;
+		}
+
+		/**
+		 * Set the password to use for SMTP mailing authentication.
+		 * @param $pass
+		 */
+		public static function setAuthPass($pass)
+		{
+			self::$auth_pass = $pass;
 		}
 
 		/**
 		 * @var string[]
 		 */
 		private $recipients = Array();
-
-		/**
-		 * @var string
-		 */
-		private $subject;
 
 		/**
 		 * @var array
@@ -134,6 +175,25 @@
 		/**
 		 * @var array
 		 */
-		private $parameters = Array();
+
+		/**
+		 * @var int
+		 */
+		private static $port = 25;
+
+		/**
+		 * @var string
+		 */
+		private static $host = '127.0.0.1';
+
+		/**
+		 * @var string|null
+		 */
+		private static $auth_user;
+
+		/**
+		 * @var string|null
+		 */
+		private static $auth_pass;
 	}
 ?>
