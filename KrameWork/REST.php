@@ -9,7 +9,7 @@
 		 */
 		private static function cleanData($data)
 		{
-			return htmlentities(utf8_decode(trim($data)));
+			return htmlentities(utf8_decode(trim($data)), ENT_COMPAT | ENT_HTML401, self::$encoding);
 		}
 
 		/**
@@ -66,5 +66,16 @@
 
 			return true;
 		}
+
+		/**
+		 * Set the encoding used when cleaning data.
+		 * @param string $encoding
+		 */
+		public static function setEncoding($encoding)
+		{
+			self::$encoding = $encoding;
+		}
+
+		private static $encoding = 'UTF-8';
 	}
 ?>
