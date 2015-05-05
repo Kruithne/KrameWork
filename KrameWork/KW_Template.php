@@ -51,7 +51,7 @@
 			ob_start();
 			extract($this->data);
 			if ($this->file !== NULL)
-				require_once($this->file);
+				require($this->file);
 
 			return ob_get_clean();
 		}
