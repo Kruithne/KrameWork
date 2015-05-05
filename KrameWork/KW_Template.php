@@ -12,11 +12,12 @@
 				$file = KW_TEMPLATE_DIR . $file;
 
 			$this->data = Array();
-			// ToDo: If the file does not exist, we should throw an error.
 			if (file_exists($file))
-				$this->file = $file;
+				$this->__set('@@template@@', $file);
 			else if (file_exists($file.'.php'))
-				$this->file = $file.'.php';
+				$this->__set('@@template@@', $file.'.php');
+			else
+				trigger_error('Missing template file "'.$file.'"!', E_USER_ERROR);
 		}
 
 		/**
@@ -50,13 +51,13 @@
 		{
 			ob_start();
 			extract($this->data);
-			if ($this->file !== NULL)
-				require($this->file);
+
+			// This is safe, as constructor throws an error.
+			require($this->__get('@@template@@'));
 
 			return ob_get_clean();
 		}
 
-		protected $file;
 		protected $data;
 	}
 ?>
