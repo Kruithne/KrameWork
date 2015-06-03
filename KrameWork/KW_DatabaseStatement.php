@@ -67,16 +67,20 @@
 		public function execute()
 		{
 			foreach ($this->values as $key => $value)
-      			{
-			  $dataType = null;
-			
-			  if(is_int($value))         { $dataType = PDO::PARAM_INT; }
-			  elseif (is_bool($value))   { $dataType = PDO::PARAM_BOOL; }
-			  elseif (is_null($value))   { $dataType = PDO::PARAM_NULL; }
-			  elseif (is_string($value)) { $dataType = PDO::PARAM_STR; }
-			
-			  $this->statement->bindValue($key, $value, $dataType);
-      			}
+			{
+				$dataType = null;
+
+				if (is_int($value))
+					$dataType = PDO::PARAM_INT;
+				elseif (is_bool($value))
+					$dataType = PDO::PARAM_BOOL;
+				elseif (is_null($value))
+					$dataType = PDO::PARAM_NULL;
+				elseif (is_string($value))
+					$dataType = PDO::PARAM_STR;
+
+				$this->statement->bindValue($key, $value, $dataType);
+			}
 
 			$this->statement->execute();
 			$this->executed = true;
@@ -130,13 +134,13 @@
 			return count($this->rows);
 		}
 
-    /**
-     * @return string
-     */
-    public function getErrorCode()
-    {
-      return $this->statement->errorCode();
-    }
+		/**
+		 * @return string
+		 */
+		public function getErrorCode()
+		{
+			return $this->statement->errorCode();
+		}
 
 		/**
 		 * @var array
