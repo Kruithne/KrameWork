@@ -113,7 +113,8 @@
 			foreach ($this->parameters as $key => $value)
 				$parameters[] = $key . ' ' . $value;
 
-			mail(implode(',', $this->recipients), $this->subject, $this->__toString(), implode("\r\n", $headers), implode(" ", $parameters));
+			$sendHeaders = str_replace("\n\n", "\n", implode("\n", $headers));
+			mail(implode(',', $this->recipients), $this->subject, $this->__toString(), $sendHeaders, implode(" ", $parameters));
 		}
 
 		/**
