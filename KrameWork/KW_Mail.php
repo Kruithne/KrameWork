@@ -114,6 +114,10 @@
 				$parameters[] = $key . ' ' . $value;
 
 			$sendHeaders = str_replace("\n\n", "\n", implode("\n", $headers));
+
+			if (strlen($sendHeaders) == 0)
+				throw new KW_Exception("At least one header must be specified when sending mail.");
+
 			mail(implode(',', $this->recipients), $this->subject, $this->__toString(), $sendHeaders, implode(" ", $parameters));
 		}
 
