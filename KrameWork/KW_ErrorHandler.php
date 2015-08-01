@@ -35,7 +35,10 @@
 		public function getMailObject()
 		{
 			if ($this->mail === NULL)
+			{
 				$this->mail = new KW_Mail();
+				$this->mail->setHeader("MIME-Version", "1.0");
+			}
 
 			return $this->mail;
 		}
