@@ -72,7 +72,7 @@
 				}
 				return 'Backtrace: '.join("\r\n", $out);
 			}
-			return $key . ': ' . $value;
+			return $key . ' -> ' . $value;
 		}
 
 		/**
@@ -99,7 +99,7 @@
 				else
 				{
 					$new_key = $main_key === NULL ? $key : $main_key . '/' . $key;
-					$array[$new_key] = $value;
+					$array[] = $this->formatValue($new_key, $value);
 				}
 			}
 			return $array;
@@ -129,17 +129,27 @@
 		 */
 		private function prepareOutputData($data, $output)
 		{
-			foreach ($data as $node)
+			if (count($data))
 			{
-				if (is_array($node))
+				foreach ($data as $key => $node)
 				{
-					$output->append("\r\n", 2);
-					$this->prepareOutputData($node, $output);
+					if (is_array($node))
+					{
+						$output->append("\r\n");
+
+						if (is_string($key))
+							$output->append($key . ":\r\n");
+
+						$this->prepareOutputData($node, $output);
+					} else
+					{
+						$output->append($node)->append("\r\n");
+					}
 				}
-				else
-				{
-					$output->append($node)->append("\r\n");
-				}
+			}
+			else
+			{
+				$output->append("No data inside array.\r\n");
 			}
 		}
 
