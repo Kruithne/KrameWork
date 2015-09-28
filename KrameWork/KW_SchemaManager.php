@@ -53,6 +53,11 @@
 		 */
 		public function upgrade($spec)
 		{
+			if($this->db->getType() == 'pgsql')
+			{
+				$this->_metatable->create->table = $spec->getName();
+				$this->_metatable->create->execute();
+			}
 			$save = $this->_metatable->save;
 			$sql = $spec->getQueries();
 			$from = $this->getCurrentVersion($spec->getName());

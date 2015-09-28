@@ -15,6 +15,14 @@
 		}
 
 		/**
+		 * Return the type of DBMS
+		 */
+		public function getType()
+		{
+			return $this->connection->getAttribute(PDO::ATTR_DRIVER_NAME);
+		}
+
+		/**
 		 * Returns a database statement.
 		 *
 		 * @param string $sql An SQL query for this statement.
