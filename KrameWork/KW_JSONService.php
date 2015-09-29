@@ -1,5 +1,5 @@
 <?php
-	class KW_JSONService
+	abstract class KW_JSONService
 	{
 		public function __construct()
 		{
