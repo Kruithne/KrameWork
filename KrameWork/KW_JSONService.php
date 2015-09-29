@@ -7,10 +7,6 @@
 			$this->response = (object)array();
 		}
 
-		public function __tostring()
-		{
-		}
-
 		public function respond()
 		{
 			header('Content-Type: application/json;charset=UTF-8');
