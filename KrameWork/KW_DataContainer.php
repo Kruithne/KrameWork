@@ -28,6 +28,11 @@
 			return array_key_exists($key, $this->values) ? $this->values[$key] : NULL;
 		}
 
+		public function __sleep()
+		{
+			return array('values');
+		}
+
 		/**
 		 * Returns the underlying data as an associative array.
 		 *
