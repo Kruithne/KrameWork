@@ -1,5 +1,5 @@
 <?php
-	class KW_DataContainer
+	class KW_DataContainer implements Serializable
 	{
 		public function __construct($data = Array())
 		{
@@ -28,9 +28,14 @@
 			return array_key_exists($key, $this->values) ? $this->values[$key] : NULL;
 		}
 
-		public function __sleep()
+		public function serialize()
 		{
-			return array('values');
+			return serialize($this->values);
+		}
+
+		public function unserialize($values)
+		{
+			$this->values = unserialize($values);
 		}
 
 		/**
