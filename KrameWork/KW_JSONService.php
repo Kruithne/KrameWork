@@ -3,18 +3,22 @@
 	{
 		public function __construct()
 		{
-			$this->request = json_decode(file_get_contents('php://input'));
-			$this->response = (object)array();
-		}
+			header('Access-Control-Allow-Methods: GET, POST');
+			header('Access-Control-Allow-Origin: https://lab-public.runsafe.no');
+			header('Access-Control-Allow-Headers: Content-Type, Cookie');
+			header('Access-Control-Allow-Credentials: true');
+			header('Cache-Control: no-cache');
+			header('Pragma: no-cache');
+			if($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
+				die();
 
-		public function respond()
-		{
+			$request = json_decode(file_get_contents('php://input'));
+			$response = (object)$this->process($request);
 			header('Content-Type: application/json;charset=UTF-8');
-			echo json_encode($this->response);
+			echo json_encode($response);
 			die();
 		}
 
-		protected $request;
-		protected $response;
+		abstract public function process($request);
 	}
 ?>
