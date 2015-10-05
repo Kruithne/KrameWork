@@ -1,10 +1,10 @@
 <?php
 	abstract class KW_JSONService
 	{
-		public function __construct()
+		public function __construct($origin = '*', $method = 'GET, POST')
 		{
-			header('Access-Control-Allow-Methods: GET, POST');
-			header('Access-Control-Allow-Origin: https://lab-public.runsafe.no');
+			header('Access-Control-Allow-Origin: '.$origin);
+			header('Access-Control-Allow-Methods: '.$method);
 			header('Access-Control-Allow-Headers: Content-Type, Cookie');
 			header('Access-Control-Allow-Credentials: true');
 			header('Cache-Control: no-cache');
