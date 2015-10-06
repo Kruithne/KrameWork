@@ -1,0 +1,46 @@
+<!doctype html>
+<html ng-app="demoApp">
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular-resource.min.js"></script>
+		<script>
+			var demoService = angular.module('DemoService', ['ngResource']);
+			demoService.factory('Demo', ['$resource', function($resource)
+			{
+				return $resource(
+					'json_service.php',
+					{}, 
+					{
+						test1: { method:'POST', params: { something: 'value' } },
+						test2: { method:'GET', params: { something: 'else' } }
+					}
+				);
+			}]);
+		</script>
+		<script>
+			var module = angular.module('demoApp', ['DemoService'])
+				.controller('DemoController', ['Demo', function(Demo)
+				{
+					var c = this;
+					c.test = 1;
+					c.try = function()
+					{
+						if(c.test == 1)
+							Demo.test1({}, function(r){ console.log(r); });
+						if(c.test == 2)
+							Demo.test2({}, function(r){ console.log(r); });
+					};
+				}]);
+		</script>
+	</head>
+	<body>
+		<div ng-controller="DemoController as dc">
+			<div>Run test and log to console</div>
+			<form class="form-signin" ng-submit="dc.try()">
+				<div><input type="radio" ng-value="1" ng-model="dc.test"> Test 1</div>
+				<div><input type="radio" ng-value="2" ng-model="dc.test"> Test 2</div>
+				<button type="submit">Run test</button>
+			</form>
+		</div>
+	</body>
+</html>
