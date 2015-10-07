@@ -1,20 +1,24 @@
 <?php
 	abstract class KW_JSONService
 	{
-		public function __construct()
+		public function __construct($origin = '*', $method = 'GET, POST')
 		{
-			$this->request = json_decode(file_get_contents('php://input'));
-			$this->response = (object)array();
-		}
+			header('Access-Control-Allow-Origin: '.$origin);
+			header('Access-Control-Allow-Methods: '.$method);
+			header('Access-Control-Allow-Headers: Content-Type, Cookie');
+			header('Access-Control-Allow-Credentials: true');
+			header('Cache-Control: no-cache');
+			header('Pragma: no-cache');
+			if($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
+				die();
 
-		public function respond()
-		{
+			$request = json_decode(file_get_contents('php://input'));
+			$response = (object)$this->process($request);
 			header('Content-Type: application/json;charset=UTF-8');
-			echo json_encode($this->response);
+			echo json_encode($response);
 			die();
 		}
 
-		protected $request;
-		protected $response;
+		abstract public function process($request);
 	}
 ?>
