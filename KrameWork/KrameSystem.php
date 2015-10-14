@@ -12,6 +12,7 @@
 		 */
 		public function __construct($flags = KW_DEFAULT_FLAGS)
 		{
+			$this->flags = $flags;
 			// Set-up auto loading.
 			KW_ClassLoader::setAllowedExtensions('.php');
 			KW_ClassLoader::addClassPath(dirname(__FILE__));
@@ -20,11 +21,40 @@
 			spl_autoload_register($loadClassFunction);
 			ini_set('unserialize_callback_func', $loadClassFunction);
 
-			if (($flags & KW_ENABLE_SESSIONS) && !self::sessionIsStarted())
-				session_start();
-
 			if ($flags & KW_ERROR_HANDLER)
 				$this->errorHandler = new KW_ErrorHandler(!($flags & KW_LEAVE_ERROR_LEVEL));
+		}
+
+		/**
+		 * Start system after initialization has completed.
+		 */
+		public function start()
+		{
+			if ($this->flags & KW_ENABLE_SESSIONS)
+			{
+				if (!self::sessionIsStarted())
+					session_start();
+
+				if (($this->flags & KW_SECURE_SESSIONS) && self::sessionIsStarted())
+				{
+					$remote = '';
+					if(isset($_SERVER['REMOTE_ADDR']))
+						$remote = $_SERVER['REMOTE_ADDR'];
+					if(!isset($_SESSION['__client__']))
+						$_SESSION['__client__'] = $remote;
+					if(isset($_SESSION['__client__']) && $_SESSION['__client__'] != $remote)
+					{
+						if(function_exists('session_abort'))
+						{
+							session_abort();
+							session_regenerate_id(false);
+							session_start();
+						}
+						else
+							throw new Exception('Stolen session');
+					}
+				}
+			}
 		}
 
 		/**
@@ -72,5 +102,6 @@
 		 * @var KW_ErrorHandler
 		 */
 		private $errorHandler;
+		private $flags;
 	}
 ?>

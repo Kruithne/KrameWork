@@ -109,6 +109,7 @@
 		 */
 		private function generateErrorReport($type, $line, $file, $error, $trace = null)
 		{
+			error_log(sprintf('%2$s:%3$d %1$s %s', $type, $file, $line, $error));
 			$report = new KW_ErrorReport();
 			$report->setSubject('Error (' . $type . ') - ' . date("Y-m-d H:i:s"));
 			$report->Type = $type;
