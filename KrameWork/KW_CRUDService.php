@@ -14,7 +14,10 @@
 		public function __construct(KW_SchemaManager $schema)
 		{
 			$schema->addTable($this);
+		}
 
+		public function execute()
+		{
 			header('Access-Control-Allow-Origin: '.$this->getOrigin());
 			header('Access-Control-Allow-Methods: '.$this->getMethod());
 			header('Access-Control-Allow-Headers: Content-Type, Cookie');
