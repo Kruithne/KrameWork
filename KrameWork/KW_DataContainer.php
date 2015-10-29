@@ -1,5 +1,5 @@
 <?php
-	class KW_DataContainer implements Serializable
+	class KW_DataContainer implements Serializable, JsonSerializable
 	{
 		public function __construct($data = Array())
 		{
@@ -36,6 +36,11 @@
 		public function unserialize($values)
 		{
 			$this->values = unserialize($values);
+		}
+
+		public function jsonSerialize()
+		{
+			return json_encode((object)$this->values);
 		}
 
 		/**
