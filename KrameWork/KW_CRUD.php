@@ -4,7 +4,11 @@
 		public abstract function getKey();
 		public abstract function hasAutoKey();
 		public abstract function getValues();
-		public abstract function getNewObject($data);
+
+		public function getNewObject($data)
+		{
+			return $data;
+		}
 
 		public function prepare()
 		{
