@@ -13,7 +13,7 @@
 				die();
 
 			$request = json_decode(file_get_contents('php://input'));
-			$response = (object)$this->process($request);
+			$response = $this->process($request);
 			header('Content-Type: application/json;charset=UTF-8');
 			echo json_encode($response);
 			die();
