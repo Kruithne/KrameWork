@@ -1,0 +1,79 @@
+<?php
+	abstract class KW_CRUDService extends KW_CRUD
+	{
+		public function getOrigin()
+		{
+			return '*';
+		}
+
+		public function getMethod()
+		{
+			return 'GET, POST';
+		}
+
+		public function __construct(KW_SchemaManager $schema)
+		{
+			$schema->addTable($this);
+
+			header('Access-Control-Allow-Origin: '.$this->getOrigin());
+			header('Access-Control-Allow-Methods: '.$this->getMethod());
+			header('Access-Control-Allow-Headers: Content-Type, Cookie');
+			header('Access-Control-Allow-Credentials: true');
+			header('Cache-Control: no-cache');
+			header('Pragma: no-cache');
+			if($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
+				die();
+
+			$request = json_decode(file_get_contents('php://input'));
+			$response = (object)$this->process($request);
+			header('Content-Type: application/json;charset=UTF-8');
+			echo json_encode($response);
+			die();
+		}
+
+		public function process($object)
+		{
+			$path = false;
+			if(isset($_SERVER['PATH_INFO']))
+				$path = $_SERVER['PATH_INFO'];
+
+			if($_SERVER['REQUEST_METHOD'] == 'POST')
+			{
+				switch($path)
+				{
+					case '/create':
+						return $this->create($object);
+
+					case '/update':
+						$this->update($object);
+						return true;
+
+					case '/delete':
+						$this->delete($object);
+						return true;
+
+					default:
+						return false;
+				}
+			}
+			if($_SERVER['REQUEST_METHOD'] == 'GET')
+			{
+				if($path)
+				{
+					$lookup = explode('/', $path);
+					$key = $this->getKey();
+					if(is_array($key))
+					{
+						$search = array();
+						foreach($key as $i => $col)
+							$search[$col] = $lookup[$i + 1];
+						return $this->read($search);
+					}
+					else
+						return $this->read($lookup[1]);
+				}
+				return $this->read();
+			}
+		}
+	}
+?>
