@@ -4,12 +4,21 @@
 		/**
 		 * Registers a class to be used by the dependency injector.
 		 *
-		 * @param string $class_name The name of the class to add.
+		 * @param string|object $classInput The name of the class to add or an already constructed object.
 		 */
-		public function addComponent($class_name)
+		public function addComponent($classInput)
 		{
-			if (!array_key_exists($class_name, $this->classes))
-				$this->classes[$class_name] = NULL;
+			if (is_string($classInput))
+			{
+				if (!array_key_exists($classInput, $this->classes))
+					$this->classes[$classInput] = NULL;
+			}
+			elseif (is_object($classInput))
+			{
+				$className = get_class($classInput);
+				if (!array_key_exists($className, $this->classes))
+					$this->classes[$className] = $classInput;
+			}
 		}
 
 		/**
