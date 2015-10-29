@@ -40,7 +40,7 @@
 
 		public function jsonSerialize()
 		{
-			return json_encode((object)$this->values);
+			return (object)$this->values;
 		}
 
 		/**
