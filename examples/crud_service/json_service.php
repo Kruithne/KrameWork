@@ -11,5 +11,5 @@
 	$system->addComponent('KW_SchemaManager');
 	$system->addComponent('SimpleService');
 
-	$system->getComponent('SimpleService'); // Expose service to clients
+	$system->getComponent('SimpleService')->execute(); // Expose service to clients
 ?>
