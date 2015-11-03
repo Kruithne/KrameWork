@@ -8,6 +8,11 @@
 		 */
 		public function addComponent($classInput)
 		{
+			if (is_array($classInput))
+			{
+				foreach($classInput as $classInputItem)
+					$this->addCompoenent($classInputItem);
+			}
 			if (is_string($classInput))
 			{
 				if (!array_key_exists($classInput, $this->classes))
