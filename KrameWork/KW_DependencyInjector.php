@@ -11,7 +11,7 @@
 			if (is_array($classInput))
 			{
 				foreach($classInput as $classInputItem)
-					$this->addCompoenent($classInputItem);
+					$this->addComponent($classInputItem);
 			}
 			if (is_string($classInput))
 			{
