@@ -13,7 +13,7 @@
 
 		public function __construct(KW_SchemaManager $schema)
 		{
-			$schema->addTable($this);
+			parent::__construct($schema);
 		}
 
 		public function execute()
