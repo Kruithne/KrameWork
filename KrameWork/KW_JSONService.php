@@ -3,8 +3,14 @@
 	{
 		public function __construct($origin = '*', $method = 'GET, POST')
 		{
-			header('Access-Control-Allow-Origin: '.$origin);
-			header('Access-Control-Allow-Methods: '.$method);
+			$this->origin = $origin;
+			$this->method = $method;
+		}
+
+		public function execute()
+		{
+			header('Access-Control-Allow-Origin: '.$this->origin);
+			header('Access-Control-Allow-Methods: '.$this->method);
 			header('Access-Control-Allow-Headers: Content-Type, Cookie');
 			header('Access-Control-Allow-Credentials: true');
 			header('Cache-Control: no-cache');
@@ -20,5 +26,7 @@
 		}
 
 		abstract public function process($request);
+		private $origin;
+		private $method;
 	}
 ?>
