@@ -68,6 +68,8 @@
 
 			$object = $class->newInstanceWithoutConstructor();
 			call_user_func_array(array($object, '__construct'), $to_inject);
+			if($this->classes[$class_name] === NULL)
+				$this->classes[$class_name] = $object;
 
 			return $object;
 		}
