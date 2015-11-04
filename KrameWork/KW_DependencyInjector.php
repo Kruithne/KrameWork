@@ -8,6 +8,11 @@
 		 */
 		public function addComponent($classInput)
 		{
+			if (is_array($classInput))
+			{
+				foreach($classInput as $classInputItem)
+					$this->addComponent($classInputItem);
+			}
 			if (is_string($classInput))
 			{
 				if (!array_key_exists($classInput, $this->classes))
@@ -68,6 +73,8 @@
 
 			$object = $class->newInstanceWithoutConstructor();
 			call_user_func_array(array($object, '__construct'), $to_inject);
+			if($this->classes[$class_name] === NULL)
+				$this->classes[$class_name] = $object;
 
 			return $object;
 		}

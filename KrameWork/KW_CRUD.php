@@ -5,6 +5,11 @@
 		public abstract function hasAutoKey();
 		public abstract function getValues();
 
+		public function __construct(KW_SchemaManager $schema)
+		{
+			$schema->addTable($this);
+		}
+
 		public function getNewObject($data)
 		{
 			return $data;

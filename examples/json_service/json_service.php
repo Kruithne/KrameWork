@@ -5,5 +5,6 @@
 	$system = new KrameSystem(KW_DEFAULT_FLAGS & ~KW_ENABLE_SESSIONS); // Create a system without sessions.
 	$system->addAutoLoadPath(getcwd()); // Auto-load from the current directory.
 
-	new SimpleService(); // Expose service to clients
+	$service = new SimpleService(); // Expose service to clients
+	$service->execute();
 ?>
