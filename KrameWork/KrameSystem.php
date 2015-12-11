@@ -46,8 +46,8 @@
 					{
 						if(function_exists('session_abort'))
 						{
-							session_abort();
 							session_regenerate_id(false);
+							session_destroy();
 							session_start();
 						}
 						else
