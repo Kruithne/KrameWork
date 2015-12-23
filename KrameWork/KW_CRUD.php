@@ -115,19 +115,8 @@
 
 		private function prepareComposite($table, $key, $values, $serial)
 		{
-			$filter = array();
-			foreach($key as $col)
-				$filter[] = sprintf('%1$s = :%1$s', $col);
-			$filter = join(' AND ', $filter);
-			$fields = array();
-			foreach($values as $col)
-				$fields[] = sprintf('%1$s = :%1$s', $col);
-
 			// Create
-			if($serial)
-				$fields = array_values($values);
-			else
-				$fields = array_merge($keys, $values);
+			$fields = array_merge($serial ? array() : array($key), $values);
 			$this->createRecord = $this->db->prepare('INSERT INTO '.$table.' ('.join(',', $fields).') VALUES (:'.join(', :',$fields).')');
 
 			switch($this->db->getType())
@@ -138,6 +127,14 @@
 				default:
 					$this->getLastID = $this->db->prepare('SELECT LAST_INSERT_ID()');
 			}
+
+			$filter = array();
+			foreach($key as $col)
+				$filter[] = sprintf('%1$s = :%1$s', $col);
+			$filter = join(' AND ', $filter);
+			$fields = array();
+			foreach($values as $col)
+				$fields[] = sprintf('%1$s = :%1$s', $col);
 
 			// Read
 			$this->readAll = $this->db->prepare('SELECT * FROM '.$table);
@@ -152,13 +149,8 @@
 
 		private function prepareIdentity($table, $key, $values, $serial)
 		{
-			$filter = sprintf('%1$s = :%1$s', $key);
-			$fields = array();
-			foreach($values as $col)
-				$fields[] = sprintf('%1$s = :%1$s', $col);
-
 			// Create
-			$fields = array_merge($serial ? array() : array($key), $fields);
+			$fields = array_merge($serial ? array() : array($key), $values);
 			$this->createRecord = $this->db->prepare('INSERT INTO '.$table.' ('.join(',', $fields).') VALUES (:'.join(', :',$fields).')');
 
 			switch($this->db->getType())
@@ -169,6 +161,11 @@
 				default:
 					$this->getLastID = $this->db->prepare('SELECT LAST_INSERT_ID()');
 			}
+
+			$filter = sprintf('%1$s = :%1$s', $key);
+			$fields = array();
+			foreach($values as $col)
+				$fields[] = sprintf('%1$s = :%1$s', $col);
 
 			// Read
 			$this->readAll = $this->db->prepare('SELECT * FROM '.$table);
