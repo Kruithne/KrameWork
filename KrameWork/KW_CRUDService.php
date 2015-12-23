@@ -45,7 +45,14 @@
 				switch($path)
 				{
 					case '/create':
-						return $this->create($object);
+						try
+						{
+							return $this->create($object);
+						}
+						catch(PDOException $e)
+						{
+							return $e;
+						}
 
 					case '/update':
 						$this->update($object);

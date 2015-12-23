@@ -37,7 +37,7 @@
 			else
 				$this->bind($this->createRecord, $object);
 
-			$this->createRecord->execute();
+			$inserted = $this->createRecord->execute();
 			if($auto)
 			{
 				switch($this->db->getType())
@@ -56,6 +56,7 @@
 							return $this->read($result[0]->currval);
 					}
 			}
+			return $inserted;
 		}
 
 		public function read($key = null)
