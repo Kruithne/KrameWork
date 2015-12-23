@@ -43,14 +43,18 @@
 				switch($this->db->getType())
 				{
 					case 'pgsql':
-						$this->getLastId->table = $this->getName();
+						$this->getLastID->table = $this->getName();
 						$key = $this->getKey();
-						$this->getLastId->key = is_array($key) ? $key[0] : $key;
+						$this->getLastID->key = is_array($key) ? $key[0] : $key;
 						break;
 				}
-				$result = $this->getLastId->getRows();
+				$result = $this->getLastID->getRows();
 				if($result && count($result) == 1)
-					return $this->read($result[0]);
+					switch($this->db->getType())
+					{
+						case 'pgsql':
+							return $this->read($result[0]->currval);
+					}
 			}
 		}
 
