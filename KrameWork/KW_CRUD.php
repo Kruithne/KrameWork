@@ -158,7 +158,7 @@
 				$fields[] = sprintf('%1$s = :%1$s', $col);
 
 			// Create
-			$fields = array_merge($serial ? array() : array($key), $values);
+			$fields = array_merge($serial ? array() : array($key), $fields);
 			$this->createRecord = $this->db->prepare('INSERT INTO '.$table.' ('.join(',', $fields).') VALUES (:'.join(', :',$fields).')');
 
 			switch($this->db->getType())
