@@ -28,10 +28,22 @@
 				die();
 
 			$request = json_decode(file_get_contents('php://input'));
+
+			if(!$this->authorized($request))
+			{
+				header('HTTP/1.0 403 Access Denied');
+				return '';
+			}
+
 			$response = $this->process($request);
 			header('Content-Type: application/json;charset=UTF-8');
 			echo json_encode($response);
 			die();
+		}
+
+		public function authorized($request)
+		{
+			return true;
 		}
 
 		public function process($object)
