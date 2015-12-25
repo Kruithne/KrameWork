@@ -95,7 +95,7 @@
 
 		public function delete($object)
 		{
-			$this->bind($this->deleteRecord, $object);
+			$this->bindValues($this->deleteRecord, $this->getKey(), $object);
 			$this->deleteRecord->execute();
 		}
 
