@@ -69,8 +69,24 @@
 				return $result;
 			}
 			if(is_array($key))
+			{
+				$set = false;
+				foreach($key as $col => $val)
+					if(empty($val))
+					{
+						foreach($key as $col => $val)
+							$this->readSet->$col = $val;
+						$result = array();
+						foreach($this->readSet->getRows() as $data)
+							$result[] = $this->getNewObject($data);
+						return $result;
+					}
+
 				foreach($key as $col => $val)
 					$this->readOne->$col = $val;
+
+				if($set)
+			}
 			else if($key)
 			{
 				$kv = $this->getKey();
@@ -128,6 +144,12 @@
 				default:
 					$this->getLastID = $this->db->prepare('SELECT LAST_INSERT_ID()');
 			}
+
+			$filter = array();
+			foreach($key as $col)
+				$filter[] = sprintf('(:$1$s IS NULL OR %1$s = :%1$s)', $col);
+			$filter = join(' AND ', $filter);
+			$this->readSet = $this->db->prepare('SELECT * FROM '.$table.' WHERE '.$filter);
 
 			$filter = array();
 			foreach($key as $col)
