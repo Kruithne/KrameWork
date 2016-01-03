@@ -27,8 +27,9 @@
 						if ($node === '.' || $node === '..')
 							continue;
 
-						if (is_dir($classPath . DIRECTORY_SEPARATOR . $node))
-							array_unshift($classPath . DIRECTORY_SEPARATOR . $node);
+						$subClassPath = $classPath . DIRECTORY_SEPARATOR . $node;
+						if (is_dir($subClassPath))
+							array_unshift($subClassPath);
 					}
 			}
 		}
