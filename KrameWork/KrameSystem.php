@@ -14,6 +14,8 @@
 		{
 			$this->flags = $flags;
 			// Set-up auto loading.
+			if($flags & KW_AUTOLOAD_RECURSIVE)
+				KW_ClassLoader::enableRecursion();
 			KW_ClassLoader::setAllowedExtensions('.php');
 			KW_ClassLoader::addClassPath(dirname(__FILE__));
 

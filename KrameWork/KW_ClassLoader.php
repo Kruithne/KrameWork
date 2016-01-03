@@ -8,24 +8,28 @@
 		 */
 		public static function loadClass($className)
 		{
-			// ToDo: Allow recursive searching for auto-loading.
-			foreach (self::$classPaths as $classPath)
+			$queue = array_values(self::$classPaths);
+			while (count($queue))
 			{
-				foreach (scandir($classPath) as $node)
+				$classPath = array_pop($queue);
+				foreach (self::$allowedExtensions as $extension)
 				{
-					if ($node === '.' || $node === '..')
-						continue;
-
-					foreach (self::$allowedExtensions as $extension)
+					$path = $classPath . DIRECTORY_SEPARATOR . $className . $extension;
+					if (file_exists($path))
 					{
-						$path = $classPath . DIRECTORY_SEPARATOR . $className . $extension;
-						if (file_exists($path))
-						{
-							require_once($path);
-							return;
-						}
+						require_once($path);
+						return;
 					}
 				}
+				if(self::$recursive)
+					foreach (scandir($classPath) as $node)
+					{
+						if ($node === '.' || $node === '..')
+							continue;
+
+						if (is_dir($classPath . DIRECTORY_SEPARATOR . $node))
+							array_unshift($classPath . DIRECTORY_SEPARATOR . $node);
+					}
 			}
 		}
 
@@ -40,6 +44,14 @@
 		}
 
 		/**
+		 * Turns on recursive scanning for files in the class path
+		 */
+		public static function enableRecursion()
+		{
+			self::$recursive = true;
+		}
+
+		/**
 		 * Adds a directory to the loader which will be checked for matching class files.
 		 *
 		 * @param String $classPath The directory to add to the loader.
@@ -51,5 +63,6 @@
 
 		private static $allowedExtensions = Array();
 		private static $classPaths = Array();
+		private static $recursive = false;
 	}
 ?>
