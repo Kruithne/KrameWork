@@ -17,7 +17,9 @@
 					$path = $classPath . DIRECTORY_SEPARATOR . $className . $extension;
 					if (file_exists($path))
 					{
+						error_log('Autoloading '.$className.'..');
 						require_once($path);
+						error_log('Autoloading '.$className.' succeeded..');
 						return;
 					}
 				}
