@@ -16,7 +16,11 @@
 			if (is_string($classInput))
 			{
 				if (!array_key_exists($classInput, $this->classes))
+				{
+					if($this->preload)
+						KW_ClassLoader::loadClass($classInput);
 					$this->classes[$classInput] = NULL;
+				}
 			}
 			elseif (is_object($classInput))
 			{
@@ -83,5 +87,6 @@
 		 * @var object[]
 		 */
 		private $classes = Array();
+		private $preload = false;
 	}
 ?>
