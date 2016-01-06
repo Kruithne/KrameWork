@@ -18,6 +18,20 @@
 		}
 
 		/**
+		 * The __invoke method is called when a script tries to call an object as a function.
+		 *
+		 * @return mixed
+		 * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.invoke
+		 */
+		public function __invoke($arr)
+		{
+			if (is_array($arr))
+				foreach ($arr as $key => $value)
+					if (is_string($key))
+						$this->__set($key, $value);
+		}
+
+		/**
 		 * Get a value set in this object.
 		 *
 		 * @param string $key The key the value is stored at.
