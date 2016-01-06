@@ -84,8 +84,6 @@
 
 				foreach($key as $col => $val)
 					$this->readOne->$col = $val;
-
-				if($set)
 			}
 			else if($key)
 			{
