@@ -56,12 +56,12 @@
 
 		/**
 		 * Adds a directory to the loader which will be checked for matching class files.
-		 *
-		 * @param String $classPath The directory to add to the loader.
+		 * Takes any and all arguments given.
 		 */
-		public static function addClassPath($classPath)
+		public static function addClassPath()
 		{
-			self::$classPaths[] = rtrim($classPath, "\x2F\x5C");
+			foreach (func_get_args() as $arg)
+				self::$classPaths[] = rtrim($arg, "\x2F\x5C");
 		}
 
 		private static $allowedExtensions = Array();
