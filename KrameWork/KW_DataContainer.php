@@ -7,10 +7,12 @@
 		}
 
 		/**
-		 * Sets a value for this object.
+		 * run when writing data to inaccessible members.
 		 *
-		 * @param string $key The key to use for this value.
-		 * @param mixed $value A value to set in the object.
+		 * @param $key string
+		 * @param $value mixed
+		 * @return void
+		 * @link http://php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members
 		 */
 		public function __set($key, $value)
 		{
