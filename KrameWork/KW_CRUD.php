@@ -5,6 +5,11 @@
 		public abstract function hasAutoKey();
 		public abstract function getValues();
 
+		public function getKeyType($key)
+		{
+			return PDO::PARAM_INT;
+		}
+
 		public function __construct(KW_SchemaManager $schema)
 		{
 			$schema->addTable($this);
@@ -148,6 +153,8 @@
 				$filter[] = sprintf('(:%1$s IS NULL OR %1$s = :%1$s)', $col);
 			$filter = join(' AND ', $filter);
 			$this->readSet = $this->db->prepare('SELECT * FROM '.$table.' WHERE '.$filter);
+			foreach($key as $col)
+				$this->readSet->setType($col, $this->getKeyType($col));
 
 			$filter = array();
 			foreach($key as $col)

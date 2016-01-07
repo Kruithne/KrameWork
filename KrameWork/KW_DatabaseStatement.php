@@ -37,6 +37,11 @@
 			return $this;
 		}
 
+		public function setType($key, $type)
+		{
+			$this->types[$key] = $type;
+		}
+
 		public function __set($key, $value)
 		{
 			$this->setValue(':'.$key, $value);
@@ -70,7 +75,9 @@
 			{
 				$dataType = null;
 
-				if (is_int($value))
+				if (isset($this->types[$key]))
+					$dataType = $this->types[$key];
+				else if (is_int($value))
 					$dataType = PDO::PARAM_INT;
 				elseif (is_bool($value))
 					$dataType = PDO::PARAM_BOOL;
@@ -168,5 +175,7 @@
 		private $statement;
 
 		private $executed;
+
+		private $types = array();
 	}
 ?>
