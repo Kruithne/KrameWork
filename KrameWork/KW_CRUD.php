@@ -75,7 +75,7 @@
 					if(empty($val) || $val == '*')
 					{
 						foreach($key as $col => $val)
-							$this->readSet->$col = empty($val) ? '*' : $val;
+							$this->readSet->$col = empty($val) || $val == '*' ? null : $val;
 						$result = array();
 						foreach($this->readSet->getRows() as $data)
 							$result[] = $this->getNewObject($data);
@@ -145,7 +145,7 @@
 
 			$filter = array();
 			foreach($key as $col)
-				$filter[] = sprintf('(:%1$s=\'*\' OR %1$s = :%1$s)', $col);
+				$filter[] = sprintf('(:%1$s IS NULL OR %1$s = :%1$s)', $col);
 			$filter = join(' AND ', $filter);
 			$this->readSet = $this->db->prepare('SELECT * FROM '.$table.' WHERE '.$filter);
 
