@@ -18,7 +18,7 @@
 		 */
 		public static function Clean($path)
 		{
-			return preg_replace("/[\\\/]+/", DIRECTORY_SEPARATOR, $path);
+			return preg_replace("/[\\\\/]+/", DIRECTORY_SEPARATOR, $path);
 		}
 	}
 ?>
