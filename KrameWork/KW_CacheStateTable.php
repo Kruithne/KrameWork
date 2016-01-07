@@ -1,6 +1,11 @@
 <?php
 	class KW_CacheStateTable extends KW_Repository implements ICacheState
 	{
+		public function __construct(KW_SchemaManager $schema)
+		{
+			$schema->addTable($this);
+		}
+
 		public function clear($cacheKey)
 		{
 			$this->read($cacheKey);
@@ -21,7 +26,7 @@
 				$this->insert->execute();
 				return $ts;
 			}
-			return $result[0]['timestamp'];
+			return $result[0]->timestamp;
 		}
 
 		public function prepare()

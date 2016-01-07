@@ -16,9 +16,9 @@
 			return 'private';
 		}
 
-		public function __construct(KW_SchemaManager $schema)
+		public function __construct(KW_SchemaManager $schema, ICacheState $state)
 		{
-			parent::__construct($schema);
+			parent::__construct($schema, $state);
 		}
 
 		public function execute()
@@ -38,6 +38,7 @@
 			header('Access-Control-Allow-Credentials: true');
 			header('Cache-Control: '.$this->getLevel());
 			$modified = $this->cache_read();
+			header('X-Modified: '.serialize($modified));
 			if($modified)
 			{
 				header('Last-Modified: '.date('r', $modified));
