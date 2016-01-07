@@ -46,6 +46,26 @@
 			return true;
 		}
 
+		public function canCreate($object)
+		{
+			return true;
+		}
+
+		public function canRead()
+		{
+			return true;
+		}
+
+		public function canUpdate($object)
+		{
+			return true;
+		}
+
+		public function canDelete($object)
+		{
+			return true;
+		}
+
 		public function process($object)
 		{
 			$path = false;
@@ -57,6 +77,11 @@
 				switch($path)
 				{
 					case '/create':
+						if(!$this->canCreate($object))
+						{
+							header('HTTP/1.0 403 Access Denied');
+							return '';
+						}
 						try
 						{
 							return $this->create($object);
@@ -67,10 +92,20 @@
 						}
 
 					case '/update':
+						if(!$this->canUpdate($object))
+						{
+							header('HTTP/1.0 403 Access Denied');
+							return false;
+						}
 						$this->update($object);
 						return true;
 
 					case '/delete':
+						if(!$this->canDelete($object))
+						{
+							header('HTTP/1.0 403 Access Denied');
+							return false;
+						}
 						$this->delete($object);
 						return true;
 
@@ -80,6 +115,11 @@
 			}
 			if($_SERVER['REQUEST_METHOD'] == 'GET')
 			{
+				if(!$this->canRead())
+				{
+					header('HTTP/1.0 403 Access Denied');
+					return false;
+				}
 				if($path)
 				{
 					$lookup = explode('/', $path);
