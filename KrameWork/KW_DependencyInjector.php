@@ -30,6 +30,20 @@
 			}
 		}
 
+		public function addBinding($source, $target)
+		{
+			$this->bindings[$source] = $target;
+			$this->addComponent($target);
+		}
+
+		public function resolve($class_name)
+		{
+			if(isset($this->bindings[$class_name]))
+				return $this->resolve($this->bindings[$class_name]);
+
+			return $class_name;
+		}
+
 		/**
 		 * Returns a constructed component from the dependency injector.
 		 *
@@ -39,6 +53,7 @@
 		 */
 		public function getComponent($class_name)
 		{
+			$class_name = $this->resolve($class_name);
 			if (!array_key_exists($class_name, $this->classes))
 				throw new KW_ClassDependencyException($class_name, 'Class %s has not been added to the injector');
 
@@ -87,6 +102,7 @@
 		 * @var object[]
 		 */
 		private $classes = Array();
+		private $bindings = Array();
 		private $preload = false;
 	}
 ?>
