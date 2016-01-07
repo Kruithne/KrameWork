@@ -140,7 +140,7 @@
 		private function prepareComposite($table, $key, $values, $serial)
 		{
 			// Create
-			$fields = array_merge($serial ? array() : array($key), $values);
+			$fields = array_merge($serial ? array() : (is_array($key) ? $key : array($key)), $values);
 			$this->createRecord = $this->db->prepare('INSERT INTO '.$table.' ('.join(',', $fields).') VALUES (:'.join(', :',$fields).')');
 
 			switch($this->db->getType())
