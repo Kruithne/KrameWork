@@ -37,9 +37,11 @@
 			header('Access-Control-Allow-Headers: Content-Type, Cookie');
 			header('Access-Control-Allow-Credentials: true');
 			header('Cache-Control: '.$this->getLevel());
+			if($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
+				die();
 			$modified = $this->cache_read();
 			header('X-Modified: '.serialize($modified));
-			if($modified)
+			if($modified && $_SERVER['REQUEST_METHOD'] == 'GET')
 			{
 				header('Last-Modified: '.date('r', $modified));
 				header('Expires: '.date('r', $modified + 365*24*3600));
@@ -49,8 +51,6 @@
 					die();
 				}
 			}
-			if($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
-				die();
 
 			$request = json_decode(file_get_contents('php://input'));
 
