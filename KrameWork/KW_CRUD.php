@@ -145,7 +145,7 @@
 
 			$filter = array();
 			foreach($key as $col)
-				$filter[] = sprintf('(:$1$s=\'*\' OR %1$s = :%1$s)', $col);
+				$filter[] = sprintf('(:%1$s=\'*\' OR %1$s = :%1$s)', $col);
 			$filter = join(' AND ', $filter);
 			$this->readSet = $this->db->prepare('SELECT * FROM '.$table.' WHERE '.$filter);
 
