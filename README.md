@@ -1,3 +1,5 @@
+![Build Status](https://travis-ci.org/Kruithne/KrameWork.svg?branch=master)
+
 ## KrameWork - A simple web framework for PHP
 
 ### What does KrameWork provide?
