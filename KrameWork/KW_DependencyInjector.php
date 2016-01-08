@@ -103,6 +103,6 @@
 		 */
 		private $classes = Array();
 		private $bindings = Array();
-		private $preload = false;
+		protected $preload = false;
 	}
 ?>
