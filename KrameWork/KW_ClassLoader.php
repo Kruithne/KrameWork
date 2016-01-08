@@ -31,7 +31,7 @@
 
 						$subClassPath = $classPath . DIRECTORY_SEPARATOR . $node;
 						if (is_dir($subClassPath))
-							array_unshift($subClassPath);
+							array_unshift($queue, $subClassPath);
 					}
 			}
 		}

@@ -1,5 +1,5 @@
 <?php
-	abstract class KW_CRUDService extends KW_CRUD
+	abstract class KW_CacheAwareCRUDService extends KW_CRUDCache
 	{
 		public function getOrigin()
 		{
@@ -11,21 +11,46 @@
 			return 'GET, POST';
 		}
 
-		public function __construct(KW_SchemaManager $schema)
+		public function getLevel()
 		{
-			parent::__construct($schema);
+			return 'private';
+		}
+
+		public function __construct(KW_SchemaManager $schema, ICacheState $state)
+		{
+			parent::__construct($schema, $state);
 		}
 
 		public function execute()
 		{
+			$cached = false;
+			if(function_exists('apache_request_headers'))
+			{
+				$req = apache_request_headers();
+				if(isset($req['If-Modified-Since']))
+				{
+					$cached = strtotime($req['If-Modified-Since']);
+				}
+			}
 			header('Access-Control-Allow-Origin: '.$this->getOrigin());
 			header('Access-Control-Allow-Methods: '.$this->getMethod());
 			header('Access-Control-Allow-Headers: Content-Type, Cookie');
 			header('Access-Control-Allow-Credentials: true');
-			header('Cache-Control: no-cache');
-			header('Pragma: no-cache');
+			header('Cache-Control: '.$this->getLevel());
 			if($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
 				die();
+			$modified = $this->cache_read();
+			header('X-Modified: '.serialize($modified));
+			if($modified && $_SERVER['REQUEST_METHOD'] == 'GET')
+			{
+				header('Last-Modified: '.date('r', $modified));
+				header('Expires: '.date('r', $modified + 365*24*3600));
+				if($cached && $cached >= $modified)
+				{
+					header('HTTP/1.1 304 Not Modified');
+					die();
+				}
+			}
 
 			$request = json_decode(file_get_contents('php://input'));
 
@@ -46,26 +71,6 @@
 			return true;
 		}
 
-		public function canCreate($object)
-		{
-			return true;
-		}
-
-		public function canRead()
-		{
-			return true;
-		}
-
-		public function canUpdate($object)
-		{
-			return true;
-		}
-
-		public function canDelete($object)
-		{
-			return true;
-		}
-
 		public function process($object)
 		{
 			$path = false;
@@ -77,11 +82,6 @@
 				switch($path)
 				{
 					case '/create':
-						if(!$this->canCreate($object))
-						{
-							header('HTTP/1.0 403 Access Denied');
-							return '';
-						}
 						try
 						{
 							return $this->create($object);
@@ -92,20 +92,10 @@
 						}
 
 					case '/update':
-						if(!$this->canUpdate($object))
-						{
-							header('HTTP/1.0 403 Access Denied');
-							return false;
-						}
 						$this->update($object);
 						return true;
 
 					case '/delete':
-						if(!$this->canDelete($object))
-						{
-							header('HTTP/1.0 403 Access Denied');
-							return false;
-						}
 						$this->delete($object);
 						return true;
 
@@ -115,11 +105,6 @@
 			}
 			if($_SERVER['REQUEST_METHOD'] == 'GET')
 			{
-				if(!$this->canRead())
-				{
-					header('HTTP/1.0 403 Access Denied');
-					return false;
-				}
 				if($path)
 				{
 					$lookup = explode('/', $path);

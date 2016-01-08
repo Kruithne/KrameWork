@@ -5,6 +5,11 @@
 		public abstract function hasAutoKey();
 		public abstract function getValues();
 
+		public function getKeyType($key)
+		{
+			return PDO::PARAM_INT;
+		}
+
 		public function __construct(KW_SchemaManager $schema)
 		{
 			$schema->addTable($this);
@@ -72,10 +77,14 @@
 			{
 				$set = false;
 				foreach($key as $col => $val)
-					if(empty($val))
+					if(empty($val) || $val == '*')
 					{
 						foreach($key as $col => $val)
-							$this->readSet->$col = $val;
+						{
+							$this->readSet->$col = empty($val) || $val == '*' ? null : $val;
+							$col_null = $col.'_null';
+							$this->readSet->$col_null = empty($val) || $val == '*' ? 1 : 0;
+						}
 						$result = array();
 						foreach($this->readSet->getRows() as $data)
 							$result[] = $this->getNewObject($data);
@@ -84,8 +93,6 @@
 
 				foreach($key as $col => $val)
 					$this->readOne->$col = $val;
-
-				if($set)
 			}
 			else if($key)
 			{
@@ -133,7 +140,7 @@
 		private function prepareComposite($table, $key, $values, $serial)
 		{
 			// Create
-			$fields = array_merge($serial ? array() : array($key), $values);
+			$fields = array_merge($serial ? array() : (is_array($key) ? $key : array($key)), $values);
 			$this->createRecord = $this->db->prepare('INSERT INTO '.$table.' ('.join(',', $fields).') VALUES (:'.join(', :',$fields).')');
 
 			switch($this->db->getType())
@@ -147,9 +154,11 @@
 
 			$filter = array();
 			foreach($key as $col)
-				$filter[] = sprintf('(:$1$s IS NULL OR %1$s = :%1$s)', $col);
+				$filter[] = sprintf('(:%1$s_null = 1 OR %1$s = :%1$s)', $col);
 			$filter = join(' AND ', $filter);
 			$this->readSet = $this->db->prepare('SELECT * FROM '.$table.' WHERE '.$filter);
+			foreach($key as $col)
+				$this->readSet->setType($col, $this->getKeyType($col));
 
 			$filter = array();
 			foreach($key as $col)
