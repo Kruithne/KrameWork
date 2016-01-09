@@ -4,7 +4,6 @@
 	class CookieTest extends PHPUnit_Framework_TestCase
 	{
 		/**
-		 * @runInSeparateProcess
 		 * Check that setting/getting with our static Cookie class works.
 		 */
 		public function testCookieGetSet()
@@ -16,7 +15,6 @@
 		}
 
 		/**
-		 * @runInSeparateProcess
 		 * Confirm that trying to get a Cookie value that does not exist returns NULL.
 		 */
 		public function testCookieInvalid()
@@ -26,7 +24,6 @@
 		}
 
 		/**
-		 * @runInSeparateProcess
 		 * Values deleted using our Cookie interface should return NULL.
 		 */
 		public function testCookieDelete()
