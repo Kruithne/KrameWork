@@ -30,8 +30,9 @@
 		{
 			Session::Set("testSessionDelete", 1337);
 			Session::Delete("testSessionDelete");
+			$rt = Session::Get("testSessionDelete");
 
-			$this->assertEquals(null, "testSessionDelete");
+			$this->assertEquals(null, $rt);
 		}
 	}
 ?>
