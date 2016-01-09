@@ -1,8 +1,10 @@
 <?php
-	require_once("/home/travis/build/Kruithne/KrameWork/KrameWork/KrameSystem.php");
+	define("TRAVIS_EXEC_PATH", "/home/travis/build/Kruithne/");
+
+	require_once(TRAVIS_EXEC_PATH . "KrameWork/KrameWork/KrameSystem.php");
 	date_default_timezone_set("Europe/London");
 
-	KW_ClassLoader::addClassPath("/home/travis/build/Kruithne/KrameWork/testing/");
+	KW_ClassLoader::addClassPath(TRAVIS_EXEC_PATH . "KrameWork/testing/");
 
 	$sys = new KrameSystem();
 ?>
