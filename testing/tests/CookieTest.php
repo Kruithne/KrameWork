@@ -11,7 +11,7 @@
 			Cookie::Set("testCookieGetSet", 42, time() + (60 * 10));
 			$rt = Cookie::Get("testCookieGetSet");
 
-			$this->assertEquals(42, $rt);
+			$this->assertEquals(42, $rt, "Failed to set/get a cookie value.");
 		}
 
 		/**
@@ -20,7 +20,7 @@
 		public function testCookieInvalid()
 		{
 			$rt = Cookie::Get("someValueWeDidNotSet");
-			$this->assertEquals(null, $rt);
+			$this->assertEquals(null, $rt, "Querying an invalid cookie value did not return NULL.");
 		}
 
 		/**
@@ -33,7 +33,7 @@
 			$rt = Cookie::Get("testCookieDelete");
 
 			if ($rt !== null && $rt !== '')
-				$this->fail();
+				$this->fail("Querying a deleted cookie did not return NULL or blank (expiring).");
 		}
 	}
 ?>

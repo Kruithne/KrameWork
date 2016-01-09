@@ -11,7 +11,7 @@
 			Session::Set("testSessionGetSet", 42);
 			$rt = Session::Get("testSessionGetSet");
 
-			$this->assertEquals(42, $rt);
+			$this->assertEquals(42, $rt, "Failed to get/set a session value.");
 		}
 
 		/**
@@ -20,7 +20,7 @@
 		public function testSessionInvalid()
 		{
 			$rt = Session::Get("someValueWeDidNotSet");
-			$this->assertEquals(null, $rt);
+			$this->assertEquals(null, $rt, "Querying an invalid session value did not return NULL.");
 		}
 
 		/**
@@ -32,7 +32,7 @@
 			Session::Delete("testSessionDelete");
 			$rt = Session::Get("testSessionDelete");
 
-			$this->assertEquals(null, $rt);
+			$this->assertEquals(null, $rt, "Querying a deleted session value did not return NULL.");
 		}
 	}
 ?>
