@@ -3,6 +3,9 @@
 
 	class FrameworkTest extends PHPUnit_Framework_TestCase
 	{
+		/**
+		 * Checks if true == true. This should literally never fail.
+		 */
 		public function testIsTrue()
 		{
 			$this->assertEquals(true, true);
