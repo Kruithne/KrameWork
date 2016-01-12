@@ -1,9 +1,10 @@
 <?php
 	class KW_AuthenticationService extends KW_JSONService
 	{
-		public function __construct(KW_UserSystem $users, $origin)
+		public function __construct(KW_UserSystem $users, $origin, $multifactor = false)
 		{
 			$this->users = $users;
+			$this->multifactor = $multifactor;
 			parent::__construct($origin);
 		}
 
@@ -118,7 +119,7 @@
 					$this->grant_token($user);
 					$_SESSION['verified'] = false;
 					$_SESSION['userid'] = $user->id;
-					$_SESSION['state'] = AUTH_MULTIFACTOR;
+					$_SESSION['state'] = $this->multifactor ? AUTH_MULTIFACTOR : AUTH_NONE;
 					return $user;
 				case 1:
 					$_SESSION['verified'] = true;
