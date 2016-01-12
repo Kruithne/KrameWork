@@ -77,6 +77,8 @@
 
 			$to_inject = Array();
 			$constructor = $class->getConstructor();
+			if(!$constructor)
+				throw new KW_ClassDependencyException($class_name, 'Class %s does not have a constructor function');
 			foreach ($constructor->getParameters() as $parameter)
 			{
 				$parameter_class = $parameter->getClass();
