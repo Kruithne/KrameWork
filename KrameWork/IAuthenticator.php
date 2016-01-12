@@ -9,7 +9,7 @@
 		 * @param int $secretLength
 		 * @return string
 		 */
-		public function createSecret($secretLength = 16)
+		public function createSecret($secretLength = 16);
 
 		/**
 		 * Calculate the code, with given secret and point in time
