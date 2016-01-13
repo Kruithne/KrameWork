@@ -8,7 +8,8 @@
 		 */
 		public static function loadClass($className)
 		{
-			$className = end(explode('\\', $className));
+			$parts = explode('\\', $className);
+			$className = $parts[count($parts) - 1];
 
 			$queue = array_values(self::$classPaths);
 			while (count($queue))
