@@ -55,6 +55,35 @@
 		}
 
 		/**
+		 * Safely check if a file has been uploaded with spoof protection.
+		 * @param string $key
+		 * @return bool
+		 */
+		public static function FileExists($key)
+		{
+			if (empty($_FILES))
+				return false;
+
+			if (!array_key_exists($key, $_FILES))
+				return false;
+
+			$tmp = $_FILES[$key]['tmp_name'];
+			if (is_array($tmp))
+			{
+				foreach ($tmp as $node)
+					if (!file_exists($node) || !is_uploaded_file($node))
+						return false;
+			}
+			else
+			{
+				if (!file_exists($tmp) || !is_uploaded_file($tmp))
+					return false;
+			}
+
+			return true;
+		}
+
+		/**
 		 * Checks all arguments passed to it are not null.
 		 * @return bool
 		 */
