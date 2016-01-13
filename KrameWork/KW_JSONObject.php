@@ -38,6 +38,18 @@
 		}
 
 		/**
+		 * @param $request
+		 * @return KW_DataContainer
+		 */
+		public function process($request)
+		{
+			$this->work($request);
+			return $this->data;
+		}
+
+		abstract function work($request);
+
+		/**
 		 * @var KW_DataContainer
 		 */
 		protected $data;
