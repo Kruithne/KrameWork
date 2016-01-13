@@ -17,13 +17,15 @@
 					$path = $classPath . DIRECTORY_SEPARATOR . $className . $extension;
 					if (file_exists($path))
 					{
-						error_log('Autoloading '.$className.'..');
+						error_log('Autoloading ' . $className . '..');
 						require_once($path);
-						error_log('Autoloading '.$className.' succeeded..');
+						error_log('Autoloading ' . $className . ' succeeded..');
 						return;
 					}
 				}
-				if(self::$recursive)
+				
+				if (self::$recursive)
+				{
 					foreach (scandir($classPath) as $node)
 					{
 						if ($node === '.' || $node === '..')
@@ -33,6 +35,7 @@
 						if (is_dir($subClassPath))
 							array_unshift($queue, $subClassPath);
 					}
+				}
 			}
 		}
 
