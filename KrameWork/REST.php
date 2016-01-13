@@ -71,12 +71,12 @@
 			if (is_array($tmp))
 			{
 				foreach ($tmp as $node)
-					if (!file_exists($node) || !is_uploaded_file($node))
+					if (strlen($node) == 0 || !file_exists($node) || !is_uploaded_file($node))
 						return false;
 			}
 			else
 			{
-				if (!file_exists($tmp) || !is_uploaded_file($tmp))
+				if (strlen($tmp) == 0 || !file_exists($tmp) || !is_uploaded_file($tmp))
 					return false;
 			}
 
