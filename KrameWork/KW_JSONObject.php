@@ -2,6 +2,17 @@
 	abstract class KW_JSONObject extends KW_JSONService
 	{
 		/**
+		 * KW_JSONObject constructor.
+		 * @param string $origin
+		 * @param string $method
+		 */
+		public function __construct($origin = '*', $method = 'GET, POST')
+		{
+			$this->data = new KW_DataContainer();
+			parent::__construct($origin, $method);
+		}
+
+		/**
 		 * Calls __get on the underlying data container.
 		 *
 		 * @param $name string
