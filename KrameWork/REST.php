@@ -55,32 +55,33 @@
 		}
 
 		/**
-		 * Safely check if a file has been uploaded with spoof protection.
+		 * Safely check (with spoof protection) for file(s).
 		 * @param string $key
-		 * @return bool
+		 * @return string[]
 		 */
-		public static function FileExists($key)
+		public static function File($key)
 		{
 			if (empty($_FILES))
-				return false;
+				return array();
 
 			if (!array_key_exists($key, $_FILES))
-				return false;
+				return array();
 
+			$data = Array();
 			$tmp = $_FILES[$key]['tmp_name'];
 			if (is_array($tmp))
 			{
 				foreach ($tmp as $node)
-					if (strlen($node) == 0 || !file_exists($node) || !is_uploaded_file($node))
-						return false;
+					if (strlen($node) > 0 && file_exists($node) && is_uploaded_file($node))
+						$data[] = $node;
 			}
 			else
 			{
-				if (strlen($tmp) == 0 || !file_exists($tmp) || !is_uploaded_file($tmp))
-					return false;
+				if (strlen($tmp) > 0 && file_exists($tmp) && is_uploaded_file($tmp))
+					$data[] = $tmp;
 			}
 
-			return true;
+			return $data;
 		}
 
 		/**
