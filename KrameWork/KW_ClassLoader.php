@@ -8,6 +8,8 @@
 		 */
 		public static function loadClass($className)
 		{
+			$className = end(explode('\\', $className));
+
 			$queue = array_values(self::$classPaths);
 			while (count($queue))
 			{
@@ -23,7 +25,7 @@
 						return;
 					}
 				}
-				
+
 				if (self::$recursive)
 				{
 					foreach (scandir($classPath) as $node)
