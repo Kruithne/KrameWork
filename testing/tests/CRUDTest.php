@@ -110,7 +110,7 @@
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager, array('a','b'), false);
 			$db->begin();
-			$result = $crud->read(array('a' => 1, 'b' => '*'));
+			$result = $crud->read((object)array('a' => 1, 'b' => '*'));
 			$sql = $db->end();
 			$this->assertEquals('SELECT * FROM __mock__ WHERE ??', $sql, 'Select all query mismatch');
 		}
@@ -124,7 +124,7 @@
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager, array('a','b'), false);
 			$db->begin();
-			$result = $crud->read(array('a' => 1, 'b' => 2));
+			$result = $crud->read((object)array('a' => 1, 'b' => 2));
 			$sql = $db->end();
 			$this->assertEquals('SELECT * FROM __mock__ WHERE a = :a AND b = :b', $sql, 'Select one query mismatch');
 		}
