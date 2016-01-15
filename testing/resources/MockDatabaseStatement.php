@@ -35,6 +35,7 @@
 
 		public function execute()
 		{
+			$this->executed = true;
 			error_log('Executing "'.$this->sql.'"');
 			$this->db->run($this->sql);
 			return $this;
@@ -42,6 +43,8 @@
 
 		public function getRows()
 		{
+			if (!$this->executed)
+				$this->execute();
 			return array();
 		}
 
@@ -60,6 +63,7 @@
 			return '';
 		}
 
+		private $executed;
 		private $sql;
 		private $db;
 		private $data = array();
