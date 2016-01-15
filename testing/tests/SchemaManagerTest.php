@@ -8,7 +8,7 @@
 		 */
 		public function testSchemaManager()
 		{
-			$db = new MockDatabaseConncetion();
+			$db = new MockDatabaseConnection();
 			$manager = new KW_SchemaManager($db);
 			$manager->update();
 			$version = $manager->getCurrentVersion('_metatable');
