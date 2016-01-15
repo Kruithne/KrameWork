@@ -14,7 +14,7 @@
 			$db->begin();
 			$result = $crud->create((object)array('value' => '{test}'));
 			$sql = $db->end();
-			$this->assertEquals('INSERT INTO __mock__ (value) VALUES (:value);SELECT currval(pg_get_serial_sequence(:table, :key)))', $sql, 'Insert query mismatch');
+			$this->assertEquals('INSERT INTO __mock__ (value) VALUES (:value);SELECT currval(pg_get_serial_sequence(:table, :key))', $sql, 'Insert query mismatch');
 		}
 
 		/**
