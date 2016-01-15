@@ -13,7 +13,7 @@
 			$manager = new KW_SchemaManager($db);
 			$manager->update();
 			$expected = '';
-			$this->assertEquals($db->end, $expected, 'Meta table version does not match expected version number.');
+			$this->assertEquals($db->end(), $expected, 'Meta table version does not match expected version number.');
 		}
 	}
 ?>
