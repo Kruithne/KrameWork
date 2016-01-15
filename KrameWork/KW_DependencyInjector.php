@@ -1,5 +1,5 @@
 <?php
-	class KW_DependencyInjector
+	class KW_DependencyInjector implements IDependencyInjector
 	{
 		/**
 		 * Registers a class to be used by the dependency injector.
