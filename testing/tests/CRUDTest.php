@@ -14,7 +14,7 @@
 			$db->begin();
 			$result = $crud->create((object)array('value' => '{test}'));
 			$sql = $db->end();
-			$this->assertEquals('INSERT INTO __mock__ (value) VALUES (:value)', $sql, 'Insert query mismatch');
+			$this->assertEquals('INSERT INTO __mock__ (value) VALUES (:value);SELECT LAST_INSERT_ID()', $sql, 'Insert query mismatch');
 		}
 
 		/**
@@ -112,7 +112,7 @@
 			$db->begin();
 			$result = $crud->read(array('a' => 1, 'b' => '*'));
 			$sql = $db->end();
-			$this->assertEquals('SELECT * FROM __mock__ WHERE ??', $sql, 'Select all query mismatch');
+			$this->assertEquals('SELECT * FROM __mock__ WHERE (:a_null = 1 OR a = :a) AND (:b_null = 1 OR b = :b)', $sql, 'Select all query mismatch');
 		}
 
 		/**
