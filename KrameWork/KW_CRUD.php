@@ -10,7 +10,7 @@
 			return PDO::PARAM_INT;
 		}
 
-		public function __construct(KW_SchemaManager $schema)
+		public function __construct(ISchemaManager $schema)
 		{
 			$schema->addTable($this);
 		}
