@@ -1,14 +1,14 @@
 <?php
 	require_once("/home/travis/build/Kruithne/KrameWork/testing/resources/default_bootstrap.php");
 
-	class CRUDTest extends PHPUnit_Framework_TestCase
+	class MySQLCRUDTest extends PHPUnit_Framework_TestCase
 	{
 		/**
 		 * Test that generated insert query is correct and gets executed
 		 */
 		public function testAutoIDCreateOperation()
 		{
-			$db = MockDatabaseConnection::Get();
+			$db = MockDatabaseConnection::Get('mysql');
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager);
 			$db->begin();
@@ -22,7 +22,7 @@
 		 */
 		public function testAutoIDReadAllOperation()
 		{
-			$db = MockDatabaseConnection::Get();
+			$db = MockDatabaseConnection::Get('mysql');
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager);
 			$db->begin();
@@ -36,7 +36,7 @@
 		 */
 		public function testAutoIDReadOneOperation()
 		{
-			$db = MockDatabaseConnection::Get();
+			$db = MockDatabaseConnection::Get('mysql');
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager);
 			$db->begin();
@@ -50,7 +50,7 @@
 		 */
 		public function testAutoIDUpdateOperation()
 		{
-			$db = MockDatabaseConnection::Get();
+			$db = MockDatabaseConnection::Get('mysql');
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager);
 			$db->begin();
@@ -64,7 +64,7 @@
 		 */
 		public function testAutoIDDeleteOperation()
 		{
-			$db = MockDatabaseConnection::Get();
+			$db = MockDatabaseConnection::Get('mysql');
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager);
 			$db->begin();
@@ -78,7 +78,7 @@
 		 */
 		public function testCompositeCreateOperation()
 		{
-			$db = MockDatabaseConnection::Get();
+			$db = MockDatabaseConnection::Get('mysql');
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager, array('a','b'), false);
 			$db->begin();
@@ -92,7 +92,7 @@
 		 */
 		public function testCompositeReadAllOperation()
 		{
-			$db = MockDatabaseConnection::Get();
+			$db = MockDatabaseConnection::Get('mysql');
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager, array('a','b'), false);
 			$db->begin();
@@ -106,7 +106,7 @@
 		 */
 		public function testCompositeReadSubsetOperation()
 		{
-			$db = MockDatabaseConnection::Get();
+			$db = MockDatabaseConnection::Get('mysql');
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager, array('a','b'), false);
 			$db->begin();
@@ -120,7 +120,7 @@
 		 */
 		public function testCompositeReadOneOperation()
 		{
-			$db = MockDatabaseConnection::Get();
+			$db = MockDatabaseConnection::Get('mysql');
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager, array('a','b'), false);
 			$db->begin();
@@ -134,7 +134,7 @@
 		 */
 		public function testCompositeUpdateOperation()
 		{
-			$db = MockDatabaseConnection::Get();
+			$db = MockDatabaseConnection::Get('mysql');
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager, array('a','b'), false);
 			$db->begin();
@@ -148,7 +148,7 @@
 		 */
 		public function testCompositeDeleteOperation()
 		{
-			$db = MockDatabaseConnection::Get();
+			$db = MockDatabaseConnection::Get('mysql');
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager, array('a','b'), false);
 			$db->begin();
@@ -162,7 +162,7 @@
 		 */
 		public function testCreateOperation()
 		{
-			$db = MockDatabaseConnection::Get();
+			$db = MockDatabaseConnection::Get('mysql');
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager, null, false);
 			$db->begin();
@@ -176,7 +176,7 @@
 		 */
 		public function testReadAllOperation()
 		{
-			$db = MockDatabaseConnection::Get();
+			$db = MockDatabaseConnection::Get('mysql');
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager, null, false);
 			$db->begin();
@@ -190,7 +190,7 @@
 		 */
 		public function testDeleteOperation()
 		{
-			$db = MockDatabaseConnection::Get();
+			$db = MockDatabaseConnection::Get('mysql');
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager, null. false);
 			$db->begin();

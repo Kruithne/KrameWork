@@ -1,16 +1,21 @@
 <?php
 	class MockDatabaseConnection implements IDatabaseConnection
 	{
-		public static function Get()
+		public static function Get($type)
 		{
-		 	if(self::$instance == null)
-		 		self::$instance = new MockDatabaseConnection();
-			return self::$instance;
+		 	if(!isset(self::$instance[$type]))
+		 		self::$instance[$type] = new MockDatabaseConnection($type);
+			return self::$instance[$type];
+		}
+
+		public function __construct($type)
+		{
+			$this->type = $type;
 		}
 
 		public function getType()
 		{
-			return 'fake';
+			return $this->type;
 		}
 
 		public function prepare($sql)
@@ -50,8 +55,9 @@
 			return join(';', $this->log);
 		}
 
+		private $type;
 		private $log = array();
 		private $id = 1;
-		private static $instance = null;
+		private static $instance = array();
 	}
 ?>
