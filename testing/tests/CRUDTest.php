@@ -196,7 +196,7 @@
 			$db->begin();
 			$result = $crud->delete((object)array('value' => 'mock'));
 			$sql = $db->end();
-			$this->assertEquals('DELETE FROM __mock__ WHERE value = :value', $sql, 'Delete query mismatch');
+			$this->assertEquals('DELETE FROM __mock__', $sql, 'Delete query mismatch');
 		}
 	}
 ?>
