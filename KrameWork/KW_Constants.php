@@ -8,5 +8,13 @@
 	define('KW_PRELOAD_CLASSES', 0x20);
 	define('KW_DEFAULT_FLAGS', KW_ENABLE_SESSIONS | KW_ERROR_HANDLER | KW_SECURE_SESSIONS);
 
+	define('AUTH_ERR_UNKNOWN', -1);
+	define('AUTH_ERR_NOSECRET', -2);
+	define('AUTH_ERR_LOCKOUT', -3);
+	define('AUTH_NONE', 0);
+	define('AUTH_OK', 1);
+	define('AUTH_OK_OLD', 2);
+	define('AUTH_MULTIFACTOR', 3);
+
 	define('HTML_EOL', '<br/>');
 ?>
