@@ -224,12 +224,16 @@
 
 		private function prepareNonRelational($table, $values)
 		{
+			// Create
 			$this->createRecord = $this->db->prepare('INSERT INTO '.$table.' ('.join(',', $values).') VALUES (:'.join(', :',$values).')');
 
 			// Read
 			$this->readAll = $this->db->prepare('SELECT * FROM '.$table);
 
 			// Update
+			$fields = array();
+			foreach($values as $col)
+				$fields[] = sprintf('%1$s = :%1$s', $col);
 			$this->updateRecord = $this->db->prepare('UPDATE '.$table.' SET '.join(', ', $fields));
 
 			// Delete
