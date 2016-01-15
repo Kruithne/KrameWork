@@ -20,9 +20,11 @@
 					$path = $classPath . DIRECTORY_SEPARATOR . $className . $extension;
 					if (file_exists($path))
 					{
-						error_log('Autoloading ' . $className . '..');
+						if(self::$debug)
+							error_log('Autoloading ' . $className . '..');
 						require_once($path);
-						error_log('Autoloading ' . $className . ' succeeded..');
+						if(self::$debug)
+							error_log('Autoloading ' . $className . ' succeeded..');
 						return;
 					}
 				}
@@ -70,8 +72,14 @@
 				self::$classPaths[] = rtrim($arg, "\x2F\x5C");
 		}
 
+		public static function enableDebug()
+		{
+			self::$debug = true;
+		}
+
 		private static $allowedExtensions = Array();
 		private static $classPaths = Array();
 		private static $recursive = false;
+		private static $debug = false;
 	}
 ?>
