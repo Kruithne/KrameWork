@@ -1,6 +1,11 @@
 <?php
 	class MockDatabaseStatement implements IDatabaseStatement
 	{
+		public function __construct($sql)
+		{
+			error_log('Prepare statement: '.$sql);
+		}
+
 		public function getQueryString()
 		{
 			return $this->sql;
