@@ -8,11 +8,12 @@
 		 */
 		public function testSchemaManager()
 		{
-			$db = new MockDatabaseConnection();
+			$db = new MockDatabaseConnection('mysql');
+			$db->begin();
 			$manager = new KW_SchemaManager($db);
 			$manager->update();
-			$version = $manager->getCurrentVersion('_metatable');
-			$this->assertEquals(1, $version, 'Meta table version does not match expected version number.');
+			$expected = '';
+			$this->assertEquals($db->end, $expected, 'Meta table version does not match expected version number.');
 		}
 	}
 ?>
