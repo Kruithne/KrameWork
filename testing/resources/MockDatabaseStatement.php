@@ -5,7 +5,6 @@
 		{
 			$this->sql = $sql;
 			$this->db = $db;
-			error_log('Prepare statement: '.$sql);
 		}
 
 		public function getQueryString()
@@ -36,7 +35,6 @@
 		public function execute()
 		{
 			$this->executed = true;
-			error_log('Executing "'.$this->sql.'"');
 			$this->db->run($this->sql);
 			return $this;
 		}

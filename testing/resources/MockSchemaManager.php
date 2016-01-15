@@ -34,7 +34,6 @@
 		{
 			$from = $this->getCurrentVersion($spec->getName());
 			$to = $spec->getVersion();
-			error_log('Updating '.$spec->getName().' from '.$from.' to '.$to);
 			$this->version[$spec->getName()] = $to;
 		}
 
