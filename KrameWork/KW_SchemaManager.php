@@ -1,5 +1,5 @@
 <?php
-	class KW_SchemaManager
+	class KW_SchemaManager implements ISchemaManager
 	{
 		public function __construct(KW_DatabaseConnection $db)
 		{

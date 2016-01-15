@@ -1,5 +1,5 @@
 <?php
-	abstract class KW_CacheAwareCRUDService extends KW_CRUDCache
+	abstract class KW_CacheAwareCRUDService extends KW_CRUDCache implements ICRUDService
 	{
 		public function getOrigin()
 		{
@@ -67,6 +67,26 @@
 		}
 
 		public function authorized($request)
+		{
+			return true;
+		}
+
+		public function canCreate($object)
+		{
+			return true;
+		}
+
+		public function canRead()
+		{
+			return true;
+		}
+
+		public function canUpdate($object)
+		{
+			return true;
+		}
+
+		public function canDelete($object)
 		{
 			return true;
 		}

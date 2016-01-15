@@ -1,5 +1,5 @@
 <?php
-	abstract class KW_CRUDService extends KW_CRUD
+	abstract class KW_CRUDService extends KW_CRUD implements ICRUDService
 	{
 		public function getOrigin()
 		{

@@ -1,5 +1,5 @@
 <?php
-	class KW_DatabaseStatement
+	class KW_DatabaseStatement implements IDatabaseStatement
 	{
 		/**
 		 * Construct an SQL database statement.
