@@ -12,6 +12,19 @@
 			$db->begin();
 			$manager = new KW_SchemaManager($db);
 			$manager->update();
+			$expected = 'SHOW TABLES LIKE \'_metatable\';
+INSERT INTO `_metatable` (`table`,`version`) VALUES (:table,:version)
+	ON DUPLICATE KEY UPDATE `version`=VALUES(`version`)
+';
+			$this->assertEquals($db->end(), $expected, 'Meta table version does not match expected version number.');
+		}
+
+		public function testPostgreSchemaManager()
+		{
+			$db = new MockDatabaseConnection('pgsql');
+			$db->begin();
+			$manager = new KW_SchemaManager($db);
+			$manager->update();
 			$expected = '
 SELECT c.relname 
 FROM   pg_catalog.pg_class c
@@ -26,19 +39,6 @@ FROM (
 ) AS i
 LEFT JOIN _metatable ON (_metatable."table" = i._table)
 WHERE _metatable."table" IS NULL
-';
-			$this->assertEquals($db->end(), $expected, 'Meta table version does not match expected version number.');
-		}
-
-		public function testPostgreSchemaManager()
-		{
-			$db = new MockDatabaseConnection('pgsql');
-			$db->begin();
-			$manager = new KW_SchemaManager($db);
-			$manager->update();
-			$expected = 'SHOW TABLES LIKE \'_metatable\';
-INSERT INTO `_metatable` (`table`,`version`) VALUES (:table,:version)
-	ON DUPLICATE KEY UPDATE `version`=VALUES(`version`)
 ';
 			$this->assertEquals($db->end(), $expected, 'Meta table version does not match expected version number.');
 		}
