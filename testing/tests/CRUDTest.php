@@ -4,19 +4,17 @@
 	class CRUDTest extends PHPUnit_Framework_TestCase
 	{
 		/**
-		 * 
+		 * Test that generated insert query is correct and gets executed
 		 */
-		public function testSchemaManager()
+		public function testCreateOperation()
 		{
 			$db = MockDatabaseConnection::Get();
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager);
 			$db->begin();
 			$result = $crud->create((object)array('value' => '{test}'));
-			error_log($db->end());
-			//$this->assertEquals(1, $version, 'Meta table version does not match expected version number.');
+			$sql = $db->end();
+			$this->assertEquals('INSERT INTO __mock__ (value) VALUES (:value)', $sql, 'Insert query mismatch');
 		}
-
-		private $manager;
 	}
 ?>
