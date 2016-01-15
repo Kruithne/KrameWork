@@ -39,7 +39,7 @@ FROM (
 ) AS i
 LEFT JOIN _metatable ON (_metatable."table" = i._table)
 WHERE _metatable."table" IS NULL
-';
+;UPDATE _metatable SET "version"=:version WHERE "table"=:table';
 			$this->assertEquals($db->end(), $expected, 'Meta table version does not match expected version number.');
 		}
 	}
