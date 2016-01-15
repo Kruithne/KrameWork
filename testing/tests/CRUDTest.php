@@ -8,10 +8,12 @@
 		 */
 		public function testSchemaManager()
 		{
-			$manager = new MockSchemaManager(MockDatabaseConnection::Get());
+			$db = MockDatabaseConnection::Get();
+			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager);
+			$db->begin();
 			$result = $crud->create((object)array('value' => '{test}'));
-			error_log($result);
+			error_log($db->end());
 			//$this->assertEquals(1, $version, 'Meta table version does not match expected version number.');
 		}
 

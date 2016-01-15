@@ -15,7 +15,7 @@
 
 		public function prepare($sql)
 		{
-			return new MockDatabaseStatement($sql);
+			return new MockDatabaseStatement($sql, $this);
 		}
 
 		public function execute($sql)
@@ -35,6 +35,22 @@
 			$this->id++;
 		}
 
+		public function begin()
+		{
+			$this->log = array();
+		}
+
+		public function run($message)
+		{
+			$this->log[] = $message;
+		}
+
+		public function end()
+		{
+			return join(';', $this->log);
+		}
+
+		private $log = array();
 		private $id = 1;
 		private static $instance = null;
 	}
