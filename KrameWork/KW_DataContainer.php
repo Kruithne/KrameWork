@@ -1,5 +1,5 @@
 <?php
-	class KW_DataContainer implements Serializable, JsonSerializable
+	class KW_DataContainer implements IDataContainer
 	{
 		public function __construct($data = Array())
 		{

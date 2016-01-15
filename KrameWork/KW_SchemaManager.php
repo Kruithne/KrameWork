@@ -1,7 +1,7 @@
 <?php
-	class KW_SchemaManager
+	class KW_SchemaManager implements ISchemaManager
 	{
-		public function __construct(KW_DatabaseConnection $db)
+		public function __construct(IDatabaseConnection $db)
 		{
 			$this->db = $db;
 			$this->addTable(new KW_MetaTable());

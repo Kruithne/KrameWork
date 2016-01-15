@@ -1,5 +1,5 @@
 <?php
-	abstract class KW_CRUD extends KW_Repository
+	abstract class KW_CRUD extends KW_Repository implements ICRUD
 	{
 		public abstract function getKey();
 		public abstract function hasAutoKey();
@@ -66,48 +66,40 @@
 
 		public function read($key = null)
 		{
+			// Fetch everything
 			if($key === null)
-			{
-				$result = array();
-				foreach($this->readAll->getRows() as $data)
-					$result[] = $this->getNewObject($data);
-				return $result;
-			}
-			if(is_array($key))
-			{
-				$set = false;
-				foreach($key as $col => $val)
-					if(empty($val) || $val == '*')
-					{
-						foreach($key as $col => $val)
-						{
-							$this->readSet->$col = empty($val) || $val == '*' ? null : $val;
-							$col_null = $col.'_null';
-							$this->readSet->$col_null = empty($val) || $val == '*' ? 1 : 0;
-						}
-						$result = array();
-						foreach($this->readSet->getRows() as $data)
-							$result[] = $this->getNewObject($data);
-						return $result;
-					}
+				return $this->fetchRowSet($this->readAll);
 
+			// Composite key
+			if(is_array($key))
 				foreach($key as $col => $val)
+				{
+					// Wildcard encountered, return a set.
+					if(empty($val) || $val == '*')
+						return $this->fetchSubSet($key);
+
 					$this->readOne->$col = $val;
-			}
+				}
+
+			// Fetch a single entry by a simple key
 			else if($key)
 			{
 				$kv = $this->getKey();
 				$this->readOne->$kv = $key;
 			}
-			$result = $this->readOne->getRows();
-			if($result)
-			{
-				if(count($result) == 1)
-					return $this->getNewObject($result[0]);
+			return $this->fetchSingleObject($this->readOne);
+		}
 
-				trigger_error('Multiple rows returned for specified key', E_USER_ERROR);
+		private function fetchSubSet($key)
+		{
+			// Wildcard searches get encoded to (@param_null = 1 OR @param = key) in SQL
+			foreach($key as $col => $val)
+			{
+				$this->readSet->$col = empty($val) || $val == '*' ? null : $val;
+				$col_null = $col.'_null';
+				$this->readSet->$col_null = empty($val) || $val == '*' ? 1 : 0;
 			}
-			return null;
+			return $this->fetchRowSet($this->readSet);
 		}
 
 		public function update($object)
@@ -120,6 +112,26 @@
 		{
 			$this->bindValues($this->deleteRecord, $this->getKey(), $object);
 			$this->deleteRecord->execute();
+		}
+
+		private function fetchRowSet($query)
+		{
+			$result = array();
+			foreach($query->getRows() as $data)
+				$result[] = $this->getNewObject($data);
+			return $result;
+		}
+
+		private function fetchSingleObject($query)
+		{
+			$result = $query->getRows();
+			if(!$result || count($result) == 0)
+				return null;
+
+			if(count($result) == 1)
+				return $this->getNewObject($result[0]);
+
+			trigger_error('Multiple rows returned for specified key', E_USER_ERROR);
 		}
 
 		private function bind($query, $object)

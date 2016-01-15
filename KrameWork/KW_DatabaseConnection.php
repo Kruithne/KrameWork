@@ -1,5 +1,5 @@
 <?php
-	class KW_DatabaseConnection
+	class KW_DatabaseConnection implements IDatabaseConnection
 	{
 		/**
 		 * Constructs a database connection wrapper.
