@@ -1,6 +1,11 @@
 <?php
 	class MockDatabaseConnection implements IDatabaseConnection
 	{
+		public static function Get()
+		{
+			return self::$instance;
+		}
+
 		public function getType()
 		{
 			return 'fake';
@@ -29,5 +34,6 @@
 		}
 
 		private $id = 1;
+		private static $instance = new MockDatabaseConnection();
 	}
 ?>
