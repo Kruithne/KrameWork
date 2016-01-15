@@ -33,6 +33,7 @@
 
 		public function execute()
 		{
+			return $this;
 		}
 
 		public function getRows()
