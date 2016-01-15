@@ -3,6 +3,8 @@
 	{
 		public static function Get()
 		{
+		 	if(self::$instance == null)
+		 		self::$instance = new MockDatabaseConnection();
 			return self::$instance;
 		}
 
@@ -34,6 +36,6 @@
 		}
 
 		private $id = 1;
-		private static $instance = new MockDatabaseConnection();
+		private static $instance = null;
 	}
 ?>
