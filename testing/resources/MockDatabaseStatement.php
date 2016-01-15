@@ -35,6 +35,7 @@
 
 		public function execute()
 		{
+			error_log('Executing "'.$this->sql.'"');
 			$this->db->run($this->sql);
 			return $this;
 		}
