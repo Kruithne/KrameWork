@@ -73,5 +73,25 @@
 			$dec->set('TEST');
 			$this->assertEquals('MOCKTEST', $component->test(), 'Decoreted function call fails');
 		}
+
+		/**
+		 * Test chained decorators
+		 */
+		public function testDecoratorChain()
+		{
+			$kernel = new KrameSystem(KW_PRELOAD_CLASSES);
+			$dep = new MockDependency();
+			$dec1 = new MockDecorator($dep);
+			$dec2 = new MockDecorator($dep);
+			$kernel->addComponent($dep);
+			$kernel->addBinding('IMockDependency', 'MockDependency');
+			$kernel->addDecorator('IMockDependency', $dec1);
+			$kernel->addDecorator('IMockDependency', $dec2);
+			$component = $kernel->getComponent('IMockDependency');
+			$dep->set('mock');
+			$dec1->set(' with ');
+			$dec2->set('chain');
+			$this->assertEquals('mock with chain', $component->test(), 'Chained decorated function call fails');
+		}
 	}
 ?>
