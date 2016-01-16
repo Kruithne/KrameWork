@@ -18,7 +18,7 @@
 		/**
 		 * Injection with a decorator via an interface binding
 		 */
-		public function testInterfaceInjection()
+		public function testDecoratedInterfaceInjection()
 		{
 			$kernel = new KrameSystem(KW_PRELOAD_CLASSES);
 			$kernel->addComponent('MockDependency');
