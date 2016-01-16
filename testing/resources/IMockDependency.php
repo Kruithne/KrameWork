@@ -1,3 +1,6 @@
 <?php
-	interface IMockDependency { }
+	interface IMockDependency
+	{
+		public function test();
+	}
 ?>
