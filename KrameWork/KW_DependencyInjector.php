@@ -69,7 +69,15 @@
 				$object = $this->constructComponent($resolved_name);
 			if(isset($this->decorators[$class_name]))
 				foreach($this->decorators[$class_name] as $decorator)
-					$object = new $decorator($object);
+				{
+					if($decorator instanceof IDecorator)
+					{
+						$decorator->inject($object);
+						$object = $decorator;
+					}
+					else
+						$object = new $decorator($object);
+				}
 			return $object;
 		}
 
