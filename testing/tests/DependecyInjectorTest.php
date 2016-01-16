@@ -10,7 +10,7 @@
 		{
 			$kernel = new KrameSystem(KW_PRELOAD_CLASSES);
 			$kernel->addComponent('MockDependency');
-			$kernel->bind('IMockDependency', 'MockDependency');
+			$kernel->addBinding('IMockDependency', 'MockDependency');
 			$component = $kernel->getComponent('IMockDependency');
 			$this->assertEquals(get_class($component), 'MockDependency', 'Kernel did not return an IMockDependency object');
 		}
