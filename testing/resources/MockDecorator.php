@@ -18,7 +18,7 @@
 
 		public function test()
 		{
-			return $this->target->test() . $value;
+			return $this->target->test() . $this->value;
 		}
 
 		private $target;
