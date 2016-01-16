@@ -12,7 +12,7 @@
 			$kernel->addComponent('MockDependency');
 			$kernel->addBinding('IMockDependency', 'MockDependency');
 			$component = $kernel->getComponent('IMockDependency');
-			$this->assertEquals(get_class($component), 'MockDependency', 'Kernel did not return an IMockDependency object');
+			$this->assertEquals('MockDependency', get_class($component), 'Kernel did not return an IMockDependency object');
 		}
 
 		/**
@@ -24,7 +24,7 @@
 			$kernel->addComponent(new MockDependency());
 			$kernel->addBinding('IMockDependency', 'MockDependency');
 			$component = $kernel->getComponent('IMockDependency');
-			$this->assertEquals(get_class($component), 'MockDependency', 'Kernel did not return an IMockDependency object');
+			$this->assertEquals('MockDependency', get_class($component), 'Kernel did not return an IMockDependency object');
 		}
 
 		/**
@@ -37,7 +37,7 @@
 			$kernel->addBinding('IMockDependency', 'MockDependency');
 			$kernel->addDecorator('IMockDependency', 'MockDecorator');
 			$component = $kernel->getComponent('IMockDependency');
-			$this->assertEquals(get_class($component), 'MockDecorator', 'Kernel did not return a decorated IMockDependency object');
+			$this->assertEquals('MockDecorator', get_class($component), 'Kernel did not return a decorated IMockDependency object');
 		}
 
 		/**
@@ -50,7 +50,7 @@
 			$kernel->addBinding('IMockDependency', 'MockDependency');
 			$kernel->addDecorator('IMockDependency', 'MockDecorator');
 			$component = $kernel->getComponent('IMockDependency');
-			$this->assertEquals(get_class($component), 'MockDecorator', 'Kernel did not return a decorated IMockDependency object');
+			$this->assertEquals('MockDecorator', get_class($component), 'Kernel did not return a decorated IMockDependency object');
 		}
 
 		/**
@@ -60,17 +60,18 @@
 		{
 			$kernel = new KrameSystem(KW_PRELOAD_CLASSES);
 			$dep = new MockDependency();
-			$dep->set('mock');
-			$dec = new MockDecorator(null);
+			$dec = new MockDecorator($dep);
 			$kernel->addComponent($dep);
 			$kernel->addBinding('IMockDependency', 'MockDependency');
-			$kernel->addDecorator('IMockDependency', new MockDecorator(null));
+			$kernel->addDecorator('IMockDependency', $dec);
 			$component = $kernel->getComponent('IMockDependency');
 			$this->assertEquals(get_class($component), 'MockDecorator', 'Kernel did not return a decorated IMockDependency object');
-			$this->assertEquals($component->test(), 'mock+', 'Decorated function call fails');
+			$dep->set('mock');
+			$dec->set('+');
+			$this->assertEquals('mock+', $component->test(), 'Decorated function call fails');
 			$dep->set('MOCK');
 			$dec->set('TEST');
-			$this->assertEquals($component->test(), 'MOCKTEST', 'Decoreted function call fails');
+			$this->assertEquals('MOCKTEST', $component->test(), 'Decoreted function call fails');
 		}
 	}
 ?>
