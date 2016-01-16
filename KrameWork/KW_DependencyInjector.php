@@ -36,6 +36,13 @@
 			$this->addComponent($target);
 		}
 
+		public function addDecorator($bind, $with)
+		{
+			if(!isset($this->decorators[$bind]))
+				$this->decorators[$bind] = array();
+			$this->decorators[$bind][] = $with;
+		}
+
 		public function resolve($class_name)
 		{
 			if(isset($this->bindings[$class_name]))
@@ -53,12 +60,25 @@
 		 */
 		public function getComponent($class_name)
 		{
-			$class_name = $this->resolve($class_name);
-			if (!array_key_exists($class_name, $this->classes))
-				throw new KW_ClassDependencyException($class_name, 'Class %s has not been added to the injector');
+			$resolved_name = $this->resolve($class_name);
+			if (!array_key_exists($resolved_name, $this->classes))
+				throw new KW_ClassDependencyException($resolved_name, 'Class %s has not been added to the injector');
 
-			$object = $this->classes[$class_name];
-			return $object !== NULL ? $object : $this->constructComponent($class_name);
+			$object = $this->classes[$resolved_name];
+			if($object === null)
+				$object = $this->constructComponent($resolved_name);
+			if(isset($this->decorators[$class_name]))
+				foreach($this->decorators[$class_name] as $decorator)
+				{
+					if($decorator instanceof IDecorator)
+					{
+						$decorator->inject($object);
+						$object = $decorator;
+					}
+					else
+						$object = new $decorator($object);
+				}
+			return $object;
 		}
 
 		/**
@@ -105,6 +125,7 @@
 		 */
 		private $classes = Array();
 		private $bindings = Array();
+		private $decorators = Array();
 		protected $preload = false;
 	}
 ?>
