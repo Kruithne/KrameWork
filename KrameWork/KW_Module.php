@@ -31,7 +31,7 @@
 		 *
 		 * @param IModule $sub_module A sub-module to add.
 		 */
-		public function addSubModule($sub_module)
+		public function addSubModule(IModule $sub_module)
 		{
 			if ($sub_module instanceof IModule)
 				$this->sub_modules[] = $sub_module;
