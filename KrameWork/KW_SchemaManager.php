@@ -111,8 +111,19 @@
 				$this->version[$row->table] = $row->version;
 		}
 
+		/**
+		 * @var array
+		 */
 		private $version = array();
+
+		/**
+		 * @var ISchemaTable[]
+		 */
 		private $tables;
+
+		/**
+		 * @var IDatabaseConnection
+		 */
 		private $db;
 	}
 ?>
