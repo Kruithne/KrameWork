@@ -220,8 +220,17 @@
 				$fields[] = sprintf('%1$s = :%1$s', $col);
 
 			// Read
-			$this->readAll = $this->db->prepare('SELECT * FROM '.$table);
-			$this->readOne = $this->db->prepare('SELECT * FROM '.$table.' WHERE '.$filter);
+			switch($this->db->getType())
+			{
+				case 'sqlite':
+					$this->readAll = $this->db->prepare('SELECT rowid, * FROM '.$table);
+					$this->readOne = $this->db->prepare('SELECT rowid, * FROM '.$table.' WHERE '.$filter);
+					break;
+				default:
+					$this->readAll = $this->db->prepare('SELECT * FROM '.$table);
+					$this->readOne = $this->db->prepare('SELECT * FROM '.$table.' WHERE '.$filter);
+					break;
+			}
 
 			// Update
 			$this->updateRecord = $this->db->prepare('UPDATE '.$table.' SET '.join(', ', $fields).' WHERE '.$filter);
