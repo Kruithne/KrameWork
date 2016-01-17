@@ -29,11 +29,14 @@
 		 * Fetch a table by name
 		 *
 		 * @param string $name Name of table to return the specification of.
+		 * @return string
 		 */
 		public function __get($name)
 		{
 			if(isset($this->tables[$name]))
 				return $this->tables[$name];
+
+			return "";
 		}
 
 		/**
