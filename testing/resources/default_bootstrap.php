@@ -5,6 +5,7 @@
 	date_default_timezone_set("Europe/London");
 
 	KW_ClassLoader::addClassPath(TRAVIS_EXEC_PATH . "KrameWork/testing/");
+	KW_ClassLoader::addClassPath(TRAVIS_EXEC_PATH . "KrameWork/testing/resources/");
 
 	$sys = new KrameSystem();
 ?>

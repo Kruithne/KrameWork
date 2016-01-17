@@ -71,7 +71,10 @@
 
 			switch ($type)
 			{
-				case E_USER_ERROR: $type = 'FATAL'; break;
+				case E_USER_ERROR:
+					header('HTTP/1.0 500 Internal Error');
+					$type = 'FATAL';
+					break;
 				case E_USER_WARNING: $type = 'WARNING'; break;
 				case E_USER_NOTICE: $type = 'NOTICE'; break;
 				case E_STRICT: $type = 'STRICT'; break;
@@ -90,6 +93,7 @@
 		 */
 		public function handleException($exception)
 		{
+			header('HTTP/1.0 500 Internal Error');
 			if($this->errorCount++ > $this->maxErrors)
 				die('Excessive errors, aborting');
 			$this->sendErrorReport($this->generateErrorReport(
