@@ -15,9 +15,11 @@
 		 */
 		public function addTable(ISchemaTable $spec)
 		{
-			if(isset($this->tables[$spec->getName()]))
-				throw new Exception('Duplicate table specification "'.$spec->getName().'"');
+			if (isset($this->tables[$spec->getName()]))
+				throw new Exception('Duplicate table specification "' . $spec->getName() . '"');
+
 			$this->tables[$spec->getName()] = $spec;
+
 			if($spec instanceof IRepository)
 			{
 				$spec->setDB($this->db);
@@ -33,7 +35,7 @@
 		 */
 		public function __get($name)
 		{
-			if(isset($this->tables[$name]))
+			if (isset($this->tables[$name]))
 				return $this->tables[$name];
 
 			return "";
@@ -45,8 +47,9 @@
 		public function update()
 		{
 			$this->loadVersionTable();
-			foreach($this->tables as $spec)
-				if($spec->getVersion() > $this->getCurrentVersion($spec->getName()))
+
+			foreach ($this->tables as $spec)
+				if ($spec->getVersion() > $this->getCurrentVersion($spec->getName()))
 					$this->upgrade($spec);
 		}
 
@@ -62,16 +65,19 @@
 				$this->_metatable->create->table = $spec->getName();
 				$this->_metatable->create->execute();
 			}
+
 			$save = $this->_metatable->save;
 			$sql = $spec->getQueries();
 			$from = $this->getCurrentVersion($spec->getName());
 			$to = $spec->getVersion();
-			error_log('Updating '.$spec->getName().' from '.$from.' to '.$to);
+			error_log('Updating ' . $spec->getName() . ' from ' . $from . ' to ' . $to);
+
 			for($i = $from + 1; $i <= $to; ++$i)
 			{
 				if(isset($sql[$i]))
 					foreach($sql[$i] as $step)
 						$this->db->execute($step);
+
 				$save->table = $spec->getName();
 				$save->version = $i;
 				$save->execute();
@@ -89,6 +95,7 @@
 		{
 			if(!isset($this->version[$table]))
 				return 0;
+
 			return $this->version[$table];
 		}
 
@@ -97,9 +104,10 @@
 		 */
 		public function loadVersionTable()
 		{
-			if(!$this->_metatable->exists->execute()->getRows())
+			if (!$this->_metatable->exists->execute()->getRows())
 				return;
-			foreach($this->_metatable->load->execute()->getRows() as $row)
+
+			foreach ($this->_metatable->load->execute()->getRows() as $row)
 				$this->version[$row->table] = $row->version;
 		}
 
