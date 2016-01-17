@@ -16,7 +16,7 @@
 			return 'private';
 		}
 
-		public function __construct(KW_SchemaManager $schema, ICacheState $state)
+		public function __construct(ISchemaManager $schema, ICacheState $state)
 		{
 			parent::__construct($schema, $state);
 		}

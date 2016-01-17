@@ -1,7 +1,7 @@
 <?php
 	class KW_CacheStateTable extends KW_Repository implements ICacheState
 	{
-		public function __construct(KW_SchemaManager $schema)
+		public function __construct(ISchemaManager $schema)
 		{
 			$schema->addTable($this);
 		}

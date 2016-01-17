@@ -29,7 +29,7 @@
 		 *
 		 * @param string $key The key used in the statement.
 		 * @param mixed $value The value to assign to this key.
-		 * @return KW_DatabaseStatement $this Statement instance.
+		 * @return IDatabaseStatement $this Statement instance.
 		 */
 		public function setValue($key, $value)
 		{
@@ -50,11 +50,11 @@
 		/**
 		 * Copies the values already stored inside a row.
 		 *
-		 * @param KW_DatabaseRow $row A row to extract from.
+		 * @param IDataContainer $row A row to extract from.
 		 * @param string $prependChar Character to prepend each key with.
-		 * @return KW_DatabaseStatement Statement instance.
+		 * @return IDatabaseStatement Statement instance.
 		 */
-		public function copyValuesFromRow($row, $prependChar = ':')
+		public function copyValuesFromRow(IDataContainer $row, $prependChar = ':')
 		{
 			$row_array = $row->getAsArray();
 
@@ -67,7 +67,7 @@
 		/**
 		 * Executes the statement and collects retrieved rows.
 		 *
-		 * @return KW_DatabaseStatement $this Database statement instance.
+		 * @return IDatabaseStatement $this Database statement instance.
 		 */
 		public function execute()
 		{
@@ -98,7 +98,7 @@
 		/**
 		 * Returns an array of database rows retrieved. Will be empty if the statement is not executed.
 		 *
-		 * @return KW_DatabaseRow[]
+		 * @return IDataContainer[]
 		 */
 		public function getRows()
 		{
@@ -123,7 +123,7 @@
 
 		/**
 		 * Returns the first row of the data retrieved. Will by NULL if no results were returned.
-		 * @return KW_DatabaseRow|null
+		 * @return IDataContainer|null
 		 */
 		public function getFirstRow()
 		{
@@ -160,7 +160,7 @@
 		private $sql;
 
 		/**
-		 * @var KW_DatabaseRow[]
+		 * @var IDataContainer[]
 		 */
 		private $rows = Array();
 

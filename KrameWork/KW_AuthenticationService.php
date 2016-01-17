@@ -1,7 +1,7 @@
 <?php
 	class KW_AuthenticationService extends KW_JSONService
 	{
-		public function __construct(KW_UserSystem $users, $origin, $multifactor = false)
+		public function __construct(IUserSystem $users, $origin, $multifactor = false)
 		{
 			$this->users = $users;
 			$this->multifactor = $multifactor;

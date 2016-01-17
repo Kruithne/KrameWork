@@ -50,7 +50,7 @@
 
 		/**
 		 * @param $request
-		 * @return KW_DataContainer
+		 * @return IDataContainer
 		 */
 		public function process($request)
 		{
@@ -61,7 +61,7 @@
 		abstract function work($request);
 
 		/**
-		 * @var KW_DataContainer
+		 * @var IDataContainer
 		 */
 		protected $data;
 	}
