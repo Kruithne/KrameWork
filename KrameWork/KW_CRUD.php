@@ -144,6 +144,7 @@
 				return $this->getNewObject($result[0]);
 
 			trigger_error('Multiple rows returned for specified key', E_USER_ERROR);
+			return null;
 		}
 
 		private function bind($query, $object)
