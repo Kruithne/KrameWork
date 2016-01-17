@@ -12,7 +12,7 @@
 		 *
 		 * @param ISchemaTable $spec A table specification.
 		 */
-		public function addTable($spec)
+		public function addTable(ISchemaTable $spec)
 		{
 			if(isset($this->tables[$spec->getName()]))
 				throw new Exception('Duplicate table specification "'.$spec->getName().'"');
@@ -51,7 +51,7 @@
 		 *
 		 * @param ISchemaTable $spec The table specification to act upon.
 		 */
-		public function upgrade($spec)
+		public function upgrade(ISchemaTable $spec)
 		{
 			if($this->db->getType() == 'pgsql')
 			{

@@ -1,7 +1,7 @@
 <?php
 	abstract class KW_CRUDCache extends KW_CRUD
 	{
-		public function __construct(KW_SchemaManager $schema, ICacheState $state)
+		public function __construct(ISchemaManager $schema, ICacheState $state)
 		{
 			parent::__construct($schema);
 			$this->cache = $state;

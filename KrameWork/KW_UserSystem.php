@@ -1,9 +1,9 @@
 <?php
-	class KW_UserSystem extends KW_CRUD
+	class KW_UserSystem extends KW_CRUD implements IUserSystem
 	{
 		public function getName() { return 'users'; }
 
-		public function __construct(KW_SchemaManager $schema)
+		public function __construct(ISchemaManager $schema)
 		{
 			parent::__construct($schema);
 		}

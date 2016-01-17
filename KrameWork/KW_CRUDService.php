@@ -11,7 +11,7 @@
 			return 'GET, POST';
 		}
 
-		public function __construct(KW_SchemaManager $schema)
+		public function __construct(ISchemaManager $schema)
 		{
 			parent::__construct($schema);
 		}
