@@ -83,6 +83,7 @@
 		 * Read the current table version.
 		 *
 		 * @param string $table Name of table whose version is wanted.
+		 * @return int
 		 */
 		public function getCurrentVersion($table)
 		{
