@@ -59,6 +59,8 @@
 					{
 						case 'pgsql':
 							return $this->read($result[0]->currval);
+						default:
+							return $this->read($result[0]->id);
 					}
 			}
 			return $inserted;
@@ -160,8 +162,11 @@
 				case 'pgsql':
 					$this->getLastID = $this->db->prepare('SELECT currval(pg_get_serial_sequence(:table, :key))');
 					break;
+				case 'sqlite':
+					$this->getLastID = $this->db->prepare('SELECT LAST_INSERT_ROWID() AS id');
+					break;
 				default:
-					$this->getLastID = $this->db->prepare('SELECT LAST_INSERT_ID()');
+					$this->getLastID = $this->db->prepare('SELECT LAST_INSERT_ID() AS id');
 			}
 
 			$filter = array();
@@ -202,8 +207,11 @@
 				case 'pgsql':
 					$this->getLastID = $this->db->prepare('SELECT currval(pg_get_serial_sequence(:table, :key))');
 					break;
+				case 'sqlite':
+					$this->getLastID = $this->db->prepare('SELECT LAST_INSERT_ROWID() AS id');
+					break;
 				default:
-					$this->getLastID = $this->db->prepare('SELECT LAST_INSERT_ID()');
+					$this->getLastID = $this->db->prepare('SELECT LAST_INSERT_ID() AS id');
 			}
 
 			$filter = sprintf('%1$s = :%1$s', $key);
@@ -212,8 +220,17 @@
 				$fields[] = sprintf('%1$s = :%1$s', $col);
 
 			// Read
-			$this->readAll = $this->db->prepare('SELECT * FROM '.$table);
-			$this->readOne = $this->db->prepare('SELECT * FROM '.$table.' WHERE '.$filter);
+			switch($this->db->getType())
+			{
+				case 'sqlite':
+					$this->readAll = $this->db->prepare('SELECT rowid, * FROM '.$table);
+					$this->readOne = $this->db->prepare('SELECT rowid, * FROM '.$table.' WHERE '.$filter);
+					break;
+				default:
+					$this->readAll = $this->db->prepare('SELECT * FROM '.$table);
+					$this->readOne = $this->db->prepare('SELECT * FROM '.$table.' WHERE '.$filter);
+					break;
+			}
 
 			// Update
 			$this->updateRecord = $this->db->prepare('UPDATE '.$table.' SET '.join(', ', $fields).' WHERE '.$filter);

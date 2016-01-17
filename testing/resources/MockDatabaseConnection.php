@@ -18,7 +18,7 @@
 			return $this->type;
 		}
 
-		public function prepare($sql)
+		public function prepare($sql, $quiet = false)
 		{
 			return new MockDatabaseStatement($sql, $this);
 		}

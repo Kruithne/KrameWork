@@ -5,6 +5,13 @@
 		{
 			switch($this->db->getType())
 			{
+				case 'sqlite':
+					$this->exists = $this->db->prepare('SELECT name FROM sqlite_master WHERE type=\'table\' AND name=\'_metatable\'');
+					$this->load = $this->db->prepare('SELECT * FROM _metatable');
+					$this->save = $this->db->prepare('
+INSERT OR IGNORE INTO _metatable ("table", "version") VALUES (:table, :version);
+UPDATE _metatable SET "version"=:version WHERE "table"=:table');
+					break;
 				case 'pgsql':
 					$this->exists = $this->db->prepare('
 SELECT c.relname 
@@ -49,6 +56,10 @@ INSERT INTO `_metatable` (`table`,`version`) VALUES (:table,:version)
 		{
 			switch($this->db->getType())
 			{
+				case 'sqlite':
+					return array(
+						1 => array('CREATE TABLE _metatable ("table" TEXT PRIMARY KEY, "version" INT)')
+					);
 				case 'pgsql':
 					return array(
 						1 => array('

@@ -26,11 +26,23 @@
 		 * Returns a database statement.
 		 *
 		 * @param string $sql An SQL query for this statement.
+		 * @param boolean $quiet Ignore errors during prepare
 		 * @return KW_DatabaseStatement A database statement.
 		 */
-		public function prepare($sql)
+		public function prepare($sql, $quiet = false)
 		{
-			return new KW_DatabaseStatement($sql, $this->connection);
+			if($this->getType() == 'sqlite')
+				return new KW_DeferredStatement($sql, $this->connection);
+			try
+			{
+				return new KW_DatabaseStatement($sql, $this->connection);
+			}
+			catch(Exception $e)
+			{
+				if($quiet)
+					return null;
+				throw $e;
+			}
 		}
 
 		/**
