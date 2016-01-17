@@ -93,5 +93,36 @@
 			$dec2->set('chain');
 			$this->assertEquals('mock with chain', $component->test(), 'Chained decorated function call fails');
 		}
+
+		public function testInterfaceAutoBind()
+		{
+			$kernel = new KrameSystem(KW_AUTOBIND_INTERFACES);
+			$kernel->addComponent('MockDependency');
+			$component = $kernel->getComponent('IMockDependency');
+			$this->assertEquals('MockDependency', get_class($component), 'Kernel returned wrong object type');
+		}
+
+		public function testInterfaceAutoBindDuplication()
+		{
+			$kernel = new KrameSystem(KW_AUTOBIND_INTERFACES);
+			$kernel->addBinding('IMockDependency', 'MockDependency');
+			$kernel->addComponent('MockDependency');
+			$component = $kernel->getComponent('IMockDependency');
+			$this->assertEquals('MockDependency', get_class($component), 'Kernel returned wrong object type');
+		}
+
+		public function testInterfaceAutoBindWithDecoration()
+		{
+			$kernel = new KrameSystem(KW_AUTOBIND_INTERFACES);
+			$component = new MockDependency();
+			$component->set('mock');
+			$decorator = new MockDecorator($dep);
+			$decorator->set('decorator');
+			$kernel->addComponent($component);
+			$kernel->addDecorator('IMockDependency', $decorator);
+			$object = $kernel->getComponent('IMockDependency');
+			$this->assertEquals('MockDecorator', get_class($object), 'Kernel returned wrong object type');
+			$this->assertEquals('mockdecorator', $object->test(), 'Decorated function call fails');
+		}
 	}
 ?>

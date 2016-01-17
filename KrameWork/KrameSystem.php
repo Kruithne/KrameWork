@@ -15,6 +15,8 @@
 		{
 			$this->flags = $flags;
 			// Set-up auto loading.
+			if($flags & KW_AUTOBIND_INTERFACES)
+				$this->bindInterfaces = true;
 			if($flags & KW_PRELOAD_CLASSES)
 				$this->preload = true;
 			if($flags & KW_AUTOLOAD_RECURSIVE)
