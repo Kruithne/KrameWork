@@ -27,7 +27,7 @@
 			$this->data[$key] = $value;
 		}
 
-		public function copyValuesFromRow($row, $prependChar = ':')
+		public function copyValuesFromRow(IDataContainer $row, $prependChar = ':')
 		{
 			return null;
 		}
