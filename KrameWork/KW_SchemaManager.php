@@ -60,7 +60,7 @@
 		 */
 		public function upgrade(ISchemaTable $spec)
 		{
-			if($this->db->getType() == 'pgsql')
+			if ($this->db->getType() == 'pgsql')
 			{
 				$this->_metatable->create->table = $spec->getName();
 				$this->_metatable->create->execute();
@@ -70,12 +70,13 @@
 			$sql = $spec->getQueries();
 			$from = $this->getCurrentVersion($spec->getName());
 			$to = $spec->getVersion();
+
 			error_log('Updating ' . $spec->getName() . ' from ' . $from . ' to ' . $to);
 
 			for($i = $from + 1; $i <= $to; ++$i)
 			{
-				if(isset($sql[$i]))
-					foreach($sql[$i] as $step)
+				if (isset($sql[$i]))
+					foreach ($sql[$i] as $step)
 						$this->db->execute($step);
 
 				$save->table = $spec->getName();
@@ -93,7 +94,7 @@
 		 */
 		public function getCurrentVersion($table)
 		{
-			if(!isset($this->version[$table]))
+			if (!isset($this->version[$table]))
 				return 0;
 
 			return $this->version[$table];
