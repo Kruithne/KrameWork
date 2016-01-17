@@ -24,7 +24,7 @@
 			if (array_key_exists($key, $array))
 			{
 				$data = self::cleanData($array[$key]);
-				if (!empty($data))
+				if (strlen($data) > 0)
 					return $data;
 			}
 
