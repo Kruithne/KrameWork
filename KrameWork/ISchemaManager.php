@@ -6,7 +6,7 @@
 		 *
 		 * @param ISchemaTable $spec A table specification.
 		 */
-		public function addTable($spec);
+		public function addTable(ISchemaTable $spec);
 
 		/**
 		 * Fetch a table by name
@@ -25,7 +25,7 @@
 		 *
 		 * @param ISchemaTable $spec The table specification to act upon.
 		 */
-		public function upgrade($spec);
+		public function upgrade(ISchemaTable $spec);
 
 		/**
 		 * Read the current table version.
