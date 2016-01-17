@@ -12,6 +12,7 @@
 
 		public function __construct(ISchemaManager $schema)
 		{
+			parent::__construct();
 			$schema->addTable($this);
 		}
 
