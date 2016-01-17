@@ -116,7 +116,7 @@
 			$kernel = new KrameSystem(KW_AUTOBIND_INTERFACES);
 			$component = new MockDependency();
 			$component->set('mock');
-			$decorator = new MockDecorator($dep);
+			$decorator = new MockDecorator($component);
 			$decorator->set('decorator');
 			$kernel->addComponent($component);
 			$kernel->addDecorator('IMockDependency', $decorator);
