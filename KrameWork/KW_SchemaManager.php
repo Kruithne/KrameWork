@@ -11,6 +11,7 @@
 		 * Add a new table to be managed.
 		 *
 		 * @param ISchemaTable $spec A table specification.
+		 * @throws Exception
 		 */
 		public function addTable(ISchemaTable $spec)
 		{
