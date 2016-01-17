@@ -14,7 +14,7 @@
 			$db->begin();
 			$result = $crud->create((object)array('value' => '{test}'));
 			$sql = $db->end();
-			$this->assertEquals('INSERT INTO __mock__ (value) VALUES (:value);SELECT LAST_INSERT_ID()', $sql, 'Insert query mismatch');
+			$this->assertEquals('INSERT INTO __mock__ (value) VALUES (:value);SELECT LAST_INSERT_ID() AS id', $sql, 'Insert query mismatch');
 		}
 
 		/**
