@@ -20,6 +20,12 @@
 					if($this->preload)
 						KW_ClassLoader::loadClass($classInput);
 					$this->classes[$classInput] = NULL;
+					if($this->bindInterfaces)
+					{
+						$class = new ReflectionClass($classInput);
+						foreach($class->getInterfaceNames() as $interface)
+							$this->addBinding($interface, $classInput);
+					}
 				}
 			}
 			elseif (is_object($classInput))
@@ -27,6 +33,12 @@
 				$className = get_class($classInput);
 				if (!array_key_exists($className, $this->classes))
 					$this->classes[$className] = $classInput;
+				if($this->bindInterfaces)
+				{
+					$class = new ReflectionClass($className);
+					foreach($class->getInterfaceNames() as $interface)
+						$this->addBinding($interface, $className);
+				}
 			}
 		}
 
@@ -127,5 +139,6 @@
 		private $bindings = Array();
 		private $decorators = Array();
 		protected $preload = false;
+		protected $bindInterfaces = false;
 	}
 ?>
