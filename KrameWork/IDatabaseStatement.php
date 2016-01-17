@@ -24,29 +24,29 @@
 		/**
 		 * Copies the values already stored inside a row.
 		 *
-		 * @param KW_DatabaseRow $row A row to extract from.
+		 * @param IDataContainer $row A row to extract from.
 		 * @param string $prependChar Character to prepend each key with.
-		 * @return KW_DatabaseStatement Statement instance.
+		 * @return IDatabaseStatement Statement instance.
 		 */
-		public function copyValuesFromRow($row, $prependChar = ':');
+		public function copyValuesFromRow(IDataContainer $row, $prependChar = ':');
 
 		/**
 		 * Executes the statement and collects retrieved rows.
 		 *
-		 * @return KW_DatabaseStatement $this Database statement instance.
+		 * @return IDatabaseStatement $this Database statement instance.
 		 */
 		public function execute();
 
 		/**
 		 * Returns an array of database rows retrieved. Will be empty if the statement is not executed.
 		 *
-		 * @return KW_DatabaseRow[]
+		 * @return IDataContainer[]
 		 */
 		public function getRows();
 
 		/**
 		 * Returns the first row of the data retrieved. Will by NULL if no results were returned.
-		 * @return KW_DatabaseRow|null
+		 * @return IDataContainer|null
 		 */
 		public function getFirstRow();
 
