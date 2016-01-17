@@ -160,6 +160,9 @@
 				case 'pgsql':
 					$this->getLastID = $this->db->prepare('SELECT currval(pg_get_serial_sequence(:table, :key))');
 					break;
+				case 'sqlite':
+					$this->getLastID = $this->db->prepare('SELECT LAST_INSERT_ROWID()');
+					break;
 				default:
 					$this->getLastID = $this->db->prepare('SELECT LAST_INSERT_ID()');
 			}
@@ -201,6 +204,9 @@
 			{
 				case 'pgsql':
 					$this->getLastID = $this->db->prepare('SELECT currval(pg_get_serial_sequence(:table, :key))');
+					break;
+				case 'sqlite':
+					$this->getLastID = $this->db->prepare('SELECT LAST_INSERT_ROWID()');
 					break;
 				default:
 					$this->getLastID = $this->db->prepare('SELECT LAST_INSERT_ID()');

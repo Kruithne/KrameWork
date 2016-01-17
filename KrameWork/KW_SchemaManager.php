@@ -63,12 +63,12 @@
 			$from = $this->getCurrentVersion($spec->getName());
 			$to = $spec->getVersion();
 			error_log('Updating '.$spec->getName().' from '.$from.' to '.$to);
-			$save->table = $spec->getName();
 			for($i = $from + 1; $i <= $to; ++$i)
 			{
 				if(isset($sql[$i]))
 					foreach($sql[$i] as $step)
 						$this->db->execute($step);
+				$save->table = $spec->getName();
 				$save->version = $i;
 				$save->execute();
 				$this->version[$spec->getName()] = $to;
