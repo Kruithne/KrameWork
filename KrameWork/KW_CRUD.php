@@ -6,9 +6,9 @@
 		public abstract function getValues();
 
 		/**
-		 * DESCRIPTION
-		 * @param TYPE $key
-		 * @return int
+		 * Type hint for column types
+		 * @param TYPE $key The name of the column
+		 * @return int One of the PDO::PARAM_* constants
 		 */
 		public function getKeyType($key)
 		{
@@ -17,7 +17,7 @@
 
 		/**
 		 * KW_CRUD constructor.
-		 * @param ISchemaManager $schema
+		 * @param ISchemaManager $schema The system schema manager
 		 */
 		public function __construct(ISchemaManager $schema)
 		{
@@ -26,9 +26,9 @@
 		}
 
 		/**
-		 * DESCRIPTION
-		 * @param TYPE $data
-		 * @return TYPE
+		 * Override this method to return a custom type from the database layer
+		 * @param IDataContainer $data 
+		 * @return mixed The data you want your row represented as
 		 */
 		public function getNewObject($data)
 		{
@@ -36,7 +36,7 @@
 		}
 
 		/**
-		 * DESCRIPTION
+		 * Generates and prepares SQL statements for accessing your table, override this if you want to add some custom queries.
 		 */
 		public function prepare()
 		{
@@ -54,9 +54,9 @@
 		}
 
 		/**
-		 * DESCRIPTION
-		 * @param TYPE $object
-		 * @return array|null|TYPE
+		 * Persist an object to the underlying table by calling INSERT on the database
+		 * @param object $object An object with properties matching the values, and if not an autokey, keys, of the table spec.
+		 * @return mixed An object as returned by getNewObject.
 		 */
 		public function create($object)
 		{
@@ -93,13 +93,20 @@
 					}
 				}
 			}
-			return $inserted;
+			return $inserted; // TODO This is kind of a bug, replace this with a proper thing
 		}
 
 		/**
-		 * DESCRIPTION
-		 * @param TYPE|null $key
-		 * @return array|null|TYPE
+		 * Fetch an object, or a list of objects.
+		 *
+		 * Non-relational tables do not have keys, call without a key and always get the entire table.
+		 *
+		 * Composite key tables expect an array with properties matching the names return in the array from getKey().
+		 * To do a partial key match, pass an asterix for a key component to fetch any value of that column.
+		 *
+		 * Simple key tables expect an int or string with the value of the key column. 
+		 * @param mixed $key Descriptor of what to fetch, see description
+		 * @return mixed The result set or single object matching the key
 		 */
 		public function read($key = null)
 		{
@@ -128,9 +135,9 @@
 		}
 
 		/**
-		 * DESCRIPTION
-		 * @param $key
-		 * @return array
+		 * Fetches a list of objects based on a partial key match
+		 * @param $key The key array
+		 * @return object[]
 		 */
 		private function fetchSubSet($key)
 		{
@@ -145,8 +152,8 @@
 		}
 
 		/**
-		 * DESCRIPTION
-		 * @param TYPE $object
+		 * Persist an existing object to the table with an UPDATE query.
+		 * @param object $object An object with properties matching all entries of the key and values specifications of the table
 		 */
 		public function update($object)
 		{
@@ -155,8 +162,8 @@
 		}
 
 		/**
-		 * DESCRIPTION
-		 * @param TYPE $object
+		 * Remove an existing object from the table with a DELETE query.
+		 * @param object $object An object with properties matching all entries of the key specification of the table
 		 */
 		public function delete($object)
 		{
@@ -165,9 +172,9 @@
 		}
 
 		/**
-		 * DESCRIPTION
-		 * @param string $query
-		 * @return TYPE
+		 * Fetches a set of rows
+		 * @param IDatabaseStatement $query An SQL statement to execute.
+		 * @return object[] A list of objects as defined by getNewObject.
 		 */
 		private function fetchRowSet($query)
 		{
@@ -180,9 +187,9 @@
 		}
 
 		/**
-		 * DESCRIPTION
-		 * @param string $query
-		 * @return null|TYPE
+		 * Fetches a single object
+		 * @param IDatabaseStatement $query An SQL statement to execute.
+		 * @return null|object An object as created by getNewObject or null if the query returned no hits.
 		 */
 		private function fetchSingleObject($query)
 		{
@@ -198,9 +205,9 @@
 		}
 
 		/**
-		 * DESCRIPTION
-		 * @param string $query
-		 * @param TYPE $object
+		 * Bind the query to an object for execcution
+		 * @param IDatabaseStatement $query An SQL statement to bind values to
+		 * @param object $object An object to bind values from
 		 */
 		private function bind($query, $object)
 		{
@@ -209,10 +216,10 @@
 		}
 
 		/**
-		 * DESCRIPTION
-		 * @param string $query
-		 * @param string $field
-		 * @param TYPE $object
+		 * Bind the query to one or more fields from an object
+		 * @param IDatabaseStatement $query A statement to bind values to
+		 * @param mixed $field The name of a property, or an array of names of properties
+		 * @param object $object An object containing the named properties.
 		 */
 		private function bindValues($query, $field, $object)
 		{
@@ -228,15 +235,16 @@
 		}
 
 		/**
-		 * DESCRIPTION
-		 * @param TYPE $table
-		 * @param TYPE $key
-		 * @param TYPE $values
-		 * @param TYPE $serial
+		 * Generate SQL statements to handle a table with an composite key.
+		 * @param string $table The name of the table
+		 * @param string[] $key The names of the primary key columns
+		 * @param string[] $values The names of the data columns
+		 * @param bool $serial Whether the table has an automatic id
 		 */
 		private function prepareComposite($table, $key, $values, $serial)
 		{
 			// Create
+			// TODO serial is probably not going to work with composite keys - maybe we should just ignore it?
 			$fields = array_merge($serial ? array() : (is_array($key) ? $key : array($key)), $values);
 			$this->createRecord = $this->db->prepare('INSERT INTO '.$table.' ('.join(',', $fields).') VALUES (:'.join(', :',$fields).')');
 
@@ -288,11 +296,11 @@
 		}
 
 		/**
-		 * DESCRIPTION
-		 * @param TYPE $table
-		 * @param TYPE $key
-		 * @param TYPE $values
-		 * @param TYPE $serial
+		 * Generate SQL statements for handling a table with a simple key
+		 * @param string $table The name of the table
+		 * @param string[] $key The names of the primary key columns
+		 * @param string[] $values The names of the data columns
+		 * @param bool $serial Whether the table has an automatic id
 		 */
 		private function prepareIdentity($table, $key, $values, $serial)
 		{
@@ -342,9 +350,9 @@
 		}
 
 		/**
-		 * DESCRIPTION
-		 * @param TYPE $table
-		 * @param TYPE $values
+		 * Generate SQL statements for handling a table without a key
+		 * @param string $table The name of the table
+		 * @param string[] $values The names of the data columns
 		 */
 		private function prepareNonRelational($table, $values)
 		{
