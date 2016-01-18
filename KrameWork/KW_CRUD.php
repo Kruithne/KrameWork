@@ -5,22 +5,39 @@
 		public abstract function hasAutoKey();
 		public abstract function getValues();
 
+		/**
+		 * DESCRIPTION
+		 * @param TYPE $key
+		 * @return int
+		 */
 		public function getKeyType($key)
 		{
 			return PDO::PARAM_INT;
 		}
 
+		/**
+		 * KW_CRUD constructor.
+		 * @param ISchemaManager $schema
+		 */
 		public function __construct(ISchemaManager $schema)
 		{
 			parent::__construct();
 			$schema->addTable($this);
 		}
 
+		/**
+		 * DESCRIPTION
+		 * @param TYPE $data
+		 * @return TYPE
+		 */
 		public function getNewObject($data)
 		{
 			return $data;
 		}
 
+		/**
+		 * DESCRIPTION
+		 */
 		public function prepare()
 		{
 			$table = $this->getName();
@@ -36,6 +53,11 @@
 				$this->prepareNonRelational($table, $values);
 		}
 
+		/**
+		 * DESCRIPTION
+		 * @param TYPE $object
+		 * @return array|null|TYPE
+		 */
 		public function create($object)
 		{
 			$auto = $this->hasAutoKey();
@@ -74,6 +96,11 @@
 			return $inserted;
 		}
 
+		/**
+		 * DESCRIPTION
+		 * @param TYPE|null $key
+		 * @return array|null|TYPE
+		 */
 		public function read($key = null)
 		{
 			// Fetch everything
@@ -100,6 +127,11 @@
 			return $this->fetchSingleObject($this->readOne);
 		}
 
+		/**
+		 * DESCRIPTION
+		 * @param $key
+		 * @return array
+		 */
 		private function fetchSubSet($key)
 		{
 			// Wildcard searches get encoded to (@param_null = 1 OR @param = key) in SQL
@@ -112,18 +144,31 @@
 			return $this->fetchRowSet($this->readSet);
 		}
 
+		/**
+		 * DESCRIPTION
+		 * @param TYPE $object
+		 */
 		public function update($object)
 		{
 			$this->bind($this->updateRecord, $object);
 			$this->updateRecord->execute();
 		}
 
+		/**
+		 * DESCRIPTION
+		 * @param TYPE $object
+		 */
 		public function delete($object)
 		{
 			$this->bindValues($this->deleteRecord, $this->getKey(), $object);
 			$this->deleteRecord->execute();
 		}
 
+		/**
+		 * DESCRIPTION
+		 * @param string $query
+		 * @return TYPE
+		 */
 		private function fetchRowSet($query)
 		{
 			$result = array();
@@ -134,6 +179,11 @@
 			return $result;
 		}
 
+		/**
+		 * DESCRIPTION
+		 * @param string $query
+		 * @return null|TYPE
+		 */
 		private function fetchSingleObject($query)
 		{
 			$result = $query->getRows();
@@ -147,12 +197,23 @@
 			return null;
 		}
 
+		/**
+		 * DESCRIPTION
+		 * @param string $query
+		 * @param TYPE $object
+		 */
 		private function bind($query, $object)
 		{
 			$this->bindValues($query, $this->getKey(), $object);
 			$this->bindValues($query, $this->getValues(), $object);
 		}
 
+		/**
+		 * DESCRIPTION
+		 * @param string $query
+		 * @param string $field
+		 * @param TYPE $object
+		 */
 		private function bindValues($query, $field, $object)
 		{
 			if (is_array($field))
@@ -166,6 +227,13 @@
 			}
 		}
 
+		/**
+		 * DESCRIPTION
+		 * @param TYPE $table
+		 * @param TYPE $key
+		 * @param TYPE $values
+		 * @param TYPE $serial
+		 */
 		private function prepareComposite($table, $key, $values, $serial)
 		{
 			// Create
@@ -219,6 +287,13 @@
 			$this->deleteRecord = $this->db->prepare('DELETE FROM '.$table.' WHERE '.$filter);
 		}
 
+		/**
+		 * DESCRIPTION
+		 * @param TYPE $table
+		 * @param TYPE $key
+		 * @param TYPE $values
+		 * @param TYPE $serial
+		 */
 		private function prepareIdentity($table, $key, $values, $serial)
 		{
 			// Create
@@ -266,6 +341,11 @@
 			$this->deleteRecord = $this->db->prepare('DELETE FROM '.$table.' WHERE '.$filter);
 		}
 
+		/**
+		 * DESCRIPTION
+		 * @param TYPE $table
+		 * @param TYPE $values
+		 */
 		private function prepareNonRelational($table, $values)
 		{
 			// Create
