@@ -1,10 +1,6 @@
 <?php
 	abstract class KW_CRUD extends KW_Repository implements ICRUD
 	{
-		public abstract function getKey();
-		public abstract function hasAutoKey();
-		public abstract function getValues();
-
 		/**
 		 * Type hint for column types
 		 * @param TYPE $key The name of the column
