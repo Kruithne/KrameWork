@@ -39,6 +39,7 @@ WHERE _metatable."table" IS NULL
 INSERT INTO `_metatable` (`table`,`version`) VALUES (:table,:version)
 	ON DUPLICATE KEY UPDATE `version`=VALUES(`version`)
 ');
+					break;
 				default:
 					trigger_error('The database driver "'.$this->db->getType().'" is not yet supported by SchemaManager, sorry!', E_USER_ERROR);
 			}
