@@ -3,7 +3,7 @@
 	{
 		/**
 		 * Type hint for column types
-		 * @param TYPE $key The name of the column
+		 * @param string $key The name of the column
 		 * @return int One of the PDO::PARAM_* constants
 		 */
 		public function getKeyType($key)
