@@ -132,7 +132,7 @@
 
 		/**
 		 * Fetches a list of objects based on a partial key match
-		 * @param $key The key array
+		 * @param string[] $key The key array
 		 * @return object[]
 		 */
 		private function fetchSubSet($key)
