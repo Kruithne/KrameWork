@@ -32,13 +32,15 @@ LEFT JOIN _metatable ON (_metatable."table" = i._table)
 WHERE _metatable."table" IS NULL
 ');
 					break;
-				default:
+				case 'mysql':
 					$this->exists = $this->db->prepare('SHOW TABLES LIKE \'_metatable\'');
 					$this->load = $this->db->prepare('SELECT * FROM `_metatable`');
 					$this->save = $this->db->prepare('
 INSERT INTO `_metatable` (`table`,`version`) VALUES (:table,:version)
 	ON DUPLICATE KEY UPDATE `version`=VALUES(`version`)
 ');
+				default:
+					trigger_error('The database driver "'.$this->db->getType().'" is not yet supported by SchemaManager, sorry!', E_USER_ERROR);
 			}
 		}
 

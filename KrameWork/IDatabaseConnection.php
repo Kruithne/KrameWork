@@ -10,10 +10,9 @@
 		 * Returns a database statement.
 		 *
 		 * @param string $sql An SQL query for this statement.
-		 * @param boolean $quiet Ignore errors during prepare
-		 * @return KW_DatabaseStatement A database statement.
+		 * @return IDatabaseStatement A database statement.
 		 */
-		public function prepare($sql, $quiet = false);
+		public function prepare($sql);
 
 		/**
 		 * Execute an SQL query.
