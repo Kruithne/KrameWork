@@ -1,13 +1,9 @@
 <?php
 	abstract class KW_CRUD extends KW_Repository implements ICRUD
 	{
-		public abstract function getKey();
-		public abstract function hasAutoKey();
-		public abstract function getValues();
-
 		/**
 		 * Type hint for column types
-		 * @param TYPE $key The name of the column
+		 * @param string $key The name of the column
 		 * @return int One of the PDO::PARAM_* constants
 		 */
 		public function getKeyType($key)
@@ -136,7 +132,7 @@
 
 		/**
 		 * Fetches a list of objects based on a partial key match
-		 * @param $key The key array
+		 * @param string[] $key The key array
 		 * @return object[]
 		 */
 		private function fetchSubSet($key)
