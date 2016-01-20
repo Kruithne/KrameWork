@@ -48,7 +48,7 @@
 			);
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD(
-				$manager, array('a','b'), true, array('c'), '__mock__', 1, false,
+				$manager, array('a','b'), false, array('c'), '__mock__', 1, false,
 				create_function('$data', 'return $data->a;')
 			);
 			return $crud;
