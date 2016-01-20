@@ -13,6 +13,11 @@
 			$this->type = $type;
 		}
 
+		public function setFactory($sql, $factory)
+		{
+			$this->mock[$sql] = $factory;
+		}
+
 		public function getType()
 		{
 			return $this->type;
@@ -20,6 +25,8 @@
 
 		public function prepare($sql, $quiet = false)
 		{
+			if(isset($this->mock[$sql]))
+				return new MockDatabaseStatement($sql, $this, $this->mock[$sql]);
 			return new MockDatabaseStatement($sql, $this);
 		}
 
@@ -55,6 +62,7 @@
 			return join(';', $this->log);
 		}
 
+		private $mock;
 		private $type;
 		private $log = array();
 		private $id = 1;
