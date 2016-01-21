@@ -44,9 +44,11 @@
 		{
 			if (!$this->executed)
 				$this->execute();
+			$data = array();
 			if($this->mock)
-				return call_user_func($this->mock, $this->data);
-			return array();
+				$data = call_user_func($this->mock, $this->data);
+			error_log('Mock database result set: '.serialize($data));
+			return $data;
 		}
 
 		public function getFirstRow()
