@@ -17,6 +17,7 @@
 			$crud = $this->prepare();
 			$id = time();
 			$result = $crud->read(array('a' => $id, 'b' => 1));
+			error_log(serialize($id).serialize($result));
 			$this->assertEquals($id, $result, 'Reading an object using a key did not return expected value.');
 		}
 
@@ -33,6 +34,7 @@
 			$crud = $this->prepare();
 			$id = time();
 			$result = $crud->read(array('0' => $id, 'b' => '0'));
+			error_log(serialize($id).serialize($result));
 			$this->assertEquals(null, $result, 'Reading an object using an unknown key did not return expected value.');
 		}
 
