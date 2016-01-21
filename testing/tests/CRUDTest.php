@@ -41,7 +41,7 @@
 		private function prepare()
 		{
 			$db = MockDatabaseConnection::Get('mysql');
-			$db->setFactroy(
+			$db->setFactory(
 				'SELECT * FROM __mock__ WHERE a = :a AND b = :b',
 				create_function('$map', 'return $map["a"] == 0 ? Array() : Array(new KW_DataContainer($map));')
 			);
