@@ -26,7 +26,7 @@
 		public function getName() { return $this->name; }
 		public function getVersion() { return $this->version; }
 		public function getQueries() { return $this->queries; }
-		public function getNewObject($data) { return $this->factory ? $this->factory($data) : $data; }
+		public function getNewObject($data) { return $this->factory ? call_user_func($this->factory, $data) : $data; }
 
 		private $key;
 		private $auto;
