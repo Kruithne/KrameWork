@@ -16,7 +16,7 @@
 		{
 			$crud = $this->prepare();
 			$id = time();
-			$result = $crud->read(array('a' => $id, 'b' => 1);
+			$result = $crud->read(array('a' => $id, 'b' => 1));
 			$this->assertEquals($id, $result, 'Reading an object using a key did not return expected value.');
 		}
 
