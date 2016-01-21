@@ -64,7 +64,6 @@
 				$this->bind($this->createRecord, $object);
 
 			$inserted = $this->createRecord->execute();
-
 			if($auto)
 			{
 				switch($this->db->getType())
@@ -77,19 +76,24 @@
 				}
 
 				$result = $this->getLastID->getRows();
-				if ($result && count($result) == 1)
+				if (!$result || count($result) != 1)
+					return null;
+				switch ($this->db->getType())
 				{
-					switch ($this->db->getType())
-					{
-						case 'pgsql':
-							return $this->read($result[0]->currval);
+					case 'pgsql':
+						return $this->read($result[0]->currval);
 
-						default:
-							return $this->read($result[0]->id);
-					}
+					default:
+						return $this->read($result[0]->id);
 				}
 			}
-			return $inserted; // TODO This is kind of a bug, replace this with a proper thing
+			$key = $this->getKey();
+			if(!is_array($key))
+				return $this->read($object->$key);
+			$k = array();
+			foreach($key as $col)
+				$k[$col] = $object->$col;
+			return $this->read($k);
 		}
 
 		/**
