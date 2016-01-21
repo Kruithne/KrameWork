@@ -88,6 +88,8 @@
 				}
 			}
 			$key = $this->getKey();
+			if(!$key)
+				return $this->read();
 			if(!is_array($key))
 				return $this->read($object->$key);
 			$k = array();
