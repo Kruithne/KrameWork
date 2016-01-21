@@ -45,7 +45,7 @@
 			if (!$this->executed)
 				$this->execute();
 			if($this->mock)
-				return $this->mock($this->data);
+				return call_user_func($this->mock, $this->data);
 			return array();
 		}
 
