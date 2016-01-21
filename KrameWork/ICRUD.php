@@ -70,5 +70,12 @@
 		 * @param object $object An object with properties matching all entries of the key specification of the table
 		 */
 		public function delete($object);
+
+		/**
+		 * Build a search query to load objects from the table.
+		 * @param string $column The column to filter by
+		 * @return IQueryColumn
+		 */
+		public function search($column);
 	}
 ?>
