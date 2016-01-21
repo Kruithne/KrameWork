@@ -6,7 +6,8 @@
 			$key = 'id', $auto = true,
 			$values = array('value'),
 			$name = '__mock__', $version = 1,
-			$queries = array(1 => array('CREATE __mock__'))
+			$queries = array(1 => array('CREATE __mock__')),
+			$factory = null
 		)
 		{
 			$this->key = $key;
@@ -15,6 +16,7 @@
 			$this->name = $name;
 			$this->version = $version;
 			$this->queries = $queries;
+			$this->factory = $factory;
 			parent::__construct($schema);
 		}
 
@@ -24,6 +26,7 @@
 		public function getName() { return $this->name; }
 		public function getVersion() { return $this->version; }
 		public function getQueries() { return $this->queries; }
+		public function getNewObject($data) { return $this->factory ? call_user_func($this->factory, $data) : $data; }
 
 		private $key;
 		private $auto;
@@ -31,5 +34,6 @@
 		private $name;
 		private $version;
 		private $queries;
+		private $factory;
 	}
 ?>

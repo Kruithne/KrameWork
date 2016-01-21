@@ -1,10 +1,11 @@
 <?php
 	class MockDatabaseStatement implements IDatabaseStatement
 	{
-		public function __construct($sql, $db)
+		public function __construct($sql, $db, $mock = false)
 		{
 			$this->sql = $sql;
 			$this->db = $db;
+			$this->mock = $mock;
 		}
 
 		public function getQueryString()
@@ -43,7 +44,10 @@
 		{
 			if (!$this->executed)
 				$this->execute();
-			return array();
+			$data = array();
+			if($this->mock)
+				$data = call_user_func($this->mock, $this->data);
+			return $data;
 		}
 
 		public function getFirstRow()
@@ -66,5 +70,6 @@
 		private $db;
 		private $data = array();
 		private $type = array();
+		private $mock;
 	}
 ?>
