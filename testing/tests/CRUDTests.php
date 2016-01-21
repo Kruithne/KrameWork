@@ -24,7 +24,7 @@
 		{
 			$crud = $this->prepare();
 			$id = time();
-			$result = $crud->read(array('a' => $id, 'b' => '*');
+			$result = $crud->read(array('a' => $id, 'b' => '*'));
 			$this->assertEquals(9, count($result), 'Reading an object using a partial key did not return expected value.');
 		}
 
@@ -32,7 +32,7 @@
 		{
 			$crud = $this->prepare();
 			$id = time();
-			$result = $crud->read(array('0' => $id, 'b' => '0');
+			$result = $crud->read(array('0' => $id, 'b' => '0'));
 			$this->assertEquals(null, $result, 'Reading an object using an unknown key did not return expected value.');
 		}
 
