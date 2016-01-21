@@ -47,7 +47,7 @@
 			);
 			$db->setFactory(
 				'SELECT * FROM __mock__ WHERE (:a_null = 1 OR a = :a) AND (:b_null = 1 OR b = :b)',
-				create_function('$map', 'if($map["b"] == "*") return Array(new KW_DataContainer($map)); $set = array(); for(var $i = 1; $i < 10; ++$i) $set[] = new KW_DataContainer(Array("a" => $map["a"], "b" => $i)); return $set;')
+				create_function('$map', 'if($map["b"] == "*") return Array(new KW_DataContainer($map)); $set = array(); for($i = 1; $i < 10; ++$i) $set[] = new KW_DataContainer(Array("a" => $map["a"], "b" => $i)); return $set;')
 			);
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD(
