@@ -25,9 +25,7 @@
 			$crud = $this->prepare();
 			$id = time();
 			$result = $crud->read(array('a' => $id, 'b' => '*'));
-			error_log('ID: '.serialize($id));
-			error_log('Result: '.serialize($result));
-			$this->assertEquals(9, count($result), 'Reading an object using a partial key did not return expected value.');
+			$this->assertEquals($id * 9, array_sum($result), 'Reading an object using a partial key did not return expected value.');
 		}
 
 		public function testReadByUnknownKeyReturnsNull()
