@@ -47,6 +47,7 @@
 			$data = array();
 			if($this->mock)
 				$data = call_user_func($this->mock, $this->data);
+			error_log('Executing SQL: '.$this->sql);
 			error_log('Mock database result set: '.serialize($data));
 			return $data;
 		}
