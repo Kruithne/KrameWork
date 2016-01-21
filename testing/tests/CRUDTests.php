@@ -8,6 +8,7 @@
 			$crud = $this->prepare();
 			$id = time();
 			$result = $crud->create((object)array('a' => $id, 'b' => '42', 'c' => '..'));
+			error_log(serialize($id).serialize($result));
 			$this->assertEquals($id, $result, 'Creating a new object did not return expected value.');
 		}
 
