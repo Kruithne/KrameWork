@@ -174,6 +174,16 @@
 		}
 
 		/**
+		 * Build a search query to load objects from the table.
+		 * @param string $column The column to filter by
+		 * @return IQueryColumn
+		 */
+		public function search($column)
+		{
+			return null; // Not yet implemented, just testing IDE features.
+		}
+
+		/**
 		 * Fetches a set of rows
 		 * @param IDatabaseStatement $query An SQL statement to execute.
 		 * @return object[] A list of objects as defined by getNewObject.
