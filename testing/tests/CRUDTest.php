@@ -34,7 +34,8 @@
 			$crud = $this->prepare();
 			$id = time();
 			$result = $crud->read(array('a' => $id, 'b' => '-2'));
-			error_log(serialize($id).serialize($result));
+			error_log('ID: '.serialize($id));
+			error_log('Result: '.serialize($result));
 			$this->assertEquals(null, $result, 'Reading an object using an unknown key did not return expected value.');
 		}
 
@@ -43,7 +44,7 @@
 			$db = MockDatabaseConnection::Get('mysql');
 			$db->setFactory(
 				'SELECT * FROM __mock__ WHERE a = :a AND b = :b',
-				create_function('$map', 'return $map["a"] == 0 ? Array() : Array(new KW_DataContainer($map));')
+				create_function('$map', 'return $map["b"] < 0 ? Array() : Array(new KW_DataContainer($map));')
 			);
 			$db->setFactory(
 				'SELECT * FROM __mock__ WHERE (:a_null = 1 OR a = :a) AND (:b_null = 1 OR b = :b)',
