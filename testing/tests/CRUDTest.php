@@ -50,7 +50,7 @@
 				create_function('$map', 
 					'error_log("Mock query param: ".serialize($map));'.
 					'if($map["b"] == 0) return Array();'.
-					'if($map["b"] != "*") return Array(new KW_DataContainer($map));'.
+					'if($map["b_null"] == 0) return Array(new KW_DataContainer($map));'.
 					'$set = array();'.
 					'for($i = 1; $i < 10; ++$i)'.
 						'$set[] = new KW_DataContainer(Array("a" => $map["a"], "b" => $i));'.
