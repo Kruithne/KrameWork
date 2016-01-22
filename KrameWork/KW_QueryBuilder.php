@@ -127,4 +127,6 @@
 		private $value;
 		private $db;
 		private $level;
-		private $anchor}
+		private $anchor;
+	}
+?>
