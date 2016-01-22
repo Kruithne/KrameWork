@@ -113,10 +113,6 @@
 			$result = array();
 			foreach ($this->statement->getRows() as $data)
 				$result[] = $this->crud->getNewObject($data);
-			if(count($result) == 0)
-				return null;
-			if(count($result) == 1)
-				return $result[0];
 			return $result;
 		}
 

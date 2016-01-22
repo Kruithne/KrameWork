@@ -96,7 +96,7 @@
 	{
 		/**
 		 * Prepare and execute the built query, returning the result set.
-		 * @return mixed The datatype as specified by CRUD instance the query was built from.
+		 * @return object[] The datatype as specified by CRUD instance the query was built from.
 		 */
 		public function execute();
 	}
