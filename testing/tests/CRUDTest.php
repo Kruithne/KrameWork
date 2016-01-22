@@ -41,7 +41,7 @@
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager);
 			$db->begin();
-			$result = $crud->search('value')->notNull()->and('value')->lessThan(5)->execute();
+			$result = $crud->search('value')->notNull()->andColumn('value')->lessThan(5)->execute();
 			$sql = $db->end();
 			$this->assertEquals('SELECT * FROM __mock__ WHERE value IS NOT NULL AND value < :value2', $sql, 'Generated SQL mismatch');
 		}
