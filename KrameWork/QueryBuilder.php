@@ -1,4 +1,7 @@
 <?php
+	// These interfaces only provide hinting for IDEs when using the query builder features of CRUD.
+	// They should not be used in production.
+
 	interface IQueryAnd
 	{
 		/**
@@ -54,13 +57,30 @@
 		 */
 		public function like($value);
 	}
-	interface IQueryNot
+	interface IQueryNotLike
 	{
 		/**
-		 * Inverts the following predicate
-		 * @return IQueryColumnInverted
+		 * Do a negative wildcard match on the preceeding column specification
+		 * @param string $value The pattern to look for or exclude.
+		 * @return IQueryPredicate
 		 */
-		public function not();
+		public function notLike($value);
+	}
+	interface IQueryNull
+	{
+		/**
+		 * Require that the preceeding column specification is null
+		 * @return IQueryPredicate
+		 */
+		public function isNull();
+	}
+	interface IQueryNotNull
+	{
+		/**
+		 * Require that the preceeding column specification is a non null value
+		 * @return IQueryPredicate
+		 */
+		public function notNull();
 	}
 	interface IQueryOr
 	{
@@ -71,7 +91,13 @@
 		 */
 		public function or($column);
 	}
-	interface IQueryColumnInverted extends IQueryBetween, IQueryEquals, IQueryGraterThan, IQueryLessThan, IQueryLike {}
-	interface IQueryColumn extends IQueryColumnInverted, IQueryNot {}
-	interface IQueryPredicate extends IQueryAnd, IQueryOr {}
+	interface IQueryColumn extends IQueryBetween, IQueryEquals, IQueryGraterThan, IQueryLessThan, IQueryLike, IQueryNotLike, IQueryNull, IQueryNotNull {}
+	interface IQueryPredicate extends IQueryAnd, IQueryOr
+	{
+		/**
+		 * Prepare and execute the built query, returning the result set.
+		 * @return mixed The datatype as specified by CRUD instance the query was built from.
+		 */
+		public function execute();
+	}
 ?>
