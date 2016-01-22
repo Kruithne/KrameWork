@@ -14,7 +14,7 @@
 		{
 			return
 				($this->anchor ? $this->anchor->build().' ' : 'SELECT * FROM '.$this->crud->getName().' WHERE ')
-				. sprintf($this->format, $this->column)
+				. sprintf($this->format, $this->column, $this->level)
 				. ' ' . $this->glue;
 		}
 
@@ -105,10 +105,10 @@
 
 		public function execute()
 		{
-			$sql = $this->anchor->build().' '.sprintf($this->format, $this->column);
+			$sql = $this->anchor->build().' '.sprintf($this->format, $this->column, $this->level);
 			if(!$this->statement)
 				$this->statement = $this->db->prepare($sql);
-			$this->bind($statement);
+			$this->bind($this->statement);
 
 			$result = array();
 			foreach ($this->statement->getRows() as $data)
