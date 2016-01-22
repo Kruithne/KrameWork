@@ -91,7 +91,7 @@
 		 */
 		public function orColumn($column);
 	}
-	interface IQueryColumn extends IQueryBetween, IQueryEquals, IQueryGraterThan, IQueryLessThan, IQueryLike, IQueryNotLike, IQueryNull, IQueryNotNull {}
+	interface IQueryColumn extends IQueryBetween, IQueryEquals, IQueryGreaterThan, IQueryLessThan, IQueryLike, IQueryNotLike, IQueryNull, IQueryNotNull {}
 	interface IQueryPredicate extends IQueryAnd, IQueryOr
 	{
 		/**
