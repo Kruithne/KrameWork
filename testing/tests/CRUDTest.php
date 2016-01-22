@@ -35,6 +35,17 @@
 			$this->assertEquals(null, $result, 'Reading an object using an unknown key did not return expected value.');
 		}
 
+		public function testQueryBuilder()
+		{
+			$db = MockDatabaseConnection::Get('mysql');
+			$manager = new MockSchemaManager($db);
+			$crud = new MockCRUD($manager);
+			$db->begin();
+			$result = $crud->search('value')->notNull()->andColumn('value')->lessThan(5)->execute();
+			$sql = $db->end();
+			$this->assertEquals('SELECT * FROM __mock__ WHERE value IS NOT NULL AND value < :value2', $sql, 'Generated SQL mismatch');
+		}
+
 		private function prepare()
 		{
 			$db = new MockDatabaseConnection('mysql');

@@ -180,7 +180,7 @@
 		 */
 		public function search($column)
 		{
-			return null; // Not yet implemented, just testing IDE features.
+			return new KW_QueryBuilder($this->db, $column, null, $this);
 		}
 
 		/**
