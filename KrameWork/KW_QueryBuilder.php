@@ -10,12 +10,12 @@
 			$this->level = $level;
 		}
 
-		public function build()
+		public function build($glue = true)
 		{
 			return
 				($this->anchor ? $this->anchor->build().' ' : 'SELECT * FROM '.$this->crud->getName().' WHERE ')
 				. sprintf($this->format, $this->column, $this->level)
-				. ' ' . $this->glue;
+				. ($glue ? ' ' . $this->glue : ''); 
 		}
 
 		public function bind($statement)
@@ -105,7 +105,7 @@
 
 		public function execute()
 		{
-			$sql = $this->anchor->build().' '.sprintf($this->format, $this->column, $this->level);
+			$sql = $this->build(false);
 			if(!$this->statement)
 				$this->statement = $this->db->prepare($sql);
 			$this->bind($this->statement);
