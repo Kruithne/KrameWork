@@ -35,13 +35,13 @@
 				$this->anchor->bind($statement);
 		}
 
-		public function and($column)
+		public function andColumn($column)
 		{
 			$this->glue = 'AND';
 			return new self($this->db, $column, $this, $this->crud, $this->level + 1);
 		}
 
-		public function or($column)
+		public function orColumn($column)
 		{
 			$this->glue = 'OR';
 			return new self($this->db, $column, $this, $this->crud, $this->level + 1);

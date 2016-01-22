@@ -9,7 +9,7 @@
 		 * @param string $column The column name to filter by
 		 * @return IQueryColumn
 		 */
-		public function and($column);
+		public function andColumn($column);
 	}
 	interface IQueryBetween
 	{
@@ -89,7 +89,7 @@
 		 * @param string $column The column name to filter by
 		 * @return IQueryColumn
 		 */
-		public function or($column);
+		public function orColumn($column);
 	}
 	interface IQueryColumn extends IQueryBetween, IQueryEquals, IQueryGraterThan, IQueryLessThan, IQueryLike, IQueryNotLike, IQueryNull, IQueryNotNull {}
 	interface IQueryPredicate extends IQueryAnd, IQueryOr
