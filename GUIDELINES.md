@@ -14,7 +14,7 @@ When writing code for this framework, please adhere to the coding style outlined
 
 + All added functions and variables should include correctly formatted and details phpDoc. For details on documentation syntax and formatting, see http://phpdoc.org/docs/latest/index.html.
 
-+ Strings should be wrapped with double-quotation marks for almost all cases. Special cases may apply where this rule can be skipped.
++ Strings should be wrapped with single-quotation marks for almost all cases. Special cases may apply where this rule can be skipped.
 
 + Class names should use pascal casing. All methods (static too) and variables should use camel casing. For static functions intended for heavy use in production code, pascal casing is allowed. Static functions intended for (mostly) internal use should use camel casing.
 
