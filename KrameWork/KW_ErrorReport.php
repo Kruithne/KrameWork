@@ -61,7 +61,7 @@
 			if ($key == 'trace')
 			{
 				$out = array();
-				foreach($value as $step)
+				foreach ($value as $step)
 				{
 					$file = isset($step['file']) ? $step['file'] : 'unknown';
 					$line = isset($step['line']) ? $step['line'] : 0;

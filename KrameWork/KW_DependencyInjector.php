@@ -10,7 +10,7 @@
 		{
 			if (is_array($classInput))
 			{
-				foreach($classInput as $classInputItem)
+				foreach ($classInput as $classInputItem)
 					$this->addComponent($classInputItem);
 			}
 

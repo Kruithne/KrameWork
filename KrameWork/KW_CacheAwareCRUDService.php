@@ -141,7 +141,7 @@
 					if (is_array($key))
 					{
 						$search = array();
-						foreach($key as $i => $col)
+						foreach ($key as $i => $col)
 							$search[$col] = $lookup[$i + 1];
 
 						return $this->read($search);
