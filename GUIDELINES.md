@@ -22,7 +22,7 @@ When writing code for this framework, please adhere to the coding style outlined
 
 + Interface names should be prefixed with `I`, for example `IDataContainer` is valid where `DataContainerInterface` is not.
 
-+ Parameters/arguments passed into a method call should be seperated by a comma and a space.
++ Parameters/arguments passed into a method call should be separated by a comma and a space.
   ```
   some_func($oh,$baby); // Wrong
   some_func($oh, $baby); // Right
