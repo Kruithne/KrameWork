@@ -1,6 +1,10 @@
 <?php
 	class KW_CacheStateTable extends KW_Repository implements ICacheState
 	{
+		/**
+		 * KW_CacheStateTable constructor.
+		 * @param ISchemaManager $schema
+		 */
 		public function __construct(ISchemaManager $schema)
 		{
 			$schema->addTable($this);
@@ -19,7 +23,8 @@
 		{
 			$this->select->key = $cacheKey;
 			$result = $this->select->getRows();
-			if(!$result || count($result) == 0)
+
+			if (!$result || count($result) == 0)
 			{
 				$ts = time();
 				$this->insert->key = $cacheKey;
@@ -32,17 +37,18 @@
 
 		public function prepare()
 		{
-			switch($this->db->getType())
+			switch ($this->db->getType())
 			{
 				case 'pgsql':
-					$this->select = $this->db->prepare('SELECT "timestamp" FROM _cache WHERE "key"=:key');
-					$this->update = $this->db->prepare('UPDATE _cache SET "timestamp"=:timestamp WHERE "key"=:key');
+					$this->select = $this->db->prepare('SELECT "timestamp" FROM _cache WHERE "key" = :key');
+					$this->update = $this->db->prepare('UPDATE _cache SET "timestamp" = :timestamp WHERE "key" = :key');
 					$this->insert = $this->db->prepare('INSERT INTO _cache ("key","timestamp") VALUES (:key, :timestamp)');
 
 					break;
+
 				default:
-					$this->select = $this->db->prepare('SELECT `timestamp` FROM _cache WHERE `key`=:key');
-					$this->update = $this->db->prepare('UPDATE _cache SET `timestamp`=:timestamp WHERE `key`=:key');
+					$this->select = $this->db->prepare('SELECT `timestamp` FROM _cache WHERE `key` = :key');
+					$this->update = $this->db->prepare('UPDATE _cache SET `timestamp` = :timestamp WHERE `key` = :key');
 					$this->insert = $this->db->prepare('INSERT INTO _cache (`key`,`timestamp`) VALUES (:key, :timestamp)');
 			}
 		}
@@ -64,22 +70,23 @@
 				case 'pgsql':
 					return array(
 						1 => array('
-CREATE TABLE _cache (
-	"key" VARCHAR(100),
-	"timestamp" INTEGER,
-	PRIMARY KEY("key")
-)'
+							CREATE TABLE _cache (
+								"key" VARCHAR(100),
+								"timestamp" INTEGER,
+								PRIMARY KEY("key")
+							)'
 						)
 					);
 					break;
+
 				default:
 					return array(
 						1 => array('
-CREATE TABLE `_cache` (
-	`key` VARCHAR(100),
-	`timestamp` INTEGER,
-	PRIMARY KEY(`key`)
-)'
+							CREATE TABLE `_cache` (
+								`key` VARCHAR(100),
+								`timestamp` INTEGER,
+								PRIMARY KEY(`key`)
+							)'
 						)
 					);
 			}
