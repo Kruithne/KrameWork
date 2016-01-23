@@ -28,7 +28,7 @@
 					return $data;
 			}
 
-			return NULL;
+			return null;
 		}
 
 		/**
@@ -67,7 +67,7 @@
 			if (!array_key_exists($key, $_FILES))
 				return array();
 
-			$data = Array();
+			$data = array();
 			$tmp = $_FILES[$key]['tmp_name'];
 			if (is_array($tmp))
 			{
@@ -91,7 +91,7 @@
 		public static function Check()
 		{
 			foreach (func_get_args() as $arg)
-				if ($arg === NULL)
+				if ($arg === null)
 					return false;
 
 			return true;
@@ -106,6 +106,9 @@
 			self::$encoding = $encoding;
 		}
 
+		/**
+		 * @var string
+		 */
 		private static $encoding = 'UTF-8';
 	}
 ?>
