@@ -1,6 +1,10 @@
 <?php
 	class KW_SchemaManager implements ISchemaManager
 	{
+		/**
+		 * KW_SchemaManager constructor.
+		 * @param IDatabaseConnection $db
+		 */
 		public function __construct(IDatabaseConnection $db)
 		{
 			$this->db = $db;
