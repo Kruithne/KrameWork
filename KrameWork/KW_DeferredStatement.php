@@ -1,6 +1,11 @@
 <?php
 	class KW_DeferredStatement implements IDatabaseStatement
 	{
+		/**
+		 * KW_DeferredStatement constructor.
+		 * @param string $sql
+		 * @param PDO $db
+		 */
 		public function __construct($sql, PDO $db)
 		{
 			$this->sql = $sql;
