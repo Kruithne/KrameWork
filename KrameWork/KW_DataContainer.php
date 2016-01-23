@@ -1,6 +1,10 @@
 <?php
 	class KW_DataContainer implements IDataContainer
 	{
+		/**
+		 * KW_DataContainer constructor.
+		 * @param array $data Default data
+		 */
 		public function __construct($data = Array())
 		{
 			$this->values = $data;
@@ -54,7 +58,14 @@
 			$this->values = unserialize($values);
 		}
 
-		public function jsonSerialize()
+		/**
+		 * Specify data which should be serialized to JSON
+		 * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+		 * @return mixed data which can be serialized by <b>json_encode</b>,
+		 * which is a value of any type other than a resource.
+		 * @since 5.4.0
+		 */
+		function jsonSerialize()
 		{
 			return (object)$this->values;
 		}
@@ -69,6 +80,9 @@
 			return $this->values;
 		}
 
+		/**
+		 * @var object[]
+		 */
 		private $values = Array();
 	}
 ?>
