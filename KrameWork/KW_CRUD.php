@@ -63,7 +63,7 @@
 			else
 				$this->bind($this->createRecord, $object);
 
-			$inserted = $this->createRecord->execute();
+			$this->createRecord->execute();
 			if($auto)
 			{
 				switch($this->db->getType())
