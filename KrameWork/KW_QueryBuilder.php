@@ -1,6 +1,14 @@
 <?php
 	class KW_QueryBuilder
 	{
+		/**
+		 * KW_QueryBuilder constructor.
+		 * @param $db
+		 * @param $column
+		 * @param $anchor
+		 * @param $crud
+		 * @param int $level
+		 */
 		public function __construct($db, $column, $anchor, $crud, $level = 1)
 		{
 			$this->db = $db;
@@ -13,7 +21,7 @@
 		public function build($glue = true)
 		{
 			return
-				($this->anchor ? $this->anchor->build().' ' : 'SELECT * FROM '.$this->crud->getName().' WHERE ')
+				($this->anchor ? $this->anchor->build() . ' ' : 'SELECT * FROM ' . $this->crud->getName() . ' WHERE ')
 				. sprintf($this->format, $this->column, $this->level)
 				. ($glue ? ' ' . $this->glue : ''); 
 		}
@@ -21,16 +29,19 @@
 		public function bind($statement)
 		{
 			if(is_array($this->value))
-				foreach($this->value as $pf => $value)
+			{
+				foreach ($this->value as $pf => $value)
 				{
-					$key = $this->column.$this->level.'_'.$pf;
+					$key = $this->column . $this->level . '_' . $pf;
 					$statemet->$key = $value;
 				}
+			}
 			else
 			{
-				$key = $this->column.$this->level;
+				$key = $this->column . $this->level;
 				$statement->$key = $this->value;
 			}
+
 			if($this->anchor)
 				$this->anchor->bind($statement);
 		}
@@ -106,23 +117,41 @@
 		public function execute()
 		{
 			$sql = $this->build(false);
-			if(!$this->statement)
+			if (!$this->statement)
 				$this->statement = $this->db->prepare($sql);
+
 			$this->bind($this->statement);
 
 			$result = array();
 			foreach ($this->statement->getRows() as $data)
 				$result[] = $this->crud->getNewObject($data);
+
 			return $result;
 		}
 
+		/**
+		 * @var KW_DatabaseStatement
+		 */
 		private $statement;
+
 		private $glue;
+
 		private $column;
+
 		private $format;
+
 		private $value;
+
+		/**
+		 * @var KW_DatabaseConnection
+		 */
 		private $db;
+
+		/**
+		 * @var int
+		 */
 		private $level;
+
 		private $anchor;
 	}
 ?>
