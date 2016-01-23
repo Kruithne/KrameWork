@@ -71,6 +71,8 @@
 						return $this->get_session();
 				}
 			}
+
+			return false;
 		}
 
 		private function authenticate($request)
