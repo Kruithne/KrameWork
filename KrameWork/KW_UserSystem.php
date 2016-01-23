@@ -222,7 +222,7 @@
 			for ($i = 0; $i < $iterations; ++$i)
 				$passphrase = hash($algo, $salt . $passphrase);
 
-			return $salt . '$'.$iterations . '$' . $algorithm . '$'.$passphrase;
+			return $salt . '$'. $iterations . '$' . $algorithm . '$' . $passphrase;
 		}
 
 		private function getAlgorithm($index)
