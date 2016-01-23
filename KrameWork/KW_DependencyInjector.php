@@ -85,7 +85,7 @@
 		{
 			$resolved_name = $this->resolve($class_name);
 			if (!array_key_exists($resolved_name, $this->classes))
-				throw new KW_ClassDependencyException($resolved_name, 'Class %s has not been added to the injector');
+				throw new KW_ClassDependencyException($resolved_name, "Class %s has not been added to the injector");
 
 			$object = $this->classes[$resolved_name];
 			if ($object === null)
@@ -121,29 +121,29 @@
 			$class = new ReflectionClass($class_name);
 
 			if (!$class->isInstantiable())
-				throw new KW_ClassDependencyException($class_name, 'Class %s cannot be instantiated');
+				throw new KW_ClassDependencyException($class_name, "Class %s cannot be instantiated");
 
 			$to_inject = Array();
 			$constructor = $class->getConstructor();
 
 			if (!$constructor)
-				throw new KW_ClassDependencyException($class_name, 'Class %s does not have a constructor function');
+				throw new KW_ClassDependencyException($class_name, "Class %s does not have a constructor function");
 
 			foreach ($constructor->getParameters() as $parameter)
 			{
 				$parameter_class = $parameter->getClass();
 				if ($parameter_class === NULL)
-					throw new KW_ClassDependencyException($class_name, 'Constructor for %s contains parameters with an undefined class');
+					throw new KW_ClassDependencyException($class_name, "Constructor for %s contains parameters with an undefined class");
 
 				$parameter_class_name = $parameter_class->getName();
 				if ($parameter_class_name === $class_name)
-					throw new KW_ClassDependencyException($class_name, 'Cyclic dependency when constructing %s');
+					throw new KW_ClassDependencyException($class_name, "Cyclic dependency when constructing %s");
 
 				$to_inject[] = $this->getComponent($parameter_class_name);
 			}
 
 			$object = $class->newInstanceWithoutConstructor();
-			call_user_func_array(array($object, '__construct'), $to_inject);
+			call_user_func_array(array($object, "__construct"), $to_inject);
 
 			if ($this->classes[$class_name] === NULL)
 				$this->classes[$class_name] = $object;
