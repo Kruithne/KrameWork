@@ -219,7 +219,7 @@
 		{
 			$algo = $this->getAlgorithm($algorithm);
 
-			for($i = 0; $i < $iterations; ++$i)
+			for ($i = 0; $i < $iterations; ++$i)
 				$passphrase = hash($algo, $salt . $passphrase);
 
 			return $salt . '$'.$iterations . '$' . $algorithm . '$'.$passphrase;
