@@ -31,11 +31,18 @@
 			$this->cache_clear();
 		}
 
+		/**
+		 * Invalidates the cache of this service
+		 */
 		public function cache_clear()
 		{
 			$this->cache->clear('.#table#' . $this->getName());
 		}
 
+		/**
+		 * Get the current timestamp for the cache of this service
+		 * @return int Unix timestamp saying when the table was last updated
+		 */
 		public function cache_read()
 		{
 			return $this->cache->read('.#table#' . $this->getName());
