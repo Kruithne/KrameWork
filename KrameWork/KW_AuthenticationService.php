@@ -229,5 +229,6 @@
 		}
 
 		private $users;
+		private $multifactor;
 	}
 ?>
