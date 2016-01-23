@@ -17,7 +17,7 @@
 			if(!$this->statement)
 				$this->prepare();
 
-			return $this->statement->__set($key, $value);
+			$this->statement->__set($key, $value);
 		}
 
 		public function getQueryString()
@@ -39,7 +39,7 @@
 			if(!$this->statement)
 				$this->prepare();
 
-			return $this->statement->setType($key, $type);
+			$this->statement->setType($key, $type);
 		}
 
 		public function copyValuesFromRow(IDataContainer $row, $prependChar = ':')
