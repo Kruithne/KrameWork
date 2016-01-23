@@ -91,7 +91,14 @@
 			}
 		}
 
+		/**
+		 * @var IUserSystem
+		 */
 		private $users;
+
+		/**
+		 * @var IAuthenticator
+		 */
 		private $auth;
 	}
 ?>
