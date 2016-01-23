@@ -125,6 +125,7 @@
 						return false;
 				}
 			}
+			
 			if ($_SERVER['REQUEST_METHOD'] == 'GET')
 			{
 				if ($path)
