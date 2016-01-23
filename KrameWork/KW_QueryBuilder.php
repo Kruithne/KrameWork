@@ -33,7 +33,7 @@
 				foreach ($this->value as $pf => $value)
 				{
 					$key = $this->column . $this->level . '_' . $pf;
-					$statemet->$key = $value;
+					$statement->$key = $value;
 				}
 			}
 			else
