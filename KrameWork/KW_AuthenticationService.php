@@ -100,7 +100,7 @@
 			$_SESSION['state'] = $result;
 
 			if ($request->remember)
-				$this->grant_token($user);
+				$this->grant_token($user, $this->get_token($user));
 
 			return $this->get_session();
 		}
@@ -144,7 +144,7 @@
 					return false;
 
 				case 0:
-					$this->grant_token($user);
+					$this->grant_token($user, $this->get_token($user));
 					$_SESSION['verified'] = false;
 					$_SESSION['userid'] = $user->id;
 					$_SESSION['state'] = $this->multifactor ? AUTH_MULTIFACTOR : AUTH_NONE;
@@ -161,21 +161,21 @@
 		}
 
 		/**
-		 * Send the user a login token for future automatic login
-		 * @param object $user The authenticated user
+		 * Generate an authentication token for the user
+		 * @param IDataContainer The user
+		 * @return string An authentication token
 		 */
-		private function grant_token($user)
+		private function get_token($user)
 		{
-			setcookie(
-				'auth_token',
-				$user->id . ';' . $this->ip_lock($this->getAuthToken($user)) . ';' . $_SERVER['REMOTE_ADDR'],
-				strtotime('+1 year'),
-				'/auth.php',
-				'lab-api.runsafe.no',
-				true,
-				true
-			);
+			return $user->id . ';' . $this->ip_lock($this->getAuthToken($user)) . ';' . $_SERVER['REMOTE_ADDR'];
 		}
+
+		/**
+		 * Send the user a login token for future automatic login
+		 * @param IDataContainer $user The authenticated user
+		 * @param string The token string
+		 */
+		protected abstract function grant_token($user, $token);
 
 		/**
 		 * Validate a token for automatic login
@@ -247,7 +247,7 @@
 			if (isset($_SESSION['userid']))
 			{
 				if (isset($_COOKIE['auth_token']))
-					setcookie('auth_token', '', strtotime('-1 year'), '/auth.php', 'lab-api.runsafe.no', true, true);
+					setcookie('auth_token', '', strtotime('-1 year'));
 
 				session_destroy();
 			}
