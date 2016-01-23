@@ -13,6 +13,7 @@
 				foreach($classInput as $classInputItem)
 					$this->addComponent($classInputItem);
 			}
+
 			if (is_string($classInput))
 			{
 				if (!array_key_exists($classInput, $this->classes))
@@ -20,7 +21,7 @@
 					if ($this->preload)
 						KW_ClassLoader::loadClass($classInput);
 
-					$this->classes[$classInput] = NULL;
+					$this->classes[$classInput] = null;
 
 					if ($this->bindInterfaces)
 						$this->extractInterfaces($classInput);
@@ -155,6 +156,8 @@
 		 * @var object[]
 		 */
 		private $classes = Array();
+
+
 		private $bindings = Array();
 		private $decorators = Array();
 
