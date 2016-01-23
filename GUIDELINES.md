@@ -70,7 +70,7 @@ When writing code for this framework, please adhere to the coding style outlined
       rockOn();
   ```
 
- + Opening scope brackets should be on a new-line. Rare exceptions such as anonymous functions.
++ Opening scope brackets should be on a new-line. Rare exceptions such as anonymous functions.
 
   ```
   switch ($thing) { // Wrong
