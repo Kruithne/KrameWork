@@ -61,7 +61,7 @@
 		/**
 		 * Get the subject for this mail object.
 		 *
-		 * @return string|null Subject for this object, will be NULL if not yet set.
+		 * @return string|null Subject for this object, will be null if not yet set.
 		 */
 		public function getSubject()
 		{

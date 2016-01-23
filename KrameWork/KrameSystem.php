@@ -95,7 +95,7 @@
 		/**
 		 * Returns the error handler for this KrameWork system instance.
 		 *
-		 * @return null|KW_ErrorHandler The error handler, will be NULL if error handling is disabled in this instance.
+		 * @return null|KW_ErrorHandler The error handler, will be null if error handling is disabled in this instance.
 		 */
 		public function getErrorHandler()
 		{

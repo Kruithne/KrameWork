@@ -5,8 +5,8 @@
 		 * Constructs a database connection wrapper.
 		 *
 		 * @param string $dsn DB DSN (PDO format)
-		 * @param string|null $username Username to connect with. Set to NULL if N/A.
-		 * @param string|null $password Password to connect with. Set to NULL if N/A.
+		 * @param string|null $username Username to connect with. Set to null if N/A.
+		 * @param string|null $password Password to connect with. Set to null if N/A.
 		 */
 		public function __construct($dsn, $username, $password)
 		{

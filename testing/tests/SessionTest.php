@@ -15,16 +15,16 @@
 		}
 
 		/**
-		 * Confirm that trying to get a value that does not exist returns NULL.
+		 * Confirm that trying to get a value that does not exist returns null.
 		 */
 		public function testSessionInvalid()
 		{
 			$rt = Session::Get("someValueWeDidNotSet");
-			$this->assertEquals(null, $rt, "Querying an invalid session value did not return NULL.");
+			$this->assertEquals(null, $rt, "Querying an invalid session value did not return null.");
 		}
 
 		/**
-		 * Values deleted using our Session interface should return NULL.
+		 * Values deleted using our Session interface should return null.
 		 */
 		public function testSessionDelete()
 		{
@@ -32,7 +32,7 @@
 			Session::Delete("testSessionDelete");
 			$rt = Session::Get("testSessionDelete");
 
-			$this->assertEquals(null, $rt, "Querying a deleted session value did not return NULL.");
+			$this->assertEquals(null, $rt, "Querying a deleted session value did not return null.");
 		}
 	}
 ?>

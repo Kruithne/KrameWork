@@ -133,7 +133,7 @@
 			foreach ($constructor->getParameters() as $parameter)
 			{
 				$parameter_class = $parameter->getClass();
-				if ($parameter_class === NULL)
+				if ($parameter_class === null)
 					throw new KW_ClassDependencyException($class_name, "Constructor for %s contains parameters with an undefined class");
 
 				$parameter_class_name = $parameter_class->getName();
@@ -146,7 +146,7 @@
 			$object = $class->newInstanceWithoutConstructor();
 			call_user_func_array(array($object, "__construct"), $to_inject);
 
-			if ($this->classes[$class_name] === NULL)
+			if ($this->classes[$class_name] === null)
 				$this->classes[$class_name] = $object;
 
 			return $object;

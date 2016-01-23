@@ -24,7 +24,7 @@
 		 * Get a value set in this object.
 		 *
 		 * @param string $key The key the value is stored at.
-		 * @return mixed|null The value for the key. Will be NULL if nothing exists at the key.
+		 * @return mixed|null The value for the key. Will be null if nothing exists at the key.
 		 */
 		public function __get($key);
 

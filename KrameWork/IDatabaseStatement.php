@@ -12,7 +12,7 @@
 		/**
 		 * Retrieve the SQL query string set in this statement.
 		 *
-		 * @return null|string Statement SQL, will be NULL if not yet set.
+		 * @return null|string Statement SQL, will be null if not yet set.
 		 */
 		public function getQueryString();
 
@@ -57,7 +57,7 @@
 		public function getRows();
 
 		/**
-		 * Returns the first row of the data retrieved. Will by NULL if no results were returned.
+		 * Returns the first row of the data retrieved. Will by null if no results were returned.
 		 * @return IDataContainer|null
 		 */
 		public function getFirstRow();

@@ -27,7 +27,7 @@
 		/**
 		 * Retrieve the SQL query string set in this statement.
 		 *
-		 * @return null|string Statement SQL, will be NULL if not yet set.
+		 * @return null|string Statement SQL, will be null if not yet set.
 		 */
 		public function getQueryString()
 		{
@@ -133,7 +133,7 @@
 		}
 
 		/**
-		 * Returns the first row of the data retrieved. Will by NULL if no results were returned.
+		 * Returns the first row of the data retrieved. Will by null if no results were returned.
 		 * @return IDataContainer|null
 		 */
 		public function getFirstRow()
@@ -166,7 +166,7 @@
 		private $values = Array();
 
 		/**
-		 * @var string|null The SQL statement, will bw NULL if not yet set.
+		 * @var string|null The SQL statement, will bw null if not yet set.
 		 */
 		private $sql;
 

@@ -35,7 +35,7 @@
 		 * Get a value from the POST array after sanitizing.
 		 *
 		 * @param mixed $key The key of the value to return.
-		 * @return mixed|null The filtered value or NULL if the key does not exist or is empty.
+		 * @return mixed|null The filtered value or null if the key does not exist or is empty.
 		 */
 		public static function Post($key)
 		{
@@ -47,7 +47,7 @@
 		 * Get a value from the GET array after sanitizing.
 		 *
 		 * @param mixed $key The key of the value to return.
-		 * @return mixed|null The filtered value or NULL if the key does not exist or is empty.
+		 * @return mixed|null The filtered value or null if the key does not exist or is empty.
 		 */
 		public static function Get($key)
 		{

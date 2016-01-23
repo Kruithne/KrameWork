@@ -195,7 +195,7 @@
 		private $mail;
 
 		/**
-		 * @var string|null Will be NULL if not yet set.
+		 * @var string|null Will be null if not yet set.
 		 */
 		private $log;
 

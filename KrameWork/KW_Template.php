@@ -24,7 +24,7 @@
 		 * Get a value stored in this template.
 		 *
 		 * @param mixed $key The key of the value to get.
-		 * @return mixed|null The value or NULL if nothing is set at the provided key.
+		 * @return mixed|null The value or null if nothing is set at the provided key.
 		 */
 		public function __get($key)
 		{
