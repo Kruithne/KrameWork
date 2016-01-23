@@ -17,8 +17,9 @@
 			{
 				if (!array_key_exists($classInput, $this->classes))
 				{
-					if($this->preload)
+					if ($this->preload)
 						KW_ClassLoader::loadClass($classInput);
+
 					$this->classes[$classInput] = NULL;
 
 					if ($this->bindInterfaces)
@@ -31,7 +32,7 @@
 				if (!array_key_exists($className, $this->classes))
 					$this->classes[$className] = $classInput;
 
-				if($this->bindInterfaces)
+				if ($this->bindInterfaces)
 					$this->extractInterfaces($className);
 			}
 		}
@@ -55,14 +56,19 @@
 
 		public function addDecorator($bind, $with)
 		{
-			if(!isset($this->decorators[$bind]))
+			if (!isset($this->decorators[$bind]))
 				$this->decorators[$bind] = array();
+
 			$this->decorators[$bind][] = $with;
 		}
 
+		/**
+		 * @param string $class_name
+		 * @return string
+		 */
 		public function resolve($class_name)
 		{
-			if(isset($this->bindings[$class_name]))
+			if (isset($this->bindings[$class_name]))
 				return $this->resolve($this->bindings[$class_name]);
 
 			return $class_name;
@@ -82,19 +88,24 @@
 				throw new KW_ClassDependencyException($resolved_name, 'Class %s has not been added to the injector');
 
 			$object = $this->classes[$resolved_name];
-			if($object === null)
+			if ($object === null)
 				$object = $this->constructComponent($resolved_name);
-			if(isset($this->decorators[$class_name]))
-				foreach($this->decorators[$class_name] as $decorator)
+
+			if (isset($this->decorators[$class_name]))
+			{
+				foreach ($this->decorators[$class_name] as $decorator)
 				{
-					if($decorator instanceof IDecorator)
+					if ($decorator instanceof IDecorator)
 					{
 						$decorator->inject($object);
 						$object = $decorator;
 					}
 					else
+					{
 						$object = new $decorator($object);
+					}
 				}
+			}
 			return $object;
 		}
 
@@ -114,8 +125,10 @@
 
 			$to_inject = Array();
 			$constructor = $class->getConstructor();
-			if(!$constructor)
+
+			if (!$constructor)
 				throw new KW_ClassDependencyException($class_name, 'Class %s does not have a constructor function');
+
 			foreach ($constructor->getParameters() as $parameter)
 			{
 				$parameter_class = $parameter->getClass();
@@ -131,7 +144,8 @@
 
 			$object = $class->newInstanceWithoutConstructor();
 			call_user_func_array(array($object, '__construct'), $to_inject);
-			if($this->classes[$class_name] === NULL)
+
+			if ($this->classes[$class_name] === NULL)
 				$this->classes[$class_name] = $object;
 
 			return $object;
@@ -143,7 +157,15 @@
 		private $classes = Array();
 		private $bindings = Array();
 		private $decorators = Array();
+
+		/**
+		 * @var bool
+		 */
 		protected $preload = false;
+
+		/**
+		 * @var bool
+		 */
 		protected $bindInterfaces = false;
 	}
 ?>
