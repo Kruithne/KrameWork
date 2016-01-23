@@ -6,9 +6,9 @@
 		 *
 		 * @param string|null $string An optional string to initialize with.
 		 */
-		public function __construct($string = NULL)
+		public function __construct($string = null)
 		{
-			$this->string = $string === NULL ? '' : $string;
+			$this->string = $string === null ? '' : $string;
 		}
 
 		/**
