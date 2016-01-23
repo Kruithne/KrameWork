@@ -53,6 +53,9 @@
 			return $this->connection->lastInsertId($table);
 		}
 
+		/**
+		 * @var PDO
+		 */
 		private $connection;
 	}
 ?>
