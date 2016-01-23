@@ -11,6 +11,10 @@
 			return 'GET, POST';
 		}
 
+		/**
+		 * KW_CRUDService constructor.
+		 * @param ISchemaManager $schema
+		 */
 		public function __construct(ISchemaManager $schema)
 		{
 			parent::__construct($schema);
@@ -46,21 +50,40 @@
 			return true;
 		}
 
+		/**
+		 * Check if the given object can be created.
+		 * @param object $object
+		 * @return bool
+		 */
 		public function canCreate($object)
 		{
 			return true;
 		}
 
+		/**
+		 * Check if the given object can be read.
+		 * @return bool
+		 */
 		public function canRead()
 		{
 			return true;
 		}
 
+		/**
+		 * Check if the given object can be updated.
+		 * @param object $object
+		 * @return bool
+		 */
 		public function canUpdate($object)
 		{
 			return true;
 		}
 
+		/**
+		 * Check if the given object can be deleted.
+		 * @param object $object
+		 * @return bool
+		 */
 		public function canDelete($object)
 		{
 			return true;
