@@ -139,6 +139,8 @@
 					$_SESSION['state'] = $this->users->getState($user);
 					return $user;
 			}
+
+			return false;
 		}
 
 		private function grant_token($user)
