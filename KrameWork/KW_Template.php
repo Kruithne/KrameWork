@@ -58,6 +58,9 @@
 			return ob_get_clean();
 		}
 
+		/**
+		 * @var array
+		 */
 		protected $data;
 	}
 ?>
