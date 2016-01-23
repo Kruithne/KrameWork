@@ -190,7 +190,7 @@
 		private $log;
 
 		/**
-		 * @var maxErrors Number of errors to process before aborting exection.
+		 * @var $maxErrors Number of errors to process before aborting exection.
 		 */
 		private $maxErrors = 10;
 
