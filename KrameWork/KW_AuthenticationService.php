@@ -177,7 +177,7 @@
 		{
 			if ($ip === null)
 				$ip = $_SERVER['REMOTE_ADDR'];
-			return sha1($token.$ip);
+			return sha1($token. $ip);
 		}
 
 		private function end_session()

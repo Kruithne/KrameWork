@@ -16,14 +16,14 @@
 		{
 			parent::prepare();
 			$table = $this->getName();
-			$this->getByUsername = $this->db->prepare('SELECT * FROM '.$table.' WHERE username = :username');
-			$this->getByEmail = $this->db->prepare('SELECT * FROM '.$table.' WHERE email = :email');
-			$this->setUserSessionSalt = $this->db->prepare('UPDATE '.$table.' SET session_salt=:salt WHERE id=:id');
-			$this->setUserPassphrase = $this->db->prepare('UPDATE '.$table.' SET passphrase=:passphrase, pp_changed=current_timestamp WHERE id=:id');
-			$this->setUserSecret = $this->db->prepare('UPDATE '.$table.' SET secret=:secret WHERE id=:id');
-			$this->loginFailed = $this->db->prepare('UPDATE '.$table.' SET failed_logins = failed_logins + 1 WHERE id = :id');
-			$this->setUserLockout = $this->db->prepare('UPDATE '.$table.' SET pp_locked = current_timestamp WHERE id = :id');
-			$this->setLoginSuccess = $this->db->prepare('UPDATE '.$table.' SET failed_logins = 0, last_login = current_timestamp WHERE id = :id');
+			$this->getByUsername = $this->db->prepare('SELECT * FROM '. $table. ' WHERE username = :username');
+			$this->getByEmail = $this->db->prepare('SELECT * FROM '. $table. ' WHERE email = :email');
+			$this->setUserSessionSalt = $this->db->prepare('UPDATE '. $table. ' SET session_salt=:salt WHERE id=:id');
+			$this->setUserPassphrase = $this->db->prepare('UPDATE '. $table. ' SET passphrase=:passphrase, pp_changed=current_timestamp WHERE id=:id');
+			$this->setUserSecret = $this->db->prepare('UPDATE '. $table. ' SET secret=:secret WHERE id=:id');
+			$this->loginFailed = $this->db->prepare('UPDATE '. $table. ' SET failed_logins = failed_logins + 1 WHERE id = :id');
+			$this->setUserLockout = $this->db->prepare('UPDATE '. $table. ' SET pp_locked = current_timestamp WHERE id = :id');
+			$this->setLoginSuccess = $this->db->prepare('UPDATE '. $table. ' SET failed_logins = 0, last_login = current_timestamp WHERE id = :id');
 		}
 
 		public function getNewObject($data)
@@ -137,7 +137,7 @@
 			$table = $this->getName();
 			return array(
 				1 => array('
-					CREATE TABLE '.$table.' (
+					CREATE TABLE '. $table. ' (
 						id SERIAL NOT NULL,
 						username VARCHAR(50) NOT NULL,
 						name VARCHAR(50) NOT NULL,
@@ -155,13 +155,13 @@
 					)'
 				),
 				2 => array('
-					ALTER TABLE '.$table.'
+					ALTER TABLE '. $table. '
 						ADD COLUMN session_salt VARCHAR(32),
 						ADD COLUMN failed_logins SMALLINT
 					'),
-				3 => array('UPDATE '.$table.' SET failed_logins = 0'),
+				3 => array('UPDATE '. $table. ' SET failed_logins = 0'),
 				4 => array('
-					ALTER TABLE '.$table.'
+					ALTER TABLE '. $table. '
 						ADD COLUMN last_login TIMESTAMP
 					')
 			);

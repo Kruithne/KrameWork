@@ -303,7 +303,7 @@
 
 			// Read
 			$this->readAll = $this->db->prepare('SELECT * FROM ' . $table);
-			$this->readOne = $this->db->prepare('SELECT * FROM ' . $table.' WHERE ' . $filter);
+			$this->readOne = $this->db->prepare('SELECT * FROM ' . $table. ' WHERE ' . $filter);
 
 			// Update
 			$this->updateRecord = $this->db->prepare('UPDATE ' . $table . ' SET ' . join(', ', $fields) . ' WHERE ' . $filter);
