@@ -24,7 +24,7 @@
 
 		public function getNewObject($data)
 		{
-			return new User($this, $data);
+			return $data;
 		}
 
 		public function setLoginSuccess($id)
@@ -88,10 +88,7 @@
 
 		public function getUsers()
 		{
-			$users = array();
-			foreach($this->getAll->getRows() as $user)
-				$users[] = new User($this, $user);
-			return $users;
+			return $this->getAll->getRows();
 		}
 
 		public function addUser($user)
