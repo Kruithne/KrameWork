@@ -1,6 +1,12 @@
 <?php
 	class KW_MultifactorService extends KW_JSONService
 	{
+		/**
+		 * KW_MultifactorService constructor.
+		 * @param IUserSystem $users
+		 * @param IAuthenticator $auth
+		 * @param string $origin
+		 */
 		public function __construct(IUserSystem $users, IAuthenticator $auth, $origin)
 		{
 			$this->users = $users;
