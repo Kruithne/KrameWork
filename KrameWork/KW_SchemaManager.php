@@ -24,7 +24,7 @@
 
 			$this->tables[$spec->getName()] = $spec;
 
-			if($spec instanceof IRepository)
+			if ($spec instanceof IRepository)
 			{
 				$spec->setDB($this->db);
 				$spec->prepare();
@@ -77,7 +77,7 @@
 
 			error_log('Updating ' . $spec->getName() . ' from ' . $from . ' to ' . $to);
 
-			for($i = $from + 1; $i <= $to; ++$i)
+			for ($i = $from + 1; $i <= $to; ++$i)
 			{
 				if (isset($sql[$i]))
 					foreach ($sql[$i] as $step)
