@@ -1,8 +1,14 @@
 <?php
 	interface IDatabaseStatement
 	{
+		/**
+		 * Called when an unknown property is set.
+		 *
+		 * @param string $key
+		 * @param object $value
+		 */
 		public function __set($key, $value);
-		
+
 		/**
 		 * Retrieve the SQL query string set in this statement.
 		 *
@@ -19,6 +25,12 @@
 		 */
 		public function setValue($key, $value);
 
+		/**
+		 * Set the parameter type.
+		 * @param string $key
+		 * @param int $type
+		 * @see http://php.net/manual/en/pdo.constants.php
+		 */
 		public function setType($key, $type);
 
 		/**
