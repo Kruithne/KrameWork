@@ -168,7 +168,7 @@
 		{
 			setcookie(
 				'auth_token',
-				$user->id . ';' . $this->ip_lock($user->getAuthToken()) . ';' . $_SERVER['REMOTE_ADDR'],
+				$user->id . ';' . $this->ip_lock($this->getAuthToken($user)) . ';' . $_SERVER['REMOTE_ADDR'],
 				strtotime('+1 year'),
 				'/auth.php',
 				'lab-api.runsafe.no',
@@ -186,10 +186,10 @@
 		private function token_validate($user, $token)
 		{
 			// Token hash the user should have from the IP the cookie was given to
-			$tok1 = $this->ip_lock($user->getAuthToken(), $token[2]);
+			$tok1 = $this->ip_lock($this->getAuthToken($user), $token[2]);
 
 			// Token hash the user should have now
-			$tok2 = $this->ip_lock($user->getAuthToken());
+			$tok2 = $this->ip_lock($this->getAuthToken($user));
 
 			// Token hash the user sent
 			$tok3 = $token[1];
@@ -198,6 +198,32 @@
 				return -1; // Invalid token, user session key changed, or cookie was edited
 
 			return $tok2 == $tok3 ? 1 : 0;
+		}
+
+		/**
+		 * Get the users current authentication token, based on the current password hash and a asession salt.
+		 * This ensures the token will be invalid if the password is changed or the user requests a permanent logout.
+		 * @param IDataContainer $user The user object.
+		 * @return string An authentication token
+		 */
+		public function getAuthToken($user)
+		{
+			return sha1($this->getSessionSalt($user).$user->passphrase);
+		}
+
+		/**
+		 * Get the users current session salt, or create one if it is missing
+		 * @param IDataContainer $user The user object
+		 * @return string The current session salt
+		 */
+		public function getSessionSalt($user)
+		{
+			if($user->session_salt)
+				return $user->session_salt;
+
+			$user->session_salt = base64_encode(mcrypt_create_iv(12));
+			$this->dal->setSessionSalt($user->id, $user->session_salt);
+			return $user->session_salt;
 		}
 
 		/**
