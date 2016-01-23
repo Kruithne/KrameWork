@@ -13,7 +13,6 @@
 		 *
 		 * @param string $statement
 		 * @return int
-		 * @internal param string $cacheKey A string identifying the cached object.
 		 */
 		public function read($statement);
 	}
