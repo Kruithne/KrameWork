@@ -10,6 +10,8 @@ When writing code for this framework, please adhere to the coding style outlined
 
 + No trailing whitespace. No blank lines at the end of files.
 
++ Keywords, such as `null`, should be in lower-case.
+
 +  PHP source files should use the `<?php` opening and  `?>` closing tags. Closing tags are required.
 
 + All added functions and variables should include correctly formatted and details phpDoc. For details on documentation syntax and formatting, see http://phpdoc.org/docs/latest/index.html.
