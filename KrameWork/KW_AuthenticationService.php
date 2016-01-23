@@ -3,9 +3,9 @@
 	{
 		/**
 		 * KW_AuthenticationService constructor.
-		 * @param IUserSystem $users
-		 * @param string $origin
-		 * @param bool $multiFactor
+		 * @param IUserSystem $users Database access layer for user data
+		 * @param string $origin Sets the value of the Access-Control-Allow-Origin header
+		 * @param bool $multiFactor Whether we are going to be requiring the user to use multifactor authentication
 		 */
 		public function __construct(IUserSystem $users, $origin, $multiFactor = false)
 		{
@@ -14,6 +14,10 @@
 			parent::__construct($origin);
 		}
 
+		/**
+		 * Process a client request
+		 * @param object $request The posted data
+		 */
 		public function process($request)
 		{
 			$path = false;
@@ -75,6 +79,11 @@
 			return false;
 		}
 
+		/**
+		 * Process an authentication request
+		 * @param object $request The posted data (username and passphrase)
+		 * @return array Key value pairs "name" and "state"
+		 */
 		private function authenticate($request)
 		{
 			$result = $this->users->authenticate(
@@ -96,6 +105,10 @@
 			return $this->get_session();
 		}
 
+		/**
+		 * Get the current user session
+		 * @return array Key value pairs "name" and "state"
+		 */
 		private function get_session()
 		{
 			$auto = $this->use_token();
@@ -109,6 +122,10 @@
 				return ['name' => null, 'state' => 0];
 		}
 
+		/**
+		 * Try to log a user in automatically using a token
+		 * @return array|false Key value pairs "name" and "state"
+		 */
 		private function use_token()
 		{
 			if (!isset($_COOKIE['auth_token']) || isset($_SESSION['token_used']))
@@ -143,6 +160,10 @@
 			return false;
 		}
 
+		/**
+		 * Send the user a login token for future automatic login
+		 * @param object $user The authenticated user
+		 */
 		private function grant_token($user)
 		{
 			setcookie(
@@ -156,6 +177,12 @@
 			);
 		}
 
+		/**
+		 * Validate a token for automatic login
+		 * @param object $user The requested user
+		 * @param string[] $token The authentication token used
+		 * @return int -1 for invalid, 1 for valid and same IP, 0 for valid but new IP
+		 */
 		private function token_validate($user, $token)
 		{
 			// Token hash the user should have from the IP the cookie was given to
@@ -173,6 +200,11 @@
 			return $tok2 == $tok3 ? 1 : 0;
 		}
 
+		/**
+		 * Encode a token so it only works for a given IP address
+		 * @param string $token The token
+		 * @param string|null $ip When specified, encode an arbitrary IP rather than the client IP
+		 */
 		private function ip_lock($token, $ip = null)
 		{
 			if ($ip === null)
@@ -180,6 +212,10 @@
 			return sha1($token. $ip);
 		}
 
+		/**
+		 * Log the user out
+		 * @return array Key value pairs "name" and "state"
+		 */
 		private function end_session()
 		{
 			if (isset($_SESSION['userid']))
