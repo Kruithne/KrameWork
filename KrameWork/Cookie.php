@@ -34,7 +34,7 @@
 		 */
 		public static function Get($name)
 		{
-			return isset($_COOKIE[$name]) ? $_COOKIE[$name] : NULL;
+			return isset($_COOKIE[$name]) ? $_COOKIE[$name] : null;
 		}
 	}
 ?>
