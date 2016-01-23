@@ -12,6 +12,13 @@
 			$this->db = $db;
 		}
 
+		public function __set($key, $value)
+		{
+			if(!$this->statement)
+				$this->prepare();
+			return $this->statement->__set($key, $value);
+		}
+
 		public function getQueryString()
 		{
 			if(!$this->statement)
@@ -31,13 +38,6 @@
 			if(!$this->statement)
 				$this->prepare();
 			return $this->statement->setType($key, $type);
-		}
-
-		public function __set($key, $value)
-		{
-			if(!$this->statement)
-				$this->prepare();
-			return $this->statement->__set($key, $value);
 		}
 
 		public function copyValuesFromRow(IDataContainer $row, $prependChar = ':')
