@@ -124,7 +124,7 @@
 			if (!$class->isInstantiable())
 				throw new KW_ClassDependencyException($class_name, "Class %s cannot be instantiated");
 
-			$to_inject = Array();
+			$to_inject = array();
 			$constructor = $class->getConstructor();
 
 			if (!$constructor)
@@ -155,11 +155,11 @@
 		/**
 		 * @var object[]
 		 */
-		private $classes = Array();
+		private $classes = array();
 
 
-		private $bindings = Array();
-		private $decorators = Array();
+		private $bindings = array();
+		private $decorators = array();
 
 		/**
 		 * @var bool

@@ -5,7 +5,7 @@
 		 * KW_DataContainer constructor.
 		 * @param array $data Default data
 		 */
-		public function __construct($data = Array())
+		public function __construct($data = array())
 		{
 			$this->values = $data;
 		}
@@ -83,6 +83,6 @@
 		/**
 		 * @var object[]
 		 */
-		private $values = Array();
+		private $values = array();
 	}
 ?>

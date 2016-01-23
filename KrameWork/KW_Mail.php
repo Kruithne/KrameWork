@@ -105,11 +105,11 @@
 			if ($this->subject === null)
 				throw new KW_Exception('Mail cannot be sent without a subject');
 
-			$headers = Array();
+			$headers = array();
 			foreach ($this->headers as $header => $value)
 				$headers[] = $header . ': ' . $value;
 
-			$parameters = Array();
+			$parameters = array();
 			foreach ($this->parameters as $key => $value)
 				$parameters[] = $key . ' ' . $value;
 
@@ -124,7 +124,7 @@
 		/**
 		 * @var string[]
 		 */
-		private $recipients = Array();
+		private $recipients = array();
 
 		/**
 		 * @var string
@@ -134,11 +134,11 @@
 		/**
 		 * @var array
 		 */
-		private $headers = Array();
+		private $headers = array();
 
 		/**
 		 * @var array
 		 */
-		private $parameters = Array();
+		private $parameters = array();
 	}
 ?>

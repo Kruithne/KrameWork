@@ -86,12 +86,12 @@
 		/**
 		 * @var string[]
 		 */
-		private static $allowedExtensions = Array();
+		private static $allowedExtensions = array();
 
 		/**
 		 * @var string[]
 		 */
-		private static $classPaths = Array();
+		private static $classPaths = array();
 
 		/**
 		 * @var bool

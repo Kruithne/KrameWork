@@ -40,6 +40,6 @@
 		/**
 		 * @var IModule[] Stores sub-modules linked to this module.
 		 */
-		protected $sub_modules = Array();
+		protected $sub_modules = array();
 	}
 ?>

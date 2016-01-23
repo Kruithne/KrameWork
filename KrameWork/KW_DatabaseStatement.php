@@ -163,7 +163,7 @@
 		/**
 		 * @var array
 		 */
-		private $values = Array();
+		private $values = array();
 
 		/**
 		 * @var string|null The SQL statement, will bw null if not yet set.
@@ -173,7 +173,7 @@
 		/**
 		 * @var IDataContainer[]
 		 */
-		private $rows = Array();
+		private $rows = array();
 
 		/**
 		 * @var PDO

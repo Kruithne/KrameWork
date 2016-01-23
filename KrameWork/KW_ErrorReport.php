@@ -37,16 +37,16 @@
 		 */
 		private function bundleReportInformation(&$array)
 		{
-			$array[] = Array(
+			$array[] = array(
 				$this->formatValue('PHP Version', PHP_VERSION),
 				$this->formatValue('Server OS', PHP_OS)
 			);
 
 			if (KrameSystem::sessionIsStarted())
-				$array[] = Array('SESSION' => $this->bundleArray($_SESSION));
+				$array[] = array('SESSION' => $this->bundleArray($_SESSION));
 
-			$array[] = Array('GET' => $this->bundleArray($_GET));
-			$array[] = Array('POST' => $this->bundleArray($_POST));
+			$array[] = array('GET' => $this->bundleArray($_GET));
+			$array[] = array('POST' => $this->bundleArray($_POST));
 		}
 
 		/**
@@ -86,7 +86,7 @@
 		private function bundleArray($source, $array = null, $main_key = null)
 		{
 			if ($array === null)
-				$array = Array();
+				$array = array();
 
 			foreach ($source as $key => $value)
 			{
@@ -177,7 +177,7 @@
 		/**
 		 * @var array
 		 */
-		private $data = Array();
+		private $data = array();
 
 		/**
 		 * @var string

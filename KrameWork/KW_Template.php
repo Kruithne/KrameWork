@@ -11,7 +11,7 @@
 			if (defined('KW_TEMPLATE_DIR'))
 				$file = KW_TEMPLATE_DIR . $file;
 
-			$this->data = Array();
+			$this->data = array();
 			if (file_exists($file))
 				$this->__set('@@template@@', $file);
 			else if (file_exists($file . '.php'))
