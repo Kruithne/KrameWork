@@ -1,6 +1,8 @@
 <?php
 	class KW_DatabaseStatement implements IDatabaseStatement
 	{
+		const SQLARG = ':';
+
 		/**
 		 * Construct an SQL database statement.
 		 *
@@ -21,7 +23,7 @@
 		 */
 		public function __set($key, $value)
 		{
-			$this->setValue(':' . $key, $value);
+			$this->setValue(self::SQLARG . $key, $value);
 		}
 
 		/**
@@ -62,15 +64,14 @@
 		 * Copies the values already stored inside a row.
 		 *
 		 * @param IDataContainer $row A row to extract from.
-		 * @param string $prependChar Character to prepend each key with.
 		 * @return IDatabaseStatement Statement instance.
 		 */
-		public function copyValuesFromRow(IDataContainer $row, $prependChar = ':')
+		public function copyValuesFromRow(IDataContainer $row)
 		{
 			$row_array = $row->getAsArray();
 
 			foreach ($row_array as $key => $value)
-				$this->setValue($prependChar . $key, $value);
+				$this->setValue(self::SQLARG . $key, $value);
 
 			return $this;
 		}
