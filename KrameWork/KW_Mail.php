@@ -76,7 +76,7 @@
 		 */
 		public function setSender($sender)
 		{
-			return $this->setHeader("From", $sender);
+			return $this->setHeader('From', $sender);
 		}
 
 		/**
@@ -100,10 +100,10 @@
 		public function send()
 		{
 			if (!count($this->recipients))
-				throw new KW_Exception("Mail cannot be sent without recipients");
+				throw new KW_Exception('Mail cannot be sent without recipients');
 
-			if ($this->subject === NULL)
-				throw new KW_Exception("Mail cannot be sent without a subject");
+			if ($this->subject === null)
+				throw new KW_Exception('Mail cannot be sent without a subject');
 
 			$headers = Array();
 			foreach ($this->headers as $header => $value)
@@ -116,9 +116,9 @@
 			$sendHeaders = str_replace("\n\n", "\n", implode("\n", $headers));
 
 			if (strlen($sendHeaders) == 0)
-				throw new KW_Exception("At least one header must be specified when sending mail.");
+				throw new KW_Exception('At least one header must be specified when sending mail.');
 
-			mail(implode(',', $this->recipients), $this->subject, $this->__toString(), $sendHeaders, implode(" ", $parameters));
+			mail(implode(',', $this->recipients), $this->subject, $this->__toString(), $sendHeaders, implode(' ', $parameters));
 		}
 
 		/**
