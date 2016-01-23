@@ -72,21 +72,21 @@
 
 		public function getUser($username = null, $email = null, $id = null)
 		{
-			if($id !== null)
+			if ($id !== null)
 			{
 				return $this->read($id);
 			}
-			if($username !== null)
+			if ($username !== null)
 			{
 				$this->getByUsername->username = $username;
 				$result = $this->getByUsername->getRows();
 			}
-			if($email !== null)
+			if ($email !== null)
 			{
 				$this->getByEmail->email = $email;
 				$result = $this->getByEmail->getRows();
 			}
-			if($result && count($result) == 1)
+			if ($result && count($result) == 1)
 				return $this->getNewObject($result[0]);
 		}
 
@@ -137,49 +137,50 @@
 			$table = $this->getName();
 			return array(
 				1 => array('
-CREATE TABLE '.$table.' (
-	id SERIAL NOT NULL,
-	username VARCHAR(50) NOT NULL,
-	name VARCHAR(50) NOT NULL,
-	passphrase VARCHAR(100) NOT NULL,
-	secret VARCHAR(32),
-	lastcode INTEGER,
-	email VARCHAR(100) NOT NULL,
-	created TIMESTAMP NOT NULL,
-	pp_changed TIMESTAMP NOT NULL,
-	pp_locked TIMESTAMP,
-	active BOOLEAN NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (username),
-	UNIQUE (email)
-)'
+					CREATE TABLE '.$table.' (
+						id SERIAL NOT NULL,
+						username VARCHAR(50) NOT NULL,
+						name VARCHAR(50) NOT NULL,
+						passphrase VARCHAR(100) NOT NULL,
+						secret VARCHAR(32),
+						lastcode INTEGER,
+						email VARCHAR(100) NOT NULL,
+						created TIMESTAMP NOT NULL,
+						pp_changed TIMESTAMP NOT NULL,
+						pp_locked TIMESTAMP,
+						active BOOLEAN NOT NULL,
+						PRIMARY KEY (id),
+						UNIQUE (username),
+						UNIQUE (email)
+					)'
 				),
 				2 => array('
-ALTER TABLE '.$table.'
-	ADD COLUMN session_salt VARCHAR(32),
-	ADD COLUMN failed_logins SMALLINT
-'),
+					ALTER TABLE '.$table.'
+						ADD COLUMN session_salt VARCHAR(32),
+						ADD COLUMN failed_logins SMALLINT
+					'),
 				3 => array('UPDATE '.$table.' SET failed_logins = 0'),
 				4 => array('
-ALTER TABLE '.$table.'
-	ADD COLUMN last_login TIMESTAMP
-')
+					ALTER TABLE '.$table.'
+						ADD COLUMN last_login TIMESTAMP
+					')
 			);
 		}
 
 		public function authenticate($username, $passphrase)
 		{
 			$user = $this->getUser($username);
-			if(!$user || !$user->active)
+			if (!$user || !$user->active)
 			{
 				error_log('Unknown username');
 				return AUTH_ERR_UNKNOWN;
 			}
 
-			if(!$this->verify($passphrase, $user->passphrase))
+			if (!$this->verify($passphrase, $user->passphrase))
 			{
-				if($user->failed_logins >= 4)
+				if ($user->failed_logins >= 4)
 					$this->lockout($user->id);
+
 				$this->setLoginFailed($user->id);
 				error_log('Wrong passphrase');
 				return AUTH_ERR_UNKNOWN;
@@ -189,14 +190,14 @@ ALTER TABLE '.$table.'
 
 		public function getState($user)
 		{
-			if($user->pp_locked && strtotime($user->pp_locked) + 900 > time())
+			if ($user->pp_locked && strtotime($user->pp_locked) + 900 > time())
 				return AUTH_ERR_LOCKOUT;
 
 			$this->setLoginSuccess($user->id);
-			if(!$user->secret)
+			if (!$user->secret)
 				return AUTH_ERR_NOSECRET;
 
-			if(time() - strtotime($user->pp_changed) > 3600 * 24 * 90)
+			if (time() - strtotime($user->pp_changed) > 3600 * 24 * 90)
 				return AUTH_OK_OLD;
 
 			return AUTH_OK;
@@ -221,7 +222,7 @@ ALTER TABLE '.$table.'
 			for($i = 0; $i < $iterations; ++$i)
 				$passphrase = hash($algo, $salt . $passphrase);
 
-			return $salt.'$'.$iterations.'$'.$algorithm.'$'.$passphrase;
+			return $salt . '$'.$iterations . '$' . $algorithm . '$'.$passphrase;
 		}
 
 		private function getAlgorithm($index)
