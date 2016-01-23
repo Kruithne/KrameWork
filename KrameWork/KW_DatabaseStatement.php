@@ -15,6 +15,16 @@
 		}
 
 		/**
+		 * Set a parameter for this statement.
+		 * @param string $key
+		 * @param object $value
+		 */
+		public function __set($key, $value)
+		{
+			$this->setValue(':' . $key, $value);
+		}
+
+		/**
 		 * Retrieve the SQL query string set in this statement.
 		 *
 		 * @return null|string Statement SQL, will be NULL if not yet set.
@@ -37,14 +47,15 @@
 			return $this;
 		}
 
+		/**
+		 * Set the type for a parameter.
+		 * @param string $key
+		 * @param int $type
+		 * @see http://php.net/manual/en/pdo.constants.php
+		 */
 		public function setType($key, $type)
 		{
 			$this->types[$key] = $type;
-		}
-
-		public function __set($key, $value)
-		{
-			$this->setValue(':'.$key, $value);
 		}
 
 		/**
@@ -174,8 +185,14 @@
 		 */
 		private $statement;
 
+		/**
+		 * @var bool
+		 */
 		private $executed;
 
+		/**
+		 * @var int[]
+		 */
 		private $types = array();
 	}
 ?>
