@@ -92,8 +92,19 @@
 			return self::getCache()->getResultCode();
 		}
 
+		/**
+		 * @var Memcached
+		 */
 		private static $cache;
+
+		/**
+		 * @var int
+		 */
 		private static $port = 11211;
+
+		/**
+		 * @var string
+		 */
 		private static $server = '127.0.0.1';
 	}
 ?>
