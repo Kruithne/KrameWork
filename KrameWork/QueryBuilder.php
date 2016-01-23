@@ -37,7 +37,7 @@
 		 * @param string $value The pattern to look for or exclude.
 		 * @return IQueryPredicate
 		 */
-		public function greaterThan($value)l
+		public function greaterThan($value)
 	}
 	interface IQueryLessThan
 	{
