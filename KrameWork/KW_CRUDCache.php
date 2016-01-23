@@ -1,6 +1,11 @@
 <?php
 	abstract class KW_CRUDCache extends KW_CRUD
 	{
+		/**
+		 * KW_CRUDCache constructor.
+		 * @param ISchemaManager $schema
+		 * @param ICacheState $state
+		 */
 		public function __construct(ISchemaManager $schema, ICacheState $state)
 		{
 			parent::__construct($schema);
@@ -36,6 +41,9 @@
 			return $this->cache->read('.#table#'.$this->getName());
 		}
 
+		/**
+		 * @var ICacheState
+		 */
 		private $cache;
 	}
 ?>
