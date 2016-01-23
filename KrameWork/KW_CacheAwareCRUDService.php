@@ -16,6 +16,11 @@
 			return 'private';
 		}
 
+		/**
+		 * KW_CacheAwareCRUDService constructor.
+		 * @param ISchemaManager $schema
+		 * @param ICacheState $state
+		 */
 		public function __construct(ISchemaManager $schema, ICacheState $state)
 		{
 			parent::__construct($schema, $state);

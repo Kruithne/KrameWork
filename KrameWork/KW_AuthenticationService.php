@@ -147,7 +147,7 @@
 		{
 			setcookie(
 				'auth_token',
-				$user->id.';'.$this->ip_lock($user->getAuthToken()).';'.$_SERVER['REMOTE_ADDR'],
+				$user->id . ';' . $this->ip_lock($user->getAuthToken()) . ';' . $_SERVER['REMOTE_ADDR'],
 				strtotime('+1 year'),
 				'/auth.php',
 				'lab-api.runsafe.no',
@@ -186,6 +186,7 @@
 			{
 				if (isset($_COOKIE['auth_token']))
 					setcookie('auth_token', '', strtotime('-1 year'), '/auth.php', 'lab-api.runsafe.no', true, true);
+
 				session_destroy();
 			}
 			return ['name' => null, 'state' => 0];
