@@ -58,7 +58,7 @@
 		 */
 		private function formatValue($key, $value)
 		{
-			if($key == 'trace')
+			if ($key == 'trace')
 			{
 				$out = array();
 				foreach($value as $step)

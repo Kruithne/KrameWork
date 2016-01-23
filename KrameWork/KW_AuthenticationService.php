@@ -103,7 +103,7 @@
 			global $user;
 			if ($user)
 				return ['name' => $user->name, 'state' => $_SESSION['state']];
-			else if($auto)
+			else if ($auto)
 				return ['name' => $auto->name, 'state' => $_SESSION['state']];
 			else
 				return ['name' => null, 'state' => 0];

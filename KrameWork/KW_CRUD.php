@@ -58,13 +58,13 @@
 		{
 			$auto = $this->hasAutoKey();
 
-			if($auto)
+			if ($auto)
 				$this->bindValues($this->createRecord, $this->getValues(), $object);
 			else
 				$this->bind($this->createRecord, $object);
 
 			$this->createRecord->execute();
-			if($auto)
+			if ($auto)
 			{
 				switch($this->db->getType())
 				{
@@ -245,7 +245,7 @@
 				foreach ($field as $col)
 					$query->$col = $object->$col;
 			}
-			else if($field)
+			else if ($field)
 			{
 				$query->$field = $object->$field;
 			}

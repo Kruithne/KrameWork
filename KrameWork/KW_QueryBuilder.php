@@ -28,7 +28,7 @@
 
 		public function bind($statement)
 		{
-			if(is_array($this->value))
+			if (is_array($this->value))
 			{
 				foreach ($this->value as $pf => $value)
 				{
@@ -42,7 +42,7 @@
 				$statement->$key = $this->value;
 			}
 
-			if($this->anchor)
+			if ($this->anchor)
 				$this->anchor->bind($statement);
 		}
 

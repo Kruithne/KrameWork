@@ -25,7 +25,7 @@
 
 						require_once($path);
 
-						if(self::$debug)
+						if (self::$debug)
 							error_log('Autoloading ' . $className . ' succeeded..');
 
 						return;

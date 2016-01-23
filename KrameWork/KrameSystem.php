@@ -57,7 +57,7 @@
 
 					if (isset($_SESSION['__client__']) && $_SESSION['__client__'] != $remote)
 					{
-						if(function_exists('session_abort'))
+						if (function_exists('session_abort'))
 						{
 							session_regenerate_id(false);
 							session_destroy();

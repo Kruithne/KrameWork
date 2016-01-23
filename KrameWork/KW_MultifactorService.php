@@ -25,7 +25,7 @@
 			if (!isset($_SESSION['userid']))
 				return;
 
-			if($_SERVER['REQUEST_METHOD'] == 'POST')
+			if ($_SERVER['REQUEST_METHOD'] == 'POST')
 			{
 				switch($path)
 				{
@@ -84,7 +84,7 @@
 
 						$_SESSION['verified'] = $result;
 
-						if($result)
+						if ($result)
 							$_SESSION['state'] = $this->users->getState($user);
 						return ['result' => $result];
 				}
