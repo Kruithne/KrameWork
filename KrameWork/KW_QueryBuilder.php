@@ -3,11 +3,11 @@
 	{
 		/**
 		 * KW_QueryBuilder constructor.
-		 * @param $db
-		 * @param $column
-		 * @param $anchor
-		 * @param $crud
-		 * @param int $level
+		 * @param IDatabaseConnection $db The connection we want to run our query against
+		 * @param string $column The name of the column we are searching
+		 * @param KW_QueryBuilder $anchor The previous step in the chain
+		 * @param ICRUD $crud The table we are querying
+		 * @param int $level The nth column in the where statement
 		 */
 		public function __construct($db, $column, $anchor, $crud, $level = 1)
 		{
@@ -18,6 +18,11 @@
 			$this->level = $level;
 		}
 
+		/**
+		 * Builds the SQL statement
+		 * @param bool $glue Whether or not more columns will be added later
+		 * @return string An SQL fragment
+		 */
 		public function build($glue = true)
 		{
 			return
@@ -26,6 +31,9 @@
 				. ($glue ? ' ' . $this->glue : ''); 
 		}
 
+		/**
+		 * Binds the parameters of the prepared statement to the values supplied by the user
+		 */
 		public function bind($statement)
 		{
 			if (is_array($this->value))
@@ -130,20 +138,32 @@
 		}
 
 		/**
-		 * @var KW_DatabaseStatement
+		 * @var IDatabaseStatement
 		 */
 		private $statement;
 
+		/**
+		 * @var string AND/OR
+		 */
 		private $glue;
 
+		/**
+		 * @var string column name
+		 */
 		private $column;
 
+		/**
+		 * @var string SQL Fragment
+		 */
 		private $format;
 
+		/**
+		 * @var mixed Search value
+		 */
 		private $value;
 
 		/**
-		 * @var KW_DatabaseConnection
+		 * @var IDatabaseConnection
 		 */
 		private $db;
 
@@ -152,6 +172,9 @@
 		 */
 		private $level;
 
+		/**
+		 * @var KW_QueryBuilder
+		 */
 		private $anchor;
 	}
 ?>
