@@ -1,6 +1,8 @@
 <?php
 	interface IDatabaseStatement
 	{
+		public function __set($key, $value);
+		
 		/**
 		 * Retrieve the SQL query string set in this statement.
 		 *
@@ -18,8 +20,6 @@
 		public function setValue($key, $value);
 
 		public function setType($key, $type);
-
-		public function __set($key, $value);
 
 		/**
 		 * Copies the values already stored inside a row.
