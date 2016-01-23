@@ -14,10 +14,10 @@
 			$this->data = Array();
 			if (file_exists($file))
 				$this->__set('@@template@@', $file);
-			else if (file_exists($file.'.php'))
-				$this->__set('@@template@@', $file.'.php');
+			else if (file_exists($file . '.php'))
+				$this->__set('@@template@@', $file . '.php');
 			else
-				trigger_error('Missing template file "'.$file.'"!', E_USER_ERROR);
+				trigger_error('Missing template file "' . $file . '"!', E_USER_ERROR);
 		}
 
 		/**
@@ -28,7 +28,7 @@
 		 */
 		public function __get($key)
 		{
-			return array_key_exists($key, $this->data) ? $this->data[$key] : NULL;
+			return array_key_exists($key, $this->data) ? $this->data[$key] : null;
 		}
 
 		/**
