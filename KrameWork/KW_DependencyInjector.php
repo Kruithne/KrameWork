@@ -20,12 +20,9 @@
 					if($this->preload)
 						KW_ClassLoader::loadClass($classInput);
 					$this->classes[$classInput] = NULL;
-					if($this->bindInterfaces)
-					{
-						$class = new ReflectionClass($classInput);
-						foreach($class->getInterfaceNames() as $interface)
-							$this->addBinding($interface, $classInput);
-					}
+
+					if ($this->bindInterfaces)
+						$this->extractInterfaces($classInput);
 				}
 			}
 			elseif (is_object($classInput))
@@ -33,13 +30,21 @@
 				$className = get_class($classInput);
 				if (!array_key_exists($className, $this->classes))
 					$this->classes[$className] = $classInput;
+
 				if($this->bindInterfaces)
-				{
-					$class = new ReflectionClass($className);
-					foreach($class->getInterfaceNames() as $interface)
-						$this->addBinding($interface, $className);
-				}
+					$this->extractInterfaces($className);
 			}
+		}
+
+		/**
+		 * Extract interfaces from a class and bind them.
+		 * @param string $className
+		 */
+		private function extractInterfaces($className)
+		{
+			$class = new ReflectionClass($className);
+			foreach ($class->getInterfaceNames() as $interface)
+				$this->addBinding($interface, $className);
 		}
 
 		public function addBinding($source, $target)
