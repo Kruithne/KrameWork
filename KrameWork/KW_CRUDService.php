@@ -110,7 +110,7 @@
 						{
 							return $this->create($object);
 						}
-						catch(PDOException $e)
+						catch (PDOException $e)
 						{
 							return $e;
 						}
