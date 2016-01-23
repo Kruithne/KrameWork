@@ -53,7 +53,6 @@
 						{
 							return ['username' => $user->username];
 						}
-						return true;
 
 					case '/login':
 						if (isset($request->username) && isset($request->passphrase))
