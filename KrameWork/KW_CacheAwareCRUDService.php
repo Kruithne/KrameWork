@@ -125,7 +125,7 @@
 						return false;
 				}
 			}
-			
+
 			if ($_SERVER['REQUEST_METHOD'] == 'GET')
 			{
 				if ($path)
@@ -148,6 +148,8 @@
 				}
 				return $this->read();
 			}
+
+			return false;
 		}
 	}
 ?>
