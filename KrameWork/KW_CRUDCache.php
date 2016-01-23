@@ -33,12 +33,12 @@
 
 		public function cache_clear()
 		{
-			$this->cache->clear('.#table#'.$this->getName());
+			$this->cache->clear('.#table#' . $this->getName());
 		}
 
 		public function cache_read()
 		{
-			return $this->cache->read('.#table#'.$this->getName());
+			return $this->cache->read('.#table#' . $this->getName());
 		}
 
 		/**
