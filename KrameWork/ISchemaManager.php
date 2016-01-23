@@ -7,7 +7,7 @@
 		 * @param string $name Name of table to return the specification of.
 		 */
 		public function __get($name);
-		
+
 		/**
 		 * Add a new table to be managed.
 		 *
