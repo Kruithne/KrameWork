@@ -165,6 +165,7 @@
 				}
 				return $this->read();
 			}
+			return false;
 		}
 	}
 ?>
