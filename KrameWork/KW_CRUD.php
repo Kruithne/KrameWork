@@ -2,16 +2,6 @@
 	abstract class KW_CRUD extends KW_Repository implements ICRUD
 	{
 		/**
-		 * Type hint for column types
-		 * @param string $key The name of the column
-		 * @return int One of the PDO::PARAM_* constants
-		 */
-		public function getKeyType($key)
-		{
-			return PDO::PARAM_INT;
-		}
-
-		/**
 		 * KW_CRUD constructor.
 		 * @param ISchemaManager $schema The system schema manager
 		 */
@@ -19,6 +9,16 @@
 		{
 			parent::__construct();
 			$schema->addTable($this);
+		}
+
+		/**
+		 * Type hint for column types
+		 * @param string $key The name of the column
+		 * @return int One of the PDO::PARAM_* constants
+		 */
+		public function getKeyType($key)
+		{
+			return PDO::PARAM_INT;
 		}
 
 		/**
