@@ -161,11 +161,21 @@
 			}
 		}
 
+		/**
+		 * Generate a log name.
+		 * @param int $number
+		 * @return string
+		 */
 		private function getLogName($number)
 		{
 			return time() . '_' . $number . '.log';
 		}
 
+		/**
+		 * Generate a new log file name.
+		 * @param string $directory
+		 * @return string
+		 */
 		private function createLogFileName($directory)
 		{
 			$number = 0;
