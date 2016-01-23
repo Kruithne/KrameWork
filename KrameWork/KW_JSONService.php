@@ -1,6 +1,11 @@
 <?php
 	abstract class KW_JSONService
 	{
+		/**
+		 * KW_JSONService constructor.
+		 * @param string $origin
+		 * @param string $method
+		 */
 		public function __construct($origin = '*', $method = 'GET, POST')
 		{
 			$this->origin = $origin;
