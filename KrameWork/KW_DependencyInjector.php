@@ -49,12 +49,23 @@
 				$this->addBinding($interface, $className);
 		}
 
+		/**
+		 * Add a binding mapping a class or interface to another class or interface.
+		 & Target should normally be a class, not an interface.
+		 * @param string $source The name of a class or interface
+		 * @param string $target The name of the class to return when the source is requested
+		 */
 		public function addBinding($source, $target)
 		{
 			$this->bindings[$source] = $target;
 			$this->addComponent($target);
 		}
 
+		/**
+		 * Add a decorator such that a request for $bind returns $with with $bind injected into it
+		 * @param string $bind The name of a class or interface
+		 * @param string $with The name of a class. must have a constructor that takes $bind objects as the only argument.
+		 */
 		public function addDecorator($bind, $with)
 		{
 			if (!isset($this->decorators[$bind]))
@@ -157,8 +168,14 @@
 		 */
 		private $classes = array();
 
-
+		/**
+		 * @var array
+		 */
 		private $bindings = array();
+
+		/**
+		 * @var array
+		 */
 		private $decorators = array();
 
 		/**
