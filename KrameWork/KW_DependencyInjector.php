@@ -50,8 +50,8 @@
 		}
 
 		/**
-		 * Add a binding mapping a class or interface to another class or interface.
-		 & Target should normally be a class, not an interface.
+		 * Add a binding mapping a class or interface to another class or interface. $target should
+		 * normally be a class, not an interface.
 		 * @param string $source The name of a class or interface
 		 * @param string $target The name of the class to return when the source is requested
 		 */
