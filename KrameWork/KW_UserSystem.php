@@ -3,6 +3,10 @@
 	{
 		public function getName() { return 'users'; }
 
+		/**
+		 * KW_UserSystem constructor.
+		 * @param ISchemaManager $schema
+		 */
 		public function __construct(ISchemaManager $schema)
 		{
 			parent::__construct($schema);
