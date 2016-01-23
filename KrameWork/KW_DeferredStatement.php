@@ -16,6 +16,7 @@
 		{
 			if(!$this->statement)
 				$this->prepare();
+
 			return $this->statement->__set($key, $value);
 		}
 
@@ -37,6 +38,7 @@
 		{
 			if(!$this->statement)
 				$this->prepare();
+
 			return $this->statement->setType($key, $type);
 		}
 
@@ -87,8 +89,19 @@
 			$this->statement = new KW_DatabaseStatement($this->sql, $this->db);
 		}
 
+		/**
+		 * @var string
+		 */
 		private $sql;
+
+		/**
+		 * @var PDO
+		 */
 		private $db;
+
+		/**
+		 * @var KW_DatabaseStatement
+		 */
 		private $statement;
 	}
 ?>
