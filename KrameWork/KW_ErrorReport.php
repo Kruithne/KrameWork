@@ -131,14 +131,11 @@
 			foreach ($stack as $i => $frame)
 			{
 				$ignore = false;
-				switch ($frame['function'])
-				{
-					// Omit these from the error report
-					case 'handleError':
-					case 'handleException':
-						if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
-							$ignore = true;
-				}
+
+				$function = $frame['function'];
+				if ($function == 'handleError' || $function == 'handleException')
+					if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
+						$ignore = true;
 
 				if ($ignore)
 					continue;
