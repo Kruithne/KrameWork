@@ -234,7 +234,7 @@
 				case E_USER_DEPRECATED: return 'DEPRECATED';
 
 				case E_STRICT:            return 'STRICT';
-				case E_DEPRECATED:				return 'DEPRECATED';
+				case E_DEPRECATED:        return 'DEPRECATED';
 				case E_RECOVERABLE_ERROR: return 'RECOVERABLE';
 
 				default: return 'UNKNOWN';
