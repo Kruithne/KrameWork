@@ -143,9 +143,10 @@
 				'line' => $this->line,
 				'trace' => array()
 			);
-			foreach($this->stack as $frame)
+
+			foreach ($this->stack as $frame)
 			{
-				switch($frame['function'])
+				switch ($frame['function'])
 				{
 					case 'trigger_error':
 						$report->trace[] = (object)array('func' => 'USER ERROR RAISED');
@@ -188,9 +189,9 @@
 		public function getHTMLReport()
 		{
 			$trace = '';
-			foreach($this->stack as $frame)
+			foreach ($this->stack as $frame)
 			{
-				switch($frame['function'])
+				switch ($frame['function'])
 				{
 					case 'trigger_error':
 						$trace .= sprintf('<span class="func">USER ERROR RAISED</span><br />');
