@@ -140,11 +140,11 @@
 			$responseTime = microtime(true) - self::$startup;
 
 			// Report if time exceeds warning limit, unless called from CLI
-			if ($responseTime < self::$slowWarn || isset($_SERVER['REQUEST_URI']))
+			if ($responseTime < self::$slowWarn || !isset($_SERVER['REQUEST_URI']))
 				return;
 
 			// If there is nowhere to send the warning, just log it
-			if (self::$mail->getRecipientCount() > 0)
+			if (self::$mail->getRecipientCount() < 1)
 			{
 				error_log(sprintf('Slow request: %s/%s (%.3fs)', $_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'], $responseTime));
 				return;
