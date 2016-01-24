@@ -37,10 +37,9 @@
 		 * Copies the values already stored inside a row.
 		 *
 		 * @param IDataContainer $row A row to extract from.
-		 * @param string $prependChar Character to prepend each key with.
 		 * @return IDatabaseStatement Statement instance.
 		 */
-		public function copyValuesFromRow(IDataContainer $row, $prependChar = ':');
+		public function copyValuesFromRow(IDataContainer $row);
 
 		/**
 		 * Executes the statement and collects retrieved rows.
