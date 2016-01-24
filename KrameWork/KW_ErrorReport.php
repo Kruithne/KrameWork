@@ -37,16 +37,16 @@
 		 */
 		private function bundleReportInformation(&$array)
 		{
-			$array[] = Array(
+			$array[] = array(
 				$this->formatValue('PHP Version', PHP_VERSION),
 				$this->formatValue('Server OS', PHP_OS)
 			);
 
 			if (KrameSystem::sessionIsStarted())
-				$array[] = Array('SESSION' => $this->bundleArray($_SESSION));
+				$array[] = array('SESSION' => $this->bundleArray($_SESSION));
 
-			$array[] = Array('GET' => $this->bundleArray($_GET));
-			$array[] = Array('POST' => $this->bundleArray($_POST));
+			$array[] = array('GET' => $this->bundleArray($_GET));
+			$array[] = array('POST' => $this->bundleArray($_POST));
 		}
 
 		/**
@@ -58,10 +58,10 @@
 		 */
 		private function formatValue($key, $value)
 		{
-			if($key == 'trace')
+			if ($key == 'trace')
 			{
 				$out = array();
-				foreach($value as $step)
+				foreach ($value as $step)
 				{
 					$file = isset($step['file']) ? $step['file'] : 'unknown';
 					$line = isset($step['line']) ? $step['line'] : 0;
@@ -83,22 +83,22 @@
 		 * @param null|string $main_key The current key in traversing context.
 		 * @return array The section in it's current state.
 		 */
-		private function bundleArray($source, $array = NULL, $main_key = NULL)
+		private function bundleArray($source, $array = null, $main_key = null)
 		{
-			if ($array === NULL)
-				$array = Array();
+			if ($array === null)
+				$array = array();
 
 			foreach ($source as $key => $value)
 			{
 				if (is_array($value) || is_object($value))
 				{
 					$node_key = is_string($key) ? $key : gettype($value);
-					$new_key = ($main_key === NULL ? $node_key : $main_key . '/' . $node_key);
+					$new_key = ($main_key === null ? $node_key : $main_key . '/' . $node_key);
 					return $this->bundleArray($value, $array, $new_key);
 				}
 				else
 				{
-					$new_key = $main_key === NULL ? $key : $main_key . '/' . $key;
+					$new_key = $main_key === null ? $key : $main_key . '/' . $key;
 					$array[] = $this->formatValue($new_key, $value);
 				}
 			}
@@ -141,7 +141,8 @@
 							$output->append($key . ":\r\n");
 
 						$this->prepareOutputData($node, $output);
-					} else
+					}
+					else
 					{
 						$output->append($node)->append("\r\n");
 					}
@@ -166,7 +167,7 @@
 		/**
 		 * Get the subject for this error report.
 		 *
-		 * @return string|null Subject for this report, will be NULL if not yet set.
+		 * @return string|null Subject for this report, will be null if not yet set.
 		 */
 		public function getSubject()
 		{
@@ -176,7 +177,7 @@
 		/**
 		 * @var array
 		 */
-		private $data = Array();
+		private $data = array();
 
 		/**
 		 * @var string

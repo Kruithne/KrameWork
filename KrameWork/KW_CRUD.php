@@ -2,16 +2,6 @@
 	abstract class KW_CRUD extends KW_Repository implements ICRUD
 	{
 		/**
-		 * Type hint for column types
-		 * @param string $key The name of the column
-		 * @return int One of the PDO::PARAM_* constants
-		 */
-		public function getKeyType($key)
-		{
-			return PDO::PARAM_INT;
-		}
-
-		/**
 		 * KW_CRUD constructor.
 		 * @param ISchemaManager $schema The system schema manager
 		 */
@@ -19,6 +9,16 @@
 		{
 			parent::__construct();
 			$schema->addTable($this);
+		}
+
+		/**
+		 * Type hint for column types
+		 * @param string $key The name of the column
+		 * @return int One of the PDO::PARAM_* constants
+		 */
+		public function getKeyType($key)
+		{
+			return PDO::PARAM_INT;
 		}
 
 		/**
@@ -58,13 +58,13 @@
 		{
 			$auto = $this->hasAutoKey();
 
-			if($auto)
+			if ($auto)
 				$this->bindValues($this->createRecord, $this->getValues(), $object);
 			else
 				$this->bind($this->createRecord, $object);
 
-			$inserted = $this->createRecord->execute();
-			if($auto)
+			$this->createRecord->execute();
+			if ($auto)
 			{
 				switch($this->db->getType())
 				{
@@ -78,6 +78,7 @@
 				$result = $this->getLastID->getRows();
 				if (!$result || count($result) != 1)
 					return null;
+
 				switch ($this->db->getType())
 				{
 					case 'pgsql':
@@ -87,14 +88,18 @@
 						return $this->read($result[0]->id);
 				}
 			}
+
 			$key = $this->getKey();
-			if(!$key)
+			if (!$key)
+
 				return $this->read();
-			if(!is_array($key))
+			if (!is_array($key))
 				return $this->read($object->$key);
+
 			$k = array();
-			foreach($key as $col)
+			foreach ($key as $col)
 				$k[$col] = $object->$col;
+
 			return $this->read($k);
 		}
 
@@ -147,7 +152,7 @@
 			foreach ($key as $col => $val)
 			{
 				$this->readSet->$col = empty($val) || $val == '*' ? null : $val;
-				$col_null = $col.'_null';
+				$col_null = $col . '_null';
 				$this->readSet->$col_null = empty($val) || $val == '*' ? 1 : 0;
 			}
 			return $this->fetchRowSet($this->readSet);
@@ -240,7 +245,7 @@
 				foreach ($field as $col)
 					$query->$col = $object->$col;
 			}
-			else if($field)
+			else if ($field)
 			{
 				$query->$field = $object->$field;
 			}
@@ -256,9 +261,9 @@
 		private function prepareComposite($table, $key, $values, $serial)
 		{
 			// Create
-			// TODO serial is probably not going to work with composite keys - maybe we should just ignore it?
+			// ToDo: serial is probably not going to work with composite keys - maybe we should just ignore it?
 			$fields = array_merge($serial ? array() : (is_array($key) ? $key : array($key)), $values);
-			$this->createRecord = $this->db->prepare('INSERT INTO '.$table.' ('.join(',', $fields).') VALUES (:'.join(', :',$fields).')');
+			$this->createRecord = $this->db->prepare('INSERT INTO ' . $table . ' (' . join(',', $fields) . ') VALUES (:' . join(', :',$fields) . ')');
 
 			switch ($this->db->getType())
 			{
@@ -280,7 +285,7 @@
 				$filter[] = sprintf('(:%1$s_null = 1 OR %1$s = :%1$s)', $col);
 
 			$filter = join(' AND ', $filter);
-			$this->readSet = $this->db->prepare('SELECT * FROM '.$table.' WHERE '.$filter);
+			$this->readSet = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . $filter);
 
 			foreach ($key as $col)
 				$this->readSet->setType($col, $this->getKeyType($col));
@@ -297,14 +302,14 @@
 				$fields[] = sprintf('%1$s = :%1$s', $col);
 
 			// Read
-			$this->readAll = $this->db->prepare('SELECT * FROM '.$table);
-			$this->readOne = $this->db->prepare('SELECT * FROM '.$table.' WHERE '.$filter);
+			$this->readAll = $this->db->prepare('SELECT * FROM ' . $table);
+			$this->readOne = $this->db->prepare('SELECT * FROM ' . $table. ' WHERE ' . $filter);
 
 			// Update
-			$this->updateRecord = $this->db->prepare('UPDATE '.$table.' SET '.join(', ', $fields).' WHERE '.$filter);
+			$this->updateRecord = $this->db->prepare('UPDATE ' . $table . ' SET ' . join(', ', $fields) . ' WHERE ' . $filter);
 
 			// Delete
-			$this->deleteRecord = $this->db->prepare('DELETE FROM '.$table.' WHERE '.$filter);
+			$this->deleteRecord = $this->db->prepare('DELETE FROM ' . $table . ' WHERE ' . $filter);
 		}
 
 		/**
@@ -318,7 +323,7 @@
 		{
 			// Create
 			$fields = array_merge($serial ? array() : array($key), $values);
-			$this->createRecord = $this->db->prepare('INSERT INTO '.$table.' ('.join(',', $fields).') VALUES (:'.join(', :',$fields).')');
+			$this->createRecord = $this->db->prepare('INSERT INTO ' . $table . ' ('.join(',', $fields) . ') VALUES (:' . join(', :',$fields) . ')');
 
 			switch ($this->db->getType())
 			{
@@ -344,21 +349,21 @@
 			switch ($this->db->getType())
 			{
 				case 'sqlite':
-					$this->readAll = $this->db->prepare('SELECT rowid, * FROM '.$table);
-					$this->readOne = $this->db->prepare('SELECT rowid, * FROM '.$table.' WHERE '.$filter);
+					$this->readAll = $this->db->prepare('SELECT rowid, * FROM ' . $table);
+					$this->readOne = $this->db->prepare('SELECT rowid, * FROM ' . $table . ' WHERE ' . $filter);
 					break;
 
 				default:
-					$this->readAll = $this->db->prepare('SELECT * FROM '.$table);
-					$this->readOne = $this->db->prepare('SELECT * FROM '.$table.' WHERE '.$filter);
+					$this->readAll = $this->db->prepare('SELECT * FROM ' . $table);
+					$this->readOne = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . $filter);
 					break;
 			}
 
 			// Update
-			$this->updateRecord = $this->db->prepare('UPDATE '.$table.' SET '.join(', ', $fields).' WHERE '.$filter);
+			$this->updateRecord = $this->db->prepare('UPDATE ' . $table . ' SET ' . join(', ', $fields) . ' WHERE ' . $filter);
 
 			// Delete
-			$this->deleteRecord = $this->db->prepare('DELETE FROM '.$table.' WHERE '.$filter);
+			$this->deleteRecord = $this->db->prepare('DELETE FROM ' . $table . ' WHERE ' . $filter);
 		}
 
 		/**
@@ -369,10 +374,10 @@
 		private function prepareNonRelational($table, $values)
 		{
 			// Create
-			$this->createRecord = $this->db->prepare('INSERT INTO '.$table.' ('.join(',', $values).') VALUES (:'.join(', :',$values).')');
+			$this->createRecord = $this->db->prepare('INSERT INTO ' . $table . ' (' . join(',', $values) . ') VALUES (:' . join(', :',$values) . ')');
 
 			// Read
-			$this->readAll = $this->db->prepare('SELECT * FROM '.$table);
+			$this->readAll = $this->db->prepare('SELECT * FROM ' . $table);
 
 			// Update
 			$fields = array();
@@ -380,10 +385,10 @@
 			foreach ($values as $col)
 				$fields[] = sprintf('%1$s = :%1$s', $col);
 
-			$this->updateRecord = $this->db->prepare('UPDATE '.$table.' SET '.join(', ', $fields));
+			$this->updateRecord = $this->db->prepare('UPDATE ' . $table . ' SET ' . join(', ', $fields));
 
 			// Delete
-			$this->deleteRecord = $this->db->prepare('DELETE FROM '.$table);
+			$this->deleteRecord = $this->db->prepare('DELETE FROM ' . $table);
 		}
 	}
 ?>

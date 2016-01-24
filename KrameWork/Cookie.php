@@ -30,11 +30,11 @@
 		 * Get the value of a set cookie.
 		 *
 		 * @param string $name The identifying name of the cookie.
-		 * @return mixed|null The value of the cookie or NULL if it's not set.
+		 * @return mixed|null The value of the cookie or null if it's not set.
 		 */
 		public static function Get($name)
 		{
-			return isset($_COOKIE[$name]) ? $_COOKIE[$name] : NULL;
+			return isset($_COOKIE[$name]) ? $_COOKIE[$name] : null;
 		}
 	}
 ?>

@@ -1,6 +1,11 @@
 <?php
 	abstract class KW_CRUDCache extends KW_CRUD
 	{
+		/**
+		 * KW_CRUDCache constructor.
+		 * @param ISchemaManager $schema
+		 * @param ICacheState $state
+		 */
 		public function __construct(ISchemaManager $schema, ICacheState $state)
 		{
 			parent::__construct($schema);
@@ -26,16 +31,26 @@
 			$this->cache_clear();
 		}
 
+		/**
+		 * Invalidates the cache of this service
+		 */
 		public function cache_clear()
 		{
-			$this->cache->clear('.#table#'.$this->getName());
+			$this->cache->clear('.#table#' . $this->getName());
 		}
 
+		/**
+		 * Get the current timestamp for the cache of this service
+		 * @return int Unix timestamp saying when the table was last updated
+		 */
 		public function cache_read()
 		{
-			return $this->cache->read('.#table#'.$this->getName());
+			return $this->cache->read('.#table#' . $this->getName());
 		}
 
+		/**
+		 * @var ICacheState
+		 */
 		private $cache;
 	}
 ?>

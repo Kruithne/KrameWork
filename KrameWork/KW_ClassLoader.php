@@ -20,11 +20,14 @@
 					$path = $classPath . DIRECTORY_SEPARATOR . $className . $extension;
 					if (file_exists($path))
 					{
-						if(self::$debug)
+						if (self::$debug)
 							error_log('Autoloading ' . $className . '..');
+
 						require_once($path);
-						if(self::$debug)
+
+						if (self::$debug)
 							error_log('Autoloading ' . $className . ' succeeded..');
+
 						return;
 					}
 				}
@@ -47,7 +50,7 @@
 		/**
 		 * Sets which file extensions can be automatically loaded by the class loader.
 		 *
-		 * @param String $extensionString A comma-separated list of extensions with period included.
+		 * @param string $extensionString A comma-separated list of extensions with period included.
 		 */
 		public static function setAllowedExtensions($extensionString)
 		{
@@ -72,14 +75,32 @@
 				self::$classPaths[] = rtrim($arg, "\x2F\x5C");
 		}
 
+		/**
+		 * Enable debugging for the class loader.
+		 */
 		public static function enableDebug()
 		{
 			self::$debug = true;
 		}
 
-		private static $allowedExtensions = Array();
-		private static $classPaths = Array();
+		/**
+		 * @var string[]
+		 */
+		private static $allowedExtensions = array();
+
+		/**
+		 * @var string[]
+		 */
+		private static $classPaths = array();
+
+		/**
+		 * @var bool
+		 */
 		private static $recursive = false;
+
+		/**
+		 * @var bool
+		 */
 		private static $debug = false;
 	}
 ?>

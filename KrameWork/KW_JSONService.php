@@ -1,6 +1,11 @@
 <?php
 	abstract class KW_JSONService
 	{
+		/**
+		 * KW_JSONService constructor.
+		 * @param string $origin
+		 * @param string $method
+		 */
 		public function __construct($origin = '*', $method = 'GET, POST')
 		{
 			$this->origin = $origin;
@@ -9,13 +14,14 @@
 
 		public function execute()
 		{
-			header('Access-Control-Allow-Origin: '.$this->origin);
-			header('Access-Control-Allow-Methods: '.$this->method);
+			header('Access-Control-Allow-Origin: ' . $this->origin);
+			header('Access-Control-Allow-Methods: ' . $this->method);
 			header('Access-Control-Allow-Headers: Content-Type, Cookie');
 			header('Access-Control-Allow-Credentials: true');
 			header('Cache-Control: no-cache');
 			header('Pragma: no-cache');
-			if($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
+
+			if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
 				die();
 
 			$request = json_decode(file_get_contents('php://input'));
@@ -26,7 +32,15 @@
 		}
 
 		abstract public function process($request);
+
+		/**
+		 * @var string
+		 */
 		private $origin;
+
+		/**
+		 * @var string
+		 */
 		private $method;
 	}
 ?>

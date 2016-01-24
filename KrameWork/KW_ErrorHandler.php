@@ -13,8 +13,8 @@
 			if ($alterLevel)
 				error_reporting(E_ALL);
 
-			set_error_handler(array($this, "handleError"));
-			set_exception_handler(array($this, "handleException"));
+			set_error_handler(array($this, 'handleError'));
+			set_exception_handler(array($this, 'handleException'));
 		}
 
 		/**
@@ -34,10 +34,10 @@
 		 */
 		public function getMailObject()
 		{
-			if ($this->mail === NULL)
+			if ($this->mail === null)
 			{
 				$this->mail = new KW_Mail();
-				$this->mail->setHeader("MIME-Version", "1.0");
+				$this->mail->setHeader('MIME-Version', '1.0');
 			}
 
 			return $this->mail;
@@ -64,8 +64,9 @@
 		 */
 		public function handleError($type, $string, $file, $line)
 		{
-			if($this->errorCount++ > $this->maxErrors)
+			if ($this->errorCount++ > $this->maxErrors)
 				die('Excessive errors, aborting');
+
 			if (!error_reporting() & $type)
 				return true;
 
@@ -94,8 +95,10 @@
 		public function handleException($exception)
 		{
 			header('HTTP/1.0 500 Internal Error');
-			if($this->errorCount++ > $this->maxErrors)
+
+			if ($this->errorCount++ > $this->maxErrors)
 				die('Excessive errors, aborting');
+
 			$this->sendErrorReport($this->generateErrorReport(
 				'EXCEPTION', $exception->getLine(), $exception->getFile(), $exception->getMessage(), $exception->getTrace())
 			);
@@ -132,19 +135,19 @@
 		 */
 		public function sendErrorReport($report)
 		{
-			if ($this->mail !== NULL)
+			if ($this->mail !== null)
 			{
 				$this->mail->clear();
 				$this->mail->append((string) $report);
 
-				if ($this->mail->getSubject() === NULL)
+				if ($this->mail->getSubject() === null)
 					$this->mail->setSubject($report->getSubject());
 
 				if ($this->mail->getRecipientCount() > 0)
 					$this->mail->send();
 			}
 
-			if ($this->log !== NULL)
+			if ($this->log !== null)
 			{
 				if (@is_file($this->log))
 				{
@@ -158,11 +161,21 @@
 			}
 		}
 
+		/**
+		 * Generate a log name.
+		 * @param int $number
+		 * @return string
+		 */
 		private function getLogName($number)
 		{
 			return time() . '_' . $number . '.log';
 		}
 
+		/**
+		 * Generate a new log file name.
+		 * @param string $directory
+		 * @return string
+		 */
 		private function createLogFileName($directory)
 		{
 			$number = 0;
@@ -182,12 +195,12 @@
 		private $mail;
 
 		/**
-		 * @var string|null Will be NULL if not yet set.
+		 * @var string|null Will be null if not yet set.
 		 */
 		private $log;
 
 		/**
-		 * @var maxErrors Number of errors to process before aborting exection.
+		 * @var $maxErrors Number of errors to process before aborting execution.
 		 */
 		private $maxErrors = 10;
 
