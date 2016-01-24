@@ -254,7 +254,7 @@
 				header('HTTP/1.0 500 Internal Error');
 
 			if ($this->errorCount++ > $this->maxErrors)
-				die('Excessive errors, aborting');
+				die();
 
 			$this->sendErrorReport(self::generateErrorReport(
 				'EXCEPTION', $exception->getLine(), $exception->getFile(), $exception->getMessage(), $exception->getTrace())
