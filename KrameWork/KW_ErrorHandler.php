@@ -213,7 +213,7 @@
 			if (!error_reporting() & $type)
 				return true;
 
-			if ($type == E_USER_ERROR)
+			if ($type == E_USER_ERROR && !headers_sent())
 				header('HTTP/1.0 500 Internal Error');
 
 			$this->sendErrorReport(self::generateErrorReport($this->getErrorType($type), $line, $file, $string, debug_backtrace()));
@@ -264,7 +264,7 @@
 			if (self::$mute)
 				return;
 
-			if(!$this->error)
+			if(!$this->error && !headers_sent())
 				header('HTTP/1.0 500 Internal Error');
 
 			if ($this->errorCount++ > $this->maxErrors)
@@ -403,8 +403,11 @@
 			while (ob_get_level())
 				ob_end_clean();
 
-			header('HTTP/1.0 500 Server error');
-			header('Content-Type: application/json; encoding=UTF-8');
+			if(!headers_sent())
+			{
+				header('HTTP/1.0 500 Server error');
+				header('Content-Type: application/json; encoding=UTF-8');
+			}
 			echo '{error:'.$report->getJSONReport().'}';
 			die();
 		}
