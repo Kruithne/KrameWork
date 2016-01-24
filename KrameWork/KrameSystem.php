@@ -17,7 +17,7 @@
 		 */
 		public function __construct($flags = KW_DEFAULT_FLAGS, $paths = null, $components = null, $bindings = null, $decorators = null)
 		{
-			parent::__construct($components, $bindings, $decorators)
+			parent::__construct($components, $bindings, $decorators);
 			$this->flags = $flags;
 
 			// Set-up auto loading.
