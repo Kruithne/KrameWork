@@ -83,6 +83,17 @@
 			error_log('_____ begin stack frame dump _____');
 			foreach ($stack as $i => $frame)
 			{
+				$ignore = false;
+				switch ($frame['function'])
+				{
+					// Ommit these from the error report
+					case 'handleError':
+					case 'handleException':
+						if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
+							$ignore = true;
+				}
+				if ($ignore)
+					continue;
 				$args = '';
 				if (isset($frame['args']) && is_array($frame['args']))
 				{
