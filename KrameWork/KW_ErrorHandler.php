@@ -126,7 +126,7 @@
 				return 'Internal error ('.count($matches).') : ' . $error;
 
 			$report = self::generateErrorReport($matches[1], $matches[4], $matches[3], $matches[2], debug_backtrace());
-			if(self::$errorDocument)
+			if (self::$errorDocument)
 				return sprintf(self::$errorDocument, $report->getHTMLReport());
 
 			return str_replace($match[0], $report->getHTMLReport(), $buffer);
@@ -149,6 +149,7 @@
 				error_log(sprintf('Slow request: %s/%s (%.3fs)', $_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'], $responseTime));
 				return;
 			}
+
 			$msg = sprintf('Request took %.3fs', $responseTime);
 			if (class_exists('KW_DatabaseConnection') && KW_DatabaseConnection::$trace)
 			{
@@ -156,6 +157,7 @@
 				$seen = array();
 				$timing = array();
 				$lt = 0;
+
 				foreach (KW_DatabaseConnection::$traceLog as $log)
 				{
 					if (!in_array($log['sql'], $seen))
@@ -172,10 +174,13 @@
 					$msg .= sprintf("%.3f +%.3f [%d] {%s} %.3fs\n", $o, $o - $lt, $k, join(', ', $params), $log['time']);
 					$lt = $o + $log['time'];
 				}
+
 				$msg .= "\n\n=== DB queries ===\n\n";
+
 				foreach ($seen as $k => $sql)
 					$msg .= sprintf("[%d] %.3fs\n%s\n-------------\n", $k, $timing[$k], $sql);
 			}
+
 			self::$mail->clear();
 			self::$mail->append($msg);
 
@@ -351,10 +356,11 @@
 		 */
 		private function dumpHTML($report)
 		{
-			if(self::$errorDocument)
+			if (self::$errorDocument)
 			{
-				while(ob_get_level())
+				while (ob_get_level())
 					ob_end_clean();
+
 				$this->error .= $report->getHTMLReport();
 				echo sprintf(self::$errorDocument, $this->error);
 				return;
@@ -369,8 +375,9 @@
 		 */
 		private function dumpJSON($report)
 		{
-			while(ob_get_level())
+			while (ob_get_level())
 				ob_end_clean();
+
 			header('HTTP/1.0 500 Server error');
 			header('Content-Type: application/json; encoding=UTF-8');
 			echo '{error:'.$report->getJSONReport().'}';
