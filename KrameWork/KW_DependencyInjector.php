@@ -177,13 +177,13 @@
 		 */
 		public function __construct($components = null, $bindings = null, $decorators = null)
 		{
-			if($components)
+			if ($components)
 				$this->classes = $components;
 
-			if($bindings)
+			if ($bindings)
 				$this->bindings = $bindings;
 
-			if($decorators)
+			if ($decorators)
 				$this->decorators = $decorators;
 		}
 

@@ -11,9 +11,9 @@
 		 *
 		 * @param int $flags Flags to control the behavior of the system.
 		 * @param string[] $paths A list of auto load paths to add.
-		 * @param array $components Preload classes with this collection
-		 * @param array $bindigns Preload type bindings with this collection
-		 * @param $decorators Preload decorators with this collection
+		 * @param array $components Pre-load classes with this collection
+		 * @param array $bindings Pre-load type bindings with this collection
+		 * @param array $decorators Pre-load decorators with this collection
 		 */
 		public function __construct($flags = KW_DEFAULT_FLAGS, $paths = null, $components = null, $bindings = null, $decorators = null)
 		{
@@ -32,6 +32,7 @@
 
 			KW_ClassLoader::setAllowedExtensions('.php');
 			KW_ClassLoader::addClassPath(dirname(__FILE__));
+
 			if($paths)
 				foreach($paths as $path)
 					KW_ClassLoader::addClassPath($path);
