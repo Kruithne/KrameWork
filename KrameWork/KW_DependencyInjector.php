@@ -143,25 +143,25 @@
 
 			$to_inject = array();
 			$constructor = $class->getConstructor();
-
-			if (!$constructor)
-				throw new KW_ClassDependencyException($class_name, "Class %s does not have a constructor function");
-
-			foreach ($constructor->getParameters() as $parameter)
-			{
-				$parameter_class = $parameter->getClass();
-				if ($parameter_class === null)
-					throw new KW_ClassDependencyException($class_name, "Constructor for %s contains parameters with an undefined class");
-
-				$parameter_class_name = $parameter_class->getName();
-				if ($parameter_class_name === $class_name)
-					throw new KW_ClassDependencyException($class_name, "Cyclic dependency when constructing %s");
-
-				$to_inject[] = $this->getComponent($parameter_class_name);
-			}
-
 			$object = $class->newInstanceWithoutConstructor();
-			call_user_func_array(array($object, "__construct"), $to_inject);
+
+			if ($constructor)
+			{
+				foreach ($constructor->getParameters() as $parameter)
+				{
+					$parameter_class = $parameter->getClass();
+					if ($parameter_class === null)
+						throw new KW_ClassDependencyException($class_name, "Constructor for %s contains parameters with an undefined class");
+
+					$parameter_class_name = $parameter_class->getName();
+					if ($parameter_class_name === $class_name)
+						throw new KW_ClassDependencyException($class_name, "Cyclic dependency when constructing %s");
+
+					$to_inject[] = $this->getComponent($parameter_class_name);
+				}
+
+				call_user_func_array(array($object, "__construct"), $to_inject);
+			}
 
 			if ($this->classes[$class_name] === null)
 				$this->classes[$class_name] = $object;
