@@ -24,7 +24,7 @@
 	interface IQueryEquals
 	{
 		/**
-		 * Do an exact match on the preceeding column specification
+		 * Do an exact match on the preceding column specification
 		 * @param string $value The pattern to look for or exclude.
 		 * @return IQueryPredicate
 		 */
@@ -37,7 +37,7 @@
 		 * @param string $value The pattern to look for or exclude.
 		 * @return IQueryPredicate
 		 */
-		public function greaterThan($value)l
+		public function greaterThan($value);
 	}
 	interface IQueryLessThan
 	{
@@ -51,7 +51,7 @@
 	interface IQueryLike
 	{
 		/**
-		 * Do a wildcard match on the preceeding column specification
+		 * Do a wildcard match on the preceding column specification
 		 * @param string $value The pattern to look for or exclude.
 		 * @return IQueryPredicate
 		 */
@@ -60,7 +60,7 @@
 	interface IQueryNotLike
 	{
 		/**
-		 * Do a negative wildcard match on the preceeding column specification
+		 * Do a negative wildcard match on the preceding column specification
 		 * @param string $value The pattern to look for or exclude.
 		 * @return IQueryPredicate
 		 */
@@ -69,7 +69,7 @@
 	interface IQueryNull
 	{
 		/**
-		 * Require that the preceeding column specification is null
+		 * Require that the preceding column specification is null
 		 * @return IQueryPredicate
 		 */
 		public function isNull();
@@ -77,7 +77,7 @@
 	interface IQueryNotNull
 	{
 		/**
-		 * Require that the preceeding column specification is a non null value
+		 * Require that the preceding column specification is a non null value
 		 * @return IQueryPredicate
 		 */
 		public function notNull();
@@ -96,7 +96,7 @@
 	{
 		/**
 		 * Prepare and execute the built query, returning the result set.
-		 * @return object[] The datatype as specified by CRUD instance the query was built from.
+		 * @return object[] The data-type as specified by CRUD instance the query was built from.
 		 */
 		public function execute();
 	}

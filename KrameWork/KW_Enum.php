@@ -1,8 +1,6 @@
 <?php
 	abstract class KW_Enum
 	{
-		private static $constants;
-
 		/**
 		 * Retrieves a key->value array representing this enums values.
 		 *
@@ -33,5 +31,10 @@
 			$constants = self::getConstants();
 			return array_key_exists($name, $constants) ? $constants[$name] : null;
 		}
+
+		/**
+		 * @var array
+		 */
+		private static $constants;
 	}
 ?>

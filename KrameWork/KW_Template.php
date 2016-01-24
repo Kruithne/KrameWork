@@ -11,24 +11,24 @@
 			if (defined('KW_TEMPLATE_DIR'))
 				$file = KW_TEMPLATE_DIR . $file;
 
-			$this->data = Array();
+			$this->data = array();
 			if (file_exists($file))
 				$this->__set('@@template@@', $file);
-			else if (file_exists($file.'.php'))
-				$this->__set('@@template@@', $file.'.php');
+			else if (file_exists($file . '.php'))
+				$this->__set('@@template@@', $file . '.php');
 			else
-				trigger_error('Missing template file "'.$file.'"!', E_USER_ERROR);
+				trigger_error('Missing template file "' . $file . '"!', E_USER_ERROR);
 		}
 
 		/**
 		 * Get a value stored in this template.
 		 *
 		 * @param mixed $key The key of the value to get.
-		 * @return mixed|null The value or NULL if nothing is set at the provided key.
+		 * @return mixed|null The value or null if nothing is set at the provided key.
 		 */
 		public function __get($key)
 		{
-			return array_key_exists($key, $this->data) ? $this->data[$key] : NULL;
+			return array_key_exists($key, $this->data) ? $this->data[$key] : null;
 		}
 
 		/**
@@ -58,6 +58,9 @@
 			return ob_get_clean();
 		}
 
+		/**
+		 * @var array
+		 */
 		protected $data;
 	}
 ?>

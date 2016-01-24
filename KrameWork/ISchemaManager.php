@@ -2,18 +2,18 @@
 	interface ISchemaManager
 	{
 		/**
-		 * Add a new table to be managed.
-		 *
-		 * @param ISchemaTable $spec A table specification.
-		 */
-		public function addTable(ISchemaTable $spec);
-
-		/**
 		 * Fetch a table by name
 		 *
 		 * @param string $name Name of table to return the specification of.
 		 */
 		public function __get($name);
+
+		/**
+		 * Add a new table to be managed.
+		 *
+		 * @param ISchemaTable $spec A table specification.
+		 */
+		public function addTable(ISchemaTable $spec);
 
 		/**
 		 * Called to execute schema management once all tables have been defined.

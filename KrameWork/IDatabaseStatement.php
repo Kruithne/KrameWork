@@ -2,9 +2,17 @@
 	interface IDatabaseStatement
 	{
 		/**
+		 * Called when an unknown property is set.
+		 *
+		 * @param string $key
+		 * @param object $value
+		 */
+		public function __set($key, $value);
+
+		/**
 		 * Retrieve the SQL query string set in this statement.
 		 *
-		 * @return null|string Statement SQL, will be NULL if not yet set.
+		 * @return null|string Statement SQL, will be null if not yet set.
 		 */
 		public function getQueryString();
 
@@ -17,9 +25,13 @@
 		 */
 		public function setValue($key, $value);
 
+		/**
+		 * Set the parameter type.
+		 * @param string $key
+		 * @param int $type
+		 * @see http://php.net/manual/en/pdo.constants.php
+		 */
 		public function setType($key, $type);
-
-		public function __set($key, $value);
 
 		/**
 		 * Copies the values already stored inside a row.
@@ -45,7 +57,7 @@
 		public function getRows();
 
 		/**
-		 * Returns the first row of the data retrieved. Will by NULL if no results were returned.
+		 * Returns the first row of the data retrieved. Will by null if no results were returned.
 		 * @return IDataContainer|null
 		 */
 		public function getFirstRow();

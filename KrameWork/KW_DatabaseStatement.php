@@ -1,6 +1,8 @@
 <?php
 	class KW_DatabaseStatement implements IDatabaseStatement
 	{
+		const SQLARG = ':';
+
 		/**
 		 * Construct an SQL database statement.
 		 *
@@ -15,9 +17,19 @@
 		}
 
 		/**
+		 * Set a parameter for this statement.
+		 * @param string $key
+		 * @param object $value
+		 */
+		public function __set($key, $value)
+		{
+			$this->setValue(self::SQLARG . $key, $value);
+		}
+
+		/**
 		 * Retrieve the SQL query string set in this statement.
 		 *
-		 * @return null|string Statement SQL, will be NULL if not yet set.
+		 * @return null|string Statement SQL, will be null if not yet set.
 		 */
 		public function getQueryString()
 		{
@@ -37,29 +49,29 @@
 			return $this;
 		}
 
+		/**
+		 * Set the type for a parameter.
+		 * @param string $key
+		 * @param int $type
+		 * @see http://php.net/manual/en/pdo.constants.php
+		 */
 		public function setType($key, $type)
 		{
 			$this->types[$key] = $type;
-		}
-
-		public function __set($key, $value)
-		{
-			$this->setValue(':'.$key, $value);
 		}
 
 		/**
 		 * Copies the values already stored inside a row.
 		 *
 		 * @param IDataContainer $row A row to extract from.
-		 * @param string $prependChar Character to prepend each key with.
 		 * @return IDatabaseStatement Statement instance.
 		 */
-		public function copyValuesFromRow(IDataContainer $row, $prependChar = ':')
+		public function copyValuesFromRow(IDataContainer $row)
 		{
 			$row_array = $row->getAsArray();
 
 			foreach ($row_array as $key => $value)
-				$this->setValue($prependChar . $key, $value);
+				$this->setValue(self::SQLARG . $key, $value);
 
 			return $this;
 		}
@@ -122,7 +134,7 @@
 		}
 
 		/**
-		 * Returns the first row of the data retrieved. Will by NULL if no results were returned.
+		 * Returns the first row of the data retrieved. Will by null if no results were returned.
 		 * @return IDataContainer|null
 		 */
 		public function getFirstRow()
@@ -152,17 +164,17 @@
 		/**
 		 * @var array
 		 */
-		private $values = Array();
+		private $values = array();
 
 		/**
-		 * @var string|null The SQL statement, will bw NULL if not yet set.
+		 * @var string|null The SQL statement, will bw null if not yet set.
 		 */
 		private $sql;
 
 		/**
 		 * @var IDataContainer[]
 		 */
-		private $rows = Array();
+		private $rows = array();
 
 		/**
 		 * @var PDO
@@ -174,8 +186,14 @@
 		 */
 		private $statement;
 
+		/**
+		 * @var bool
+		 */
 		private $executed;
 
+		/**
+		 * @var int[]
+		 */
 		private $types = array();
 	}
 ?>

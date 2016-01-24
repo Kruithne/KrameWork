@@ -28,14 +28,14 @@
 					return $data;
 			}
 
-			return NULL;
+			return null;
 		}
 
 		/**
 		 * Get a value from the POST array after sanitizing.
 		 *
 		 * @param mixed $key The key of the value to return.
-		 * @return mixed|null The filtered value or NULL if the key does not exist or is empty.
+		 * @return mixed|null The filtered value or null if the key does not exist or is empty.
 		 */
 		public static function Post($key)
 		{
@@ -47,7 +47,7 @@
 		 * Get a value from the GET array after sanitizing.
 		 *
 		 * @param mixed $key The key of the value to return.
-		 * @return mixed|null The filtered value or NULL if the key does not exist or is empty.
+		 * @return mixed|null The filtered value or null if the key does not exist or is empty.
 		 */
 		public static function Get($key)
 		{
@@ -67,7 +67,7 @@
 			if (!array_key_exists($key, $_FILES))
 				return array();
 
-			$data = Array();
+			$data = array();
 			$tmp = $_FILES[$key]['tmp_name'];
 			if (is_array($tmp))
 			{
@@ -91,7 +91,7 @@
 		public static function Check()
 		{
 			foreach (func_get_args() as $arg)
-				if ($arg === NULL)
+				if ($arg === null)
 					return false;
 
 			return true;
@@ -106,6 +106,9 @@
 			self::$encoding = $encoding;
 		}
 
+		/**
+		 * @var string
+		 */
 		private static $encoding = 'UTF-8';
 	}
 ?>

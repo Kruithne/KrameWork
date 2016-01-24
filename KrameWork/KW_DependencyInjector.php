@@ -10,9 +10,10 @@
 		{
 			if (is_array($classInput))
 			{
-				foreach($classInput as $classInputItem)
+				foreach ($classInput as $classInputItem)
 					$this->addComponent($classInputItem);
 			}
+
 			if (is_string($classInput))
 			{
 				if (!array_key_exists($classInput, $this->classes))
@@ -20,7 +21,7 @@
 					if ($this->preload)
 						KW_ClassLoader::loadClass($classInput);
 
-					$this->classes[$classInput] = NULL;
+					$this->classes[$classInput] = null;
 
 					if ($this->bindInterfaces)
 						$this->extractInterfaces($classInput);
@@ -48,12 +49,23 @@
 				$this->addBinding($interface, $className);
 		}
 
+		/**
+		 * Add a binding mapping a class or interface to another class or interface. $target should
+		 * normally be a class, not an interface.
+		 * @param string $source The name of a class or interface
+		 * @param string $target The name of the class to return when the source is requested
+		 */
 		public function addBinding($source, $target)
 		{
 			$this->bindings[$source] = $target;
 			$this->addComponent($target);
 		}
 
+		/**
+		 * Add a decorator such that a request for $bind returns $with with $bind injected into it
+		 * @param string $bind The name of a class or interface
+		 * @param string $with The name of a class. must have a constructor that takes $bind objects as the only argument.
+		 */
 		public function addDecorator($bind, $with)
 		{
 			if (!isset($this->decorators[$bind]))
@@ -123,7 +135,7 @@
 			if (!$class->isInstantiable())
 				throw new KW_ClassDependencyException($class_name, "Class %s cannot be instantiated");
 
-			$to_inject = Array();
+			$to_inject = array();
 			$constructor = $class->getConstructor();
 
 			if (!$constructor)
@@ -132,7 +144,7 @@
 			foreach ($constructor->getParameters() as $parameter)
 			{
 				$parameter_class = $parameter->getClass();
-				if ($parameter_class === NULL)
+				if ($parameter_class === null)
 					throw new KW_ClassDependencyException($class_name, "Constructor for %s contains parameters with an undefined class");
 
 				$parameter_class_name = $parameter_class->getName();
@@ -145,18 +157,42 @@
 			$object = $class->newInstanceWithoutConstructor();
 			call_user_func_array(array($object, "__construct"), $to_inject);
 
-			if ($this->classes[$class_name] === NULL)
+			if ($this->classes[$class_name] === null)
 				$this->classes[$class_name] = $object;
 
 			return $object;
 		}
 
 		/**
+		 * Precompiled bootloader injection point
+		 * @param array $components Preload classes with this collection
+		 * @param array $bindigns Preload type bindings with this collection
+		 * @param $decorators Preload decorators with this collection
+		 */
+		public function __construct($components = null, $bindings = null, $decorators = null)
+		{
+			if($components)
+				$this->classes = $components;
+			if($bindings)
+				$this->bindings = $bindings;
+			if($decorators)
+				$this->decorators = $decorators;
+		}
+
+		/**
 		 * @var object[]
 		 */
-		private $classes = Array();
-		private $bindings = Array();
-		private $decorators = Array();
+		private $classes = array();
+
+		/**
+		 * @var array
+		 */
+		private $bindings = array();
+
+		/**
+		 * @var array
+		 */
+		private $decorators = array();
 
 		/**
 		 * @var bool

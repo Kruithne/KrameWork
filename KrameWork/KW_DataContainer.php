@@ -1,7 +1,11 @@
 <?php
 	class KW_DataContainer implements IDataContainer
 	{
-		public function __construct($data = Array())
+		/**
+		 * KW_DataContainer constructor.
+		 * @param array $data Default data
+		 */
+		public function __construct($data = array())
 		{
 			$this->values = $data;
 		}
@@ -37,11 +41,11 @@
 		 * Get a value set in this object.
 		 *
 		 * @param string $key The key the value is stored at.
-		 * @return mixed|null The value for the key. Will be NULL if nothing exists at the key.
+		 * @return mixed|null The value for the key. Will be null if nothing exists at the key.
 		 */
 		public function __get($key)
 		{
-			return array_key_exists($key, $this->values) ? $this->values[$key] : NULL;
+			return array_key_exists($key, $this->values) ? $this->values[$key] : null;
 		}
 
 		public function serialize()
@@ -54,7 +58,14 @@
 			$this->values = unserialize($values);
 		}
 
-		public function jsonSerialize()
+		/**
+		 * Specify data which should be serialized to JSON
+		 * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+		 * @return mixed data which can be serialized by <b>json_encode</b>,
+		 * which is a value of any type other than a resource.
+		 * @since 5.4.0
+		 */
+		function jsonSerialize()
 		{
 			return (object)$this->values;
 		}
@@ -69,6 +80,9 @@
 			return $this->values;
 		}
 
-		private $values = Array();
+		/**
+		 * @var object[]
+		 */
+		private $values = array();
 	}
 ?>

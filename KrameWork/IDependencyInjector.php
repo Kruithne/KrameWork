@@ -8,8 +8,18 @@
 		 */
 		public function addComponent($classInput);
 
+		/**
+		 * Add an interface binding to the injector.
+		 * @param string $source Interface name.
+		 * @param string $target Target class.
+		 */
 		public function addBinding($source, $target);
 
+		/**
+		 * Attempt to resolve a class name using bound interfaces.
+		 * @param string $class_name
+		 * @return string
+		 */
 		public function resolve($class_name);
 
 		/**

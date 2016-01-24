@@ -16,6 +16,11 @@
 			return 'private';
 		}
 
+		/**
+		 * KW_CacheAwareCRUDService constructor.
+		 * @param ISchemaManager $schema
+		 * @param ICacheState $state
+		 */
 		public function __construct(ISchemaManager $schema, ICacheState $state)
 		{
 			parent::__construct($schema, $state);
@@ -24,28 +29,30 @@
 		public function execute()
 		{
 			$cached = false;
-			if(function_exists('apache_request_headers'))
+			if (function_exists('apache_request_headers'))
 			{
 				$req = apache_request_headers();
-				if(isset($req['If-Modified-Since']))
-				{
+				if (isset($req['If-Modified-Since']))
 					$cached = strtotime($req['If-Modified-Since']);
-				}
 			}
-			header('Access-Control-Allow-Origin: '.$this->getOrigin());
-			header('Access-Control-Allow-Methods: '.$this->getMethod());
+
+			header('Access-Control-Allow-Origin: ' . $this->getOrigin());
+			header('Access-Control-Allow-Methods: ' . $this->getMethod());
 			header('Access-Control-Allow-Headers: Content-Type, Cookie');
 			header('Access-Control-Allow-Credentials: true');
-			header('Cache-Control: '.$this->getLevel());
-			if($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
+			header('Cache-Control: ' . $this->getLevel());
+
+			if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
 				die();
+
 			$modified = $this->cache_read();
-			header('X-Modified: '.serialize($modified));
-			if($modified && $_SERVER['REQUEST_METHOD'] == 'GET')
+			header('X-Modified: ' . serialize($modified));
+
+			if ($modified && $_SERVER['REQUEST_METHOD'] == 'GET')
 			{
-				header('Last-Modified: '.date('r', $modified));
-				header('Expires: '.date('r', $modified + 365*24*3600));
-				if($cached && $cached >= $modified)
+				header('Last-Modified: ' . date('r', $modified));
+				header('Expires: ' . date('r', $modified + 365 * 24 * 3600));
+				if ($cached && $cached >= $modified)
 				{
 					header('HTTP/1.1 304 Not Modified');
 					die();
@@ -54,7 +61,7 @@
 
 			$request = json_decode(file_get_contents('php://input'));
 
-			if(!$this->authorized($request))
+			if (!$this->authorized($request))
 			{
 				header('HTTP/1.0 403 Access Denied');
 				return '';
@@ -94,10 +101,10 @@
 		public function process($object)
 		{
 			$path = false;
-			if(isset($_SERVER['PATH_INFO']))
+			if (isset($_SERVER['PATH_INFO']))
 				$path = $_SERVER['PATH_INFO'];
 
-			if($_SERVER['REQUEST_METHOD'] == 'POST')
+			if ($_SERVER['REQUEST_METHOD'] == 'POST')
 			{
 				switch($path)
 				{
@@ -123,24 +130,31 @@
 						return false;
 				}
 			}
-			if($_SERVER['REQUEST_METHOD'] == 'GET')
+
+			if ($_SERVER['REQUEST_METHOD'] == 'GET')
 			{
-				if($path)
+				if ($path)
 				{
 					$lookup = explode('/', $path);
 					$key = $this->getKey();
-					if(is_array($key))
+
+					if (is_array($key))
 					{
 						$search = array();
-						foreach($key as $i => $col)
+						foreach ($key as $i => $col)
 							$search[$col] = $lookup[$i + 1];
+
 						return $this->read($search);
 					}
 					else
+					{
 						return $this->read($lookup[1]);
+					}
 				}
 				return $this->read();
 			}
+
+			return false;
 		}
 	}
 ?>

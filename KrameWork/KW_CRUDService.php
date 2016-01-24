@@ -11,6 +11,10 @@
 			return 'GET, POST';
 		}
 
+		/**
+		 * KW_CRUDService constructor.
+		 * @param ISchemaManager $schema
+		 */
 		public function __construct(ISchemaManager $schema)
 		{
 			parent::__construct($schema);
@@ -18,18 +22,19 @@
 
 		public function execute()
 		{
-			header('Access-Control-Allow-Origin: '.$this->getOrigin());
-			header('Access-Control-Allow-Methods: '.$this->getMethod());
+			header('Access-Control-Allow-Origin: ' . $this->getOrigin());
+			header('Access-Control-Allow-Methods: ' . $this->getMethod());
 			header('Access-Control-Allow-Headers: Content-Type, Cookie');
 			header('Access-Control-Allow-Credentials: true');
 			header('Cache-Control: no-cache');
 			header('Pragma: no-cache');
-			if($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
+
+			if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
 				die();
 
 			$request = json_decode(file_get_contents('php://input'));
 
-			if(!$this->authorized($request))
+			if (!$this->authorized($request))
 			{
 				header('HTTP/1.0 403 Access Denied');
 				return '';
@@ -46,21 +51,40 @@
 			return true;
 		}
 
+		/**
+		 * Check if the given object can be created.
+		 * @param object $object
+		 * @return bool
+		 */
 		public function canCreate($object)
 		{
 			return true;
 		}
 
+		/**
+		 * Check if the given object can be read.
+		 * @return bool
+		 */
 		public function canRead()
 		{
 			return true;
 		}
 
+		/**
+		 * Check if the given object can be updated.
+		 * @param object $object
+		 * @return bool
+		 */
 		public function canUpdate($object)
 		{
 			return true;
 		}
 
+		/**
+		 * Check if the given object can be deleted.
+		 * @param object $object
+		 * @return bool
+		 */
 		public function canDelete($object)
 		{
 			return true;
@@ -69,15 +93,15 @@
 		public function process($object)
 		{
 			$path = false;
-			if(isset($_SERVER['PATH_INFO']))
+			if (isset($_SERVER['PATH_INFO']))
 				$path = $_SERVER['PATH_INFO'];
 
-			if($_SERVER['REQUEST_METHOD'] == 'POST')
+			if ($_SERVER['REQUEST_METHOD'] == 'POST')
 			{
 				switch($path)
 				{
 					case '/create':
-						if(!$this->canCreate($object))
+						if (!$this->canCreate($object))
 						{
 							header('HTTP/1.0 403 Access Denied');
 							return '';
@@ -86,13 +110,13 @@
 						{
 							return $this->create($object);
 						}
-						catch(PDOException $e)
+						catch (PDOException $e)
 						{
 							return $e;
 						}
 
 					case '/update':
-						if(!$this->canUpdate($object))
+						if (!$this->canUpdate($object))
 						{
 							header('HTTP/1.0 403 Access Denied');
 							return false;
@@ -101,7 +125,7 @@
 						return true;
 
 					case '/delete':
-						if(!$this->canDelete($object))
+						if (!$this->canDelete($object))
 						{
 							header('HTTP/1.0 403 Access Denied');
 							return false;
@@ -113,29 +137,35 @@
 						return false;
 				}
 			}
-			if($_SERVER['REQUEST_METHOD'] == 'GET')
+
+			if ($_SERVER['REQUEST_METHOD'] == 'GET')
 			{
-				if(!$this->canRead())
+				if (!$this->canRead())
 				{
 					header('HTTP/1.0 403 Access Denied');
 					return false;
 				}
-				if($path)
+
+				if ($path)
 				{
 					$lookup = explode('/', $path);
 					$key = $this->getKey();
-					if(is_array($key))
+					if (is_array($key))
 					{
 						$search = array();
-						foreach($key as $i => $col)
+						foreach ($key as $i => $col)
 							$search[$col] = $lookup[$i + 1];
+
 						return $this->read($search);
 					}
 					else
+					{
 						return $this->read($lookup[1]);
+					}
 				}
 				return $this->read();
 			}
+			return false;
 		}
 	}
 ?>
