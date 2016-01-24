@@ -25,7 +25,7 @@
 		 */
 		public static function valueOf($name, $caseSensitive = false)
 		{
-			if ($caseSensitive)
+			if (!$caseSensitive)
 				$name = strtolower($name);
 
 			$constants = self::values();
