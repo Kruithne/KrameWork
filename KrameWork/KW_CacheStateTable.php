@@ -7,8 +7,8 @@
 		 */
 		public function __construct(ISchemaManager $schema)
 		{
-			$schema->addTable($this);
 			parent::__construct();
+			$schema->addTable($this);
 		}
 
 		public function clear($cacheKey)
