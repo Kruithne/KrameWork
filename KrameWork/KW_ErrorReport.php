@@ -41,39 +41,49 @@
 				$this->formatValue('PHP Version', PHP_VERSION),
 				$this->formatValue('Server OS', PHP_OS)
 			);
-			if(isset($_SERVER['SERVER_NAME']))
+
+			if (isset($_SERVER['SERVER_NAME']))
 			{
-				if(isset($_SERVER['REQUEST_URI']))
+				if (isset($_SERVER['REQUEST_URI']))
 				{
-					switch($_SERVER['SERVER_PORT'])
+					switch ($_SERVER['SERVER_PORT'])
 					{
 						default:
 						case 80: $urh = 'http'; break;
 						case 443: $urh = 'https'; break;
 					}
+
 					$array[] = $this->formatValue('URI', $urh . '://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
 				}
 				else
+				{
 					$array[] = $this-formatValue('VHost', $_SERVER['SERVER_NAME']);
+				}
 			}
-			if(isset($_SERVER['HTTP_REFERER']))
+
+			if (isset($_SERVER['HTTP_REFERER']))
 				$array[] = $this->formatValue('Referer', $_SERVER['HTTP_REFERER']);
-			if(isset($_SERVER['REQUEST_TIME']))
+
+			if (isset($_SERVER['REQUEST_TIME']))
 				$array[] = $this->formatValue('Request duration', time() - $_SERVER['REQUEST_TIME']);
-			if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+
+			if (isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 			{
 				$ip = explode(':',$_SERVER['HTTP_X_FORWARDED_FOR']);
 				$array[] = $this->formatValue('Client', gethostbyaddr($ip[0]) . ' [' . $ip[0] . ']');
-				if(isset($_SERVER['REMOTE_ADDR']))
+
+				if (isset($_SERVER['REMOTE_ADDR']))
 					$array[] = $this->formatValue('Proxy server', gethostbyaddr($_SERVER['REMOTE_ADDR']) . ' [' . $_SERVER['REMOTE_ADDR'] . ']');
 			}
-			else if(isset($_SERVER['REMOTE_ADDR']))
+			else if (isset($_SERVER['REMOTE_ADDR']))
+			{
 				$array[] = $this->formatValue('Client', gethostbyaddr($_SERVER['REMOTE_ADDR']) . ' [' . $_SERVER['REMOTE_ADDR'] . ']');
+			}
 
-			if(isset($_SERVER['REMOTE_USER']))
+			if (isset($_SERVER['REMOTE_USER']))
 				$array[] = $this->formatValue('Remote user', $_SERVER['REMOTE_USER']);
 
-			if(isset($_SERVER['HTTP_USER_AGENT']))
+			if (isset($_SERVER['HTTP_USER_AGENT']))
 				$array[] = $this->formatValue('Browser', $_SERVER['HTTP_USER_AGENT']);
 
 			if (KrameSystem::sessionIsStarted())
@@ -114,7 +124,9 @@
 			$trace = '';
 			if (count($stack) == 0)
 				return;
+
 			error_log('_____ begin stack frame dump _____');
+			
 			foreach ($stack as $i => $frame)
 			{
 				$ignore = false;
@@ -126,8 +138,10 @@
 						if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
 							$ignore = true;
 				}
+
 				if ($ignore)
 					continue;
+
 				$args = '';
 				if (isset($frame['args']) && is_array($frame['args']))
 				{
