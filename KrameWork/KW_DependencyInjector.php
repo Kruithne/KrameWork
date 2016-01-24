@@ -90,14 +90,20 @@
 		 * Returns a constructed component from the dependency injector.
 		 *
 		 * @param string $class_name The name of the class to return.
+		 * @param bool $create If true, injector will attempt to create the component if missing.
 		 * @return object The object requested with dependencies injected.
 		 * @throws KW_ClassDependencyException
 		 */
-		public function getComponent($class_name)
+		public function getComponent($class_name, $create = false)
 		{
 			$resolved_name = $this->resolve($class_name);
 			if (!array_key_exists($resolved_name, $this->classes))
-				throw new KW_ClassDependencyException($resolved_name, "Class %s has not been added to the injector");
+			{
+				if ($create)
+					$this->addComponent($class_name);
+				else
+					throw new KW_ClassDependencyException($resolved_name, "Class %s has not been added to the injector");
+			}
 
 			$object = $this->classes[$resolved_name];
 			if ($object === null)
