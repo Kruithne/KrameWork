@@ -1,0 +1,10 @@
+.error-report { font-family: monospace; }
+.error-report p { margin: 0; }
+.error-report .type { font-weight: bold; color: #000; }
+.error-report .message { font-weight: bold; font-size: 1.2em; }
+.error-report .path { color: silver; }
+.error-report .file { font-weight: bold; color: #9EE; font-size: 1.2em; }
+.error-report .line { font-weight: bold; color: #9EE; font-size: 1.2em; }
+.error-report .stacktrace { font-weight: bold; }
+.error-report .frame { font-weight: bold; font-size: 0.8em; }
+.error-report .func { font-weight: bold; color: #9EE; }

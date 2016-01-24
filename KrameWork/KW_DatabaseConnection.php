@@ -54,6 +54,16 @@
 		}
 
 		/**
+		 * @var bool $trace Enable database performance tracing
+		 */
+		public static $trace = false;
+
+		/**
+		 * @var array $traceLog When tracing is enabled, information on all queries that were executed.
+		 */
+		public static $traceLog = array();
+
+		/**
 		 * @var PDO
 		 */
 		private $connection;

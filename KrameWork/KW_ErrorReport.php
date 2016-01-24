@@ -58,22 +58,177 @@
 		 */
 		private function formatValue($key, $value)
 		{
-			if ($key == 'trace')
+			switch ($key)
 			{
-				$out = array();
-				foreach ($value as $step)
-				{
-					$file = isset($step['file']) ? $step['file'] : 'unknown';
-					$line = isset($step['line']) ? $step['line'] : 0;
-					$class = isset($step['class']) ? $step['class'] : '';
-					$type = isset($step['type']) ? $step['type'] : '';
-					$function = isset($step['function']) ? $step['function'] : 'none';
-					$out[] = sprintf('In function %s%s%s at %s:%d', $class, $type, $function, $file, $line);
-				}
-				return 'Backtrace: '.join("\r\n", $out);
+				case 'Type':  $this->type = $value; break;
+				case 'Error': $this->error = $value; break;
+				case 'File':  $this->file = $value; break;
+				case 'Line':  $this->line = $value; break;
+				case 'trace': return 'Stacktrace: ' . $this->formatStacktrace($value);
 			}
 			return $key . ' -> ' . $value;
 		}
+	
+		/**
+		 * Format a stacktrace
+		 * @param array $stack A stacktrace as returned by debug_backtrace()
+		 * @return string A formatted stacktrace
+		 */
+		private function formatStacktrace($stack)
+		{
+			$this->stack = $stack;
+			$trace = '';
+			if (count($stack) == 0)
+				return;
+			error_log('_____ begin stack frame dump _____');
+			foreach ($stack as $i => $frame)
+			{
+				$ignore = false;
+				switch ($frame['function'])
+				{
+					// Ommit these from the error report
+					case 'handleError':
+					case 'handleException':
+						if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
+							$ignore = true;
+				}
+				if ($ignore)
+					continue;
+				$args = '';
+				if (isset($frame['args']) && is_array($frame['args']))
+				{
+					foreach ($frame['args'] as &$arg)
+					{
+						if ($args != '')
+							$args .= ',';
+
+						if (is_array($arg))
+							$args .= 'Array[' . count($arg) . ']';
+
+						elseif (is_object($arg))
+							$args .= get_class($arg);
+
+						elseif (is_numeric($arg))
+							$args .= $arg;
+
+						else
+							$args .= '\'' . (strlen($arg) > 100 ? substr($arg,0,100) . '...' : $arg) . '\'';
+					}
+				}
+
+				if (isset($frame['class']) && !empty($frame['class']))
+					$func = $frame['class'] . '::' . $frame['function'];
+				else
+					$func = $frame['function'];
+
+				$out = sprintf('#%d %s(%s) called at [%s:%d]', $i, $func, $args, isset($frame['file']) ? $frame['file'] : 'unknown', isset($frame['line']) ? $frame['line'] : 0);
+				error_log($out);
+				$trace .= $out . "\n";
+			}
+			error_log('_____ end stack frame dump _____');
+
+			return $trace;
+		}
+
+		/**
+		 * Format the report as JSON for sending to the developer
+		 * @return string JSON error report
+		 */
+		public function getJSONReport()
+		{
+			$report = (object)array(
+				'type' => $this->type,
+				'error' => $this->error,
+				'file' => $this->file,
+				'line' => $this->line,
+				'trace' => array()
+			);
+			foreach($this->stack as $frame)
+			{
+				switch($frame['function'])
+				{
+					// Ommit these from the error report
+					case 'handleError':
+					case 'handleException':
+						if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
+							continue;
+
+					case 'trigger_error':
+						$report->trace[] = (object)array('func' => 'USER ERROR RAISED');
+						break;
+
+					case '__get':
+					case '__set':
+					case '__call':
+						$report->tracep[] = (object)array(
+							'func' => $frame['class'] . '->' . $frame['args'][0],
+							'file' => $frame['file'],
+							'line' => $frame['line'],
+							'args' => $frame['args']
+						);
+						break;
+
+					default:
+						$report->tracep[] = (object)array(
+							'func' => (isset($frame['class']) ? $frame['class'] : 'GLOBAL') . '::' . $frame['function'],
+							'file' => $frame['file'],
+							'line' => $frame['line'],
+							'args' => $frame['args']
+						);
+						break;
+				}
+			}
+			return json_encode($report);
+		}
+
+		/**
+		 * Format the report as HTML for showing to the developer
+		 * @return string HTML error report
+		 */
+		public function getHTMLReport()
+		{
+			$trace = '';
+			foreach($this->stack as $frame)
+			{
+				switch($frame['function'])
+				{
+					// Ommit these from the error report
+					case 'handleError':
+					case 'handleException':
+						if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
+							continue;
+
+					case 'trigger_error':
+						$trace .= sprintf('<span class="func">USER ERROR RAISED</span><br />');
+						break;
+
+					case '__get':
+					case '__set':
+					case '__call':
+						$trace .= sprintf(
+							'<p class="frame">at <span class="func">%3$s->%4$s</span> in <span class="path">%5$s/</span><span class="file">%1$s</span>:<span class="line">%2$d</span></p>',
+							basename($frame['file']), $frame['line'], $frame['class'], $frame['args'][0], dirname($frame['file'])
+						);
+						break;
+
+					default:
+						$trace .= sprintf(
+							'<p class="frame">at <span class="func">%3$s::%4$s</span> in <span class="path">%5$s/</span><span class="file">%1$s</span>:<span class="line">%2$d</span></p>',
+							basename($frame['file']),
+							$frame['line'],
+							isset($frame['class']) ? $frame['class'] : 'GLOBAL',
+							$frame['function'],
+							dirname($frame['file'])
+						);
+						break;
+				}
+			}
+			return sprintf(
+				'<div class="error-report"><span class="type">%s</span> <span class="message">%s</span><p class="source">in <span class="path">%s/</span><span class="file">%s</span>:<span class="line">%s</span></p><p class="stacktrace">%s</p></div>',
+				$this->type, $this->error, dirname($this->file), basename($this->file), $this->line, $trace
+			);
+		}
+
 
 		/**
 		 * Traverses down the array and generates a report section for it.
@@ -183,5 +338,30 @@
 		 * @var string
 		 */
 		private $subject;
+
+		/**
+		 * @var string
+		 */
+		private $type;
+
+		/**
+		 * @var string
+		 */
+		private $error;
+
+		/**
+		 * @var string
+		 */
+		private $file;
+
+		/**
+		 * @var string
+		 */
+		private $line;
+
+		/**
+		 * @var array
+		 */
+		private $stack;
 	}
 ?>

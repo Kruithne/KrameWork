@@ -34,13 +34,39 @@
 		 */
 		public function getMailObject()
 		{
-			if ($this->mail === null)
+			return self::getReportingMailObject();
+		}
+
+		/**
+		 * Return the mail object being held by the error handler which is used as a template.
+		 *
+		 * @return KW_Mail ErrorHandler mail template.
+		 */
+		public static function getReportingMailObject()
+		{
+			if (self::$mail === null)
 			{
-				$this->mail = new KW_Mail();
-				$this->mail->setHeader('MIME-Version', '1.0');
+				self::$mail = new KW_Mail();
+				self::$mail->setHeader('MIME-Version', '1.0');
 			}
 
-			return $this->mail;
+			return self::$mail;
+		}
+
+		/**
+		 * Turn on debug mode, dumping errors to the client
+		 */
+		public function debugMode()
+		{
+			$this->debug = true;
+		}
+
+		/**
+		 * When debug mode is enabled, send errors in a json format
+		 */
+		public function debugJSON()
+		{
+			$this->json = true;
 		}
 
 		/**
@@ -51,6 +77,110 @@
 		public function setOutputLog($log)
 		{
 			$this->log = $log;
+		}
+
+
+		/**
+		 * Handles a PHP runtime error that normally cannot be caught.
+		 * To use this, you need to set these PHP configuration options:
+		 *	error_prepend_string = "<!--[INTERNAL_ERROR]"
+		 *	error_append_string = "-->"
+		 *	html_errors = Off
+		 *	auto_prepend_file = /path/to/error.php ; see errorCatcher example
+		 *
+		 * @param string $buffer Script output passed by PHP output buffer
+		 * @return string Content to send to the client
+		 */
+		public static function errorCatcher($buffer)
+		{
+			// Detect error
+			if (preg_match('/<!--\[INTERNAL_ERROR\](.*)-->/Us', $buffer, $match))
+				return self::handleFatalError($buffer, $match);
+
+			if (self::$startup)
+				self::timeScript();
+
+			// No error to handle
+			return $buffer;
+		}
+
+		/**
+		 * Handle a fatal PHP error caught via output buffer
+		 *
+		 * @param string $buffer The contents of the output buffer
+		 * @param string[] $match The matching error
+		 * @return string Resulting output to client
+		 */
+		private static function handleFatalError($buffer, $match)
+		{
+			// The internal PHP message
+			$error = $match[1];
+
+			// Parse error
+			preg_match('/(.*) error: (.*) in (.*) on line (.*)/', $error, $matches);
+
+			// Something is bad here..
+			if (count($matches) != 5)
+				return 'Internal error ('.count($matches).') : ' . $error;
+
+			$report = self::generateErrorReport($matches[1], $matches[4], $matches[3], $matches[2], debug_backtrace());
+			if(self::$errorDocument)
+				return sprintf(self::$errorDocument, $report->getHTMLReport());
+
+			return str_replace($match[0], $report->getHTMLReport(), $buffer);
+		}
+
+		/**
+		 * Check script run time and send alert if it is taking too long
+		 */
+		private static function timeScript()
+		{
+			$responseTime = microtime(true) - self::$startup;
+
+			// Report if time exceeds warning limit, unless called from CLI
+			if ($responseTime < self::$slowWarn || isset($_SERVER['REQUEST_URI']))
+				return;
+
+			// If there is nowhere to send the warning, just log it
+			if (self::$mail->getRecipientCount() > 0)
+			{
+				error_log(sprintf('Slow request: %s/%s (%.3fs)', $_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'], $responseTime));
+				return;
+			}
+			$msg = sprintf('Request took %.3fs', $responseTime);
+			if (class_exists('KW_DatabaseConnection') && KW_DatabaseConnection::$trace)
+			{
+				$msg .= "\n\n=== DB stats ===\n\n";
+				$seen = array();
+				$timing = array();
+				$lt = 0;
+				foreach (KW_DatabaseConnection::$traceLog as $log)
+				{
+					if (!in_array($log['sql'], $seen))
+					{
+						$seen[] = $log['sql'];
+						$timing[] = 0;
+					}
+					$k = array_search($log['sql'], $seen);
+					$timing[$k] += $log['time'];
+					$o = $log['timestamp'] - self::$startup;
+					$params = array();
+					foreach ($log['param'] as $key => $value)
+						$params[] = sprintf('[%s] = [%s]', $key, $value);
+					$msg .= sprintf("%.3f +%.3f [%d] {%s} %.3fs\n", $o, $o - $lt, $k, join(', ', $params), $log['time']);
+					$lt = $o + $log['time'];
+				}
+				$msg .= "\n\n=== DB queries ===\n\n";
+				foreach ($seen as $k => $sql)
+					$msg .= sprintf("[%d] %.3fs\n%s\n-------------\n", $k, $timing[$k], $sql);
+			}
+			self::$mail->clear();
+			self::$mail->append($msg);
+
+			if (self::$mail->getSubject() === null)
+				self::$mail->setSubject('Slow request: ' . $_SERVER['HTTP_HOST'] . '/' . $_SERVER['REQUEST_URI']);
+
+			self::$mail->send();
 		}
 
 		/**
@@ -70,21 +200,45 @@
 			if (!error_reporting() & $type)
 				return true;
 
+			if ($type == E_USER_ERROR)
+				header('HTTP/1.0 500 Internal Error');
+
+			$this->sendErrorReport(self::generateErrorReport($this->getErrorType($type), $line, $file, $string, debug_backtrace()));
+			return true;
+		}
+
+		/**
+		 * Return a textual representation of the error type
+		 * @param int $type An error type code
+		 * @return string An error type
+		 */
+		private function getErrorType($type)
+		{
+			// List of textual representation of error codes
 			switch ($type)
 			{
-				case E_USER_ERROR:
-					header('HTTP/1.0 500 Internal Error');
-					$type = 'FATAL';
-					break;
-				case E_USER_WARNING: $type = 'WARNING'; break;
-				case E_USER_NOTICE: $type = 'NOTICE'; break;
-				case E_STRICT: $type = 'STRICT'; break;
-				case E_USER_DEPRECATED: $type = 'DEPRECATED'; break;
-				default: $type = 'UNKNOWN'; break;
-			}
+				case E_ERROR:   return 'ERROR';
+				case E_WARNING: return 'WARNING';
+				case E_PARSE:   return 'PARSE';
+				case E_NOTICE:  return 'NOTICE';
 
-			$this->sendErrorReport($this->generateErrorReport($type, $line, $file, $string, debug_backtrace()));
-			return true;
+				case E_CORE_ERROR:   return 'CORE ERROR';
+				case E_CORE_WARNING: return 'CORE WARNING';
+
+				case E_COMPILE_ERROR:   return 'COMPILE ERROR';
+				case E_COMPILE_WARNING: return 'COMPILE WARNING';
+
+				case E_USER_ERROR:   return 'USER ERROR';
+				case E_USER_WARNING: return 'USER WARNING';
+				case E_USER_NOTICE:  return 'USER NOTICE';
+				case E_USER_DEPRECATED: return 'DEPRECATED';
+
+				case E_STRICT:            return 'STRICT';
+				case E_DEPRECATED:        return 'DEPRECATED';
+				case E_RECOVERABLE_ERROR: return 'RECOVERABLE';
+
+				default: return 'UNKNOWN';
+			}
 		}
 
 		/**
@@ -94,12 +248,13 @@
 		 */
 		public function handleException($exception)
 		{
-			header('HTTP/1.0 500 Internal Error');
+			if(!$this->error)
+				header('HTTP/1.0 500 Internal Error');
 
 			if ($this->errorCount++ > $this->maxErrors)
 				die('Excessive errors, aborting');
 
-			$this->sendErrorReport($this->generateErrorReport(
+			$this->sendErrorReport(self::generateErrorReport(
 				'EXCEPTION', $exception->getLine(), $exception->getFile(), $exception->getMessage(), $exception->getTrace())
 			);
 		}
@@ -114,7 +269,7 @@
 		 * @param null|string $trace
 		 * @return KW_ErrorReport An error report object ready for use.
 		 */
-		private function generateErrorReport($type, $line, $file, $error, $trace = null)
+		private static function generateErrorReport($type, $line, $file, $error, $trace = null)
 		{
 			error_log(sprintf('%2$s:%3$d %1$s %4$s', $type, $file, $line, $error));
 			$report = new KW_ErrorReport();
@@ -129,36 +284,95 @@
 		}
 
 		/**
-		 * Send an error report object using the handler mail template.
+		 * Send an error report as per runtime configuration
 		 *
 		 * @param KW_ErrorReport $report An error report to send.
 		 */
 		public function sendErrorReport($report)
 		{
-			if ($this->mail !== null)
-			{
-				$this->mail->clear();
-				$this->mail->append((string) $report);
-
-				if ($this->mail->getSubject() === null)
-					$this->mail->setSubject($report->getSubject());
-
-				if ($this->mail->getRecipientCount() > 0)
-					$this->mail->send();
-			}
+			if (self::$mail !== null)
+				$this->sendEmail($report);
 
 			if ($this->log !== null)
+				$this->writeLog($report);
+
+			if ($this->debug)
 			{
-				if (@is_file($this->log))
-				{
-					file_put_contents($this->log, (string) $report, FILE_APPEND);
-				}
-				else if (@is_dir($this->log))
-				{
-					$log_file = $this->createLogFileName($this->log);
-					file_put_contents($log_file, (string) $report);
-				}
+				if ($this->json)
+					$this->dumpJSON($report);
+				else
+					$this->dumpHTML($report);
 			}
+		}
+
+		/**
+		 * Send an error report as an email
+		 *
+		 * @param KW_ErrorReport $report An error report to send.
+		 */
+		private function sendEmail($report)
+		{
+			if (self::$mail->getRecipientCount() < 1)
+				return;
+
+			self::$mail->clear();
+			self::$mail->append((string) $report);
+
+			if (self::$mail->getSubject() === null)
+				self::$mail->setSubject($report->getSubject());
+
+			self::$mail->send();
+		}
+
+		/**
+		 * Send an error report to the log file
+		 *
+		 * @param KW_ErrorReport $report An error report to send.
+		 */
+		private function writeLog($report)
+		{
+			if (@is_file($this->log))
+			{
+				file_put_contents($this->log, (string) $report, FILE_APPEND);
+			}
+			else if (@is_dir($this->log))
+			{
+				$log_file = $this->createLogFileName($this->log);
+				file_put_contents($log_file, (string) $report);
+			}
+		}
+
+		/**
+		 * Send an error report to the client as HTML
+		 *
+		 * @param KW_ErrorReport $report An error report to send.
+		 */
+		private function dumpHTML($report)
+		{
+			if(self::$errorDocument)
+			{
+				while(ob_get_level())
+					ob_end_clean();
+				$this->error .= $report->getHTMLReport();
+				echo sprintf(self::$errorDocument, $this->error);
+				return;
+			}
+			echo $report->getHTMLReport();
+		}
+
+		/**
+		 * Send an error report to the client as JSON and terminate execution
+		 *
+		 * @param KW_ErrorReport $report An error report to send.
+		 */
+		private function dumpJSON($report)
+		{
+			while(ob_get_level())
+				ob_end_clean();
+			header('HTTP/1.0 500 Server error');
+			header('Content-Type: application/json; encoding=UTF-8');
+			echo '{error:'.$report->getJSONReport().'}';
+			die();
 		}
 
 		/**
@@ -190,9 +404,24 @@
 		}
 
 		/**
+		 * @var float $startup set to microtime(true) to run a timing check
+		 */
+		public static $startup;
+
+		/**
+		 * @var float $slowWarn Time in seconds before script slow warnings are triggered
+		 */
+		public static $slowWarn;
+
+		/**
+		 * @var string $errorDocument HTML to use for reporting errors. Error report will be injected via sprintf
+		 */
+		public static $errorDocument;
+
+		/**
 		 * @var KW_Mail
 		 */
-		private $mail;
+		private static $mail;
 
 		/**
 		 * @var string|null Will be null if not yet set.
@@ -208,5 +437,20 @@
 		 * @var integer Number of errors this execution.
 		 */
 		private $errorCount = 0;
+
+		/**
+		 * @var bool $debug Dump errors to the client
+		 */
+		private $debug;
+
+		/**
+		 * @var bool $json When dumping errors to the client, use json formatting
+		 */
+		private $json;
+
+		/**
+		 * @var string $error Error output if sent
+		 */
+		private $error = '';
 	}
 ?>
