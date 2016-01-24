@@ -86,21 +86,45 @@
 			if (!error_reporting() & $type)
 				return true;
 
-			switch ($type)
-			{
-				case E_USER_ERROR:
-					header('HTTP/1.0 500 Internal Error');
-					$type = 'FATAL';
-					break;
-				case E_USER_WARNING: $type = 'WARNING'; break;
-				case E_USER_NOTICE: $type = 'NOTICE'; break;
-				case E_STRICT: $type = 'STRICT'; break;
-				case E_USER_DEPRECATED: $type = 'DEPRECATED'; break;
-				default: $type = 'UNKNOWN'; break;
-			}
+			if ($type == E_USER_ERROR)
+				header('HTTP/1.0 500 Internal Error');
 
-			$this->sendErrorReport($this->generateErrorReport($type, $line, $file, $string, debug_backtrace()));
+			$this->sendErrorReport($this->generateErrorReport($this->getErrorType($type), $line, $file, $string, debug_backtrace()));
 			return true;
+		}
+
+		/**
+		 * Return a textual representation of the error type
+		 * @param int $type An error type code
+		 * @return string An error type
+		 */
+		private function getErrorType($type)
+		{
+			// List of textual representation of error codes
+			switch($type)
+			{
+				case E_ERROR:   return 'ERROR';
+				case E_WARNING: return 'WARNING';
+				case E_PARSE:   return 'PARSE';
+				case E_NOTICE:  return 'NOTICE';
+
+				case E_CORE_ERROR:   return 'CORE ERROR';
+				case E_CORE_WARNING: return 'CORE WARNING';
+
+				case E_COMPILE_ERROR:   return 'COMPILE ERROR';
+				case E_COMPILE_WARNING: return 'COMPILE WARNING';
+
+				case E_USER_ERROR:   return 'USER ERROR';
+				case E_USER_WARNING: return 'USER WARNING';
+				case E_USER_NOTICE:  return 'USER NOTICE';
+				case E_USER_DEPRECATED: return 'DEPRECATED';
+
+				case E_STRICT:            return 'STRICT';
+				case E_DEPRECATED:				return 'DEPRECATED';
+				case E_RECOVERABLE_ERROR: return 'RECOVERABLE';
+
+				default: return 'UNKNOWN';
+			}
 		}
 
 		/**
@@ -220,9 +244,9 @@
 		{
 			while(ob_get_level())
 				ob_end_clean();
-			header('HTTP/1.0 500 Internal error');
+			header('HTTP/1.0 500 Server error');
 			header('Content-Type: application/json; encoding=UTF-8');
-			echo $report->getJSONReport();
+			echo '{error:'.$report->getJSONReport().'}';
 			die();
 		}
 

@@ -58,8 +58,14 @@
 		 */
 		private function formatValue($key, $value)
 		{
-			if ($key == 'trace')
-				return 'Stacktrace: ' . $this->formatStacktrace($value);
+			switch ($key)
+			{
+				case 'Type':  $this->type = $value; break;
+				case 'Error': $this->error = $value; break;
+				case 'File':  $this->file = $value; break;
+				case 'line':  $this->line = $value; break;
+				case 'trace': return 'Stacktrace: ' . $this->formatStacktrace($value);
+			}
 			return $key . ' -> ' . $value;
 		}
 	
@@ -120,10 +126,10 @@
 		public function getJSONReport()
 		{
 			$report = (object)array(
-				'type' => $this->getErrorType(),
-				'error' => $this->Error,
-				'file' => $this->File,
-				'line' => $this->Line,
+				'type' => $this->error,
+				'error' => $this->error,
+				'file' => $this->file,
+				'line' => $this->line,
 				'trace' => array()
 			);
 			foreach($this->stack as $frame)
@@ -189,61 +195,28 @@
 					case '__set':
 					case '__call':
 						$trace .= sprintf(
-							'<p class="frame">at <span class="func">%3$s->%4$s</span> in <span class="file">%1$s</span>:<span class="line">%2$d</span><!-- %5$s --></p>',
+							'<p class="frame">at <span class="func">%3$s->%4$s</span> in <span class="file">%1$s</span>:<span class="line">%2$d</span></p>',
 							$frame['file'], $frame['line'], $frame['class'], $frame['args'][0], serialize($frame)
 						);
 						break;
 
 					default:
 						$trace .= sprintf(
-							'<p class="frame">at <span class="func">%3$s::%4$s</span> in <span class="file">%1$s</span>:<span class="line">%2$d</span><!-- %5$s --></p>',
+							'<p class="frame">at <span class="func">%3$s::%4$s</span> in <span class="file">%1$s</span>:<span class="line">%2$d</span></p>',
 							$frame['file'],
 							$frame['line'],
 							isset($frame['class']) ? $frame['class'] : 'GLOBAL',
-							$frame['function'],
-							serialize($frame)
+							$frame['function']
 						);
 						break;
 				}
 			}
 			return sprintf(
 				'<div class="error-report"><span class="message">%s %s</span> in <span class="file">%s</span>:<span class="line">%s</span><p class="stacktrace">%s</p></div>',
-				$this->getErrorType(), $this->Error, $this->File, $this->Line, $trace
+				$this->error, $this->error, $this->file, $this->line, $trace
 			);
 		}
 
-		/**
-		 * Return a textual representation of the error type
-		 * @return string An error type
-		 */
-		private function getErrorType()
-		{
-			// List of textual representation of error codes
-			switch($this->Type)
-			{
-				case E_ERROR:   return 'ERROR';
-				case E_WARNING: return 'WARNING';
-				case E_PARSE:   return 'PARSE';
-				case E_NOTICE:  return 'NOTICE';
-
-				case E_CORE_ERROR:   return 'CORE ERROR';
-				case E_CORE_WARNING: return 'CORE WARNING';
-
-				case E_COMPILE_ERROR:   return 'COMPILE ERROR';
-				case E_COMPILE_WARNING: return 'COMPILE WARNING';
-
-				case E_USER_ERROR:   return 'USER ERROR';
-				case E_USER_WARNING: return 'USER WARNING';
-				case E_USER_NOTICE:  return 'USER NOTICE';
-				case E_USER_DEPRECATED: return 'USER DEPRECATED';
-
-				case E_STRICT:            return 'STRICT';
-				case E_DEPRECATED:				return 'DEPRECATED';
-				case E_RECOVERABLE_ERROR: return 'RECOVERABLE';
-
-				default: return 'UNKNOWN';
-			}
-		}
 
 		/**
 		 * Traverses down the array and generates a report section for it.
@@ -353,6 +326,26 @@
 		 * @var string
 		 */
 		private $subject;
+
+		/**
+		 * @var string
+		 */
+		private $type;
+
+		/**
+		 * @var string
+		 */
+		private $error;
+
+		/**
+		 * @var string
+		 */
+		private $file;
+
+		/**
+		 * @var string
+		 */
+		private $line;
 
 		/**
 		 * @var array
