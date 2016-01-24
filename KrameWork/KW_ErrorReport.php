@@ -147,12 +147,6 @@
 			{
 				switch($frame['function'])
 				{
-					// Omit these from the error report
-					case 'handleError':
-					case 'handleException':
-						if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
-							continue;
-
 					case 'trigger_error':
 						$report->trace[] = (object)array('func' => 'USER ERROR RAISED');
 						break;
@@ -167,6 +161,12 @@
 							'args' => $frame['args']
 						);
 						break;
+
+					// Omit these from the error report
+					case 'handleError':
+					case 'handleException':
+						if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
+							continue;
 
 					default:
 						$report->tracep[] = (object)array(
