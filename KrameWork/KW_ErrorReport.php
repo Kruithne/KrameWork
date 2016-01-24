@@ -59,20 +59,57 @@
 		private function formatValue($key, $value)
 		{
 			if ($key == 'trace')
-			{
-				$out = array();
-				foreach ($value as $step)
-				{
-					$file = isset($step['file']) ? $step['file'] : 'unknown';
-					$line = isset($step['line']) ? $step['line'] : 0;
-					$class = isset($step['class']) ? $step['class'] : '';
-					$type = isset($step['type']) ? $step['type'] : '';
-					$function = isset($step['function']) ? $step['function'] : 'none';
-					$out[] = sprintf('In function %s%s%s at %s:%d', $class, $type, $function, $file, $line);
-				}
-				return 'Backtrace: '.join("\r\n", $out);
-			}
+				return 'Stacktrace: ' . $this->formatStacktrace($value);
 			return $key . ' -> ' . $value;
+		}
+	
+		/**
+		 * Format a stacktrace
+		 * @param array $stack A stacktrace as returned by debug_backtrace()
+		 * @return string A formatted stacktrace
+		 */
+		private function formatStacktrace($stack)
+		{
+			$trace = '';
+			if (count($stack) == 0)
+				return;
+			error_log('_____ begin stack frame dump _____');
+			foreach ($stack as $i => $step)
+			{
+				$args = '';
+				if (isset($step['args']) && is_array($step['args']))
+				{
+					foreach ($step['args'] as &$arg)
+					{
+						if ($args != '')
+							$args .= ',';
+
+						if (is_array($arg))
+							$args .= 'Array[' . count($arg) . ']';
+
+						elseif (is_object($arg))
+							$args .= get_class($arg);
+
+						elseif (is_numeric($arg))
+							$args .= $arg;
+
+						else
+							$args .= '\'' . (strlen($arg) > 100 ? substr($arg,0,100) . '...' : $arg) . '\'';
+					}
+				}
+
+				if (isset($step['class']) && !empty($step['class']))
+					$func = $step['class'] . '::' . $step['function'];
+				else
+					$func = $step['function'];
+
+				$out = sprintf('#%d %s(%s) called at [%s:%d]', $i, $func, $args, isset($step['file']) ? $step['file'] : 'unknown', isset($step['line']) ? $step['line'] : 0);
+				error_log($out);
+				$trace .= $out . "\n";
+			}
+			error_log('_____ end stack frame dump _____');
+
+			return $trace;
 		}
 
 		/**
