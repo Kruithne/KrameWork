@@ -170,17 +170,19 @@
 		}
 
 		/**
-		 * Precompiled bootloader injection point
-		 * @param array $components Preload classes with this collection
-		 * @param array $bindigns Preload type bindings with this collection
-		 * @param $decorators Preload decorators with this collection
+		 * Pre-compiled boot-loader injection point
+		 * @param array $components Pre-load classes with this collection
+		 * @param array $bindings Pre-load type bindings with this collection
+		 * @param array $decorators Pre-load decorators with this collection
 		 */
 		public function __construct($components = null, $bindings = null, $decorators = null)
 		{
 			if($components)
 				$this->classes = $components;
+
 			if($bindings)
 				$this->bindings = $bindings;
+
 			if($decorators)
 				$this->decorators = $decorators;
 		}
