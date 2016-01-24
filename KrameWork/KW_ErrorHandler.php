@@ -95,6 +95,9 @@
 		 */
 		public static function errorCatcher($buffer)
 		{
+			if (self::$mute)
+				return $buffer;
+
 			// Detect error
 			if (preg_match('/<!--\[INTERNAL_ERROR\](.*)-->/Us', $buffer, $match))
 				return self::handleFatalError($buffer, $match);
@@ -201,13 +204,16 @@
 		 */
 		public function handleError($type, $string, $file, $line)
 		{
+			if (self::$mute)
+				return true;
+
 			if ($this->errorCount++ > $this->maxErrors)
 				die();
 
 			if (!error_reporting() & $type)
 				return true;
 
-			if ($type == E_USER_ERROR)
+			if ($type == E_USER_ERROR && !headers_sent())
 				header('HTTP/1.0 500 Internal Error');
 
 			$this->sendErrorReport(self::generateErrorReport($this->getErrorType($type), $line, $file, $string, debug_backtrace()));
@@ -255,7 +261,10 @@
 		 */
 		public function handleException($exception)
 		{
-			if(!$this->error)
+			if (self::$mute)
+				return;
+
+			if (!$this->error && !headers_sent())
 				header('HTTP/1.0 500 Internal Error');
 
 			if ($this->errorCount++ > $this->maxErrors)
@@ -264,6 +273,22 @@
 			$this->sendErrorReport(self::generateErrorReport(
 				'EXCEPTION', $exception->getLine(), $exception->getFile(), $exception->getMessage(), $exception->getTrace())
 			);
+		}
+
+		/**
+		 * Temporarily halt error reporting
+		 */
+		public static function mute()
+		{
+			self::$mute = true;
+		}
+
+		/**
+		 * Resume error reporting
+		 */
+		public static function unmute()
+		{
+			self::$mute = false;
 		}
 
 		/**
@@ -378,8 +403,11 @@
 			while (ob_get_level())
 				ob_end_clean();
 
-			header('HTTP/1.0 500 Server error');
-			header('Content-Type: application/json; encoding=UTF-8');
+			if(!headers_sent())
+			{
+				header('HTTP/1.0 500 Server error');
+				header('Content-Type: application/json; encoding=UTF-8');
+			}
 			echo '{error:'.$report->getJSONReport().'}';
 			die();
 		}
@@ -426,6 +454,11 @@
 		 * @var string $errorDocument HTML to use for reporting errors. Error report will be injected via sprintf
 		 */
 		public static $errorDocument;
+
+		/**
+		 * @var bool
+		 */
+		private static $mute;
 
 		/**
 		 * @var KW_Mail
