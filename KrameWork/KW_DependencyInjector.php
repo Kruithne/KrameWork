@@ -181,45 +181,49 @@
 			$binding = array();
 			$decorator = array();
 			$decorate = array();
-			foreach($config as $item)
+
+			foreach ($config as $item)
 			{
-				if($item instanceof Library)
+				if ($item instanceof Library)
 				{
-					$path[] = "'".$item->path."'";
+					$path[] = "'" . $item->path . "'";
 				}
-				else if($item instanceof Binding)
+				else if ($item instanceof Binding)
 				{
-					if($item->target instanceof ValueInjector)
+					if ($item->target instanceof ValueInjector)
 					{
-						$binding[] = "'".$item->source."'=>'".$item->target->class."'";
-						$class[] = "'".$item->target->class."'=>new ".$item->target->class."('".join("','",$item->target->args)."')";
+						$binding[] = "'" . $item->source . "'=>'" . $item->target->class . "'";
+						$class[] = "'" . $item->target->class . "'=>new " . $item->target->class . "('" . join("','", $item->target->args) . "')";
 					}
 					else
 					{
-						$binding[] = "'".$item->source."'=>'".$item->target."'";
-						$class[] = "'".$item->target."'=>null";
+						$binding[] = "'" . $item->source . "'=>'".$item->target . "'";
+						$class[] = "'" . $item->target . "'=>null";
 					}
 				}
-				else if($item instanceof ValueInjector)
+				else if ($item instanceof ValueInjector)
 				{
-					$class[] = "'".$item->class."'=>new ".$item->class."('".join("','",$item->args)."')";
+					$class[] = "'" . $item->class . "'=>new " . $item->class . "('" . join("','", $item->args) . "')";
 				}
-				else if($item instanceof Decorator)
+				else if ($item instanceof Decorator)
 				{
-					if(!isset($decorate[$item->source]))
+					if (!isset($decorate[$item->source]))
 						$decorator[$item->source] = array();
-					$decorator[$item->source][] = "'".$item->target."'";
+
+					$decorator[$item->source][] = "'" . $item->target . "'";
 				}
 				else
 				{
-					$class[] = "'".$item."'=>null";
+					$class[] = "'" . $item . "'=>null";
 				}
 			}
-			foreach($decorator as $source => $targets)
-				$decorate[] = "'".$source."'=>[".join(',',$targets)."]";
+
+			foreach ($decorator as $source => $targets)
+				$decorate[] = "'" . $source . "'=>[" . join(',', $targets) . "]";
+
 			return sprintf(
 				'<?php $kernel = new KrameSystem(KW_DEFAULT_FLAGS,[%s],[%s],[%s],[%s]); ?>',
-				join(',',$path), join(',',$class), join(',', $binding), join(',', $decorate)
+				join(',', $path), join(',', $class), join(',', $binding), join(',', $decorate)
 			);
 		}
 
