@@ -63,7 +63,7 @@
 			if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 			{
 				$ip = explode(':',$_SERVER['HTTP_X_FORWARDED_FOR']);
-				$array[] = = $this->formatValue('Client', gethostbyaddr($ip[0]) . ' [' . $ip[0] . ']');
+				$array[] = $this->formatValue('Client', gethostbyaddr($ip[0]) . ' [' . $ip[0] . ']');
 				if(isset($_SERVER['REMOTE_ADDR']))
 					$array[] = $this->formatValue('Proxy server', gethostbyaddr($_SERVER['REMOTE_ADDR']) . ' [' . $_SERVER['REMOTE_ADDR'] . ']');
 			}
