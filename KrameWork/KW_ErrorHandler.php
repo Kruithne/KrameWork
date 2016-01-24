@@ -95,6 +95,9 @@
 		 */
 		public static function errorCatcher($buffer)
 		{
+			if (self::$mute)
+				return $buffer;
+
 			// Detect error
 			if (preg_match('/<!--\[INTERNAL_ERROR\](.*)-->/Us', $buffer, $match))
 				return self::handleFatalError($buffer, $match);
@@ -201,6 +204,9 @@
 		 */
 		public function handleError($type, $string, $file, $line)
 		{
+			if (self::$mute)
+				return true;
+
 			if ($this->errorCount++ > $this->maxErrors)
 				die();
 
@@ -255,6 +261,9 @@
 		 */
 		public function handleException($exception)
 		{
+			if (self::$mute)
+				return;
+
 			if(!$this->error)
 				header('HTTP/1.0 500 Internal Error');
 
@@ -264,6 +273,22 @@
 			$this->sendErrorReport(self::generateErrorReport(
 				'EXCEPTION', $exception->getLine(), $exception->getFile(), $exception->getMessage(), $exception->getTrace())
 			);
+		}
+
+		/**
+		 * Temporarily halt error reporting
+		 */
+		public static function mute()
+		{
+			self::$mute = true;
+		}
+
+		/**
+		 * Resume error reporting
+		 */
+		public static function unmute()
+		{
+			self::$mute = false;
 		}
 
 		/**
@@ -426,6 +451,11 @@
 		 * @var string $errorDocument HTML to use for reporting errors. Error report will be injected via sprintf
 		 */
 		public static $errorDocument;
+
+		/**
+		 * @var bool
+		 */
+		private static $mute;
 
 		/**
 		 * @var KW_Mail
