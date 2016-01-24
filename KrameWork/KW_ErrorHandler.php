@@ -112,7 +112,7 @@
 			if (count($matches) != 5)
 				return 'Internal error ('.count($matches).') : ' . $error;
 
-			$report = $this->generateErrorReport($matches[1], $matches[4], $matches[3], $matches[2], debug_backtrace()));
+			$report = $this->generateErrorReport($matches[1], $matches[4], $matches[3], $matches[2], debug_backtrace());
 
 			if ($this->mail !== null)
 				$this->sendEmail($report);
