@@ -4,5 +4,5 @@
 
 	$system = new KrameSystem(KW_DEFAULT_FLAGS & ~KW_ENABLE_SESSIONS); // Create a system without sessions.
 	$system->addAutoLoadPath(getcwd()); // Auto-load from the current directory.
-	$system->getErrorHandler()->addEmailOutputRecipient('someone@somewhere.com');
+	$system->getErrorHandler()->addEmailOutputRecipient('someone@example.com');
 ?>
