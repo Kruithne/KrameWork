@@ -264,7 +264,7 @@
 			if (self::$mute)
 				return;
 
-			if(!$this->error && !headers_sent())
+			if (!$this->error && !headers_sent())
 				header('HTTP/1.0 500 Internal Error');
 
 			if ($this->errorCount++ > $this->maxErrors)
