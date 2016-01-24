@@ -69,6 +69,119 @@
 			$this->log = $log;
 		}
 
+
+		/**
+		 * Handles a PHP runtime error that normally cannot be caught.
+		 * To use this, you need to set these PHP configuration options:
+		 *	error_prepend_string = "<!--[INTERNAL_ERROR]"
+		 *	error_append_string = "-->"
+		 *	html_errors = Off
+		 *
+		 * @param string $buffer Script output passed by PHP output buffer
+		 * @return string Content to send to the client
+		 */
+		function errorCatcher($buffer)
+		{
+			// Detect error
+			if (preg_match('/<!--\[INTERNAL_ERROR\](.*)-->/Us', $buffer, $match))
+				return $this->handleFatalError($buffer, $match);
+
+			if ($this->startup)
+				$this->timeScript();
+
+			// No error to handle
+			return $buffer;
+		}
+
+		/**
+		 * Handle a fatal PHP error caught via output buffer
+		 *
+		 * @param string $buffer The contents of the output buffer
+		 * @param string[] $match The matching error
+		 * @return string Resulting output to client
+		 */
+		private function handleFatalError($buffer, $match)
+		{
+			// The internal PHP message
+			$error = $match[1];
+
+			// Parse error
+			preg_match('/(.*) error: (.*) in (.*) on line (.*)/', $error, $matches);
+
+			// Something is bad here..
+			if (count($matches) != 5)
+				return 'Internal error ('.count($matches).') : ' . $error;
+
+			$report = $this->generateErrorReport($matches[1], $matches[4], $matches[3], $matches[2], debug_backtrace()));
+
+			if ($this->mail !== null)
+				$this->sendEmail($report);
+
+			if ($this->log !== null)
+				$this->writeLog($report);
+
+			if ($this->debug)
+			{
+				if ($this->json)
+					return '{error:'.$report->getJSONReport().'}';
+				return str_replace($match[0], $report->getHTMLReport(), $buffer);
+			}
+			return str_replace($match[0], '', $buffer);
+		}
+
+		/**
+		 * Check script run time and send alert if it is taking too long
+		 */
+		private function timeScript()
+		{
+			$responseTime = microtime(true) - $this->startup;
+
+			// Report if time exceeds warning limit, unless called from CLI
+			if ($responseTime < $this->slowWarn || isset($_SERVER['REQUEST_URI']))
+				return;
+
+			// If there is nowhere to send the warning, just log it
+			if ($this->mail->getRecipientCount() > 0)
+			{
+				error_log(sprintf('Slow request: %s/%s (%.3fs)', $_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'], $responseTime));
+				return;
+			}
+			$msg = sprintf('Request took %.3fs', $responseTime);
+			if (class_exists('KW_DatabaseConnection') && KW_DatabaseConnection::$trace)
+			{
+				$msg .= "\n\n=== DB stats ===\n\n";
+				$seen = array();
+				$timing = array();
+				$lt = 0;
+				foreach (KW_DatabaseConnection::$traceLog as $log)
+				{
+					if (!in_array($log['sql'], $seen))
+					{
+						$seen[] = $log['sql'];
+						$timing[] = 0;
+					}
+					$k = array_search($log['sql'], $seen);
+					$timing[$k] += $log['time'];
+					$o = $log['timestamp'] - $this->startup;
+					$params = array();
+					foreach ($log['param'] as $key => $value)
+						$params[] = sprintf('[%s] = [%s]', $key, $value);
+					$msg .= sprintf("%.3f +%.3f [%d] {%s} %.3fs\n", $o, $o - $lt, $k, join(', ', $params, $log['time']);
+					$lt = $o + $log['time'];
+				}
+				$msg .= "\n\n=== DB queries ===\n\n";
+				foreach ($seen as $k => $sql)
+					$msg .= sprintf("[%d] %.3fs\n%s\n-------------\n", $k, $timing[$k], $sql);
+			}
+			$this->mail->clear();
+			$this->mail->append($msg);
+
+			if ($this->mail->getSubject() === null)
+				$this->mail->setSubject('Slow request: ' . $_SERVER['HTTP_HOST'] . '/' . $_SERVER['REQUEST_URI']);
+
+			$this->mail->send();
+		}
+
 		/**
 		 * Handles a PHP runtime error.
 		 *
@@ -101,7 +214,7 @@
 		private function getErrorType($type)
 		{
 			// List of textual representation of error codes
-			switch($type)
+			switch ($type)
 			{
 				case E_ERROR:   return 'ERROR';
 				case E_WARNING: return 'WARNING';
@@ -307,5 +420,16 @@
 		 * @var bool $json When dumping errors to the client, use json formatting
 		 */
 		private $json;
+
+		/**
+		 * @var float $startup set to microtime(true) to run a timing check
+		 */
+		private $startup;
+
+		/**
+		 * @var float $slowWarn Time in seconds before script slow warnings are triggered
+		 */
+		private $slowWarn;
+		}
 	}
 ?>

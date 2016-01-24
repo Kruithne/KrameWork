@@ -101,10 +101,30 @@
 				$this->statement->bindValue($key, $value, $dataType);
 			}
 
+			$time = microtime(true);
 			$this->statement->execute();
+			$this->trace($time);
 			$this->executed = true;
 			$this->rows = null;
 			return $this;
+		}
+
+		/**
+		 * Write an entry to the trace log if tracing is enabled
+		 *
+		 * @param float $time microtime(true) before query execution
+		 */
+		private function trace($time)
+		{
+			if(!class_exists('KW_DatabaseConnection') || !KW_DatabaseConnection::$trace)
+				return;
+
+			KW_DatabaseConnection::$trace[] = array(
+				'timestamp' => $time,
+				'sql' => $this->sql,
+				'time' => microtime(true) - $time,
+				'param' => $this->values
+			);
 		}
 
 		/**
