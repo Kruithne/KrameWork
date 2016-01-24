@@ -74,12 +74,12 @@
 			if (count($stack) == 0)
 				return;
 			error_log('_____ begin stack frame dump _____');
-			foreach ($stack as $i => $step)
+			foreach ($stack as $i => $frame)
 			{
 				$args = '';
-				if (isset($step['args']) && is_array($step['args']))
+				if (isset($frame['args']) && is_array($frame['args']))
 				{
-					foreach ($step['args'] as &$arg)
+					foreach ($frame['args'] as &$arg)
 					{
 						if ($args != '')
 							$args .= ',';
@@ -98,12 +98,12 @@
 					}
 				}
 
-				if (isset($step['class']) && !empty($step['class']))
-					$func = $step['class'] . '::' . $step['function'];
+				if (isset($frame['class']) && !empty($frame['class']))
+					$func = $frame['class'] . '::' . $frame['function'];
 				else
-					$func = $step['function'];
+					$func = $frame['function'];
 
-				$out = sprintf('#%d %s(%s) called at [%s:%d]', $i, $func, $args, isset($step['file']) ? $step['file'] : 'unknown', isset($step['line']) ? $step['line'] : 0);
+				$out = sprintf('#%d %s(%s) called at [%s:%d]', $i, $func, $args, isset($frame['file']) ? $frame['file'] : 'unknown', isset($frame['line']) ? $frame['line'] : 0);
 				error_log($out);
 				$trace .= $out . "\n";
 			}
