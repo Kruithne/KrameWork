@@ -63,7 +63,7 @@
 				case 'Type':  $this->type = $value; break;
 				case 'Error': $this->error = $value; break;
 				case 'File':  $this->file = $value; break;
-				case 'line':  $this->line = $value; break;
+				case 'Line':  $this->line = $value; break;
 				case 'trace': return 'Stacktrace: ' . $this->formatStacktrace($value);
 			}
 			return $key . ' -> ' . $value;
@@ -126,7 +126,7 @@
 		public function getJSONReport()
 		{
 			$report = (object)array(
-				'type' => $this->error,
+				'type' => $this->type,
 				'error' => $this->error,
 				'file' => $this->file,
 				'line' => $this->line,
@@ -195,25 +195,26 @@
 					case '__set':
 					case '__call':
 						$trace .= sprintf(
-							'<p class="frame">at <span class="func">%3$s->%4$s</span> in <span class="file">%1$s</span>:<span class="line">%2$d</span></p>',
-							$frame['file'], $frame['line'], $frame['class'], $frame['args'][0], serialize($frame)
+							'<p class="frame">at <span class="func">%3$s->%4$s</span> in <span class="path">%5$s/</span><span class="file">%1$s</span>:<span class="line">%2$d</span></p>',
+							basename($frame['file']), $frame['line'], $frame['class'], $frame['args'][0], dirname($frame['file'])
 						);
 						break;
 
 					default:
 						$trace .= sprintf(
-							'<p class="frame">at <span class="func">%3$s::%4$s</span> in <span class="file">%1$s</span>:<span class="line">%2$d</span></p>',
-							$frame['file'],
+							'<p class="frame">at <span class="func">%3$s::%4$s</span> in <span class="path">%5$s/</span><span class="file">%1$s</span>:<span class="line">%2$d</span></p>',
+							basename($frame['file']),
 							$frame['line'],
 							isset($frame['class']) ? $frame['class'] : 'GLOBAL',
-							$frame['function']
+							$frame['function'],
+							dirname($frame['file'])
 						);
 						break;
 				}
 			}
 			return sprintf(
-				'<div class="error-report"><span class="message">%s %s</span> in <span class="file">%s</span>:<span class="line">%s</span><p class="stacktrace">%s</p></div>',
-				$this->error, $this->error, $this->file, $this->line, $trace
+				'<div class="error-report"><span class="type">%s</span> <span class="message">%s</span><p class="source">in <span class="path">%s/</span><span class="file">%s</span>:<span class="line">%s</span></p><p class="stacktrace">%s</p></div>',
+				$this->type, $this->error, dirname($this->file), basename($this->file), $this->line, $trace
 			);
 		}
 

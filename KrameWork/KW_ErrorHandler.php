@@ -34,13 +34,23 @@
 		 */
 		public function getMailObject()
 		{
+			return self::getReportingMailObject();
+		}
+
+		/**
+		 * Return the mail object being held by the error handler which is used as a template.
+		 *
+		 * @return KW_Mail ErrorHandler mail template.
+		 */
+		public static function getReportingMailObject()
+		{
 			if (self::$mail === null)
 			{
 				self::$mail = new KW_Mail();
 				self::$mail->setHeader('MIME-Version', '1.0');
 			}
 
-			return self::mail;
+			return self::$mail;
 		}
 
 		/**
@@ -114,6 +124,8 @@
 				return 'Internal error ('.count($matches).') : ' . $error;
 
 			$report = self::generateErrorReport($matches[1], $matches[4], $matches[3], $matches[2], debug_backtrace());
+			if(self::$errorDocument)
+				return sprintf(self::$errorDocument, $report->getHTMLReport());
 
 			return str_replace($match[0], $report->getHTMLReport(), $buffer);
 		}
@@ -299,7 +311,7 @@
 		 */
 		private function sendEmail($report)
 		{
-			if (self::$mail->getRecipientCount() < 0)
+			if (self::$mail->getRecipientCount() < 1)
 				return;
 
 			self::$mail->clear();
@@ -336,6 +348,13 @@
 		 */
 		private function dumpHTML($report)
 		{
+			if(self::$errorDocument)
+			{
+				while(ob_get_level())
+					ob_end_clean();
+				echo sprintf(self::$errorDocument, $report->getHTMLReport());
+				return;
+			}
 			echo $report->getHTMLReport();
 		}
 
@@ -391,6 +410,11 @@
 		 * @var float $slowWarn Time in seconds before script slow warnings are triggered
 		 */
 		public static $slowWarn;
+
+		/**
+		 * @var string $errorDocument HTML to use for reporting errors. Error report will be injected via sprintf
+		 */
+		public static $errorDocument;
 
 		/**
 		 * @var KW_Mail
