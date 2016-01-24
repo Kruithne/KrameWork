@@ -430,6 +430,5 @@
 		 * @var float $slowWarn Time in seconds before script slow warnings are triggered
 		 */
 		private $slowWarn;
-		}
 	}
 ?>
