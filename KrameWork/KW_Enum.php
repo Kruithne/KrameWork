@@ -29,7 +29,12 @@
 				$name = strtolower($name);
 
 			$constants = self::getConstants();
-			return array_key_exists($name, $constants) ? $constants[$name] : null;
+
+			foreach ($constants as $constant => $value)
+				if (strtolower($constant) == $name)
+					return $value;
+
+			return null;
 		}
 
 		/**
