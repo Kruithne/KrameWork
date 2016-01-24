@@ -166,7 +166,7 @@
 					$params = array();
 					foreach ($log['param'] as $key => $value)
 						$params[] = sprintf('[%s] = [%s]', $key, $value);
-					$msg .= sprintf("%.3f +%.3f [%d] {%s} %.3fs\n", $o, $o - $lt, $k, join(', ', $params, $log['time']);
+					$msg .= sprintf("%.3f +%.3f [%d] {%s} %.3fs\n", $o, $o - $lt, $k, join(', ', $params), $log['time']);
 					$lt = $o + $log['time'];
 				}
 				$msg .= "\n\n=== DB queries ===\n\n";
