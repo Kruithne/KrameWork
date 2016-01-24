@@ -25,16 +25,22 @@
 		 */
 		public static function valueOf($name, $caseSensitive = false)
 		{
-			if (!$caseSensitive)
-				$name = strtolower($name);
-
 			$constants = self::values();
 
-			foreach ($constants as $constant => $value)
-				if (strtolower($constant) == $name)
-					return $value;
+			if ($caseSensitive)
+			{
+				return array_key_exists($name, $constants) ? $constants[$name] : null;
+			}
+			else
+			{
+				$name = strtolower($name);
 
-			return null;
+				foreach ($constants as $constant => $value)
+					if (strtolower($constant) == $name)
+						return $value;
+
+				return null;
+			}
 		}
 
 		/**
