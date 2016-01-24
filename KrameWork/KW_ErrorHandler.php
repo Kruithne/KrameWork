@@ -44,6 +44,22 @@
 		}
 
 		/**
+		 * Turn on debug mode, dumping errors to the client
+		 */
+		public function debugMode()
+		{
+			$this->debug = true;
+		}
+
+		/**
+		 * When debug mode is enabled, send errors in a json format
+		 */
+		public function debugJSON()
+		{
+			$this->json = true;
+		}
+
+		/**
 		 * Set the path which will be used for logging errors.
 		 *
 		 * @param string $log Path to a directory or file.
@@ -129,36 +145,85 @@
 		}
 
 		/**
-		 * Send an error report object using the handler mail template.
+		 * Send an error report as per runtime configuration
 		 *
 		 * @param KW_ErrorReport $report An error report to send.
 		 */
 		public function sendErrorReport($report)
 		{
 			if ($this->mail !== null)
-			{
-				$this->mail->clear();
-				$this->mail->append((string) $report);
-
-				if ($this->mail->getSubject() === null)
-					$this->mail->setSubject($report->getSubject());
-
-				if ($this->mail->getRecipientCount() > 0)
-					$this->mail->send();
-			}
+				$this->sendEmail($report);
 
 			if ($this->log !== null)
+				$this->writeLog($report);
+
+			if ($this->debug)
 			{
-				if (@is_file($this->log))
-				{
-					file_put_contents($this->log, (string) $report, FILE_APPEND);
-				}
-				else if (@is_dir($this->log))
-				{
-					$log_file = $this->createLogFileName($this->log);
-					file_put_contents($log_file, (string) $report);
-				}
+				if ($this->json)
+					$this->dumpJSON($report);
+				else
+					$this->dumpHTML($report);
 			}
+		}
+
+		/**
+		 * Send an error report as an email
+		 *
+		 * @param KW_ErrorReport $report An error report to send.
+		 */
+		private function sendEmail($report)
+		{
+			$this->mail->clear();
+			$this->mail->append((string) $report);
+
+			if ($this->mail->getSubject() === null)
+				$this->mail->setSubject($report->getSubject());
+
+			if ($this->mail->getRecipientCount() > 0)
+				$this->mail->send();
+		}
+
+		/**
+		 * Send an error report to the log file
+		 *
+		 * @param KW_ErrorReport $report An error report to send.
+		 */
+		private function writeLog($report)
+		{
+			if (@is_file($this->log))
+			{
+				file_put_contents($this->log, (string) $report, FILE_APPEND);
+			}
+			else if (@is_dir($this->log))
+			{
+				$log_file = $this->createLogFileName($this->log);
+				file_put_contents($log_file, (string) $report);
+			}
+		}
+
+		/**
+		 * Send an error report to the client as HTML
+		 *
+		 * @param KW_ErrorReport $report An error report to send.
+		 */
+		private function dumpHTML($report)
+		{
+			echo $report->getHTMLReport();
+		}
+
+		/**
+		 * Send an error report to the client as JSON and terminate execution
+		 *
+		 * @param KW_ErrorReport $report An error report to send.
+		 */
+		private function dumpJSON($report)
+		{
+			while(ob_get_level())
+				ob_end_clean();
+			header('HTTP/1.0 500 Internal error');
+			header('Content-Type: application/json; encoding=UTF-8');
+			echo $report->getJSONReport();
+			die();
 		}
 
 		/**
@@ -208,5 +273,15 @@
 		 * @var integer Number of errors this execution.
 		 */
 		private $errorCount = 0;
+
+		/**
+		 * @var bool $debug Dump errors to the client
+		 */
+		private $debug;
+
+		/**
+		 * @var bool $json When dumping errors to the client, use json formatting
+		 */
+		private $json;
 	}
 ?>

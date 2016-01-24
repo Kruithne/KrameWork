@@ -70,6 +70,7 @@
 		 */
 		private function formatStacktrace($stack)
 		{
+			$this->stack = $stack;
 			$trace = '';
 			if (count($stack) == 0)
 				return;
@@ -110,6 +111,138 @@
 			error_log('_____ end stack frame dump _____');
 
 			return $trace;
+		}
+
+		/**
+		 * Format the report as JSON for sending to the developer
+		 * @return string JSON error report
+		 */
+		public function getJSONReport()
+		{
+			$report = (object)array(
+				'type' => $this->getErrorType(),
+				'error' => $this->Error,
+				'file' => $this->File,
+				'line' => $this->Line,
+				'trace' => array()
+			);
+			foreach($this->stack as $frame)
+			{
+				switch($frame['function'])
+				{
+					// Ommit these from the error report
+					case 'handleError':
+					case 'handleException':
+						if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
+							continue;
+
+					case 'trigger_error':
+						$report->trace[] = (object)array('func' => 'USER ERROR RAISED');
+						break;
+
+					case '__get':
+					case '__set':
+					case '__call':
+						$report->tracep[] = (object)array(
+							'func' => $frame['class'] . '->' . $frame['args'][0],
+							'file' => $frame['file'],
+							'line' => $frame['line'],
+							'args' => $frame['args']
+						);
+						break;
+
+					default:
+						$report->tracep[] = (object)array(
+							'func' => (isset($frame['class']) ? $frame['class'] : 'GLOBAL') . '::' . $frame['function'],
+							'file' => $frame['file'],
+							'line' => $frame['line'],
+							'args' => $frame['args']
+						);
+						break;
+				}
+			}
+			return json_encode($report);
+		}
+
+		/**
+		 * Format the report as HTML for showing to the developer
+		 * @return string HTML error report
+		 */
+		public function getHTMLReport()
+		{
+			$trace = '';
+			foreach($this->stack as $frame)
+			{
+				switch($frame['function'])
+				{
+					// Ommit these from the error report
+					case 'handleError':
+					case 'handleException':
+						if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
+							continue;
+
+					case 'trigger_error':
+						$trace .= sprintf('<span class="func">USER ERROR RAISED</span><br />');
+						break;
+
+					case '__get':
+					case '__set':
+					case '__call':
+						$trace .= sprintf(
+							'<p class="frame">at <span class="func">%3$s->%4$s</span> in <span class="file">%1$s</span>:<span class="line">%2$d</span><!-- %5$s --></p>',
+							$frame['file'], $frame['line'], $frame['class'], $frame['args'][0], serialize($frame)
+						);
+						break;
+
+					default:
+						$trace .= sprintf(
+							'<p class="frame">at <span class="func">%3$s::%4$s</span> in <span class="file">%1$s</span>:<span class="line">%2$d</span><!-- %5$s --></p>',
+							$frame['file'],
+							$frame['line'],
+							isset($frame['class']) ? $frame['class'] : 'GLOBAL',
+							$frame['function'],
+							serialize($frame)
+						);
+						break;
+				}
+			}
+			return sprintf(
+				'<div class="error-report"><span class="message">%s %s</span> in <span class="file">%s</span>:<span class="line">%s</span><p class="stacktrace">%s</p></div>',
+				$this->getErrorType(), $this->Error, $this->File, $this->Line, $trace
+			);
+		}
+
+		/**
+		 * Return a textual representation of the error type
+		 * @return string An error type
+		 */
+		private function getErrorType()
+		{
+			// List of textual representation of error codes
+			switch($this->Type)
+			{
+				case E_ERROR:   return 'ERROR';
+				case E_WARNING: return 'WARNING';
+				case E_PARSE:   return 'PARSE';
+				case E_NOTICE:  return 'NOTICE';
+
+				case E_CORE_ERROR:   return 'CORE ERROR';
+				case E_CORE_WARNING: return 'CORE WARNING';
+
+				case E_COMPILE_ERROR:   return 'COMPILE ERROR';
+				case E_COMPILE_WARNING: return 'COMPILE WARNING';
+
+				case E_USER_ERROR:   return 'USER ERROR';
+				case E_USER_WARNING: return 'USER WARNING';
+				case E_USER_NOTICE:  return 'USER NOTICE';
+				case E_USER_DEPRECATED: return 'USER DEPRECATED';
+
+				case E_STRICT:            return 'STRICT';
+				case E_DEPRECATED:				return 'DEPRECATED';
+				case E_RECOVERABLE_ERROR: return 'RECOVERABLE';
+
+				default: return 'UNKNOWN';
+			}
 		}
 
 		/**
@@ -220,5 +353,10 @@
 		 * @var string
 		 */
 		private $subject;
+
+		/**
+		 * @var array
+		 */
+		private $stack;
 	}
 ?>
