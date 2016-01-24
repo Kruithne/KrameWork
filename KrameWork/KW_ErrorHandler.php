@@ -248,7 +248,8 @@
 		 */
 		public function handleException($exception)
 		{
-			header('HTTP/1.0 500 Internal Error');
+			if(!$this->error)
+				header('HTTP/1.0 500 Internal Error');
 
 			if ($this->errorCount++ > $this->maxErrors)
 				die('Excessive errors, aborting');
@@ -352,7 +353,8 @@
 			{
 				while(ob_get_level())
 					ob_end_clean();
-				echo sprintf(self::$errorDocument, $report->getHTMLReport());
+				$this->error .= $report->getHTMLReport();
+				echo sprintf(self::$errorDocument, $this->error);
 				return;
 			}
 			echo $report->getHTMLReport();
@@ -447,13 +449,8 @@
 		private $json;
 
 		/**
-		 * @var float $startup set to microtime(true) to run a timing check
+		 * @var string $error Error output if sent
 		 */
-		private $startup;
-
-		/**
-		 * @var float $slowWarn Time in seconds before script slow warnings are triggered
-		 */
-		private $slowWarn;
+		private $error = '';
 	}
 ?>
