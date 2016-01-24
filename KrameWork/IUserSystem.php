@@ -6,7 +6,7 @@
 		 * @param string $email The email entered by the user requesting assistance
 		 * @return object|false If the email is unknown or recovery was not possible for some reason, false, otherwise the user objecct
 		 */
-		public function recover($email)
+		public function recover($email);
 		/**
 		 * Log user login success
 		 * @param int $id The ID of the user whom successfully authenticated

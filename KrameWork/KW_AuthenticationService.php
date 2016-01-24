@@ -1,5 +1,5 @@
 <?php
-	class KW_AuthenticationService extends KW_JSONService
+	abstract class KW_AuthenticationService extends KW_JSONService
 	{
 		/**
 		 * KW_AuthenticationService constructor.
