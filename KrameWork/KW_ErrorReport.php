@@ -192,12 +192,6 @@
 			{
 				switch($frame['function'])
 				{
-					// Omit these from the error report
-					case 'handleError':
-					case 'handleException':
-						if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
-							continue;
-
 					case 'trigger_error':
 						$trace .= sprintf('<span class="func">USER ERROR RAISED</span><br />');
 						break;
@@ -210,6 +204,12 @@
 							basename($frame['file']), $frame['line'], $frame['class'], $frame['args'][0], dirname($frame['file'])
 						);
 						break;
+
+					// Omit these from the error report
+					case 'handleError':
+					case 'handleException':
+						if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
+							continue;
 
 					default:
 						$trace .= sprintf(
