@@ -86,6 +86,8 @@
 		 *	error_prepend_string = "<!--[INTERNAL_ERROR]"
 		 *	error_append_string = "-->"
 		 *	html_errors = Off
+		 *	display_errors = On
+		 *	display_startup_errors = On
 		 *	auto_prepend_file = /path/to/error.php ; see errorCatcher example
 		 *
 		 * @param string $buffer Script output passed by PHP output buffer
