@@ -122,8 +122,9 @@
 		{
 			$this->stack = $stack;
 			$trace = '';
+
 			if (count($stack) == 0)
-				return;
+				return $trace;
 
 			error_log('_____ begin stack frame dump _____');
 			
