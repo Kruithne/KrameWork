@@ -6,7 +6,7 @@
 		 *
 		 * @return array The constants for this enum.
 		 */
-		private static function getConstants()
+		private static function values()
 		{
 			if (self::$constants == null)
 			{
@@ -28,7 +28,7 @@
 			if ($caseSensitive)
 				$name = strtolower($name);
 
-			$constants = self::getConstants();
+			$constants = self::values();
 
 			foreach ($constants as $constant => $value)
 				if (strtolower($constant) == $name)
