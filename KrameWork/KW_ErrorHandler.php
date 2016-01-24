@@ -197,7 +197,7 @@
 		public function handleError($type, $string, $file, $line)
 		{
 			if ($this->errorCount++ > $this->maxErrors)
-				die('Excessive errors, aborting');
+				die();
 
 			if (!error_reporting() & $type)
 				return true;
