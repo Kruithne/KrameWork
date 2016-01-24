@@ -119,7 +119,7 @@
 			if(!class_exists('KW_DatabaseConnection') || !KW_DatabaseConnection::$trace)
 				return;
 
-			KW_DatabaseConnection::$trace[] = array(
+			KW_DatabaseConnection::$traceLog[] = array(
 				'timestamp' => $time,
 				'sql' => $this->sql,
 				'time' => microtime(true) - $time,
