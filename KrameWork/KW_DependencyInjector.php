@@ -197,7 +197,7 @@
 					}
 					else
 					{
-						$binding[] = "'" . $item->source . "'=>'".$item->target . "'";
+						$binding[] = "'" . $item->source . "'=>'" . $item->target . "'";
 						$class[] = "'" . $item->target . "'=>null";
 					}
 				}
