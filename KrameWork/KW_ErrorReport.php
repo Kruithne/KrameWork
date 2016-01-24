@@ -68,7 +68,7 @@
 					$array[] = $this->formatValue('Proxy server', gethostbyaddr($_SERVER['REMOTE_ADDR']) . ' [' . $_SERVER['REMOTE_ADDR'] . ']');
 			}
 			else if(isset($_SERVER['REMOTE_ADDR']))
-				$array[] = $this->formatValue('Client', gethostbyaddr($_SERVER['REMOTE_ADDR']) . ' [' . $_SERVER['REMOTE_ADDR'] . ']';
+				$array[] = $this->formatValue('Client', gethostbyaddr($_SERVER['REMOTE_ADDR']) . ' [' . $_SERVER['REMOTE_ADDR'] . ']');
 
 			if(isset($_SERVER['REMOTE_USER']))
 				$array[] = $this->formatValue('Remote user', $_SERVER['REMOTE_USER']);
