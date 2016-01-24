@@ -168,6 +168,64 @@
 
 			return $object;
 		}
+ 
+ 		/**
+		 * Create and retun a bootstrap given the config.
+		 * @param array $config A mix of Library, Binding, ValueInjector, and strings
+		 * @return string A compiled kernel bootstrap, save it to a file and include it in your bootstrap
+		 */
+		public function makeBootstrap($config)
+		{
+			$path = array();
+			$class = array();
+			$binding = array();
+			$decorator = array();
+			$decorate = array();
+
+			foreach ($config as $item)
+			{
+				if ($item instanceof Library)
+				{
+					$path[] = "'" . $item->path . "'";
+				}
+				else if ($item instanceof Binding)
+				{
+					if ($item->target instanceof ValueInjector)
+					{
+						$binding[] = "'" . $item->source . "'=>'" . $item->target->class . "'";
+						$class[] = "'" . $item->target->class . "'=>new " . $item->target->class . "('" . join("','", $item->target->args) . "')";
+					}
+					else
+					{
+						$binding[] = "'" . $item->source . "'=>'" . $item->target . "'";
+						$class[] = "'" . $item->target . "'=>null";
+					}
+				}
+				else if ($item instanceof ValueInjector)
+				{
+					$class[] = "'" . $item->class . "'=>new " . $item->class . "('" . join("','", $item->args) . "')";
+				}
+				else if ($item instanceof Decorator)
+				{
+					if (!isset($decorate[$item->source]))
+						$decorator[$item->source] = array();
+
+					$decorator[$item->source][] = "'" . $item->target . "'";
+				}
+				else
+				{
+					$class[] = "'" . $item . "'=>null";
+				}
+			}
+
+			foreach ($decorator as $source => $targets)
+				$decorate[] = "'" . $source . "'=>[" . join(',', $targets) . "]";
+
+			return sprintf(
+				'<?php $kernel = new KrameSystem(KW_DEFAULT_FLAGS,[%s],[%s],[%s],[%s]); ?>',
+				join(',', $path), join(',', $class), join(',', $binding), join(',', $decorate)
+			);
+		}
 
 		/**
 		 * Pre-compiled boot-loader injection point

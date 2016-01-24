@@ -1,5 +1,5 @@
 <?php
-	class KW_UserSystem extends KW_CRUD implements IUserSystem
+	abstract class KW_UserSystem extends KW_CRUD implements IUserSystem
 	{
 		public function getName() { return 'users'; }
 
