@@ -37,33 +37,12 @@
 				$cycleTimes[] = $cycleTime;
 			}
 
-			$execution_time = microtime(true) - $startTime;
-			$avg_cycle_time = array_sum($cycleTimes) / count($cycleTimes);
-
 			return [
-				'raw' => [
-					'execution_time' => $execution_time,
-					'average_cycle_time' => $avg_cycle_time,
-					'shortest_cycle' => $shortTime,
-					'longest_cycle' => $longTime
-				],
-
-				'formatted' => [
-					'execution_time' => $this->formatTime($execution_time),
-					'average_cycle_time' => $this->formatTime($avg_cycle_time),
-					'shortest_cycle' => $this->formatTime($shortTime),
-					'longest_cycle' => $this->formatTime($longTime)
-				]
+				"execution_time" => microtime(true) - $startTime,
+				"average_cycle_time" => array_sum($cycleTimes) / count($cycleTimes),
+				"shortest_cycle" => $shortTime,
+				"longest_cycle" => $longTime
 			];
-		}
-
-		/**
-		 * @param float $value Value in microseconds.
-		 * @return string Milliseconds (rounded to .2 places).
-		 */
-		private function formatTime($value)
-		{
-			return sprintf('%.2f', $value / 1000) . "ms";
 		}
 
 		/**
