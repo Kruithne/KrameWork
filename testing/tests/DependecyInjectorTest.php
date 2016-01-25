@@ -9,7 +9,6 @@
 		public function testInterfaceInjection()
 		{
 			$kernel = new KrameSystem(KW_PRELOAD_CLASSES);
-			$kernel->addComponent('MockDependency');
 			$kernel->addBinding('IMockDependency', 'MockDependency');
 			$component = $kernel->getComponent('IMockDependency');
 			$this->assertEquals('MockDependency', get_class($component), 'Kernel did not return an IMockDependency object');
@@ -21,8 +20,7 @@
 		public function testInterfaceInjectionPreCreated()
 		{
 			$kernel = new KrameSystem(KW_PRELOAD_CLASSES);
-			$kernel->addComponent(new MockDependency());
-			$kernel->addBinding('IMockDependency', 'MockDependency');
+			$kernel->addBinding('IMockDependency', new MockDependency());
 			$component = $kernel->getComponent('IMockDependency');
 			$this->assertEquals('MockDependency', get_class($component), 'Kernel did not return an IMockDependency object');
 		}
@@ -33,7 +31,6 @@
 		public function testDecoratedInterfaceInjection()
 		{
 			$kernel = new KrameSystem(KW_PRELOAD_CLASSES);
-			$kernel->addComponent('MockDependency');
 			$kernel->addBinding('IMockDependency', 'MockDependency');
 			$kernel->addDecorator('IMockDependency', 'MockDecorator');
 			$component = $kernel->getComponent('IMockDependency');
@@ -46,8 +43,7 @@
 		public function testDecoratedInterfaceInjectionPreCreated()
 		{
 			$kernel = new KrameSystem(KW_PRELOAD_CLASSES);
-			$kernel->addComponent(new MockDependency());
-			$kernel->addBinding('IMockDependency', 'MockDependency');
+			$kernel->addBinding('IMockDependency', new MockDependency());
 			$kernel->addDecorator('IMockDependency', 'MockDecorator');
 			$component = $kernel->getComponent('IMockDependency');
 			$this->assertEquals('MockDecorator', get_class($component), 'Kernel did not return a decorated IMockDependency object');
@@ -61,8 +57,7 @@
 			$kernel = new KrameSystem(KW_PRELOAD_CLASSES);
 			$dep = new MockDependency();
 			$dec = new MockDecorator($dep);
-			$kernel->addComponent($dep);
-			$kernel->addBinding('IMockDependency', 'MockDependency');
+			$kernel->addBinding('IMockDependency', $dep);
 			$kernel->addDecorator('IMockDependency', $dec);
 			$component = $kernel->getComponent('IMockDependency');
 			$this->assertEquals(get_class($component), 'MockDecorator', 'Kernel did not return a decorated IMockDependency object');
@@ -83,8 +78,7 @@
 			$dep = new MockDependency();
 			$dec1 = new MockDecorator($dep);
 			$dec2 = new MockDecorator($dep);
-			$kernel->addComponent($dep);
-			$kernel->addBinding('IMockDependency', 'MockDependency');
+			$kernel->addBinding('IMockDependency', $dep);
 			$kernel->addDecorator('IMockDependency', $dec1);
 			$kernel->addDecorator('IMockDependency', $dec2);
 			$component = $kernel->getComponent('IMockDependency');
@@ -106,7 +100,6 @@
 		{
 			$kernel = new KrameSystem(KW_AUTOBIND_INTERFACES);
 			$kernel->addBinding('IMockDependency', 'MockDependency');
-			$kernel->addComponent('MockDependency');
 			$component = $kernel->getComponent('IMockDependency');
 			$this->assertEquals('MockDependency', get_class($component), 'Kernel returned wrong object type');
 		}
