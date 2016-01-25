@@ -59,18 +59,19 @@
 		 * Add a binding mapping a class or interface to another class or interface. $target should
 		 * normally be a class, not an interface.
 		 * @param string $source The name of a class or interface
-		 * @param string $target The name of the class to return when the source is requested
+		 * @param string|object $target The name of the class or a preconstructed object to return when the source is requested
 		 */
 		public function addBinding($source, $target)
 		{
+			$target_class = is_object($target) ? get_class($target) : $target;
 			if (isset($this->bindings[$source]))
 			{
 				if (!is_array($this->bindings[$source]))
 					$this->bindings[$source] = array($this->bindings[$source]);
-				$this->bindings[$source][] = $target;
+				$this->bindings[$source][] = $target_class;
 			}
 			else
-				$this->bindings[$source] = $target;
+				$this->bindings[$source] = $target_class;
 			$this->addComponent($target);
 		}
 
