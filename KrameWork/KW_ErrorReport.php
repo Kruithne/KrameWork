@@ -130,14 +130,7 @@
 			
 			foreach ($stack as $i => $frame)
 			{
-				$ignore = false;
-
-				$function = $frame['function'];
-				if ($function == 'handleError' || $function == 'handleException')
-					if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
-						$ignore = true;
-
-				if ($ignore)
+				if ($this->blackListed($frame))
 					continue;
 
 				$args = '';
@@ -192,6 +185,9 @@
 
 			foreach ($this->stack as $frame)
 			{
+				if ($this->blackListed($frame))
+					continue;
+
 				switch ($frame['function'])
 				{
 					case 'trigger_error':
@@ -208,12 +204,6 @@
 							'args' => $frame['args']
 						);
 						break;
-
-					// Omit these from the error report
-					case 'handleError':
-					case 'handleException':
-						if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
-							continue;
 
 					default:
 						$report->tracep[] = (object)array(
@@ -237,6 +227,9 @@
 			$trace = '';
 			foreach ($this->stack as $frame)
 			{
+				if ($this->blackListed($frame))
+					continue;
+
 				switch ($frame['function'])
 				{
 					case 'trigger_error':
@@ -251,12 +244,6 @@
 							basename($frame['file']), $frame['line'], $frame['class'], $frame['args'][0], dirname($frame['file'])
 						);
 						break;
-
-					// Omit these from the error report
-					case 'handleError':
-					case 'handleException':
-						if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
-							continue;
 
 					default:
 						$trace .= sprintf(
@@ -276,6 +263,21 @@
 			);
 		}
 
+		/**
+		 * Check if a stack frame is blacklisted
+		 *
+		 * @param array $frame a stack frame from debug_backtrace
+		 * @return bool Frame should be ignored
+		 */
+		private function blacklisted($frame)
+		{
+			$function = $frame['function'];
+			if ($function == 'handleError' || $function == 'handleException')
+				if (isset($frame['class']) && $frame['class'] == 'KW_ErrorHandler')
+					return true;
+
+			return false;
+		}
 
 		/**
 		 * Traverses down the array and generates a report section for it.
