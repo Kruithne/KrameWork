@@ -166,7 +166,7 @@
 		 * @return object[] The objects requested with dependencies injected.
 		 * @throws KW_ClassDependencyException
 		 */
-		public function getComponents($class_name)
+		public function getComponents(string $class_name)
 		{
 			$resolved_names = $this->resolve($class_name);
 			if (!is_array($resolved_name))
