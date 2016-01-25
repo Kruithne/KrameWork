@@ -12,7 +12,7 @@
 
 		/**
 		 * Run the benchmark test and return results in an array.
-		 * Results (raw) are given in microseconds (µs).
+		 * Results are given in microseconds (µs).
 		 * @return array
 		 */
 		public function run()
