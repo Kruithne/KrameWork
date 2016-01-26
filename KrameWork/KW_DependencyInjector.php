@@ -52,7 +52,7 @@
 		{
 			$class = new ReflectionClass($className);
 			foreach ($class->getInterfaceNames() as $interface)
-				$this->addBinding($interface, $className);
+				$this->addBindingInternal($source, $target);
 		}
 
 		/**
@@ -63,6 +63,18 @@
 		 */
 		public function addBinding($source, $target)
 		{
+			$this->addBindingInternal($source, $target);
+			$this->addComponent($target);
+		}
+
+		/**
+		 * Add a binding mapping a class or interface to another class or interface. $target should
+		 * normally be a class, not an interface.
+		 * @param string $source The name of a class or interface
+		 * @param string|object $target The name of the class or a preconstructed object to return when the source is requested
+		 */
+		private function addBindingInternal($source, $target)
+		{
 			$target_class = is_object($target) ? get_class($target) : $target;
 			if (isset($this->bindings[$source]))
 			{
@@ -72,7 +84,6 @@
 			}
 			else
 				$this->bindings[$source] = $target_class;
-			$this->addComponent($target);
 		}
 
 		/**
