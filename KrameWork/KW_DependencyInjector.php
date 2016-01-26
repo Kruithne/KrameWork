@@ -181,8 +181,8 @@
 		public function getComponents(string $class_name)
 		{
 			$resolved_names = $this->resolve($class_name);
-			if (!is_array($resolved_name))
-				$resolved_names = array($resolved_name);
+			if (!is_array($resolved_names))
+				$resolved_names = array($resolved_names);
 
 			$objects = array();
 			foreach($resolved_names as $resolved_name)
