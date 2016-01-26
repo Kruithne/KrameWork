@@ -10,7 +10,9 @@
 		{
 			$db = new MockDatabaseConnection('mysql');
 			$db->begin();
-			$manager = new KW_SchemaManager($db, new MockManyInjector([new KW_MetaTable($db)]));
+			$meta = new KW_MetaTable();
+			$manager = new KW_SchemaManager($db, new MockManyInjector([$meta]));
+			$manager->addTable($meta);
 			$manager->update();
 			$expected = 'SHOW TABLES LIKE \'_metatable\';
 INSERT INTO `_metatable` (`table`,`version`) VALUES (:table,:version)
@@ -23,7 +25,9 @@ INSERT INTO `_metatable` (`table`,`version`) VALUES (:table,:version)
 		{
 			$db = new MockDatabaseConnection('pgsql');
 			$db->begin();
-			$manager = new KW_SchemaManager($db, new MockManyInjector([new KW_MetaTable($db)]));
+			$meta = new KW_MetaTable();
+			$manager = new KW_SchemaManager($db, new MockManyInjector([$meta]));
+			$manager->addTable($meta);
 			$manager->update();
 			$expected = '
 SELECT c.relname 
