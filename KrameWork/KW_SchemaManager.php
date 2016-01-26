@@ -55,7 +55,7 @@
 			$this->loadVersionTable();
 
 			// This one is not injected in the kernel, we need to handle it.
-			$this->updateTable($this->_metatable);
+			$this->updateTable($this->_metatable, $verbose);
 
 			foreach ($this->repositories->getComponents('IRepository') as $spec)
 				$this->updateTable($spec, $verbose);
