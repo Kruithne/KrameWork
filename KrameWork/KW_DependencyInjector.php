@@ -37,7 +37,9 @@
 					$this->classes[$className][] = $classInput;
 				}
 				else
+				{
 					$this->classes[$className] = $classInput;
+				}
 
 				if ($this->bindInterfaces)
 					$this->extractInterfaces($className);
@@ -80,10 +82,13 @@
 			{
 				if (!is_array($this->bindings[$source]))
 					$this->bindings[$source] = array($this->bindings[$source]);
+
 				$this->bindings[$source][] = $target_class;
 			}
 			else
+			{
 				$this->bindings[$source] = $target_class;
+			}
 		}
 
 		/**
@@ -117,10 +122,13 @@
 							$classes[] = $class;
 					}
 					else
+					{
 						$classes[] = $class;
+					}
 				}
 				return $classes;
 			}
+
 			if (isset($this->bindings[$class_name]))
 				return $this->resolve($this->bindings[$class_name]);
 
@@ -323,20 +331,24 @@
 					$reflect = new ReflectionClass($item);
 					$class[] = "'" . $item . "'=>null";
 				}
+
 				if ($reflect)
+				{
 					foreach ($reflect->getInterfaceNames() as $interface)
 					{
 						if (!isset($binding[$interface]))
 							$binding[$interface] = array();
-						if(!in_array($reflect->getName(), $binding[$interface]))
+
+						if (!in_array($reflect->getName(), $binding[$interface]))
 							$binding[$interface][] = $reflect->getName();
 					}
+				}
 			}
 
 			$bindings = array();
-			foreach($binding as $source => $target)
+			foreach ($binding as $source => $target)
 			{
-				if(count($target) > 1)
+				if (count($target) > 1)
 					$bindings[] = "'" . $source . "'=>['" . join("','", $target) . "']";
 				else
 					$bindings[] = "'" . $source . "'=>'" . $target[0] . "'";
