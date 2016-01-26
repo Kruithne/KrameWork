@@ -11,7 +11,7 @@
 			$this->data = $data;
 		}
 
-		public function getComponents(string $type)
+		public function getComponents($type)
 		{
 			return $this->data;
 		}
