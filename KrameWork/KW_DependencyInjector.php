@@ -52,7 +52,7 @@
 		{
 			$class = new ReflectionClass($className);
 			foreach ($class->getInterfaceNames() as $interface)
-				$this->addBindingInternal($source, $target);
+				$this->addBindingInternal($interface, $className);
 		}
 
 		/**
