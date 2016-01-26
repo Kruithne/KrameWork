@@ -284,6 +284,7 @@
 				$reflect = null;
 				if ($item instanceof Library)
 				{
+					KW_ClassLoader::addClassPath($item->path);
 					$path[] = "'" . $item->path . "'";
 				}
 				else if ($item instanceof Binding)
