@@ -11,9 +11,9 @@
 		/**
 		 * Add a new table to be managed.
 		 *
-		 * @param ISchemaTable $spec A table specification.
+		 * @param IRepository $spec A table specification.
 		 */
-		public function addTable(ISchemaTable $spec);
+		public function addTable(IRepository $spec);
 
 		/**
 		 * Called to execute schema management once all tables have been defined.
@@ -23,9 +23,9 @@
 		/**
 		 * Auto-update a table according to the specification.
 		 *
-		 * @param ISchemaTable $spec The table specification to act upon.
+		 * @param IRepository $spec The table specification to act upon.
 		 */
-		public function upgrade(ISchemaTable $spec);
+		public function upgrade(IRepository $spec);
 
 		/**
 		 * Read the current table version.
