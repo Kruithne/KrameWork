@@ -100,8 +100,16 @@
 		{
 			$kernel = new KrameSystem(KW_AUTOBIND_INTERFACES);
 			$kernel->addBinding('IMockDependency', 'MockDependency');
-			$component = $kernel->getComponent('IMockDependency');
-			$this->assertEquals('MockDependency', get_class($component), 'Kernel returned wrong object type');
+			try
+			{
+				$component = $kernel->getComponent('IMockDependency');
+			}
+			catch(KW_ClassDependencyException $e)
+			{
+				$this->assertEquals('Class IMockDependency resolves to multiple classes, but a single instance was requested', $e->getMessage(), 'Incorrect exception thrown');
+				return;
+			}
+			$this->assertEquals(false, true, 'Exception was not thrown');
 		}
 
 		public function testInterfaceAutoBindWithDecoration()
