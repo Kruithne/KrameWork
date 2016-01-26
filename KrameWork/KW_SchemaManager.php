@@ -5,8 +5,9 @@
 		 * KW_SchemaManager constructor.
 		 * @param IDatabaseConnection $db
 		 */
-		public function __construct(IDatabaseConnection $db)
+		public function __construct(IDatabaseConnection $db, IManyInject $repositories)
 		{
+			$this->repositories = $repositories;
 			$this->db = $db;
 			$this->addTable(new KW_MetaTable());
 		}
@@ -47,14 +48,34 @@
 
 		/**
 		 * Called to execute schema management once all tables have been defined.
+		 * @var bool $verbose Print messages
 		 */
-		public function update()
+		public function update($verbose = false)
 		{
 			$this->loadVersionTable();
 
-			foreach ($this->tables as $spec)
-				if ($spec->getVersion() > $this->getCurrentVersion($spec->getName()))
-					$this->upgrade($spec);
+			// This one is not injected in the kernel, we need to handle it.
+			$this->updateTable($this->_metatable);
+
+			foreach ($this->repositories->getComponents('IRepository') as $spec)
+				$this->updateTable($spec, $verbose);
+		}
+
+		/**
+		 * Update a table if needed
+		 * @var IRepository $spec a table definition
+		 * @var bool $verbose Print messages
+		 */
+		private function updateTable($spec, $verbose)
+		{
+			if ($verbose)
+				printf("Repository %s is at version %d\n", $spec->getName(), $this->getCurrentVersion($spec->getName()));
+
+			if ($spec->getVersion() <= $this->getCurrentVersion($spec->getName()))
+				return;
+
+			printf("Upgrading to version %d\n", $spec->getVersion());
+			$this->upgrade($spec);
 		}
 
 		/**
@@ -130,5 +151,10 @@
 		 * @var IDatabaseConnection
 		 */
 		private $db;
+
+		/**
+		 * @var IManyInject
+		 */
+		private $repositories;
 	}
 ?>

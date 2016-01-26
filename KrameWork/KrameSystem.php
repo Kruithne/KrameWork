@@ -1,6 +1,7 @@
 <?php
 	require_once('KW_Constants.php');
 	require_once('IDependencyInjector.php');
+	require_once('IManyInject.php');
 	require_once('KW_DependencyInjector.php');
 	require_once('KW_ClassLoader.php');
 

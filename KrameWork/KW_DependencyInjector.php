@@ -1,10 +1,10 @@
 <?php
-	class KW_DependencyInjector implements IDependencyInjector
+	class KW_DependencyInjector implements IDependencyInjector, IManyInject
 	{
 		/**
-		 * Registers a class to be used by the dependency injector.
+		 * Add one or more components to the injector, either strings or preconstructed objects.
 		 *
-		 * @param string|object $classInput The name of the class to add or an already constructed object.
+		 * @param string|string[]|object|object[] $classInput The name of the class to add or an already constructed object.
 		 */
 		public function addComponent($classInput)
 		{
@@ -16,21 +16,27 @@
 
 			if (is_string($classInput))
 			{
-				if (!array_key_exists($classInput, $this->classes))
-				{
-					if ($this->preload)
-						KW_ClassLoader::loadClass($classInput);
+				if (array_key_exists($classInput, $this->classes))
+					throw new KW_ClassDependencyException($classInput, "Class %s has already been added to the injector");
 
-					$this->classes[$classInput] = null;
+				if ($this->preload)
+					KW_ClassLoader::loadClass($classInput);
 
-					if ($this->bindInterfaces)
-						$this->extractInterfaces($classInput);
-				}
+				$this->classes[$classInput] = null;
+
+				if ($this->bindInterfaces)
+					$this->extractInterfaces($classInput);
 			}
 			elseif (is_object($classInput))
 			{
 				$className = get_class($classInput);
-				if (!array_key_exists($className, $this->classes))
+				if (array_key_exists($className, $this->classes))
+				{
+					if (!is_array($this->classes[$className]))
+						$this->classes[$className] = array($this->classes[$className]);
+					$this->classes[$className][] = $classInput;
+				}
+				else
 					$this->classes[$className] = $classInput;
 
 				if ($this->bindInterfaces)
@@ -46,19 +52,38 @@
 		{
 			$class = new ReflectionClass($className);
 			foreach ($class->getInterfaceNames() as $interface)
-				$this->addBinding($interface, $className);
+				$this->addBindingInternal($interface, $className);
 		}
 
 		/**
 		 * Add a binding mapping a class or interface to another class or interface. $target should
 		 * normally be a class, not an interface.
 		 * @param string $source The name of a class or interface
-		 * @param string $target The name of the class to return when the source is requested
+		 * @param string|object $target The name of the class or a preconstructed object to return when the source is requested
 		 */
 		public function addBinding($source, $target)
 		{
-			$this->bindings[$source] = $target;
+			$this->addBindingInternal($source, $target);
 			$this->addComponent($target);
+		}
+
+		/**
+		 * Add a binding mapping a class or interface to another class or interface. $target should
+		 * normally be a class, not an interface.
+		 * @param string $source The name of a class or interface
+		 * @param string|object $target The name of the class or a preconstructed object to return when the source is requested
+		 */
+		private function addBindingInternal($source, $target)
+		{
+			$target_class = is_object($target) ? get_class($target) : $target;
+			if (isset($this->bindings[$source]))
+			{
+				if (!is_array($this->bindings[$source]))
+					$this->bindings[$source] = array($this->bindings[$source]);
+				$this->bindings[$source][] = $target_class;
+			}
+			else
+				$this->bindings[$source] = $target_class;
 		}
 
 		/**
@@ -75,11 +100,27 @@
 		}
 
 		/**
-		 * @param string $class_name
-		 * @return string
+		 * @param string|string[] $class_name
+		 * @return string|string[]
 		 */
 		public function resolve($class_name)
 		{
+			if (is_array($class_name))
+			{
+				$classes = array();
+				foreach ($class_name as $class)
+				{
+					$resolved = $this->resolve($class);
+					if (is_array($resolved))
+					{
+						foreach ($resolved as $class)
+							$classes[] = $class;
+					}
+					else
+						$classes[] = $class;
+				}
+				return $classes;
+			}
 			if (isset($this->bindings[$class_name]))
 				return $this->resolve($this->bindings[$class_name]);
 
@@ -89,7 +130,7 @@
 		/**
 		 * Returns a constructed component from the dependency injector.
 		 *
-		 * @param string $class_name The name of the class to return.
+		 * @param string $class_name The name of the class or interface to return.
 		 * @param bool $add If true, injector will attempt to create the component if missing.
 		 * @return object The object requested with dependencies injected.
 		 * @throws KW_ClassDependencyException
@@ -97,6 +138,9 @@
 		public function getComponent($class_name, $add = false)
 		{
 			$resolved_name = $this->resolve($class_name);
+			if (is_array($resolved_name) || is_array($this->classes[$resolved_name]))
+				throw new KW_ClassDependencyException($class_name, 'Class %s resolves to multiple classes, but a single instance was requested');
+
 			if (!array_key_exists($resolved_name, $this->classes))
 			{
 				if ($add)
@@ -125,6 +169,56 @@
 				}
 			}
 			return $object;
+		}
+
+		/**
+		 * Returns any number of constructed components from the dependency injector.
+		 *
+		 * @param string $class_name The name of the class or interface to return.
+		 * @return object[] The objects requested with dependencies injected.
+		 * @throws KW_ClassDependencyException
+		 */
+		public function getComponents(string $class_name)
+		{
+			$resolved_names = $this->resolve($class_name);
+			if (!is_array($resolved_names))
+				$resolved_names = array($resolved_names);
+
+			$objects = array();
+			foreach($resolved_names as $resolved_name)
+			{
+				if (!array_key_exists($resolved_name, $this->classes))
+					throw new KW_ClassDependencyException($resolved_name, "Class %s has not been added to the injector");
+
+				$object = $this->classes[$resolved_name];
+				if ($object === null)
+					$object = $this->constructComponent($resolved_name);
+
+				if (!is_array($object))
+					$object = array($object);
+
+				foreach ($object as $obj)
+				{
+					if (isset($this->decorators[$resolved_name]))
+					{
+						foreach ($this->decorators[$class_name] as $decorator)
+						{
+							if ($decorator instanceof IDecorator)
+							{
+								// TODO This will probably be buggy, redesign interface or disallow
+								$decorator->inject($obj);
+								$obj = $decorator;
+							}
+							else
+							{
+								$obj = new $decorator($obj);
+							}
+						}
+					}
+					$objects[] = $obj;
+				}
+			}
+			return $objects;
 		}
 
 		/**
@@ -157,7 +251,10 @@
 					if ($parameter_class_name === $class_name)
 						throw new KW_ClassDependencyException($class_name, "Cyclic dependency when constructing %s");
 
-					$to_inject[] = $this->getComponent($parameter_class_name);
+					if ($parameter_class_name == 'IManyInject')
+						$to_inject[] = $this;
+					else
+						$to_inject[] = $this->getComponent($parameter_class_name);
 				}
 
 				call_user_func_array(array($object, "__construct"), $to_inject);
@@ -184,25 +281,34 @@
 
 			foreach ($config as $item)
 			{
+				$reflect = null;
 				if ($item instanceof Library)
 				{
+					KW_ClassLoader::addClassPath($item->path);
 					$path[] = "'" . $item->path . "'";
 				}
 				else if ($item instanceof Binding)
 				{
 					if ($item->target instanceof ValueInjector)
 					{
-						$binding[] = "'" . $item->source . "'=>'" . $item->target->class . "'";
+						$reflect = new ReflectionClass($item->target->class);
+						if (!isset($binding[$item->source]))
+							$binding[$item->source] = array();
+						$binding[$item->source][] = $item->target->class;
 						$class[] = "'" . $item->target->class . "'=>new " . $item->target->class . "('" . join("','", $item->target->args) . "')";
 					}
 					else
 					{
-						$binding[] = "'" . $item->source . "'=>'" . $item->target . "'";
+						$reflect = new ReflectionClass($item->target);
+						if (!isset($binding[$item->source]))
+							$binding[$item->source] = array();
+						$binding[$item->source][] = $item->target;
 						$class[] = "'" . $item->target . "'=>null";
 					}
 				}
 				else if ($item instanceof ValueInjector)
 				{
+					$reflect = new ReflectionClass($item->class);
 					$class[] = "'" . $item->class . "'=>new " . $item->class . "('" . join("','", $item->args) . "')";
 				}
 				else if ($item instanceof Decorator)
@@ -214,8 +320,26 @@
 				}
 				else
 				{
+					$reflect = new ReflectionClass($item);
 					$class[] = "'" . $item . "'=>null";
 				}
+				if ($reflect)
+					foreach ($reflect->getInterfaceNames() as $interface)
+					{
+						if (!isset($binding[$interface]))
+							$binding[$interface] = array();
+						if(!in_array($reflect->getName(), $binding[$interface]))
+							$binding[$interface][] = $reflect->getName();
+					}
+			}
+
+			$bindings = array();
+			foreach($binding as $source => $target)
+			{
+				if(count($target) > 1)
+					$bindings[] = "'" . $source . "'=>['" . join("','", $target) . "']";
+				else
+					$bindings[] = "'" . $source . "'=>'" . $target[0] . "'";
 			}
 
 			foreach ($decorator as $source => $targets)
@@ -223,7 +347,7 @@
 
 			return sprintf(
 				'<?php $kernel = new KrameSystem(KW_DEFAULT_FLAGS,[%s],[%s],[%s],[%s]); ?>',
-				join(',', $path), join(',', $class), join(',', $binding), join(',', $decorate)
+				join(',', $path), join(',', $class), join(',', $bindings), join(',', $decorate)
 			);
 		}
 
