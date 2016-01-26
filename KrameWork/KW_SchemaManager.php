@@ -4,6 +4,8 @@
 		/**
 		 * KW_SchemaManager constructor.
 		 * @param IDatabaseConnection $db
+		 * @param IManyInject $repositories
+		 * @throws Exception
 		 */
 		public function __construct(IDatabaseConnection $db, IManyInject $repositories)
 		{
@@ -76,7 +78,7 @@
 
 			if ($verbose)
 				printf("Upgrading to version %d\n", $spec->getVersion());
-			
+
 			$this->upgrade($spec);
 		}
 
