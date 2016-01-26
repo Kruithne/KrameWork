@@ -54,16 +54,28 @@
 		{
 			$this->loadVersionTable();
 
+			// This one is not injected in the kernel, we need to handle it.
+			$this->updateTable($this->_metatable);
+
 			foreach ($this->repositories->getComponents('IRepository') as $spec)
-			{
-				if ($verbose)
-					printf("Repository %s is at version %d\n", $spec->getName(), $this->getCurrentVersion($spec->getName()));
-				if ($spec->getVersion() > $this->getCurrentVersion($spec->getName()))
-				{
-					printf("Upgrading to version %d\n", $spec->getVersion());
-					$this->upgrade($spec);
-				}
-			}
+				$this->updateTable($spec, $verbose);
+		}
+
+		/**
+		 * Update a table if needed
+		 * @var IRepository $spec a table definition
+		 * @var bool $verbose Print messages
+		 */
+		private function updateTable($spec, $verbose)
+		{
+			if ($verbose)
+				printf("Repository %s is at version %d\n", $spec->getName(), $this->getCurrentVersion($spec->getName()));
+
+			if ($spec->getVersion() <= $this->getCurrentVersion($spec->getName()))
+				return;
+
+			printf("Upgrading to version %d\n", $spec->getVersion());
+			$this->upgrade($spec);
 		}
 
 		/**

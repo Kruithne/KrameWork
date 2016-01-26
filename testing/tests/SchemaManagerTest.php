@@ -12,7 +12,6 @@
 			$db->begin();
 			$kernel = new MockManyInjector([]);
 			$manager = new KW_SchemaManager($db, $kernel);
-			$kernel->set([$manager->_metatable]);
 			$manager->update();
 			$expected = 'SHOW TABLES LIKE \'_metatable\';
 INSERT INTO `_metatable` (`table`,`version`) VALUES (:table,:version)
@@ -27,7 +26,6 @@ INSERT INTO `_metatable` (`table`,`version`) VALUES (:table,:version)
 			$db->begin();
 			$kernel = new MockManyInjector([]);
 			$manager = new KW_SchemaManager($db, $kernel);
-			$kernel->set([$manager->_metatable]);
 			$manager->update();
 			$expected = '
 SELECT c.relname 
