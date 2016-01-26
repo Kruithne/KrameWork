@@ -10,7 +10,7 @@
 		{
 			$db = new MockDatabaseConnection('mysql');
 			$db->begin();
-			$kernel = new MockManyInjector();
+			$kernel = new MockManyInjector([]);
 			$manager = new KW_SchemaManager($db, $kernel);
 			$kernel->set([$manager->_metatable]);
 			$manager->update();
@@ -25,7 +25,7 @@ INSERT INTO `_metatable` (`table`,`version`) VALUES (:table,:version)
 		{
 			$db = new MockDatabaseConnection('pgsql');
 			$db->begin();
-			$kernel = new MockManyInjector();
+			$kernel = new MockManyInjector([]);
 			$manager = new KW_SchemaManager($db, $kernel);
 			$kernel->set([$manager->_metatable]);
 			$manager->update();
