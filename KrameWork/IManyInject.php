@@ -10,6 +10,6 @@
 		 * @param string $type A class or interface name
 		 * @return object[] Zero or more objects of the requested type
 		 */
-		public function getComponents(string $type);
+		public function getComponents($type);
 	}
 ?>
