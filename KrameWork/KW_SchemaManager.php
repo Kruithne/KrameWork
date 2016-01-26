@@ -17,10 +17,10 @@
 		/**
 		 * Add a new table to be managed.
 		 *
-		 * @param ISchemaTable $spec A table specification.
+		 * @param IRepository $spec A table specification.
 		 * @throws Exception
 		 */
-		public function addTable(ISchemaTable $spec)
+		public function addTable(IRepository $spec)
 		{
 			if (isset($this->tables[$spec->getName()]))
 				throw new Exception('Duplicate table specification "' . $spec->getName() . '"');
@@ -38,7 +38,7 @@
 		 * Fetch a table by name
 		 *
 		 * @param string $name Name of table to return the specification of.
-		 * @return ISchemaTable
+		 * @return IRepository
 		 */
 		public function __get($name)
 		{
@@ -85,9 +85,9 @@
 		/**
 		 * Auto-update a table according to the specification.
 		 *
-		 * @param ISchemaTable $spec The table specification to act upon.
+		 * @param IRepository $spec The table specification to act upon.
 		 */
-		public function upgrade(ISchemaTable $spec)
+		public function upgrade(IRepository $spec)
 		{
 			if ($this->db->getType() == 'pgsql')
 			{
@@ -147,7 +147,7 @@
 		private $version = array();
 
 		/**
-		 * @var ISchemaTable[]
+		 * @var IRepository[]
 		 */
 		private $tables;
 
