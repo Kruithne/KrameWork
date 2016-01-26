@@ -6,6 +6,11 @@
 			$this->data = $data;
 		}
 
+		public function set($data)
+		{
+			$this->data = $data;
+		}
+
 		public function getComponents(string $type)
 		{
 			return $this->data;
