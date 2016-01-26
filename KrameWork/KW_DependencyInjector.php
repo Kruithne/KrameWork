@@ -214,9 +214,7 @@
 						{
 							if ($decorator instanceof IDecorator)
 							{
-								// TODO This will probably be buggy, redesign interface or disallow
-								$decorator->inject($obj);
-								$obj = $decorator;
+								$obj = $decorator->inject($obj);
 							}
 							else
 							{
