@@ -1,5 +1,5 @@
 <?php
-	class MockManyInjector implements IMockMany
+	class MockManyInjector implements IManyInject
 	{
 		public function getComponents(string $type)
 		{
