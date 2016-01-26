@@ -48,14 +48,22 @@
 
 		/**
 		 * Called to execute schema management once all tables have been defined.
+		 * @var bool $verbose Print messages
 		 */
-		public function update()
+		public function update($verbose = false)
 		{
 			$this->loadVersionTable();
 
 			foreach ($this->repositories->getComponents('IRepository') as $spec)
+			{
+				if ($verbose)
+					printf("Repository %s is at version %d\n", $spec->getName(), $this->getCurrentVersion($spec->getName()));
 				if ($spec->getVersion() > $this->getCurrentVersion($spec->getName()))
+				{
+					printf("Upgrading to version %d\n", $spec->getVersion());
 					$this->upgrade($spec);
+				}
+			}
 		}
 
 		/**
