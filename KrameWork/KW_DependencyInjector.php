@@ -118,8 +118,8 @@
 					$resolved = $this->resolve($class);
 					if (is_array($resolved))
 					{
-						foreach ($resolved as $class)
-							$classes[] = $class;
+						foreach ($resolved as $resolvedClass)
+							$classes[] = $resolvedClass;
 					}
 					else
 					{
