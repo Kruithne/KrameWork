@@ -5,8 +5,9 @@
 		 * KW_SchemaManager constructor.
 		 * @param IDatabaseConnection $db
 		 */
-		public function __construct(IDatabaseConnection $db)
+		public function __construct(IDatabaseConnection $db, IManyInject $repositories)
 		{
+			$this->repositories = $repositories;
 			$this->db = $db;
 			$this->addTable(new KW_MetaTable());
 		}
@@ -52,7 +53,7 @@
 		{
 			$this->loadVersionTable();
 
-			foreach ($this->tables as $spec)
+			foreach ($this->repositories->getComponents('IRepository') as $spec)
 				if ($spec->getVersion() > $this->getCurrentVersion($spec->getName()))
 					$this->upgrade($spec);
 		}
@@ -130,5 +131,10 @@
 		 * @var IDatabaseConnection
 		 */
 		private $db;
+
+		/**
+		 * @var IManyInject
+		 */
+		private $repositories;
 	}
 ?>
