@@ -5,6 +5,7 @@
 		 * Add one or more components to the injector, either strings or preconstructed objects.
 		 *
 		 * @param string|string[]|object|object[] $classInput The name of the class to add or an already constructed object.
+		 * @throws KW_ClassDependencyException
 		 */
 		public function addComponent($classInput)
 		{
