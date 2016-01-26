@@ -74,7 +74,9 @@
 			if ($spec->getVersion() <= $this->getCurrentVersion($spec->getName()))
 				return;
 
-			printf("Upgrading to version %d\n", $spec->getVersion());
+			if ($verbose)
+				printf("Upgrading to version %d\n", $spec->getVersion());
+			
 			$this->upgrade($spec);
 		}
 
