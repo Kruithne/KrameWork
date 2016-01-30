@@ -6,7 +6,7 @@
 			$this->db = $db;
 		}
 
-		public function addTable(IRepository $spec)
+		public function addTable(ISchemaTable $spec)
 		{
 			$this->tables[$spec->getName()] = $spec;
 			if($spec instanceof IRepository)
@@ -30,7 +30,7 @@
 					$this->upgrade($spec);
 		}
 
-		public function upgrade(IRepository $spec)
+		public function upgrade(ISchemaTable $spec)
 		{
 			$from = $this->getCurrentVersion($spec->getName());
 			$to = $spec->getVersion();

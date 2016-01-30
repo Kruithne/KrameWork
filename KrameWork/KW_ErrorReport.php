@@ -248,11 +248,11 @@
 					default:
 						$trace .= sprintf(
 							'<p class="frame">at <span class="func">%3$s::%4$s</span> in <span class="path">%5$s/</span><span class="file">%1$s</span>:<span class="line">%2$d</span></p>',
-							basename($frame['file']),
-							$frame['line'],
+							isset($frame['file']) ? basename($frame['file']) : 'unknown',
+							isset($frame['line']) ? $frame['line'] : '',
 							isset($frame['class']) ? $frame['class'] : 'GLOBAL',
 							$frame['function'],
-							dirname($frame['file'])
+							isset($frame['file']) ? dirname($frame['file']) : ''
 						);
 						break;
 				}
