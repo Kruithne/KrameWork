@@ -16,8 +16,8 @@
 		{
 			parent::prepare();
 			$table = $this->getName();
-			$this->getByUsername = $this->db->prepare('SELECT * FROM '. $table. ' WHERE username = :username');
-			$this->getByEmail = $this->db->prepare('SELECT * FROM '. $table. ' WHERE email = :email');
+			$this->getByUsername = $this->db->prepare('SELECT * FROM '. $table. ' WHERE username LIKE :username');
+			$this->getByEmail = $this->db->prepare('SELECT * FROM '. $table. ' WHERE email LIKE :email');
 			$this->setUserSessionSalt = $this->db->prepare('UPDATE '. $table. ' SET session_salt=:salt WHERE id=:id');
 			$this->setUserPassphrase = $this->db->prepare('UPDATE '. $table. ' SET passphrase=:passphrase, pp_changed=current_timestamp WHERE id=:id');
 			$this->setUserSecret = $this->db->prepare('UPDATE '. $table. ' SET secret=:secret WHERE id=:id');
