@@ -251,7 +251,6 @@
 			{
 				foreach ($field as $col)
 					$this->bindValue($query, $col, $object);
-				}
 			}
 			else
 				$this->bindValue($query, $field, $object);
