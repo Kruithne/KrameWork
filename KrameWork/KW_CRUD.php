@@ -56,6 +56,9 @@
 		 */
 		public function create($object)
 		{
+			if(!is_object($object))
+				throw new KW_CRUDException('Create operation requires an object');
+
 			$auto = $this->hasAutoKey();
 
 			if ($auto)
@@ -164,6 +167,8 @@
 		 */
 		public function update($object)
 		{
+			if(!is_object($object))
+				throw new KW_CRUDException('Update operation requires an object');
 			$this->bind($this->updateRecord, $object);
 			$this->updateRecord->execute();
 		}
@@ -174,6 +179,8 @@
 		 */
 		public function delete($object)
 		{
+			if(!is_object($object))
+				throw new KW_CRUDException('Update operation requires an object');
 			$this->bindValues($this->deleteRecord, $this->getKey(), $object);
 			$this->deleteRecord->execute();
 		}
@@ -243,12 +250,30 @@
 			if (is_array($field))
 			{
 				foreach ($field as $col)
-					$query->$col = $object->$col;
+					$this->bindValue($query, $col, $object);
+				}
 			}
-			else if ($field)
-			{
-				$query->$field = $object->$field;
-			}
+			else
+				$this->bindValue($query, $field, $object);
+		}
+
+		/**
+		 * Bind the query to a property from an object
+		 *
+		 * @param IDatabaseStatement $query A statement to bind values to
+		 * @param string $field The name of a property
+		 * @param object $object An object containing the named properties.
+		 */
+		private function bindValue($query, $field, $object)
+		{
+			$value = null;
+			if(method_exists($object, '__get'))
+				$value = $object->$field;
+			else if(property_exists($object, $field)
+				$value = $object->$field;
+			if($value === null)
+				throw new KW_CRUDException('Object is missing an expected property "'.$field.'"');
+			$query->$field = $object->$field;
 		}
 
 		/**
