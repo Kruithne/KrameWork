@@ -268,11 +268,11 @@
 			$value = null;
 			if(method_exists($object, '__get'))
 				$value = $object->$field;
-			else if(property_exists($object, $field)
+			else if(property_exists($object, $field))
 				$value = $object->$field;
-			if($value === null)
+			else
 				throw new KW_CRUDException('Object is missing an expected property "'.$field.'"');
-			$query->$field = $object->$field;
+			$query->$field = $value;
 		}
 
 		/**
