@@ -96,74 +96,81 @@
 			if (isset($_SERVER['PATH_INFO']))
 				$path = $_SERVER['PATH_INFO'];
 
-			if ($_SERVER['REQUEST_METHOD'] == 'POST')
+			try
 			{
-				switch($path)
+				if ($_SERVER['REQUEST_METHOD'] == 'POST')
 				{
-					case '/create':
-						if (!$this->canCreate($object))
-						{
-							header('HTTP/1.0 403 Access Denied');
-							return '';
-						}
-						try
-						{
-							return $this->create($object);
-						}
-						catch (PDOException $e)
-						{
-							return $e;
-						}
+					switch($path)
+					{
+						case '/create':
+							if (!$this->canCreate($object))
+							{
+								header('HTTP/1.0 403 Access Denied');
+								return '';
+							}
+							try
+							{
+								return $this->create($object);
+							}
+							catch (PDOException $e)
+							{
+								return $e;
+							}
 
-					case '/update':
-						if (!$this->canUpdate($object))
-						{
-							header('HTTP/1.0 403 Access Denied');
+						case '/update':
+							if (!$this->canUpdate($object))
+							{
+								header('HTTP/1.0 403 Access Denied');
+								return false;
+							}
+							$this->update($object);
+							return true;
+
+						case '/delete':
+							if (!$this->canDelete($object))
+							{
+								header('HTTP/1.0 403 Access Denied');
+								return false;
+							}
+							$this->delete($object);
+							return true;
+
+						default:
 							return false;
-						}
-						$this->update($object);
-						return true;
+					}
+				}
 
-					case '/delete':
-						if (!$this->canDelete($object))
-						{
-							header('HTTP/1.0 403 Access Denied');
-							return false;
-						}
-						$this->delete($object);
-						return true;
-
-					default:
+				if ($_SERVER['REQUEST_METHOD'] == 'GET')
+				{
+					if (!$this->canRead())
+					{
+						header('HTTP/1.0 403 Access Denied');
 						return false;
+					}
+
+					if ($path)
+					{
+						$lookup = explode('/', $path);
+						$key = $this->getKey();
+						if (is_array($key))
+						{
+							$search = array();
+							foreach ($key as $i => $col)
+								$search[$col] = $lookup[$i + 1];
+
+							return $this->read($search);
+						}
+						else
+						{
+							return $this->read($lookup[1]);
+						}
+					}
+					return $this->read();
 				}
 			}
-
-			if ($_SERVER['REQUEST_METHOD'] == 'GET')
+			catch(KW_CRUDException $e)
 			{
-				if (!$this->canRead())
-				{
-					header('HTTP/1.0 403 Access Denied');
-					return false;
-				}
-
-				if ($path)
-				{
-					$lookup = explode('/', $path);
-					$key = $this->getKey();
-					if (is_array($key))
-					{
-						$search = array();
-						foreach ($key as $i => $col)
-							$search[$col] = $lookup[$i + 1];
-
-						return $this->read($search);
-					}
-					else
-					{
-						return $this->read($lookup[1]);
-					}
-				}
-				return $this->read();
+				return (object)array('error' => (object)array('type' => 'exception', 'message' => $e->getMessage()));
 			}
 			return false;
 		}
