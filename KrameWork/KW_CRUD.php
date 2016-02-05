@@ -252,7 +252,7 @@
 				foreach ($field as $col)
 					$this->bindValue($query, $col, $object);
 			}
-			else
+			else if($field)
 				$this->bindValue($query, $field, $object);
 		}
 
