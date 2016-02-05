@@ -68,6 +68,8 @@
 			}
 
 			$response = $this->process($request);
+			if(headers_sent())
+				die();
 			header('Content-Type: application/json;charset=UTF-8');
 			echo json_encode($response);
 			die();
