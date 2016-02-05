@@ -1,5 +1,5 @@
 <?php
-	require('IErrorHandler.php');
+	require_once(dirname(__FILE__).'/IErrorHandler.php');
 	class KW_ErrorHandler implements IErrorHandler
 	{
 		/**
