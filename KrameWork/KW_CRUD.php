@@ -4,11 +4,13 @@
 		/**
 		 * KW_CRUD constructor.
 		 * @param ISchemaManager $schema The system schema manager
+		 * @param IErrorHandler|null $error Report exceptions using this error handler
 		 */
-		public function __construct(ISchemaManager $schema)
+		public function __construct(ISchemaManager $schema, $error)
 		{
 			parent::__construct();
 			$schema->addTable($this);
+			$this->error = $error;
 		}
 
 		/**
@@ -66,7 +68,16 @@
 			else
 				$this->bind($this->createRecord, $object);
 
-			$this->createRecord->execute();
+			try
+			{
+				$this->createRecord->execute();
+			}
+			catch(PDOException $e)
+			{
+				if($this->error)
+					$this->error->reportException($e);
+				throw new KW_CRUDException('Database error while creating object');
+			}
 			if ($auto)
 			{
 				switch($this->db->getType())
@@ -414,5 +425,10 @@
 			// Delete
 			$this->deleteRecord = $this->db->prepare('DELETE FROM ' . $table);
 		}
+
+		/**
+		 * var IErrorHandler $error
+		 */
+		private $error;
 	}
 ?>

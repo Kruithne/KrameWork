@@ -43,7 +43,12 @@
 			ini_set('unserialize_callback_func', $loadClassFunction);
 
 			if ($flags & KW_ERROR_HANDLER)
-				$this->errorHandler = new KW_ErrorHandler(!($flags & KW_LEAVE_ERROR_LEVEL));
+			{
+				if ($this->bindInterfaces)
+					$this->addComponent(new KW_ErrorHandler(!($flags & KW_LEAVE_ERROR_LEVEL)));
+				else
+					$this->addBinding('IErrorHandler', new KW_ErrorHandler(!($flags & KW_LEAVE_ERROR_LEVEL)));
+			}
 		}
 
 		/**
@@ -109,7 +114,14 @@
 		 */
 		public function getErrorHandler()
 		{
-			return $this->errorHandler;
+			try
+			{
+				return $this->getComponent('KW_ErrorHandler');
+			}
+			catch(KW_ClassDependencyException $e)
+			{
+				return null;
+			}
 		}
 
 		public static function sessionIsStarted()
@@ -122,11 +134,6 @@
 			else
 				return session_id() === '' ? false : true;
 		}
-
-		/**
-		 * @var KW_ErrorHandler
-		 */
-		private $errorHandler;
 
 		/**
 		 * @var int

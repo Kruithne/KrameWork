@@ -6,10 +6,11 @@
 		/**
 		 * KW_UserSystem constructor.
 		 * @param ISchemaManager $schema
+		 * @param IErrorHandler|null $error
 		 */
-		public function __construct(ISchemaManager $schema)
+		public function __construct(ISchemaManager $schema, $error)
 		{
-			parent::__construct($schema);
+			parent::__construct($schema, $error);
 		}
 
 		public function prepare()

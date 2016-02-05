@@ -20,10 +20,11 @@
 		 * KW_CacheAwareCRUDService constructor.
 		 * @param ISchemaManager $schema
 		 * @param ICacheState $state
+		 * @param IErrorHandler|null $error
 		 */
-		public function __construct(ISchemaManager $schema, ICacheState $state)
+		public function __construct(ISchemaManager $schema, ICacheState $state, $error)
 		{
-			parent::__construct($schema, $state);
+			parent::__construct($schema, $state, $error);
 		}
 
 		public function execute()
@@ -106,54 +107,61 @@
 			if (isset($_SERVER['PATH_INFO']))
 				$path = $_SERVER['PATH_INFO'];
 
-			if ($_SERVER['REQUEST_METHOD'] == 'POST')
+			try
 			{
-				switch($path)
+				if ($_SERVER['REQUEST_METHOD'] == 'POST')
 				{
-					case '/create':
-						try
+					switch($path)
+					{
+						case '/create':
+							try
+							{
+								return $this->create($object);
+							}
+							catch(PDOException $e)
+							{
+								return $e;
+							}
+
+						case '/update':
+							$this->update($object);
+							return true;
+
+						case '/delete':
+							$this->delete($object);
+							return true;
+
+						default:
+							return false;
+					}
+				}
+
+				if ($_SERVER['REQUEST_METHOD'] == 'GET')
+				{
+					if ($path)
+					{
+						$lookup = explode('/', $path);
+						$key = $this->getKey();
+
+						if (is_array($key))
 						{
-							return $this->create($object);
+							$search = array();
+							foreach ($key as $i => $col)
+								$search[$col] = $lookup[$i + 1];
+
+							return $this->read($search);
 						}
-						catch(PDOException $e)
+						else
 						{
-							return $e;
+							return $this->read($lookup[1]);
 						}
-
-					case '/update':
-						$this->update($object);
-						return true;
-
-					case '/delete':
-						$this->delete($object);
-						return true;
-
-					default:
-						return false;
+					}
+					return $this->read();
 				}
 			}
-
-			if ($_SERVER['REQUEST_METHOD'] == 'GET')
+			catch(KW_CRUDException $e)
 			{
-				if ($path)
-				{
-					$lookup = explode('/', $path);
-					$key = $this->getKey();
-
-					if (is_array($key))
-					{
-						$search = array();
-						foreach ($key as $i => $col)
-							$search[$col] = $lookup[$i + 1];
-
-						return $this->read($search);
-					}
-					else
-					{
-						return $this->read($lookup[1]);
-					}
-				}
-				return $this->read();
+				return (object)array('error' => (object)array('type' => 'exception', 'message' => $e->getMessage()));
 			}
 
 			return false;

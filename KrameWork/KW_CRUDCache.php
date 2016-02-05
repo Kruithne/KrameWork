@@ -5,10 +5,11 @@
 		 * KW_CRUDCache constructor.
 		 * @param ISchemaManager $schema
 		 * @param ICacheState $state
+		 * @param IErrorHandler|null $error
 		 */
-		public function __construct(ISchemaManager $schema, ICacheState $state)
+		public function __construct(ISchemaManager $schema, ICacheState $state, $error)
 		{
-			parent::__construct($schema);
+			parent::__construct($schema, $error);
 			$this->cache = $state;
 		}
 

@@ -14,10 +14,11 @@
 		/**
 		 * KW_CRUDService constructor.
 		 * @param ISchemaManager $schema
+		 * @param IErrorHandler|null $error
 		 */
-		public function __construct(ISchemaManager $schema)
+		public function __construct(ISchemaManager $schema, $error)
 		{
-			parent::__construct($schema);
+			parent::__construct($schema, $error);
 		}
 
 		public function execute()
@@ -108,14 +109,7 @@
 								header('HTTP/1.0 403 Access Denied');
 								return '';
 							}
-							try
-							{
-								return $this->create($object);
-							}
-							catch (PDOException $e)
-							{
-								return $e;
-							}
+							return $this->create($object);
 
 						case '/update':
 							if (!$this->canUpdate($object))
