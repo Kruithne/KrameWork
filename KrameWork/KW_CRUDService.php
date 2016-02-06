@@ -142,6 +142,27 @@
 						return false;
 					}
 
+					if ($path == '/query')
+					{
+						$query = array();
+						$cols = $this->getValues();
+						foreach ($_GET as $k => $v)
+							if (in_array($k, $cols))
+								$query[$k] = $v;
+						$keys = array_keys($query);
+						$q = false;
+						do
+						{
+							$key = array_shift($keys);
+							$q = $q ? $q->andColumn($key) : $this->search($key));
+							if (strpos($query[$key], '%') !== false)
+								$q = $q->like($query[$key]);
+							else
+								$q = $q->equals($query[$key]);
+						}
+						while (count($keys));
+						return $q->execute();
+					}
 					if ($path)
 					{
 						$lookup = explode('/', $path);
