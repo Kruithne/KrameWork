@@ -192,7 +192,7 @@
 		{
 			$db = MockDatabaseConnection::Get('mysql');
 			$manager = new MockSchemaManager($db);
-			$crud = new MockCRUD($manager, null. false);
+			$crud = new MockCRUD($manager, null, false);
 			$db->begin();
 			$result = $crud->delete((object)array('value' => 'mock'));
 			$sql = $db->end();

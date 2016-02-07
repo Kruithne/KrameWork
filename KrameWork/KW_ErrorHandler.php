@@ -1,5 +1,6 @@
 <?php
-	class KW_ErrorHandler
+	require_once('IErrorHandler.php');
+	class KW_ErrorHandler implements IErrorHandler
 	{
 		/**
 		 * Construct an error handler for the KrameWork system.
@@ -270,6 +271,16 @@
 			if ($this->errorCount++ > $this->maxErrors)
 				die();
 
+			$this->reportException($exception);
+		}
+
+		/**
+		 * Send an exception error report
+		 *
+		 * @param Exception $exception The exception.
+		 */
+		public function reportException($exception)
+		{
 			$this->sendErrorReport(self::generateErrorReport(
 				'EXCEPTION', $exception->getLine(), $exception->getFile(), $exception->getMessage(), $exception->getTrace())
 			);
