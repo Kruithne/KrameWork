@@ -46,6 +46,15 @@
 			$this->assertEquals('SELECT * FROM __mock__ WHERE value IS NOT NULL AND value < :value2', $sql, 'Generated SQL mismatch');
 		}
 
+		public function testExecute()
+		{
+			$db = $this->prepare();
+			$db->begin();
+			$db->execute('UPDATE foo SET x = 1 WHERE y > 4');
+			$sql = $db->end();
+			$this->assertEquals('UPDATE foo SET x = 1 WHERE y > 4', $sql, 'SQL execution mismatch');
+		}
+
 		private function prepare()
 		{
 			$db = new MockDatabaseConnection('mysql');
