@@ -17,7 +17,7 @@
 			$this->version = $version;
 			$this->queries = $queries;
 			$this->factory = $factory;
-			parent::__construct($schema);
+			parent::__construct($schema, null);
 		}
 
 		public function getKey() { return $this->key; }

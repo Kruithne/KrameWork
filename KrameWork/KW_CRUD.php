@@ -58,7 +58,7 @@
 		 */
 		public function create($object)
 		{
-			if(!is_object($object))
+			if (!is_object($object))
 				throw new KW_CRUDException('Create operation requires an object');
 
 			$auto = $this->hasAutoKey();
@@ -74,8 +74,9 @@
 			}
 			catch(PDOException $e)
 			{
-				if($this->error)
+				if ($this->error)
 					$this->error->reportException($e);
+					
 				throw new KW_CRUDException('Database error while creating object');
 			}
 			if ($auto)
@@ -105,8 +106,8 @@
 
 			$key = $this->getKey();
 			if (!$key)
-
 				return $this->read();
+				
 			if (!is_array($key))
 				return $this->read($object->$key);
 
@@ -178,8 +179,9 @@
 		 */
 		public function update($object)
 		{
-			if(!is_object($object))
+			if (!is_object($object))
 				throw new KW_CRUDException('Update operation requires an object');
+				
 			$this->bind($this->updateRecord, $object);
 			$this->updateRecord->execute();
 		}
@@ -190,8 +192,9 @@
 		 */
 		public function delete($object)
 		{
-			if(!is_object($object))
+			if (!is_object($object))
 				throw new KW_CRUDException('Update operation requires an object');
+				
 			$this->bindValues($this->deleteRecord, $this->getKey(), $object);
 			$this->deleteRecord->execute();
 		}
@@ -204,6 +207,19 @@
 		public function search($column)
 		{
 			return new KW_QueryBuilder($this->db, $column, null, $this);
+		}
+
+		/**
+		 * Execute a custom non-select statement
+		 * @param string $sql An SQL statement to execute
+		 */
+		public function execute($sql)
+		{
+			$key = md5($sql);
+			if ($this->$key == null)
+				$this->$key = $this->db->prepare($sql);
+				
+			$this->$key->execute();
 		}
 
 		/**
@@ -264,7 +280,9 @@
 					$this->bindValue($query, $col, $object);
 			}
 			else if($field)
+			{
 				$this->bindValue($query, $field, $object);
+			}
 		}
 
 		/**
@@ -277,12 +295,13 @@
 		private function bindValue($query, $field, $object)
 		{
 			$value = null;
-			if(method_exists($object, '__get'))
+			if (method_exists($object, '__get'))
 				$value = $object->$field;
-			else if(property_exists($object, $field))
+			else if (property_exists($object, $field))
 				$value = $object->$field;
 			else
 				throw new KW_CRUDException('Object is missing an expected property "'.$field.'"');
+				
 			$query->$field = $value;
 		}
 
