@@ -207,6 +207,18 @@
 		}
 
 		/**
+		 * Execute a custom non-select statement
+		 * @param string $sql An SQL statement to execute
+		 */
+		public function execute($sql)
+		{
+			$key = md5($sql);
+			if($this->$key == null)
+				$this->$key = $this->db->prepare($sql);
+			$this->$key->execute();
+		}
+
+		/**
 		 * Fetches a set of rows
 		 * @param IDatabaseStatement $query An SQL statement to execute.
 		 * @return object[] A list of objects as defined by getNewObject.

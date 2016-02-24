@@ -77,5 +77,11 @@
 		 * @return IQueryColumn
 		 */
 		public function search($column);
+
+		/**
+		 * Execute a custom non-select statement
+		 * @param string $sql An SQL statement to execute
+		 */
+		public function execute($sql);
 	}
 ?>
