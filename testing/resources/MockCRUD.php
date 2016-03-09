@@ -17,7 +17,7 @@
 			$this->version = $version;
 			$this->queries = $queries;
 			$this->factory = $factory;
-			parent::__construct($schema, null);
+			parent::__construct($schema, new MockErrorHandler());
 		}
 
 		public function getKey() { return $this->key; }
