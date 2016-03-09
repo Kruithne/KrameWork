@@ -6,7 +6,7 @@
 		 * @param ISchemaManager $schema The system schema manager
 		 * @param IErrorHandler|null $error Report exceptions using this error handler
 		 */
-		public function __construct(ISchemaManager $schema, $error)
+		public function __construct(ISchemaManager $schema, IErrorHandler $error)
 		{
 			parent::__construct();
 			$schema->addTable($this);
