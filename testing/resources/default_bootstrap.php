@@ -8,4 +8,5 @@
 	KW_ClassLoader::addClassPath(TRAVIS_EXEC_PATH . "KrameWork/testing/resources/");
 
 	$sys = new KrameSystem();
+	$sys->addBinding('IErrorHandler', new MockErrorHandler());
 ?>
