@@ -261,7 +261,7 @@
 					if ($parameter_class_name == 'IManyInject')
 						$to_inject[] = $this;
 					else
-						$to_inject[] = $this->getComponent($parameter_class_name);
+						$to_inject[] = $this->getComponent($parameter_class_name, $this->autoAddDepends);
 				}
 
 				call_user_func_array(array($object, "__construct"), $to_inject);
@@ -404,5 +404,10 @@
 		 * @var bool
 		 */
 		protected $bindInterfaces = false;
+
+		/**
+		 * @var bool
+		 */
+		protected $autoAddDepends = false;
 	}
 ?>
