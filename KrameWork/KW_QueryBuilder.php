@@ -115,6 +115,13 @@
 			return $this;
 		}
 
+		public function equalsCaseInsensitive($value)
+		{
+			$this->format = 'LOWER(%1$s) = :%1$s%2$s';
+			$this->value = strtolower($value);
+			return $this;
+		}
+
 		public function between($low, $high)
 		{
 			$this->format = '(%1$s > :%1%s%2$s_low AND %1$s < :%1$s%2$s_high)';
