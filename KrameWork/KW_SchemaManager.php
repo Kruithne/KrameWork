@@ -60,7 +60,12 @@
 			$this->updateTable($this->_metatable, $verbose);
 
 			foreach ($this->repositories->getComponents('ISchemaTable') as $spec)
+			{
+				$name = $spec->getName();
+				if(!isset($this->tables[$name]))
+					$this->addTable($spec);
 				$this->updateTable($spec, $verbose);
+			}
 		}
 
 		/**
