@@ -100,8 +100,7 @@
 		 */
 		public function orColumn($column);
 	}
-	interface IQueryColumn extends IQueryBetween, IQueryEquals, IQueryEqualsCaseInsensitive, IQueryGreaterThan, IQueryLessThan, IQueryLike, IQueryNotLike, IQueryNull, IQueryNotNull {}
-	interface IQueryPredicate extends IQueryAnd, IQueryOr
+	interface IQueryTerminus
 	{
 		/**
 		 * Prepare and execute the built query, returning the result set.
@@ -109,4 +108,24 @@
 		 */
 		public function execute();
 	}
+	interface IQueryLimit extends IQueryTerminus
+	{
+		/**
+		 * Skip the first N rows in the dataset
+		 * @param int $offset The number of rows to skip
+		 * @return IQueryOffset
+		 */
+		public function offset($offset);
+	}
+	interface IQueryOffset extends IQueryTerminus
+	{
+		/**
+		 * Only return N rows from the dataset
+		 * @param int $count The maximum number of rows to return.
+		 * @return IQueryTerminus
+		 */
+		public function limit($count);
+	}
+	interface IQueryColumn extends IQueryBetween, IQueryEquals, IQueryGreaterThan, IQueryLessThan, IQueryLike, IQueryNotLike, IQueryNull, IQueryNotNull {}
+	interface IQueryPredicate extends IQueryAnd, IQueryOr, IQueryLimit {}
 ?>
