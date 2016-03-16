@@ -48,6 +48,16 @@
 			return array_key_exists($key, $this->values) ? $this->values[$key] : null;
 		}
 
+		/**
+		 * Unset a value in this container.
+		 * @param string $key
+		 */
+		public function __unset($key)
+		{
+			if (array_key_exists($key, $this->values))
+				unset($this->values[$key]);
+		}
+
 		public function serialize()
 		{
 			return serialize($this->values);
