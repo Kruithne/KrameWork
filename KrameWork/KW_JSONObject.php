@@ -38,6 +38,15 @@
 		}
 
 		/**
+		 * Calls __unset on the underlying data container.
+		 * @param string $name
+		 */
+		function __unset($name)
+		{
+			$this->data->__unset($name);
+		}
+
+		/**
 		 * Calls _invoke on the underlying data container.
 		 *
 		 * @return mixed

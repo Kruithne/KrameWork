@@ -30,6 +30,15 @@
 		 */
 		public function equals($value);
 	}
+	interface IQueryEqualsCaseInsensitive
+	{
+		/**
+		 * Do a case-insensitive match on the preceding column specification
+		 * @param string $value The pattern to look for or exclude.
+		 * @return IQueryPredicate
+		 */
+		public function equalsCaseInsensitive($value);
+	}
 	interface IQueryGreaterThan
 	{
 		/**

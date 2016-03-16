@@ -28,6 +28,9 @@
 			if ($flags & KW_PRELOAD_CLASSES)
 				$this->preload = true;
 
+			if ($flags & KW_AUTO_ADD_DEPENDS)
+				$this->autoAddDepends = true;
+
 			if ($flags & KW_AUTOLOAD_RECURSIVE)
 				KW_ClassLoader::enableRecursion();
 

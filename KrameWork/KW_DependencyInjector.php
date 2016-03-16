@@ -147,7 +147,7 @@
 		public function getComponent($class_name, $add = false)
 		{
 			$resolved_name = $this->resolve($class_name);
-			if (is_array($resolved_name) || is_array($this->classes[$resolved_name]))
+			if (is_array($resolved_name) || (array_key_exists($resolved_name, $this->classes) && is_array($this->classes[$resolved_name])))
 				throw new KW_ClassDependencyException($class_name, 'Class %s resolves to multiple classes, but a single instance was requested');
 
 			if (!array_key_exists($resolved_name, $this->classes))
@@ -261,7 +261,7 @@
 					if ($parameter_class_name == 'IManyInject')
 						$to_inject[] = $this;
 					else
-						$to_inject[] = $this->getComponent($parameter_class_name);
+						$to_inject[] = $this->getComponent($parameter_class_name, $this->autoAddDepends);
 				}
 
 				call_user_func_array(array($object, "__construct"), $to_inject);
@@ -404,5 +404,10 @@
 		 * @var bool
 		 */
 		protected $bindInterfaces = false;
+
+		/**
+		 * @var bool
+		 */
+		protected $autoAddDepends = false;
 	}
 ?>
