@@ -25,10 +25,48 @@
 		 */
 		public function build($glue = true)
 		{
-			return
-				($this->anchor ? $this->anchor->build() . ' ' : 'SELECT * FROM ' . $this->crud->getName() . ' WHERE ')
+			$base = ($this->anchor ? $this->anchor->build() . ' ' : 'SELECT * FROM ' . $this->crud->getName() . ' WHERE ')
 				. sprintf($this->format, $this->column, $this->level)
 				. ($glue ? ' ' . $this->glue : ''); 
+
+			if ($this->query_limit)
+			{
+				switch ($this->db->getType())
+				{
+					case 'mssql':
+						$base = str_replace('SELECT *', 'SELECT TOP ' . $this->query_limit . ' *', $base);
+						break;
+				}
+			}
+
+			if ($glue)
+				return $base;
+
+			if ($this->query_limit)
+			{
+				switch ($this->db->getType())
+				{
+					case 'mysql':
+					case 'pgsql':
+					case 'sqlite':
+						$base .= printf(' LIMIT %d', $this->query_limit);
+						break;
+				}
+			}
+
+			if ($this->query_offset)
+			{
+				switch ($this->db->getType())
+				{
+					case 'mysql':
+					case 'pgsql':
+					case 'sqlite':
+						$base .= printf(' OFFSET %d', $this->query_limit);
+						break;
+				}
+			}
+
+			return $base;
 		}
 
 		/**
@@ -122,6 +160,34 @@
 			return $this;
 		}
 
+		public function offset($offset)
+		{
+			if($this->anchor)
+				return $this->anchor->offset($count);
+			$this->query_offset = $offset;
+			switch($this->db->getType())
+			{
+				case 'mysql':
+				case 'pgsql':
+					return $this;
+			}
+			throw new Exception('Unsupported database type');
+		}
+
+		public function limit($count)
+		{
+			if($this->anchor)
+				return $this->anchor->limit($count);
+			$this->query_limit = $count;
+			switch($this->db->getType())
+			{
+				case 'mysql':
+				case 'pgsql':
+					return $this;
+			}
+			throw new Exception('Unsupported database type');
+		}
+
 		public function execute()
 		{
 			$sql = $this->build(false);
@@ -176,5 +242,15 @@
 		 * @var KW_QueryBuilder
 		 */
 		private $anchor;
+
+		/**
+		 * @var int
+		 */
+		private $query_limit;
+
+		/**
+		 * @var int
+		 */
+		private $query_offset;
 	}
 ?>
