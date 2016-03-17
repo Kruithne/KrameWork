@@ -204,7 +204,7 @@
 			$this->bind($this->statement);
 
 			$result = array();
-			foreach ($this->statement->getRows() as $data)
+			foreach ($this->statement->execute()->getRows() as $data)
 				$result[] = $this->crud->getNewObject($data);
 
 			return $result;

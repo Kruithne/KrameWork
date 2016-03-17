@@ -80,12 +80,12 @@
 			if ($username !== null)
 			{
 				$this->getByUsername->username = $username;
-				$result = $this->getByUsername->getRows();
+				$result = $this->getByUsername->execute()->getRows();
 			}
 			if ($email !== null)
 			{
 				$this->getByEmail->email = $email;
-				$result = $this->getByEmail->getRows();
+				$result = $this->getByEmail->execute()->getRows();
 			}
 			if ($result && count($result) == 1)
 				return $this->getNewObject($result[0]);
@@ -93,7 +93,7 @@
 
 		public function getUsers()
 		{
-			return $this->getAll->getRows();
+			return $this->getAll->execute()->getRows();
 		}
 
 		public function addUser($user)
