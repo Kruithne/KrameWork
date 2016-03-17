@@ -90,7 +90,7 @@
 					break;
 				}
 
-				$result = $this->getLastID->getRows();
+				$result = $this->getLastID->execute()->getRows();
 				if (!$result || count($result) != 1)
 					return null;
 
@@ -231,7 +231,7 @@
 		{
 			$result = array();
 
-			foreach ($query->getRows() as $data)
+			foreach ($query->execute()->getRows() as $data)
 				$result[] = $this->getNewObject($data);
 
 			return $result;
@@ -244,7 +244,7 @@
 		 */
 		private function fetchSingleObject($query)
 		{
-			$result = $query->getRows();
+			$result = $query->execute()->getRows();
 			if (!$result || count($result) == 0)
 				return null;
 

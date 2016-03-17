@@ -22,7 +22,7 @@
 		public function read($cacheKey)
 		{
 			$this->select->key = $cacheKey;
-			$result = $this->select->getRows();
+			$result = $this->select->execute()->getRows();
 
 			if (!$result || count($result) == 0)
 			{
