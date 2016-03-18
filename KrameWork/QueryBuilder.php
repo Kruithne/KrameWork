@@ -126,6 +126,6 @@
 		 */
 		public function limit($count);
 	}
-	interface IQueryColumn extends IQueryBetween, IQueryEquals, IQueryGreaterThan, IQueryLessThan, IQueryLike, IQueryNotLike, IQueryNull, IQueryNotNull {}
+	interface IQueryColumn extends IQueryBetween, IQueryEquals, IQueryEqualsCaseInsensitive, IQueryGreaterThan, IQueryLessThan, IQueryLike, IQueryNotLike, IQueryNull, IQueryNotNull {}
 	interface IQueryPredicate extends IQueryAnd, IQueryOr, IQueryLimit {}
 ?>
