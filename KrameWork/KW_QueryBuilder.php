@@ -125,6 +125,20 @@
 			return $this;
 		}
 
+		public function maximum()
+		{
+			$this->format = '%1$s = (SELECT MAX(%1$s) FROM '.$this->crud->getName().')';
+			$this->value = null;
+			return $this;
+		}
+
+		public function minimum()
+		{
+			$this->format = '%1$s = (SELECT MIN(%1$s) FROM '.$this->crud->getName().')';
+			$this->value = null;
+			return $this;
+		}
+
 		public function notNull()
 		{
 			$this->format = '%1$s IS NOT NULL';
