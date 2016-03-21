@@ -91,6 +91,22 @@
 		 */
 		public function notNull();
 	}
+	interface IQueryMaximum
+	{
+		/**
+		 * Select rows where the value of the preceding column specification is at the maximum
+		 * @return IQueryPredicate
+		 */
+		public function maximum();
+	}
+	interface IQueryMinimum
+	{
+		/**
+		 * Select rows where the value of the preceding column specification is at the minimum
+		 * @return IQueryPredicate
+		 */
+		public function minimum();
+	}
 	interface IQueryOr
 	{
 		/**
@@ -126,6 +142,6 @@
 		 */
 		public function limit($count);
 	}
-	interface IQueryColumn extends IQueryBetween, IQueryEquals, IQueryEqualsCaseInsensitive, IQueryGreaterThan, IQueryLessThan, IQueryLike, IQueryNotLike, IQueryNull, IQueryNotNull {}
+	interface IQueryColumn extends IQueryBetween, IQueryEquals, IQueryEqualsCaseInsensitive, IQueryGreaterThan, IQueryLessThan, IQueryLike, IQueryNotLike, IQueryNull, IQueryNotNull, IQueryMaximum, IQueryMinimum {}
 	interface IQueryPredicate extends IQueryAnd, IQueryOr, IQueryLimit {}
 ?>
