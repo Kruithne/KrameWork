@@ -127,20 +127,20 @@
 	interface IQueryLimit extends IQueryTerminus
 	{
 		/**
-		 * Skip the first N rows in the dataset
-		 * @param int $offset The number of rows to skip
-		 * @return IQueryOffset
-		 */
-		public function offset($offset);
-	}
-	interface IQueryOffset extends IQueryTerminus
-	{
-		/**
 		 * Only return N rows from the dataset
 		 * @param int $count The maximum number of rows to return.
 		 * @return IQueryTerminus
 		 */
 		public function limit($count);
+	}
+	interface IQueryOffset extends IQueryTerminus
+	{
+		/**
+		 * Skip the first N rows in the dataset
+		 * @param int $offset The number of rows to skip
+		 * @return IQueryOffset
+		 */
+		public function offset($offset);
 	}
 	interface IQueryColumn extends IQueryBetween, IQueryEquals, IQueryEqualsCaseInsensitive, IQueryGreaterThan, IQueryLessThan, IQueryLike, IQueryNotLike, IQueryNull, IQueryNotNull, IQueryMaximum, IQueryMinimum {}
 	interface IQueryPredicate extends IQueryAnd, IQueryOr, IQueryLimit, IQueryOffset {}
