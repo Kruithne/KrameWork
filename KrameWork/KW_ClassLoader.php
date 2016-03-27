@@ -1,11 +1,13 @@
 <?php
+	class KW_ClassFileNotFoundException extends KW_Exception { }
+
 	class KW_ClassLoader
 	{
 		/**
 		 * Loads a file with matching class name (case-sensitive) from the linked class paths.
 		 *
 		 * @param string $className The name of the class.
-		 * @throws KW_ClassDependencyException
+		 * @throws KW_ClassFileNotFoundException
 		 */
 		public static function loadClass($className)
 		{
@@ -46,7 +48,7 @@
 					}
 				}
 			}
-			throw new KW_ClassDependencyException($className, "No valid class file found");
+			throw new KW_ClassFileNotFoundException("No valid class file found for " . $className);
 		}
 
 		/**
