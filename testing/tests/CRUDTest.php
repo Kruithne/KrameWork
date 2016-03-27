@@ -52,7 +52,7 @@
 			$manager = new MockSchemaManager($db);
 			$crud = new MockCRUD($manager);
 			$db->begin();
-			$crud->execute('UPDATE foo SET x = 1 WHERE y > 4');
+			$crud->executeSQL('UPDATE foo SET x = 1 WHERE y > 4');
 			$sql = $db->end();
 			$this->assertEquals('UPDATE foo SET x = 1 WHERE y > 4', $sql, 'SQL execution mismatch');
 		}
