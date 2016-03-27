@@ -82,6 +82,6 @@
 		 * Execute a custom non-select statement
 		 * @param string $sql An SQL statement to execute
 		 */
-		public function execute($sql);
+		public function executeSQL($sql);
 	}
 ?>
