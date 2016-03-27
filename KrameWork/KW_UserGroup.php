@@ -7,9 +7,9 @@
 		 * KW_UserGroup constructor.
 		 * @param ISchemaManager $schema
 		 */
-		public function __construct(ISchemaManager $schema)
+		public function __construct(ISchemaManager $schema, ICacheState $state, $error)
 		{
-			parent::__construct($schema);
+			parent::__construct($schema, $state, $error);
 		}
 
 		public function isMemberOf($what, $who)
