@@ -22,16 +22,18 @@
 			if (isset($_SERVER['PATH_INFO']))
 				$path = $_SERVER['PATH_INFO'];
 
-			if (!isset($_SESSION['userid']))
+			$user = $this->users->getCurrent();
+			if (!$user || !$user->active)
 				return;
+			$state = $this->users->getState($user);
 
 			if ($_SERVER['REQUEST_METHOD'] == 'POST')
 			{
 				switch($path)
 				{
 					case '/replace':
-				 		if ($_SESSION['state'] != AUTH_OK && $_SESSION['state'] != AUTH_ERR_NOSECRET)
-							return [];
+				 		if ($state != AUTH_OK && $state != AUTH_ERR_NOSECRET)
+							return (object)['reason' => 'Not logged in'];
 
 						if ($user->secret)
 						{
@@ -41,7 +43,7 @@
 							);
 
 							if ($result != AUTH_OK)
-								return [];
+								return (object)['reason' => 'Wrong passphrase'];
 						}
 						$secret = $this->auth->createSecret();
 						$_SESSION['new_secret'] = $secret;
@@ -49,8 +51,8 @@
 						return ['token' => $token];
 
 					case '/clone':
-				 		if ($_SESSION['state'] != AUTH_OK)
-							return [];
+				 		if ($state != AUTH_OK)
+							return (object)['reason' => $state == AUTH_ERR_NOSECRET ? 'No code set' : 'Not logged in'];
 
 						$result = $this->users->authenticate(
 							$user->username,
@@ -58,7 +60,7 @@
 						);
 
 						if ($result != AUTH_OK)
-							return [];
+							return (object)['reason' => 'Wrong passphrase'];
 
 						$token = $this->auth->getQRCodeGoogleUrl('runsafe-lab', $user->secret);
 						return ['token' => $token];
@@ -83,9 +85,6 @@
 						}
 
 						$_SESSION['verified'] = $result;
-
-						if ($result)
-							$_SESSION['state'] = $this->users->getState($user);
 						return ['result' => $result];
 				}
 			}
