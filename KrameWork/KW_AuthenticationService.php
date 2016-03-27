@@ -222,7 +222,7 @@
 				return $user->session_salt;
 
 			$user->session_salt = base64_encode(mcrypt_create_iv(12));
-			$this->dal->setSessionSalt($user->id, $user->session_salt);
+			$this->users->setSessionSalt($user->id, $user->session_salt);
 			return $user->session_salt;
 		}
 

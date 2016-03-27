@@ -1,5 +1,5 @@
 <?php
-	abstract class KW_UserSystem extends KW_CRUD implements IUserSystem
+	abstract class KW_UserSystem extends KW_CRUD implements IUserSystem, IStartup
 	{
 		public function getName() { return 'users'; }
 
@@ -8,10 +8,14 @@
 		 * @param ISchemaManager $schema
 		 * @param IErrorHandler|null $error
 		 */
-		public function __construct(ISchemaManager $schema, $error)
+		public function __construct(ISchemaManager $schema, IAccessControl $acl, IManyInject $kernel, $error)
 		{
+			$this->acl = $acl;
+			$this->kernel = $kernel;
 			parent::__construct($schema, $error);
 		}
+
+		public abstract function getCurrent();
 
 		public function prepare()
 		{
@@ -29,7 +33,7 @@
 
 		public function getNewObject($data)
 		{
-			return $data;
+			return new KW_User($this->acl, $data->getAsArray());
 		}
 
 		public function setLoginSuccess($id)
@@ -93,7 +97,10 @@
 
 		public function getUsers()
 		{
-			return $this->getAll->execute()->getRows();
+			$result = array();
+			foreach($this->getAll->execute()->getRows() as $data)
+				$result[] = $this->getNewObject($data);
+			return $result;
 		}
 
 		public function addUser($user)
@@ -104,6 +111,15 @@
 		public function saveUser($user)
 		{
 			$this->update($user);
+		}
+
+		public function start()
+		{
+			$user = $this->getCurrent();
+			$services = $this->kernel->getComponents('ICRUDService');
+			if($services)
+				foreach($services as $service)
+					$service->authorize($user);
 		}
 
 		public function getVersion()
@@ -235,5 +251,8 @@
 					return 'sha256';
 			}
 		}
+
+		private $acl;
+		private $kernel;
 	}
 ?>
