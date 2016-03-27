@@ -33,7 +33,7 @@
 
 		public function getNewObject($data)
 		{
-			return new KW_User($this->acl, $data);
+			return new KW_User($this->acl, $data->getAsArray());
 		}
 
 		public function setLoginSuccess($id)

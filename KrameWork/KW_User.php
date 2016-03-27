@@ -1,9 +1,10 @@
 <?php
 	class KW_User extends KW_DataContainer implements IUser
 	{
-		public function __construct(IAccessControl $acl)
+		public function __construct(IAccessControl $acl, $data)
 		{
 			$this->acl = $acl;
+			parent::__construct($data);
 		}
 
 		/**
