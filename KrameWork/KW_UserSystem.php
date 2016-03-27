@@ -33,7 +33,7 @@
 
 		public function getNewObject($data)
 		{
-			return $data;
+			return new KW_User($this->acl, $data);
 		}
 
 		public function setLoginSuccess($id)
@@ -97,7 +97,10 @@
 
 		public function getUsers()
 		{
-			return $this->getAll->execute()->getRows();
+			$result = array();
+			foreach($this->getAll->execute()->getRows() as $data)
+				$result[] = $this->getNewObject($data);
+			return $result;
 		}
 
 		public function addUser($user)
