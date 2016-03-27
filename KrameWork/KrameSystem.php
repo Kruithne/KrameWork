@@ -89,9 +89,15 @@
 				}
 			}
 			$startup = $this->getComponents('IStartup');
-			if($startup)
-				foreach($startup as $component)
+
+			if ($startup)
+			{
+				/**
+				 * @var IStartup $component
+				 */
+				foreach ($startup as $component)
 					$component->start();
+			}
 		}
 
 		/**
