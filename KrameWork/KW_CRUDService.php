@@ -47,6 +47,11 @@
 			die();
 		}
 
+		public function authorize($user)
+		{
+			$this->user = $user;
+		}
+
 		public function authorized($request)
 		{
 			return true;
@@ -189,5 +194,7 @@
 			}
 			return false;
 		}
+
+		protected $user;
 	}
 ?>

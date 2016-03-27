@@ -52,5 +52,10 @@
 		 * @param object $object The JSON object posted to the service
 		 */
 		public function process($object);
+		/**
+		 * Inject the current user for access control purposes
+		 * @param IUser $user The current user calling the service
+		 */
+		public function authorize($user);
 	}
 ?>
