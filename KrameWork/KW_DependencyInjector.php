@@ -197,7 +197,7 @@
 			foreach($resolved_names as $resolved_name)
 			{
 				if (!array_key_exists($resolved_name, $this->classes))
-					throw new KW_ClassDependencyException($resolved_name, "Class %s has not been added to the injector");
+					continue;
 
 				$object = $this->classes[$resolved_name];
 				if ($object === null)
