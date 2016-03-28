@@ -88,10 +88,24 @@
 					}
 				}
 			}
-			$startup = $this->getComponents('IStartup');
-			if($startup)
-				foreach($startup as $component)
-					$component->start();
+
+			// Invoke classes that implement IStartup
+			try
+			{
+				$startup = $this->getComponents("IStartup");
+				if ($startup)
+				{
+					/**
+					 * @var IStartup $component
+					 */
+					foreach ($startup as $component)
+						$component->start();
+				}
+			}
+			catch (KW_ClassDependencyException $ex)
+			{
+				// Invoking failed; most likely cause is nothing implements IStartup.
+			}
 		}
 
 		/**

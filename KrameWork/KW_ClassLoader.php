@@ -5,6 +5,7 @@
 		 * Loads a file with matching class name (case-sensitive) from the linked class paths.
 		 *
 		 * @param string $className The name of the class.
+		 * @throws KW_ClassFileNotFoundException
 		 */
 		public static function loadClass($className)
 		{
@@ -45,6 +46,7 @@
 					}
 				}
 			}
+			throw new KW_ClassFileNotFoundException("No valid class file found for " . $className);
 		}
 
 		/**
