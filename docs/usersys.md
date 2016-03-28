@@ -32,7 +32,7 @@ class MultiFactorService extends KW_MultifactorService
 {
 	public function __construct(KW_UserSystem $users, IAuthenticator $auth)
 	{
-		parent::__construct($users, $auth, 'https://lab-public.runsafe.no');
+		parent::__construct($users, $auth, 'https://example.com');
 	}
 }
 ```
@@ -44,7 +44,7 @@ class AuthService extends KW_AuthenticationService
 {
 	public function __construct(UserStore $users)
 	{
-		parent::__construct($users, 'https://lab-public.runsafe.no', true);
+		parent::__construct($users, 'https://example.com', true);
 	}
 
 	protected function grant_token($user, $token)
@@ -96,7 +96,7 @@ angularApp.controller('LoginController',
 				function(r)
 				{
 					if(r && 'error' in r)
-						lab.showError(r.error.message);
+						alert(r.error.message);
 					else
 					{
 						login.state = r.state;
