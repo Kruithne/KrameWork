@@ -49,7 +49,7 @@
 					case 'mysql':
 					case 'pgsql':
 					case 'sqlite':
-						$base .= printf(' LIMIT %d', $this->query_limit);
+						$base .= sprintf(' LIMIT %d', $this->query_limit);
 						break;
 				}
 			}
@@ -61,7 +61,7 @@
 					case 'mysql':
 					case 'pgsql':
 					case 'sqlite':
-						$base .= printf(' OFFSET %d', $this->query_limit);
+						$base .= sprintf(' OFFSET %d', $this->query_limit);
 						break;
 				}
 			}
