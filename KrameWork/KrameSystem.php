@@ -47,10 +47,15 @@
 
 			if ($flags & KW_ERROR_HANDLER)
 			{
+				$handler = new KW_ErrorHandler(
+					!($flags & KW_LEAVE_ERROR_LEVEL),
+					($flags & KW_ANY_ERROR) ? 0 : 10),
+					!($flags & KW_ANY_ERROR)
+				);
 				if ($this->bindInterfaces)
-					$this->addComponent(new KW_ErrorHandler(!($flags & KW_LEAVE_ERROR_LEVEL), ($flags & KW_ANY_ERROR) ? 0 : 10));
+					$this->addComponent($handler);
 				else
-					$this->addBinding('IErrorHandler', new KW_ErrorHandler(!($flags & KW_LEAVE_ERROR_LEVEL), ($flags & KW_ANY_ERROR) ? 0 : 10));
+					$this->addBinding('IErrorHandler', $handler);
 			}
 		}
 

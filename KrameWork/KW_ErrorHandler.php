@@ -7,10 +7,12 @@
 		 *
 		 * @param bool $alterLevel Can we alter the runtime error level?
 		 * @param integer $maxErrors How many errors do we abort after, per execution?
+		 * @param bool $die Once limit is reached, die or throw exception?
 		 */
-		public function __construct($alterLevel = true, $maxErrors = 10)
+		public function __construct($alterLevel = true, $maxErrors = 10, $die = true)
 		{
 			$this->maxErrors = $maxErrors;
+			$this->justDie = $die;
 			if ($alterLevel)
 				error_reporting(E_ALL);
 
@@ -209,7 +211,11 @@
 				return true;
 
 			if ($this->errorCount++ > $this->maxErrors)
-				die();
+			{
+				if ($this->justDie())
+					die();
+				throw Exception('Aborting due to detected error');
+			}
 
 			if (!error_reporting() & $type)
 				return true;
@@ -505,5 +511,10 @@
 		 * @var string $error Error output if sent
 		 */
 		private $error = '';
+
+		/**
+		 * @var bool $justDie Should we die when limit is reached?
+		 */
+		private $justDie = true;
 	}
 ?>
