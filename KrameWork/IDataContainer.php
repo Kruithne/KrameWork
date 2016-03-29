@@ -14,11 +14,11 @@
 		/**
 		 * The __invoke method is called when a script tries to call an object as a function.
 		 *
-		 * @param $arr
+		 * @param $source
 		 * @return mixed
 		 * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.invoke
 		 */
-		public function __invoke($arr);
+		public function __invoke($source);
 
 		/**
 		 * Get a value set in this object.

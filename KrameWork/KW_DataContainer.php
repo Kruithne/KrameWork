@@ -29,10 +29,10 @@
 		 * @return mixed
 		 * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.invoke
 		 */
-		public function __invoke($arr)
+		public function __invoke($source)
 		{
-			if (is_array($arr))
-				foreach ($arr as $key => $value)
+			if (is_array($source) || is_object($source))
+				foreach ($source as $key => $value)
 					if (is_string($key))
 						$this->__set($key, $value);
 		}
