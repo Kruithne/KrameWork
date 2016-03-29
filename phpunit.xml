@@ -1,0 +1,6 @@
+<phpunit 
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+>
+</phpunit>
