@@ -149,12 +149,14 @@
 					$this->readOne->$col = $val;
 				}
 			}
+			else
+			{
+				if ($key === null || $key === "")
+					throw new KW_CRUDException("No key given!");
 
-			if ($key === null || $key === "")
-				throw new KW_CRUDException("No key given!");
-
-			$kv = $this->getKey();
-			$this->readOne->$kv = $key;
+				$kv = $this->getKey();
+				$this->readOne->$kv = $key;
+			}
 			return $this->fetchSingleObject($this->readOne);
 		}
 
