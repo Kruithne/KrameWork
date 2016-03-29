@@ -31,6 +31,9 @@
 		 */
 		public function __invoke($source)
 		{
+			if ($source instanceof IDataContainer)
+				$source = $source->getAsArray();
+
 			if (is_array($source) || is_object($source))
 				foreach ($source as $key => $value)
 					if (is_string($key))
