@@ -3,4 +3,4 @@
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true"
 >
-</phpunitl>
+</phpunit>
