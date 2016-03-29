@@ -214,6 +214,7 @@
 			{
 				if ($this->justDie())
 					die();
+				error_log(self::generateErrorReport($this->getErrorType($type), $line, $file, $string, debug_backtrace()));
 				throw Exception('Aborting due to detected error');
 			}
 
