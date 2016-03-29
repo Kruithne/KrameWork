@@ -7,8 +7,8 @@
 		 */
 		public function __construct($data = array())
 		{
-			if ($source instanceof IDataContainer)
-				$this->values = $source->getAsArray();
+			if ($data instanceof IDataContainer)
+				$this->values = $data->getAsArray();
 			else
 				$this->values = $data;
 		}
