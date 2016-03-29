@@ -6,4 +6,4 @@ php:
   - '7.0'
   - hhvm
   - nightly
-script: phpunit --verbose --debug --stderr testing/tests
+script: phpunit --verbose --debug --stderr --config phpunit.xml testing/tests
