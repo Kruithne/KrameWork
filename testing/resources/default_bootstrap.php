@@ -6,6 +6,7 @@
 
 	KW_ClassLoader::addClassPath(TRAVIS_EXEC_PATH . "KrameWork/testing/");
 	KW_ClassLoader::addClassPath(TRAVIS_EXEC_PATH . "KrameWork/testing/resources/");
+	KW_ClassLoader::enableTesting();
 
 	$sys = new KrameSystem(0);
 ?>
