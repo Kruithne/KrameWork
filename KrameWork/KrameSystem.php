@@ -48,9 +48,9 @@
 			if ($flags & KW_ERROR_HANDLER)
 			{
 				if ($this->bindInterfaces)
-					$this->addComponent(new KW_ErrorHandler(!($flags & KW_LEAVE_ERROR_LEVEL)));
+					$this->addComponent(new KW_ErrorHandler(!($flags & KW_LEAVE_ERROR_LEVEL), ($flags & KW_ANY_ERROR) ? 0 : 10));
 				else
-					$this->addBinding('IErrorHandler', new KW_ErrorHandler(!($flags & KW_LEAVE_ERROR_LEVEL)));
+					$this->addBinding('IErrorHandler', new KW_ErrorHandler(!($flags & KW_LEAVE_ERROR_LEVEL), ($flags & KW_ANY_ERROR) ? 0 : 10));
 			}
 		}
 
