@@ -25,7 +25,7 @@
 
 		/**
 		 * Override this method to return a custom type from the database layer
-		 * @param IDataContainer $data 
+		 * @param IDataContainer $data
 		 * @return mixed The data you want your row represented as
 		 */
 		public function getNewObject($data)
@@ -76,7 +76,7 @@
 			{
 				if ($this->error)
 					$this->error->reportException($e);
-					
+
 				throw new KW_CRUDException('Database error while creating object');
 			}
 			if ($auto)
@@ -87,7 +87,7 @@
 						$this->getLastID->table = $this->getName();
 						$key = $this->getKey();
 						$this->getLastID->key = is_array($key) ? $key[0] : $key;
-					break;
+						break;
 				}
 
 				$result = $this->getLastID->execute()->getRows();
@@ -107,7 +107,7 @@
 			$key = $this->getKey();
 			if (!$key)
 				return $this->read();
-				
+
 			if (!is_array($key))
 				return $this->read($object->$key);
 
@@ -126,9 +126,10 @@
 		 * Composite key tables expect an array with properties matching the names return in the array from getKey().
 		 * To do a partial key match, pass an asterix for a key component to fetch any value of that column.
 		 *
-		 * Simple key tables expect an int or string with the value of the key column. 
+		 * Simple key tables expect an int or string with the value of the key column.
 		 * @param mixed $key Descriptor of what to fetch, see description
 		 * @return mixed The result set or single object matching the key
+		 * @throws KW_CRUDException
 		 */
 		public function read($key = null)
 		{
@@ -148,11 +149,12 @@
 					$this->readOne->$col = $val;
 				}
 			}
-			else if ($key) // Fetch a single entry by a simple key
-			{
-				$kv = $this->getKey();
-				$this->readOne->$kv = $key;
-			}
+
+			if ($key === null || $key === "")
+				throw new KW_CRUDException("No key given!");
+
+			$kv = $this->getKey();
+			$this->readOne->$kv = $key;
 			return $this->fetchSingleObject($this->readOne);
 		}
 
@@ -181,7 +183,7 @@
 		{
 			if (!is_object($object))
 				throw new KW_CRUDException('Update operation requires an object');
-				
+
 			$this->bind($this->updateRecord, $object);
 			$this->updateRecord->execute();
 		}
@@ -194,7 +196,7 @@
 		{
 			if (!is_object($object))
 				throw new KW_CRUDException('Update operation requires an object');
-				
+
 			$this->bindValues($this->deleteRecord, $this->getKey(), $object);
 			$this->deleteRecord->execute();
 		}
@@ -218,7 +220,7 @@
 			$key = md5($sql);
 			if ($this->$key == null)
 				$this->$key = $this->db->prepare($sql);
-				
+
 			$this->$key->execute();
 		}
 
@@ -301,7 +303,7 @@
 				$value = $object->$field;
 			else
 				throw new KW_CRUDException('Object is missing an expected property "'.$field.'"');
-				
+
 			$query->$field = $value;
 		}
 
