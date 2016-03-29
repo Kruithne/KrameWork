@@ -49,7 +49,7 @@
 			{
 				$handler = new KW_ErrorHandler(
 					!($flags & KW_LEAVE_ERROR_LEVEL),
-					($flags & KW_ANY_ERROR) ? 0 : 10,
+					($flags & KW_ANY_ERROR) ? 0 : 10),
 					!($flags & KW_ANY_ERROR)
 				);
 				if ($this->bindInterfaces)
