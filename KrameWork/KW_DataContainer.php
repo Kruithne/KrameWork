@@ -7,6 +7,7 @@
 		 */
 		public function __construct($data = array())
 		{
+			if ($source instanceof IDataContainer) return; // Trigger NOTICE in test
 			if ($data instanceof IDataContainer)
 				$this->values = $data->getAsArray();
 			else
