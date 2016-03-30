@@ -1,16 +1,19 @@
 <?php
 	require_once('IErrorHandler.php');
+	require_once('IErrorHint.php');
 	class KW_ErrorHandler implements IErrorHandler
 	{
 		/**
 		 * Construct an error handler for the KrameWork system.
 		 *
+		 * @param IManyInject $kernel Provider to get IErrorHint instances
 		 * @param bool $alterLevel Can we alter the runtime error level?
 		 * @param integer $maxErrors How many errors do we abort after, per execution?
 		 */
-		public function __construct($alterLevel = true, $maxErrors = 10)
+		public function __construct(IManyInject $kernel, $alterLevel = true, $maxErrors = 10)
 		{
 			$this->maxErrors = $maxErrors;
+			$this->kernel = $kernel;
 			if ($alterLevel)
 				error_reporting(E_ALL);
 
@@ -315,7 +318,7 @@
 		private function generateErrorReport($type, $line, $file, $error, $trace = null)
 		{
 			error_log(sprintf('%2$s:%3$d %1$s %4$s', $type, $file, $line, $error));
-			$report = new KW_ErrorReport();
+			$report = new KW_ErrorReport($this->kernel->getComponents('IErrorHint'));
 			$report->setSubject('Error (' . $type . ') - ' . date("Y-m-d H:i:s"));
 			$report->Type = $type;
 			$report->Line = $line;
@@ -505,5 +508,10 @@
 		 * @var string $error Error output if sent
 		 */
 		private $error = '';
+
+		/**
+		 * @var IManyInject
+		 */
+		private $kernel;
 	}
 ?>

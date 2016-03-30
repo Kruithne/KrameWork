@@ -3,10 +3,12 @@
 	{
 		/**
 		 * Constructs an error report object.
+		 * @param IErrorHint[] $hints Hint sources to inject in the report
 		 */
-		public function __construct()
+		public function __construct($hints = array())
 		{
 			$this->addInfo($this->formatValue('Time', date('l jS \of F Y h:i:s A')));
+			$this->hints = $hints;
 		}
 
 		/**
@@ -41,6 +43,10 @@
 				$this->formatValue('PHP Version', PHP_VERSION),
 				$this->formatValue('Server OS', PHP_OS)
 			);
+
+			if($this->hints)
+				foreach($this->hints as $hint)
+					$array[] = $this->formatValue($hint->getErrorHintLabel(), $hint->getErrorHint());
 
 			if (isset($_SERVER['SERVER_NAME']))
 			{
@@ -412,5 +418,10 @@
 		 * @var array
 		 */
 		private $stack;
+
+		/**
+		 * @var IErrorHint[]
+		 */
+		private $hints;
 	}
 ?>
