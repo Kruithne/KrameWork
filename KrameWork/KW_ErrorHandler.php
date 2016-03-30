@@ -107,7 +107,7 @@
 				return $this->handleFatalError($buffer, $match);
 
 			if ($this->startup)
-				$this->imeScript();
+				$this->timeScript();
 
 			// No error to handle
 			return $buffer;
@@ -361,7 +361,7 @@
 			if ($this->mail->getRecipientCount() < 1)
 				return;
 
-			$this-.mail->clear();
+			$this->mail->clear();
 			$this->mail->append((string) $report);
 
 			if ($this->mail->getSubject() === null)
