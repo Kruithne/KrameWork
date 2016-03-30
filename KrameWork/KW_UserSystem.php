@@ -1,5 +1,5 @@
 <?php
-	abstract class KW_UserSystem extends KW_CRUD implements IUserSystem, IStartup
+	abstract class KW_UserSystem extends KW_CRUD implements IUserSystem, IStartup, IErrorHint
 	{
 		public function getName() { return 'users'; }
 
@@ -16,6 +16,19 @@
 		}
 
 		public abstract function getCurrent();
+
+		public function getErrorHintLabel()
+		{
+			return 'Current user';
+		}
+
+		public function getErrorHint()
+		{
+			$user = $this->getCurrent();
+			if($user)
+				return $user->username;
+			return '(none)';
+		}
 
 		public function prepare()
 		{

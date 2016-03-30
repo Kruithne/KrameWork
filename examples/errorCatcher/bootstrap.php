@@ -1,8 +1,6 @@
 <?php
 	// This serves as the entry point for the application.
-	require_once('../../KrameWork/KrameSystem.php'); // We need this.
-
-	$system = new KrameSystem(KW_DEFAULT_FLAGS & ~KW_ENABLE_SESSIONS); // Create a system without sessions.
-	$system->addAutoLoadPath(getcwd()); // Auto-load from the current directory.
-	$system->getErrorHandler()->addEmailOutputRecipient('someone@example.com');
+	// $kernel gets magically injected by prepend_file here
+	$kernel->addAutoLoadPath(getcwd()); // Auto-load from the current directory.
+	$kernel->getErrorHandler()->addEmailOutputRecipient('someone@example.com');
 ?>

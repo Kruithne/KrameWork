@@ -1,0 +1,4 @@
+php_flag "html_errors" Off
+php_value "auto_prepend_file" "error.php"
+php_value "error_prepend_string" "<!--[INTERNAL_ERROR]"
+php_value "error_append_string" "-->"
