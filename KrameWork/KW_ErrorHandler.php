@@ -35,7 +35,7 @@
 		 */
 		public function getMailObject()
 		{
-			return self::getReportingMailObject();
+			return $this->getReportingMailObject();
 		}
 
 		/**
@@ -43,15 +43,15 @@
 		 *
 		 * @return KW_Mail ErrorHandler mail template.
 		 */
-		public static function getReportingMailObject()
+		public function getReportingMailObject()
 		{
-			if (self::$mail === null)
+			if ($this->mail === null)
 			{
-				self::$mail = new KW_Mail();
-				self::$mail->setHeader('MIME-Version', '1.0');
+				$this->mail = new KW_Mail();
+				$this->mail->setHeader('MIME-Version', '1.0');
 			}
 
-			return self::$mail;
+			return $this->mail;
 		}
 
 		/**
@@ -94,17 +94,17 @@
 		 * @param string $buffer Script output passed by PHP output buffer
 		 * @return string Content to send to the client
 		 */
-		public static function errorCatcher($buffer)
+		public function errorCatcher($buffer)
 		{
-			if (self::$mute)
+			if ($this->mute)
 				return $buffer;
 
 			// Detect error
 			if (preg_match('/<!--\[INTERNAL_ERROR\](.*)-->/Us', $buffer, $match))
-				return self::handleFatalError($buffer, $match);
+				return $this->handleFatalError($buffer, $match);
 
-			if (self::$startup)
-				self::timeScript();
+			if ($this->startup)
+				$this->imeScript();
 
 			// No error to handle
 			return $buffer;
@@ -117,7 +117,7 @@
 		 * @param string[] $match The matching error
 		 * @return string Resulting output to client
 		 */
-		private static function handleFatalError($buffer, $match)
+		private function handleFatalError($buffer, $match)
 		{
 			// The internal PHP message
 			$error = $match[1];
@@ -129,9 +129,9 @@
 			if (count($matches) != 5)
 				return 'Internal error ('.count($matches).') : ' . $error;
 
-			$report = self::generateErrorReport($matches[1], $matches[4], $matches[3], $matches[2], debug_backtrace());
-			if (self::$errorDocument)
-				return sprintf(self::$errorDocument, $report->getHTMLReport());
+			$report = $this->generateErrorReport($matches[1], $matches[4], $matches[3], $matches[2], debug_backtrace());
+			if ($this->errorDocument)
+				return sprintf($this->errorDocument, $report->getHTMLReport());
 
 			return str_replace($match[0], $report->getHTMLReport(), $buffer);
 		}
@@ -139,16 +139,16 @@
 		/**
 		 * Check script run time and send alert if it is taking too long
 		 */
-		private static function timeScript()
+		private function timeScript()
 		{
-			$responseTime = microtime(true) - self::$startup;
+			$responseTime = microtime(true) - $this->startup;
 
 			// Report if time exceeds warning limit, unless called from CLI
-			if ($responseTime < self::$slowWarn || !isset($_SERVER['REQUEST_URI']))
+			if ($responseTime < $this->slowWarn || !isset($_SERVER['REQUEST_URI']))
 				return;
 
 			// If there is nowhere to send the warning, just log it
-			if (self::$mail->getRecipientCount() < 1)
+			if ($this->mail->getRecipientCount() < 1)
 			{
 				error_log(sprintf('Slow request: %s/%s (%.3fs)', $_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'], $responseTime));
 				return;
@@ -171,7 +171,7 @@
 					}
 					$k = array_search($log['sql'], $seen);
 					$timing[$k] += $log['time'];
-					$o = $log['timestamp'] - self::$startup;
+					$o = $log['timestamp'] - $this->startup;
 					$params = array();
 					foreach ($log['param'] as $key => $value)
 						$params[] = sprintf('[%s] = [%s]', $key, $value);
@@ -185,13 +185,13 @@
 					$msg .= sprintf("[%d] %.3fs\n%s\n-------------\n", $k, $timing[$k], $sql);
 			}
 
-			self::$mail->clear();
-			self::$mail->append($msg);
+			$this->mail->clear();
+			$this->mail->append($msg);
 
-			if (self::$mail->getSubject() === null)
-				self::$mail->setSubject('Slow request: ' . $_SERVER['HTTP_HOST'] . '/' . $_SERVER['REQUEST_URI']);
+			if ($this->mail->getSubject() === null)
+				$this->mail->setSubject('Slow request: ' . $_SERVER['HTTP_HOST'] . '/' . $_SERVER['REQUEST_URI']);
 
-			self::$mail->send();
+			$this->mail->send();
 		}
 
 		/**
@@ -205,7 +205,7 @@
 		 */
 		public function handleError($type, $string, $file, $line)
 		{
-			if (self::$mute)
+			if ($this->mute)
 				return true;
 
 			if ($this->errorCount++ > $this->maxErrors)
@@ -217,7 +217,7 @@
 			if ($type == E_USER_ERROR && !headers_sent())
 				header('HTTP/1.0 500 Internal Error');
 
-			$this->sendErrorReport(self::generateErrorReport($this->getErrorType($type), $line, $file, $string, debug_backtrace()));
+			$this->sendErrorReport($this->generateErrorReport($this->getErrorType($type), $line, $file, $string, debug_backtrace()));
 			return true;
 		}
 
@@ -262,7 +262,7 @@
 		 */
 		public function handleException($exception)
 		{
-			if (self::$mute)
+			if ($this->mute)
 				return;
 
 			if (!$this->error && !headers_sent())
@@ -281,7 +281,7 @@
 		 */
 		public function reportException($exception)
 		{
-			$this->sendErrorReport(self::generateErrorReport(
+			$this->sendErrorReport($this->generateErrorReport(
 				'EXCEPTION', $exception->getLine(), $exception->getFile(), $exception->getMessage(), $exception->getTrace())
 			);
 		}
@@ -289,17 +289,17 @@
 		/**
 		 * Temporarily halt error reporting
 		 */
-		public static function mute()
+		public function mute()
 		{
-			self::$mute = true;
+			$this->mute = true;
 		}
 
 		/**
 		 * Resume error reporting
 		 */
-		public static function unmute()
+		public function unmute()
 		{
-			self::$mute = false;
+			$this->mute = false;
 		}
 
 		/**
@@ -312,7 +312,7 @@
 		 * @param null|string $trace
 		 * @return KW_ErrorReport An error report object ready for use.
 		 */
-		private static function generateErrorReport($type, $line, $file, $error, $trace = null)
+		private function generateErrorReport($type, $line, $file, $error, $trace = null)
 		{
 			error_log(sprintf('%2$s:%3$d %1$s %4$s', $type, $file, $line, $error));
 			$report = new KW_ErrorReport();
@@ -333,7 +333,7 @@
 		 */
 		public function sendErrorReport($report)
 		{
-			if (self::$mail !== null)
+			if ($this->mail !== null)
 				$this->sendEmail($report);
 
 			if ($this->log !== null)
@@ -355,16 +355,16 @@
 		 */
 		private function sendEmail($report)
 		{
-			if (self::$mail->getRecipientCount() < 1)
+			if ($this->mail->getRecipientCount() < 1)
 				return;
 
-			self::$mail->clear();
-			self::$mail->append((string) $report);
+			$this-.mail->clear();
+			$this->mail->append((string) $report);
 
-			if (self::$mail->getSubject() === null)
-				self::$mail->setSubject($report->getSubject());
+			if ($this->mail->getSubject() === null)
+				$this->mail->setSubject($report->getSubject());
 
-			self::$mail->send();
+			$this->mail->send();
 		}
 
 		/**
@@ -392,13 +392,13 @@
 		 */
 		private function dumpHTML($report)
 		{
-			if (self::$errorDocument)
+			if ($this->errorDocument)
 			{
 				while (ob_get_level())
 					ob_end_clean();
 
 				$this->error .= $report->getHTMLReport();
-				echo sprintf(self::$errorDocument, $this->error);
+				echo sprintf($this->errorDocument, $this->error);
 				return;
 			}
 			echo $report->getHTMLReport();
@@ -454,27 +454,27 @@
 		/**
 		 * @var float $startup set to microtime(true) to run a timing check
 		 */
-		public static $startup;
+		public $startup;
 
 		/**
 		 * @var float $slowWarn Time in seconds before script slow warnings are triggered
 		 */
-		public static $slowWarn;
+		public $slowWarn;
 
 		/**
 		 * @var string $errorDocument HTML to use for reporting errors. Error report will be injected via sprintf
 		 */
-		public static $errorDocument;
+		public $errorDocument;
 
 		/**
 		 * @var bool
 		 */
-		private static $mute;
+		private $mute;
 
 		/**
 		 * @var KW_Mail
 		 */
-		private static $mail;
+		private $mail;
 
 		/**
 		 * @var string|null Will be null if not yet set.
