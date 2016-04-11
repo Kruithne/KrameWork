@@ -46,7 +46,8 @@
 					}
 				}
 			}
-			throw new KW_ClassFileNotFoundException("No valid class file found for " . $className);
+			if (!self::$testing)
+				throw new KW_ClassFileNotFoundException("No valid class file found for " . $className);
 		}
 
 		/**
@@ -85,6 +86,11 @@
 			self::$debug = true;
 		}
 
+		public static function enableTesting()
+		{
+			self::$testing = true;
+		}
+
 		/**
 		 * @var string[]
 		 */
@@ -104,5 +110,10 @@
 		 * @var bool
 		 */
 		private static $debug = false;
+
+		/**
+		 * @var bool
+		 */
+		private static $testing = false;
 	}
 ?>

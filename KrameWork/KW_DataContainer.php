@@ -7,7 +7,10 @@
 		 */
 		public function __construct($data = array())
 		{
-			$this->values = $data;
+			if ($data instanceof IDataContainer)
+				$this->values = $data->getAsArray();
+			else
+				$this->values = $data;
 		}
 
 		/**
