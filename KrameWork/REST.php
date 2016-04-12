@@ -40,7 +40,7 @@
 				$result[$k] = strlen($data) > 0 ? $data : null;
 			}
 
-			return $key === null ? $result : (count($result) ? $result[0] : null);
+			return $key === null ? $result : (count($result) ? $result[$key] : null);
 		}
 
 		/**
