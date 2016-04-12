@@ -40,7 +40,6 @@
 		public static function Post($key)
 		{
 			return self::getData($_POST, $key);
-
 		}
 
 		/**
