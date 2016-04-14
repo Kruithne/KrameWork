@@ -159,7 +159,7 @@
 						do
 						{
 							$key = array_shift($keys);
-							$q = $q ? $q->andColumn($key) : $this->search($key));
+							$q = $q ? $q->andColumn($key) : $this->search($key);
 							if (strpos($query[$key], '%') !== false)
 								$q = $q->like($query[$key]);
 							else
