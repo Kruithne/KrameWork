@@ -19,16 +19,28 @@
 		 * @param $key string Key of the value with the array.
 		 * @return null|string
 		 */
-		private static function getData($array, $key)
+		private static function getData($array, $key = null)
 		{
-			if (array_key_exists($key, $array))
+			$keys = array();
+
+			if ($key === null)
 			{
-				$data = self::cleanData($array[$key]);
-				if (strlen($data) > 0)
-					return $data;
+				foreach ($array as $k => $v)
+					$keys[] = $k;
+			}
+			else if (array_key_exists($key, $array))
+			{
+				$keys[] = $key;
 			}
 
-			return null;
+			$result = array();
+			foreach ($keys as $k)
+			{
+				$data = self::cleanData($array[$k]);
+				$result[$k] = strlen($data) > 0 ? $data : null;
+			}
+
+			return $key === null ? $result : (count($result) ? $result[$key] : null);
 		}
 
 		/**
@@ -37,10 +49,9 @@
 		 * @param mixed $key The key of the value to return.
 		 * @return mixed|null The filtered value or null if the key does not exist or is empty.
 		 */
-		public static function Post($key)
+		public static function Post($key = null)
 		{
 			return self::getData($_POST, $key);
-
 		}
 
 		/**
@@ -49,7 +60,7 @@
 		 * @param mixed $key The key of the value to return.
 		 * @return mixed|null The filtered value or null if the key does not exist or is empty.
 		 */
-		public static function Get($key)
+		public static function Get($key = null)
 		{
 			return self::getData($_GET, $key);
 		}

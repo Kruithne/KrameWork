@@ -176,7 +176,7 @@
 
 		public function between($low, $high)
 		{
-			$this->format = '(%1$s > :%1%s%2$s_low AND %1$s < :%1$s%2$s_high)';
+			$this->format = '(%1$s > :%1$s%2$s_low AND %1$s < :%1$s%2$s_high)';
 			$this->value = array('low' => $low, 'high' => $high);
 			return $this;
 		}
