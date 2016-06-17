@@ -1,5 +1,5 @@
 <?php
-	abstract class KW_AuthenticationService extends KW_JSONService
+	abstract class KW_AuthenticationService extends KW_AutoService
 	{
 		/**
 		 * KW_AuthenticationService constructor.
@@ -11,72 +11,67 @@
 		{
 			$this->users = $users;
 			$this->multifactor = $multiFactor;
-			parent::__construct($origin);
+			parent::__construct($origin, ['recover','login','logout','session']);
 		}
 
 		/**
-		 * Process a client request
+		 * Process a login recovery request
 		 * @param object $request The posted data
 		 */
-		public function process($request)
+		public function recover($request)
 		{
-			$path = false;
-			if (isset($_SERVER['PATH_INFO']))
-				$path = $_SERVER['PATH_INFO'];
-
-			if ($_SERVER['REQUEST_METHOD'] == 'POST')
+			global $user;
+			if (!isset($request->token))
 			{
-				switch($path)
+				if (isset($request->email))
 				{
-					case '/recover':
-						global $user;
-						if (!isset($request->token))
-						{
-							if (isset($request->email))
-							{
-								$user = $this->users->recover($request->email);
-								if ($user)
-								{
-									$_SESSION['userid'] = $user->id;
-									$_SESSION['state'] = AUTH_NONE;
-								}
-								return true;
-							}
-							return false;
-						}
-
-						if (!isset($_SESSION['reset_token']) || $request->token != $_SESSION['reset_token'])
-							return false;
-
-						if (isset($request->passphrase) && strlen($request->passphrase) > 6)
-						{
-							$this->users->setPassphrase($user->id, $request->passphrase);
-							return true;
-						}
-						else
-						{
-							return ['username' => $user->username];
-						}
-
-					case '/login':
-						if (isset($request->username) && isset($request->passphrase))
-							return $this->authenticate($request);
-						break;
+					$user = $this->users->recover($request->email);
+					if ($user)
+					{
+						$_SESSION['userid'] = $user->id;
+						$_SESSION['state'] = AUTH_NONE;
+					}
+					return true;
 				}
+				return false;
 			}
 
-			if ($_SERVER['REQUEST_METHOD'] == 'GET')
-			{
-				switch($path)
-				{
-					case '/logout':
-						return $this->end_session();
-					default:
-						return $this->get_session();
-				}
-			}
+			if (!isset($_SESSION['reset_token']) || $request->token != $_SESSION['reset_token'])
+				return false;
 
-			return false;
+			if (isset($request->passphrase) && strlen($request->passphrase) > 6)
+			{
+				$this->users->setPassphrase($user->id, $request->passphrase);
+				return true;
+			}
+			else
+			{
+				return (object)['username' => $user->username];
+			}
+		}
+
+		/**
+		 * Process a login request
+		 * @param object $request The posted data
+		 */
+		public function login($request)
+		{
+			if (isset($request->username) && isset($request->passphrase))
+				return $this->authenticate($request);
+		}
+
+		/**
+		 * Process a login request
+		 * @param object $request The posted data
+		 */
+		public function logout()
+		{
+			return $this->end_session();
+		}
+
+		public function session()
+		{
+			return $this->get_session();
 		}
 
 		/**
@@ -115,11 +110,11 @@
 
 			global $user;
 			if ($user)
-				return ['name' => $user->name, 'state' => $_SESSION['state']];
+				return (object)['name' => $user->name, 'state' => $_SESSION['state']];
 			else if ($auto)
-				return ['name' => $auto->name, 'state' => $_SESSION['state']];
+				return (object)['name' => $auto->name, 'state' => $_SESSION['state']];
 			else
-				return ['name' => null, 'state' => 0];
+				return (object)['name' => null, 'state' => 0];
 		}
 
 		/**
