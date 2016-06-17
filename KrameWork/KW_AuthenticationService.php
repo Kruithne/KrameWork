@@ -62,13 +62,15 @@
 
 		/**
 		 * Process a login request
-		 * @param object $request The posted data
 		 */
 		public function logout()
 		{
 			return $this->end_session();
 		}
 
+		/**
+		 * Return the state of the current session
+		 */
 		public function session()
 		{
 			return $this->get_session();
