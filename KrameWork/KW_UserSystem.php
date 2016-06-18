@@ -225,10 +225,15 @@
 			if (!$user->secret)
 				return AUTH_ERR_NOSECRET;
 
-			if (time() - strtotime($user->pp_changed) > 3600 * 24 * 90)
+			if ($this->isExpired($user))
 				return AUTH_OK_OLD;
 
 			return AUTH_OK;
+		}
+
+		public function isExpired($user)
+		{
+			return time() - strtotime($user->pp_changed) > 3600 * 24 * 90;
 		}
 
 		public function encode($plaintext)

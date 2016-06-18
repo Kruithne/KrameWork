@@ -86,5 +86,11 @@
 		 * @param string A hash
 		 */
 		public function encode($plaintext);
+		/**
+		 * Determine if user is subject to password expiry
+		 * @param IDataContainer $user The authenticated user
+		 * @return bool Password will expire
+		 */
+		public function isExpired(IDataContainer $user);
 	}
 ?>
