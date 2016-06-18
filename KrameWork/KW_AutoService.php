@@ -45,6 +45,16 @@
 		}
 
 		/**
+		 * Filter requests: non-null return skips method call
+		 * @param string $endpoint The method that will be invoked
+		 * @param string[] $args The arguments to be passed
+		 */
+		public function filter($endpoint, $args)
+		{
+			return null;
+		}
+
+		/**
 		 * Process a client request
 		 * @param object $request The posted data
 		 */
@@ -64,7 +74,9 @@
 
 			try
 			{
-				$return = call_user_func_array(array($this, $method), $varargs);
+				$return = $this->filter($method, $args);
+				if($return === null)
+					$return = call_user_func_array(array($this, $method), $varargs);
 			}
 			catch(Exception $e)
 			{

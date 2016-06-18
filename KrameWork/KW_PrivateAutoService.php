@@ -18,11 +18,49 @@
 			parent::__construct($origin, $endpoints, $post, $get);
 		}
 
+		/**
+		 * Hook filter to enable authorization and auditing
+		 * @param string $endpoint The method that will be invoked
+		 * @param string[] $args The arguments to be passed
+		 */
+		public function filter($endpoint, $args)
+		{
+			if(!$this->authorize($this->user, $endpoint, $args))
+				throw new Exception('Not authorized');
+			$this->audit($this->user, $endpoint, $args);
+			return null;
+		}
+
+		/**
+		 * Override this method to implement authorization
+		 * @param IDataContainer $user The calling user
+		 * @param string $endpoint The method being called
+		 * @param string[] $args The arguments given
+		 */
+		public function authorize($user, $endpoint, $args)
+		{
+			return true;
+		}
+
+		/**
+		 * Override this method to implement auditing
+		 * @param IDataContainer $user The calling user
+		 * @param string $endpoint The method being called
+		 * @param string[] $args The arguments given
+		 */
+		public function audit($user, $endpoint, $args)
+		{
+		}
+
+		/**
+		 * Process a client request
+		 * @param object $request The posted data
+		 */
 		public function process($request)
 		{
-			$user = $this->users->getCurrent();
-			$state = $user ? $this->users->getState($user) : AUTH_NONE;
-			if(!$user || ($state != AUTH_OK && $state != AUTH_OK_OLD))
+			$this->user = $this->users->getCurrent();
+			$state = $this->user ? $this->users->getState($this->user) : AUTH_NONE;
+			if(!$this->user || ($state != AUTH_OK && $state != AUTH_OK_OLD))
 				return (object)['success' => false, 'error' => 'Not authenticated', 'reauth' => true];
 
 			return parent::process($request);
@@ -32,5 +70,6 @@
 		 * @var IUserSystem
 		 */
 		private $users;
+		private $user;
 	}
 ?>
