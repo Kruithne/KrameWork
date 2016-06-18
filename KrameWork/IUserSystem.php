@@ -2,6 +2,12 @@
 	interface IUserSystem extends ICRUD
 	{
 		/**
+		 * Get the currently logged in user for the session
+		 * @return IDatacontainer|null The user that authenticated the session
+		 */
+		public function getCurrent();
+
+		/**
 		 * Help a user recover access when a password or username is forgotten
 		 * @param string $email The email entered by the user requesting assistance
 		 * @return object|false If the email is unknown or recovery was not possible for some reason, false, otherwise the user objecct

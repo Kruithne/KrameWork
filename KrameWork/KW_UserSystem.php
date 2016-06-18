@@ -15,8 +15,6 @@
 			parent::__construct($schema, $error);
 		}
 
-		public abstract function getCurrent();
-
 		public function getErrorHintLabel()
 		{
 			return 'Current user';
