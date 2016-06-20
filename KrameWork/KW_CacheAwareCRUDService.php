@@ -226,7 +226,7 @@
 			return $q->execute();
 		}
 
-		public function read($lookup)
+		public function read($lookup = null)
 		{
 			if (!$this->canRead())
 			{
