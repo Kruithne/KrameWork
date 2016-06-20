@@ -231,7 +231,7 @@
 			return AUTH_OK;
 		}
 
-		public function isExpired($user)
+		public function isExpired(IDataContainer $user)
 		{
 			return time() - strtotime($user->pp_changed) > 3600 * 24 * 90;
 		}
