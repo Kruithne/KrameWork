@@ -33,7 +33,7 @@
 			if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
 				die();
 
-			$request = json_decode(file_get_contents('php://input'));
+			$request = $this->getNewObject(json_decode(file_get_contents('php://input')));
 
 			if (!$this->authorized($request))
 			{
