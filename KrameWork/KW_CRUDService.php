@@ -114,7 +114,7 @@
 			{
 				$return = $this->filter_call($method, $args);
 				if($return === null)
-					$return = call_user_func(array($this, $method), $varargs);
+					$return = call_user_func_array(array($this, $method), $varargs);
 			}
 			catch(Exception $e)
 			{
