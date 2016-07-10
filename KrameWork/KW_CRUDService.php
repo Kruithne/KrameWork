@@ -107,8 +107,8 @@
 
 			$method = $args[1];
 			$varargs = count($args) > 2 ? array_slice($args, 2) : [];
-			if ($request !== null)
-				$varargs[] = $request;
+			if ($object !== null)
+				$varargs[] = $object;
 
 			try
 			{
