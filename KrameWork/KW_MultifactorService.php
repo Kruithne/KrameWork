@@ -1,5 +1,5 @@
 <?php
-	class KW_MultifactorService extends KW_JSONService
+	class KW_MultifactorService extends KW_AutoService
 	{
 		/**
 		 * KW_MultifactorService constructor.
@@ -11,83 +11,80 @@
 		{
 			$this->users = $users;
 			$this->auth = $auth;
-	 		parent::__construct($origin);
+	 		parent::__construct($origin, ['replace','show','verify'], true, false);
 		}
 
-		public function process($request)
+		public function replace($request)
 		{
-			global $user;
-			$path = false;
+			$state = $this->state();
+			if ($state != AUTH_OK && $state != AUTH_ERR_NOSECRET)
+				return (object)['error' => 'Not logged in'];
 
-			if (isset($_SERVER['PATH_INFO']))
-				$path = $_SERVER['PATH_INFO'];
-
-			$user = $this->users->getCurrent();
-			if (!$user || !$user->active)
-				return;
-			$state = $this->users->getState($user);
-
-			if ($_SERVER['REQUEST_METHOD'] == 'POST')
+			if ($user->secret)
 			{
-				switch($path)
+				$result = $this->users->authenticate(
+					$user->username,
+					$request->passphrase
+				);
+
+				if ($result != AUTH_OK)
+					return (object)['error' => 'Wrong passphrase'];
+			}
+			$secret = $this->auth->createSecret();
+			$_SESSION['new_secret'] = $secret;
+			$token = $this->auth->getQRCodeGoogleUrl('runsafe-lab', $secret);
+			return (object)['token'=>$token];
+		}
+
+		public function show($request)
+		{
+			$state = $this->state();
+			if ($state != AUTH_OK)
+				return (object)['error' => $state == AUTH_ERR_NOSECRET ? 'No code set' : 'Not logged in'];
+
+			$result = $this->users->authenticate(
+				$user->username,
+				$request->passphrase
+			);
+
+			if ($result != AUTH_OK)
+				return (object)['error' => 'Wrong passphrase'];
+
+			$token = $this->auth->getQRCodeGoogleUrl('runsafe-lab', $user->secret);
+			return (object)['token'=>$token];
+		}
+
+		public function verify($request)
+		{
+			$user = $this->users->getCurrent();
+			if ($user->lastcode == $request->code)
+				return (object)['error' => 'replay'];
+
+			if (isset($_SESSION['new_secret']) && $user->secret == null)
+			{
+				$result = $this->auth->verifyCode($_SESSION['new_secret'], $request->code, 2);
+				if ($result)
 				{
-					case '/replace':
-				 		if ($state != AUTH_OK && $state != AUTH_ERR_NOSECRET)
-							return (object)['reason' => 'Not logged in'];
-
-						if ($user->secret)
-						{
-							$result = $this->users->authenticate(
-								$user->username,
-								$request->passphrase
-							);
-
-							if ($result != AUTH_OK)
-								return (object)['reason' => 'Wrong passphrase'];
-						}
-						$secret = $this->auth->createSecret();
-						$_SESSION['new_secret'] = $secret;
-						$token = $this->auth->getQRCodeGoogleUrl('runsafe-lab', $secret);
-						return ['token' => $token];
-
-					case '/clone':
-				 		if ($state != AUTH_OK)
-							return (object)['reason' => $state == AUTH_ERR_NOSECRET ? 'No code set' : 'Not logged in'];
-
-						$result = $this->users->authenticate(
-							$user->username,
-							$request->passphrase
-						);
-
-						if ($result != AUTH_OK)
-							return (object)['reason' => 'Wrong passphrase'];
-
-						$token = $this->auth->getQRCodeGoogleUrl('runsafe-lab', $user->secret);
-						return ['token' => $token];
-
-					case '/verify':
-						if ($user->lastcode == $request->code)
-							return ['result' => false, 'reason' => 'replay'];
-
-						if (isset($_SESSION['new_secret']) && $user->secret == null)
-						{
-							$result = $this->auth->verifyCode($_SESSION['new_secret'], $request->code, 2);
-							if ($result)
-							{
-								$this->users->setSecret($user->id, $_SESSION['new_secret']);
-								$user->secret = $_SESSION['new_secret'];
-								unset($_SESSION['new_secret']);
-							}
-						}
-						else
-						{
-							$result = $this->auth->verifyCode($user->secret, $request->code, 2);
-						}
-
-						$_SESSION['verified'] = $result;
-						return ['result' => $result];
+					$this->users->setSecret($user->id, $_SESSION['new_secret']);
+					$user->secret = $_SESSION['new_secret'];
+					unset($_SESSION['new_secret']);
 				}
 			}
+			else
+			{
+				$result = $this->auth->verifyCode($user->secret, $request->code, 2);
+			}
+			$_SESSION['verified'] = $result;
+			$_SESSION['state'] = $this->state();
+			return (object)['ok'=>$result];
+		}
+
+		private function state()
+		{
+			$user = $this->users->getCurrent();
+			if (!$user || !$user->active)
+				return AUTH_NONE;
+			return $this->users->getState($user);
 		}
 
 		/**
