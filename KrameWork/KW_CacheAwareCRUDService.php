@@ -60,7 +60,10 @@
 				}
 			}
 
-			$request = json_decode(file_get_contents('php://input'));
+			$input = trim(file_get_contents('php://input'));
+			if($input)
+				$input = json_decode($input);
+			$request = $input ? $this->getNewObject($input) : null;
 
 			if (!$this->authorized($request))
 			{
@@ -117,14 +120,14 @@
 
 			$method = $args[1];
 			$varargs = count($args) > 2 ? array_slice($args, 2) : [];
-			if ($request !== null)
-				$varargs[] = $request;
+			if ($object !== null)
+				$varargs[] = $object;
 
 			try
 			{
 				$return = $this->filter_call($method, $args);
 				if($return === null)
-					$return = call_user_func(array($this, $method), $varargs);
+					$return = call_user_func_array(array($this, $method), $varargs);
 			}
 			catch(Exception $e)
 			{

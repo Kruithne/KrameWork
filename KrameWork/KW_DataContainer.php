@@ -10,7 +10,7 @@
 			if ($data instanceof IDataContainer)
 				$this->values = $data->getAsArray();
 			else
-				$this->values = $data;
+				$this->values = (array)$data;
 		}
 
 		/**
