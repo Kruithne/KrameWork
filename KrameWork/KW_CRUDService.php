@@ -40,7 +40,7 @@
 
 			if (!$this->authorized($request))
 			{
-				header('HTTP/1.0 403 Access Denied');
+				header('HTTP/1.0 401 Unauthorized');
 				return '';
 			}
 
