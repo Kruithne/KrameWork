@@ -60,7 +60,10 @@
 				}
 			}
 
-			$request = $this->getNewObject(json_decode(file_get_contents('php://input')));
+			$input = trim(file_get_contents('php://input'));
+			if($input)
+				$input = json_decode($input);
+			$request = $input ? $this->getNewObject($input) : null;
 
 			if (!$this->authorized($request))
 			{
