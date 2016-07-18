@@ -201,10 +201,14 @@
 			}
 			$query = array();
 			$cols = $this->getValues();
+			$key = $this->getKey();
+			if (!$key)
+				$key = [];
+			if (!is_array($key))
+				$key = [$key];
 			foreach ($_GET as $k => $v)
-				if (in_array($k, $cols))
+				if (in_array($k, $cols) || in_array($k, $key))
 					$query[$k] = $v;
-
 			return $this->readQuery($query);
 		}
 
