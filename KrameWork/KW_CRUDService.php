@@ -201,10 +201,27 @@
 			}
 			$query = array();
 			$cols = $this->getValues();
+			$key = $this->getKey();
+			if (!$key)
+				$key = [];
+			if (!is_array($key))
+				$key = [$key];
 			foreach ($_GET as $k => $v)
-				if (in_array($k, $cols))
+				if (in_array($k, $cols) || in_array($k, $key))
 					$query[$k] = $v;
+			return $this->readQuery($query);
+		}
+
+		/**
+		 * Override this method to gain fine controlled access restrictions for loading data
+		 * @param array $query key/value pairs passed by the client
+		 * @return mixed An array of matching objects or false
+		 */
+		public function readQuery($query)
+		{
 			$keys = array_keys($query);
+			if(count($keys) == 0)
+				return false;
 			$q = false;
 			do
 			{
@@ -226,7 +243,7 @@
 				header('HTTP/1.0 403 Access Denied');
 				return false;
 			}
-			if(count($lookup))
+			if(is_array($lookup) && count($lookup))
 			{
 				$key = $this->getKey();
 				if (is_array($key))
@@ -242,7 +259,7 @@
 					return parent::read($lookup[1]);
 				}
 			}
-			return parent::read();
+			return parent::read($lookup);
 		}
 
 		protected $user;
