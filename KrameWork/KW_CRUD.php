@@ -140,7 +140,6 @@
 		 */
 		private function _read($key = null)
 		{
-			error_log(serialize($key));
 			// Fetch everything
 			if ($key === null)
 				return $this->fetchRowSet($this->readAll);
