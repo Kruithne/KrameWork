@@ -97,25 +97,24 @@
 				switch ($this->db->getType())
 				{
 					case 'pgsql':
-						return $this->read($result[0]->currval);
+						return $this->_read($result[0]->currval);
 
 					default:
-						return $this->read($result[0]->id);
+						return $this->_read($result[0]->id);
 				}
 			}
 
 			$key = $this->getKey();
 			if (!$key)
-				return $this->read();
+				return $this->_read();
 
 			if (!is_array($key))
-				return $this->read($object->$key);
+				return $this->_read($object->$key);
 
 			$k = array();
 			foreach ($key as $col)
 				$k[$col] = $object->$col;
-
-			return $this->read($k);
+			return $this->_read($k);
 		}
 
 		/**
@@ -133,6 +132,15 @@
 		 */
 		public function read($key = null)
 		{
+			return $this->_read($key);
+		}
+
+		/**
+		 * Internal implementation for read() to avoid overriding classes breaking create()
+		 */
+		private function _read($key = null)
+		{
+			error_log(serialize($key));
 			// Fetch everything
 			if ($key === null)
 				return $this->fetchRowSet($this->readAll);
