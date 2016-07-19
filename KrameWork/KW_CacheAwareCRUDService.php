@@ -270,7 +270,7 @@
 					return parent::read($lookup[1]);
 				}
 			}
-			return parent::read();
+			return parent::read($lookup);
 		}
 
 		protected $user;
