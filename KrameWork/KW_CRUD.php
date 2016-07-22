@@ -58,6 +58,14 @@
 		 */
 		public function create($object)
 		{
+			return $this->_create($object);
+		}
+
+		/**
+		 * Internal implementation for create()
+		 */
+		protected function _create($object)
+		{
 			if (!is_object($object))
 				throw new KW_CRUDException('Create operation requires an object');
 
@@ -138,7 +146,7 @@
 		/**
 		 * Internal implementation for read() to avoid overriding classes breaking create()
 		 */
-		private function _read($key = null)
+		protected function _read($key = null)
 		{
 			// Fetch everything
 			if ($key === null)
@@ -190,6 +198,14 @@
 		 */
 		public function update($object)
 		{
+			return $this->_update($object);
+		}
+
+		/**
+		 * Internal implementation for update()
+		 */
+		protected function _update($object)
+		{
 			if (!is_object($object))
 				throw new KW_CRUDException('Update operation requires an object');
 
@@ -202,6 +218,14 @@
 		 * @param object $object An object with properties matching all entries of the key specification of the table
 		 */
 		public function delete($object)
+		{
+			return $this->_delete($oject);
+		}
+
+		/**
+		 * Internal implementation for delete()
+		 */
+		protected function _delete($object)
 		{
 			if (!is_object($object))
 				throw new KW_CRUDException('Update operation requires an object');
