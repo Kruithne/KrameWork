@@ -120,14 +120,14 @@
 				{
 					$return = call_user_func_array(array($this, $method), $varargs);
 					if($return !== false)
-						$this->audit_call_success($this->user, $method, $args, $result)
+						$this->audit_call_success($this->user, $method, $args, $result);
 					else
-						$this->audit_call_failed($this->user, $method, $args, null)
+						$this->audit_call_failed($this->user, $method, $args, null);
 				}
 			}
 			catch(Exception $e)
 			{
-				$this->audit_call_failed($this->user, $method, $args, $e)
+				$this->audit_call_failed($this->user, $method, $args, $e);
 				return (object)['success' => false, 'exception' => $e->getMessage()];
 			}
 			return (object)['success' => $return !== false, 'result' => $return === false ? null : $return];
