@@ -1,16 +1,6 @@
 <?php
-	abstract class KW_CacheAwareCRUDService extends KW_CRUDCache implements ICRUDService
+	abstract class KW_CacheAwareCRUDService extends KW_CRUDService
 	{
-		public function getOrigin()
-		{
-			return '*';
-		}
-
-		public function getMethod()
-		{
-			return 'GET, POST';
-		}
-
 		public function getLevel()
 		{
 			return 'private';
@@ -24,7 +14,8 @@
 		 */
 		public function __construct(ISchemaManager $schema, ICacheState $state, $error)
 		{
-			parent::__construct($schema, $state, $error);
+			parent::__construct($schema, $error);
+			$this->cache = $state;
 		}
 
 		public function execute()
@@ -79,200 +70,45 @@
 			die();
 		}
 
-		public function authorize($user)
+		protected function _create($object)
 		{
-			$this->user = $user;
+			$result = parent::_create($object);
+			$this->cache_clear();
+			return $result;
 		}
 
-		public function authorized($request)
+		protected function _update($object)
 		{
-			return true;
+			parent::_update($object);
+			$this->cache_clear();
 		}
 
-		public function canCreate($object)
+		protected function _delete($object)
 		{
-			return true;
-		}
-
-		public function canRead()
-		{
-			return true;
-		}
-
-		public function canUpdate($object)
-		{
-			return true;
-		}
-
-		public function canDelete($object)
-		{
-			return true;
-		}
-
-		public function process($object)
-		{
-			if (!isset($_SERVER['PATH_INFO']))
-				return (object)['success' => false, 'error' => 'Unsupported request'];
-
-			$args = explode('/', $_SERVER['PATH_INFO']);
-			if (count($args) < 2 || !($args[1] == 'create' || $args[1] == 'read' || $args[1] == 'update' || $args[1] == 'delete' || $args[1] == 'query'))
-				return (object)['success' => false, 'error' => 'Unknown method'];
-
-			$method = $args[1];
-			$varargs = count($args) > 2 ? array_slice($args, 2) : [];
-			if ($object !== null)
-				$varargs[] = $object;
-
-			try
-			{
-				$return = $this->filter_call($method, $args);
-				if($return === null)
-					$return = call_user_func_array(array($this, $method), $varargs);
-			}
-			catch(Exception $e)
-			{
-				return (object)['success' => false, 'exception' => $e->getMessage()];
-			}
-			return (object)['success' => $return !== false, 'result' => $return === false ? null : $return];
+			parent::_delete($object);
+			$this->cache_clear();
 		}
 
 		/**
-		 * Enable authorization and auditing
-		 * @param string $endpoint The method that will be invoked
-		 * @param string[] $args The arguments to be passed
+		 * Invalidates the cache of this service
 		 */
-		public function filter_call($endpoint, $args)
+		public function cache_clear()
 		{
-			if(!$this->authorize_call($this->user, $endpoint, $args))
-				throw new Exception('Not authorized');
-			$this->audit_call($this->user, $endpoint, $args);
-			return null;
+			$this->cache->clear('.#table#' . $this->getName());
 		}
 
 		/**
-		 * Override this method to implement authorization
-		 * @param IDataContainer $user The calling user
-		 * @param string $endpoint The method being called
-		 * @param string[] $args The arguments given
+		 * Get the current timestamp for the cache of this service
+		 * @return int Unix timestamp saying when the table was last updated
 		 */
-		public function authorize_call($user, $endpoint, $args)
+		public function cache_read()
 		{
-			return true;
+			return $this->cache->read('.#table#' . $this->getName());
 		}
 
 		/**
-		 * Override this method to implement auditing
-		 * @param IDataContainer $user The calling user
-		 * @param string $endpoint The method being called
-		 * @param string[] $args The arguments given
+		 * @var ICacheState
 		 */
-		public function audit_call($user, $endpoint, $args)
-		{
-		}
-
-		public function create($object)
-		{
-			if (!$this->canCreate($object))
-			{
-				header('HTTP/1.0 403 Access Denied');
-				return false;
-			}
-			return parent::create($object);
-		}
-
-		public function update($object)
-		{
-			if (!$this->canUpdate($object))
-			{
-				header('HTTP/1.0 403 Access Denied');
-				return false;
-			}
-			parent::update($object);
-			return true;
-		}
-
-		public function delete($object)
-		{
-			if (!$this->canDelete($object))
-			{
-				header('HTTP/1.0 403 Access Denied');
-				return false;
-			}
-			parent::delete($object);
-			return true;
-		}
-
-		public function query()
-		{
-			if (!$this->canRead())
-			{
-				header('HTTP/1.0 403 Access Denied');
-				return false;
-			}
-			$query = array();
-			$cols = $this->getValues();
-			$key = $this->getKey();
-			if (!$key)
-				$key = [];
-			if (!is_array($key))
-				$key = [$key];
-			foreach ($_GET as $k => $v)
-				if (in_array($k, $cols) || in_array($k, $key))
-					$query[$k] = $v;
-
-			return $this->readQuery($query);
-		}
-
-		/**
-		 * Override this method to gain fine controlled access restrictions for loading data
-		 * @param array $query key/value pairs passed by the client
-		 * @return mixed An array of matching objects or false
-		 */
-		public function readQuery($query)
-		{
-			$keys = array_keys($query);
-			if(count($keys) == 0)
-				return false;
-			$q = false;
-			do
-			{
-				$key = array_shift($keys);
-				$q = $q ? $q->andColumn($key) : $this->search($key);
-				if (strpos($query[$key], '%') !== false)
-					$q = $q->like($query[$key]);
-				else
-					$q = $q->equals($query[$key]);
-			}
-			while (count($keys));
-			return $q->execute();
-		}
-
-		public function read($lookup = null)
-		{
-			if (!$this->canRead())
-			{
-				header('HTTP/1.0 403 Access Denied');
-				return false;
-			}
-			if(is_array($lookup) && count($lookup))
-			{
-				$key = $this->getKey();
-				if (is_array($key))
-				{
-					$search = array();
-					foreach ($key as $i => $col)
-						$search[$col] = $lookup[$i + 1];
-
-					return parent::read($search);
-				}
-				else
-				{
-					return parent::read($lookup[1]);
-				}
-			}
-			return parent::read($lookup);
-		}
-
-		protected $user;
+		private $cache;
 	}
 ?>
