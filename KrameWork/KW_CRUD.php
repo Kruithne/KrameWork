@@ -219,7 +219,7 @@
 		 */
 		public function delete($object)
 		{
-			return $this->_delete($oject);
+			return $this->_delete($object);
 		}
 
 		/**
