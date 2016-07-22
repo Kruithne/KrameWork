@@ -137,6 +137,7 @@
 		 * Enable authorization and auditing
 		 * @param string $endpoint The method that will be invoked
 		 * @param string[] $args The arguments to be passed
+		 * @return mixed Return null for normal processing, return anything else to abort the call
 		 */
 		public function filter_call($endpoint, $args)
 		{
@@ -151,6 +152,7 @@
 		 * @param IDataContainer $user The calling user
 		 * @param string $endpoint The method being called
 		 * @param string[] $args The arguments given
+		 * @return bool Return false to throw an exception blocking the call
 		 */
 		public function authorize_call($user, $endpoint, $args)
 		{
