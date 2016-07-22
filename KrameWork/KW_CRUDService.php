@@ -117,10 +117,17 @@
 			{
 				$return = $this->filter_call($method, $args);
 				if($return === null)
+				{
 					$return = call_user_func_array(array($this, $method), $varargs);
+					if($return !== false)
+						$this->audit_call_success($this->user, $method, $args, $result);
+					else
+						$this->audit_call_failed($this->user, $method, $args, null);
+				}
 			}
 			catch(Exception $e)
 			{
+				$this->audit_call_failed($this->user, $method, $args, $e);
 				return (object)['success' => false, 'exception' => $e->getMessage()];
 			}
 			return (object)['success' => $return !== false, 'result' => $return === false ? null : $return];
@@ -130,6 +137,7 @@
 		 * Enable authorization and auditing
 		 * @param string $endpoint The method that will be invoked
 		 * @param string[] $args The arguments to be passed
+		 * @return mixed Return null for normal processing, return anything else to abort the call
 		 */
 		public function filter_call($endpoint, $args)
 		{
@@ -144,6 +152,7 @@
 		 * @param IDataContainer $user The calling user
 		 * @param string $endpoint The method being called
 		 * @param string[] $args The arguments given
+		 * @return bool Return false to throw an exception blocking the call
 		 */
 		public function authorize_call($user, $endpoint, $args)
 		{
@@ -160,6 +169,40 @@
 		{
 		}
 
+		/**
+		 * Override this method to implement change auditing
+		 * @param IDataContainer $user The calling user
+		 * @param string $endpoint The method being called
+		 * @param string[] $args The arguments given
+		 * @param object $old The object prior to change
+		 * @param object $new The object as it is now persisted
+		 */
+		public function audit_change($user, $endpoint, $args, $old, $new)
+		{
+		}
+
+		/**
+		 * Override this method to implement success auditing
+		 * @param IDataContainer $user The calling user
+		 * @param string $endpoint The method being called
+		 * @param string[] $args The arguments given
+		 * @param mixed $result The result of the endpoint execution
+		 */
+		public function audit_call_success($user, $endpoint, $args, $result)
+		{
+		}
+
+		/**
+		 * Override this method to implement failure auditing
+		 * @param IDataContainer $user The calling user
+		 * @param string $endpoint The method being called
+		 * @param string[] $args The arguments given
+		 * @param Exception|null $exception An exception when applicable
+		 */
+		public function audit_call_failed($user, $endpoint, $args, $exception)
+		{
+		}
+
 		public function create($object)
 		{
 			if (!$this->canCreate($object))
@@ -167,7 +210,10 @@
 				header('HTTP/1.0 403 Access Denied');
 				return false;
 			}
-			return parent::create($object);
+			$new = parent::create($object);
+			if($this->changeTracking)
+				$this->audit_change($this->user, 'create', [$object], null, $new);
+			return $new;
 		}
 
 		public function update($object)
@@ -177,7 +223,20 @@
 				header('HTTP/1.0 403 Access Denied');
 				return false;
 			}
+			if($this->changeTracking)
+			{
+				if($object instanceof IDataContainer)
+					$v = $object->getAsArray();
+				else
+					$v = (array)$object;
+				$old = $this->_read($v);
+			}
 			parent::update($object);
+			if($this->changeTracking)
+			{
+				$new = $this->_read($v);
+				$this->audit_change($this->user, 'update', [$object], $old, $new);
+			}
 			return true;
 		}
 
@@ -188,7 +247,17 @@
 				header('HTTP/1.0 403 Access Denied');
 				return false;
 			}
+			if($this->changeTracking)
+			{
+				if($object instanceof IDataContainer)
+					$v = $object->getAsArray();
+				else
+					$v = (array)$object;
+				$old = $this->_read($v);
+			}
 			parent::delete($object);
+			if($this->changeTracking)
+				$this->audit_change($this->user, 'delete', [$object], $old, null);
 			return true;
 		}
 
@@ -262,6 +331,7 @@
 			return parent::read($lookup);
 		}
 
+		protected $changeTracking = false;
 		protected $user;
 	}
 ?>
