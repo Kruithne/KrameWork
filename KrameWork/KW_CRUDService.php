@@ -120,7 +120,7 @@
 				{
 					$return = call_user_func_array(array($this, $method), $varargs);
 					if($return !== false)
-						$this->audit_call_success($this->user, $method, $args, $result);
+						$this->audit_call_success($this->user, $method, $args, $return);
 					else
 						$this->audit_call_failed($this->user, $method, $args, null);
 				}
@@ -226,9 +226,9 @@
 			if($this->changeTracking)
 			{
 				if($object instanceof IDataContainer)
-					$v = $object->getAsArray();
+					$v = $this->getKeyOf($object->getAsArray());
 				else
-					$v = (array)$object;
+					$v = $this->getKeyOf((array)$object);
 				$old = $this->_read($v);
 			}
 			parent::update($object);
@@ -250,9 +250,9 @@
 			if($this->changeTracking)
 			{
 				if($object instanceof IDataContainer)
-					$v = $object->getAsArray();
+					$v = $this->getKeyOf($object->getAsArray());
 				else
-					$v = (array)$object;
+					$v = $this->getKeyOf((array)$object);
 				$old = $this->_read($v);
 			}
 			parent::delete($object);
