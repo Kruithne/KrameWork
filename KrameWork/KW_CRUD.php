@@ -175,6 +175,23 @@
 			return $this->fetchSingleObject($this->readOne);
 		}
 
+		protected function getKeyOf($from)
+		{
+			if(is_array($from))
+			{
+				$key = $this->getKey();
+				if(is_array($key))
+				{
+					$to = [];
+					foreach($key as $k)
+						$to[$k] = isset($from[$k]) ? $from[$k] : null;
+					return $to;
+				}
+				else
+					return isset($from[$key]) ? $from[$key] : null;
+			}
+		}
+
 		/**
 		 * Fetches a list of objects based on a partial key match
 		 * @param string[] $key The key array
