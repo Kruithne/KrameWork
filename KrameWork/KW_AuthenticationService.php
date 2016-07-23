@@ -114,7 +114,7 @@
 			if ($user)
 				return (object)['id' => $user->id, 'name' => $user->name, 'state' => $_SESSION['state']];
 			else if ($auto)
-				return (object)['id' => $user->id, 'name' => $auto->name, 'state' => $_SESSION['state']];
+				return (object)['id' => $auto->id, 'name' => $auto->name, 'state' => $_SESSION['state']];
 			else
 				return (object)['id' => null, 'name' => null, 'state' => 0];
 		}
