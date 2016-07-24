@@ -391,7 +391,7 @@
 				$filter[] = sprintf('(:%1$s_null = 1 OR %1$s = :%1$s)', $col);
 
 			$filter = join(' AND ', $filter);
-			$this->readSet = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . $filter);
+			$this->readSet = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . $filter.$this->getOrderBy());
 
 			foreach ($key as $col)
 				$this->readSet->setType($col, $this->getKeyType($col));
@@ -408,7 +408,7 @@
 				$fields[] = sprintf('%1$s = :%1$s', $col);
 
 			// Read
-			$this->readAll = $this->db->prepare('SELECT * FROM ' . $table);
+			$this->readAll = $this->db->prepare('SELECT * FROM ' . $table.$this->getOrderBy());
 			$this->readOne = $this->db->prepare('SELECT * FROM ' . $table. ' WHERE ' . $filter);
 
 			// Update
@@ -455,12 +455,12 @@
 			switch ($this->db->getType())
 			{
 				case 'sqlite':
-					$this->readAll = $this->db->prepare('SELECT rowid, * FROM ' . $table.' ORDER BY '.$this->getOrderBy());
+					$this->readAll = $this->db->prepare('SELECT rowid, * FROM ' . $table.$this->getOrderBy());
 					$this->readOne = $this->db->prepare('SELECT rowid, * FROM ' . $table . ' WHERE ' . $filter);
 					break;
 
 				default:
-					$this->readAll = $this->db->prepare('SELECT * FROM ' . $table.' ORDER BY '.$this->getOrderBy());
+					$this->readAll = $this->db->prepare('SELECT * FROM ' . $table.$this->getOrderBy());
 					$this->readOne = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . $filter);
 					break;
 			}
@@ -499,7 +499,9 @@
 
 		private function getOrderBy()
 		{
-			if(count($this->order) == 0)
+			if(count($this->order) > 0)
+				$order = $this->order;
+			else
 			{
 				$key = $this->getKey();
 				if(!is_array($key))
@@ -507,14 +509,15 @@
 				else
 					$order = array_combine($key, array_fill(0, count($key), true));
 			}
-			else
-				$order = $this->order;
+
+			if(count($order) == 0)
+				return '';
 
 			$orderBy = [];
-			foreach($order as $k => $o)
-				$orderBy[] = $k.' '.($o?'ASC':'DESC');
+			foreach($order as $col => $asc)
+				$orderBy[] = $col.' '.($asc?'ASC':'DESC');
 
-			return join(', ',$orderBy);
+			return ' ORDER BY '.join(', ',$orderBy);
 		}
 
 		/**

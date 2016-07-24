@@ -309,7 +309,7 @@
 				{
 					if($col[0] == '-')
 						$q->descending(substr($col,1));
-					if($col[0] == '+')
+					else if($col[0] == '+')
 						$q->ascending(substr($col,1));
 					else
 						$q->ascending($col);
