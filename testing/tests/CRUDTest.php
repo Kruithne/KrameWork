@@ -61,11 +61,11 @@
 		{
 			$db = new MockDatabaseConnection('mysql');
 			$db->setFactory(
-				'SELECT * FROM __mock__ WHERE a = :a AND b = :b ORDER BY a ASC, b ASC',
+				'SELECT * FROM __mock__ WHERE a = :a AND b = :b',
 				create_function('$map', 'return $map["b"] < 0 ? Array() : Array(new KW_DataContainer($map));')
 			);
 			$db->setFactory(
-				'SELECT * FROM __mock__ WHERE (:a_null = 1 OR a = :a) AND (:b_null = 1 OR b = :b) ORDER BY a ASC, b ASC',
+				'SELECT * FROM __mock__ WHERE (:a_null = 1 OR a = :a) AND (:b_null = 1 OR b = :b)',
 				create_function('$map', 
 					'if($map["b"] < 0) return Array();'.
 					'if($map["b"] > 0 && !isset($map["b_null"])) return Array(new KW_DataContainer($map));'.
