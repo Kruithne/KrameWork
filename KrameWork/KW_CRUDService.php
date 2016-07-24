@@ -300,7 +300,9 @@
 			{
 				$key = array_shift($keys);
 				$q = $q ? $q->andColumn($key) : $this->search($key);
-				if (strpos($query[$key], '%') !== false)
+				if ($query[$key] === null)
+					$q->isNull();
+				else if (strpos($query[$key], '%') !== false)
 					$q->like($query[$key]);
 				else
 					$q->equals($query[$key]);
