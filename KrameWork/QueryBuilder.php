@@ -124,6 +124,22 @@
 		 */
 		public function execute();
 	}
+	interface IQueryOrderBy extends IQueryTerminus
+	{
+		/**
+		 * Order the result set by a column in descending order
+		 * @param string $column A column name to order by in descending order
+		 * @return IQueryOrderBy
+		 */
+		public function descending($column);
+
+		/**
+		 * Order the result set by a column in ascending order
+		 * @param string $column A column name to order by in ascending order
+		 * @return IQueryOrderBy
+		 */
+		public function ascending($column);
+	}
 	interface IQueryLimit extends IQueryTerminus
 	{
 		/**
@@ -143,5 +159,5 @@
 		public function offset($offset);
 	}
 	interface IQueryColumn extends IQueryBetween, IQueryEquals, IQueryEqualsCaseInsensitive, IQueryGreaterThan, IQueryLessThan, IQueryLike, IQueryNotLike, IQueryNull, IQueryNotNull, IQueryMaximum, IQueryMinimum {}
-	interface IQueryPredicate extends IQueryAnd, IQueryOr, IQueryLimit, IQueryOffset {}
+	interface IQueryPredicate extends IQueryAnd, IQueryOr, IQueryLimit, IQueryOffset, IQueryOrderBy {}
 ?>

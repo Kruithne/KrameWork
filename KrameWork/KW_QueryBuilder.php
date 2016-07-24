@@ -42,6 +42,14 @@
 			if ($glue)
 				return $base;
 
+			if (count($this->orderBy))
+			{
+				$cols = [];
+				foreach ($this->orderBy as $col => $asc)
+					$cols[] = $col.' '.($asc?'ASC':'DESC');
+				$base .= ' ORDER BY '.join(', ',$cols);
+			}
+
 			if ($this->query_limit)
 			{
 				switch ($this->db->getType())
@@ -209,6 +217,16 @@
 			throw new Exception('Unsupported database type');
 		}
 
+		public function descending($column)
+		{
+			$this->orderBy[$column] = false;
+		}
+
+		public function ascending($column)
+		{
+			$this->orderBy[$column] = true;
+		}
+
 		public function execute()
 		{
 			$sql = $this->build(false);
@@ -273,5 +291,11 @@
 		 * @var int
 		 */
 		private $query_offset;
+
+		/**
+		 * @var array
+		 * Key is column name, value is bool. False = descending, True = ascending
+		 */
+		private $orderBy = [];
 	}
 ?>

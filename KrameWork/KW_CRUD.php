@@ -455,12 +455,12 @@
 			switch ($this->db->getType())
 			{
 				case 'sqlite':
-					$this->readAll = $this->db->prepare('SELECT rowid, * FROM ' . $table);
+					$this->readAll = $this->db->prepare('SELECT rowid, * FROM ' . $table.' ORDER BY '.$this->getOrderBy());
 					$this->readOne = $this->db->prepare('SELECT rowid, * FROM ' . $table . ' WHERE ' . $filter);
 					break;
 
 				default:
-					$this->readAll = $this->db->prepare('SELECT * FROM ' . $table);
+					$this->readAll = $this->db->prepare('SELECT * FROM ' . $table.' ORDER BY '.$this->getOrderBy());
 					$this->readOne = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . $filter);
 					break;
 			}
@@ -497,9 +497,35 @@
 			$this->deleteRecord = $this->db->prepare('DELETE FROM ' . $table);
 		}
 
+		private function getOrderBy()
+		{
+			if(count($this->order) == 0)
+			{
+				$key = $this->getKey();
+				if(!is_array($key))
+					$order = [$key => true];
+				else
+					$order = array_combine($key, array_fill(0, count($key), true));
+			}
+			else
+				$order = $this->order;
+
+			$orderBy = [];
+			foreach($order as $k => $o)
+				$orderBy[] = $k.' '.($o?'ASC':'DESC');
+
+			return join(', ',$orderBy);
+		}
+
 		/**
 		 * var IErrorHandler $error
 		 */
 		private $error;
+
+		/**
+		 * var array $order
+		 * Key is column name, value is bool. False = descending, True = ascending
+		 */
+		protected $order = [];
 	}
 ?>
