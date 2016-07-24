@@ -42,6 +42,14 @@
 			if ($glue)
 				return $base;
 
+			if (count($this->orderBy))
+			{
+				$cols = [];
+				foreach ($this->orderBy as $col => $asc)
+					$cols[] = $col.' '.($asc?'ASC':'DESC');
+				$base .= ' ORDER BY '.join(', ',$cols);
+			}
+
 			if ($this->query_limit)
 			{
 				switch ($this->db->getType())
@@ -74,18 +82,21 @@
 		 */
 		public function bind($statement)
 		{
-			if (is_array($this->value))
+			if ($this->value !== null)
 			{
-				foreach ($this->value as $pf => $value)
+				if (is_array($this->value))
 				{
-					$key = $this->column . $this->level . '_' . $pf;
-					$statement->$key = $value;
+					foreach ($this->value as $pf => $value)
+					{
+						$key = $this->column . $this->level . '_' . $pf;
+						$statement->$key = $value;
+					}
 				}
-			}
-			else
-			{
-				$key = $this->column . $this->level;
-				$statement->$key = $this->value;
+				else
+				{
+					$key = $this->column . $this->level;
+					$statement->$key = $this->value;
+				}
 			}
 
 			if ($this->anchor)
@@ -209,6 +220,16 @@
 			throw new Exception('Unsupported database type');
 		}
 
+		public function descending($column)
+		{
+			$this->orderBy[$column] = false;
+		}
+
+		public function ascending($column)
+		{
+			$this->orderBy[$column] = true;
+		}
+
 		public function execute()
 		{
 			$sql = $this->build(false);
@@ -273,5 +294,11 @@
 		 * @var int
 		 */
 		private $query_offset;
+
+		/**
+		 * @var array
+		 * Key is column name, value is bool. False = descending, True = ascending
+		 */
+		private $orderBy = [];
 	}
 ?>

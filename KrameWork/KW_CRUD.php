@@ -391,7 +391,7 @@
 				$filter[] = sprintf('(:%1$s_null = 1 OR %1$s = :%1$s)', $col);
 
 			$filter = join(' AND ', $filter);
-			$this->readSet = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . $filter);
+			$this->readSet = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . $filter.$this->getOrderBy());
 
 			foreach ($key as $col)
 				$this->readSet->setType($col, $this->getKeyType($col));
@@ -408,7 +408,7 @@
 				$fields[] = sprintf('%1$s = :%1$s', $col);
 
 			// Read
-			$this->readAll = $this->db->prepare('SELECT * FROM ' . $table);
+			$this->readAll = $this->db->prepare('SELECT * FROM ' . $table.$this->getOrderBy());
 			$this->readOne = $this->db->prepare('SELECT * FROM ' . $table. ' WHERE ' . $filter);
 
 			// Update
@@ -455,12 +455,12 @@
 			switch ($this->db->getType())
 			{
 				case 'sqlite':
-					$this->readAll = $this->db->prepare('SELECT rowid, * FROM ' . $table);
+					$this->readAll = $this->db->prepare('SELECT rowid, * FROM ' . $table.$this->getOrderBy());
 					$this->readOne = $this->db->prepare('SELECT rowid, * FROM ' . $table . ' WHERE ' . $filter);
 					break;
 
 				default:
-					$this->readAll = $this->db->prepare('SELECT * FROM ' . $table);
+					$this->readAll = $this->db->prepare('SELECT * FROM ' . $table.$this->getOrderBy());
 					$this->readOne = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . $filter);
 					break;
 			}
@@ -497,9 +497,38 @@
 			$this->deleteRecord = $this->db->prepare('DELETE FROM ' . $table);
 		}
 
+		private function getOrderBy()
+		{
+			if(count($this->order) > 0)
+				$order = $this->order;
+			else
+			{
+				$key = $this->getKey();
+				if(!is_array($key))
+					$order = [$key => true];
+				else
+					$order = array_combine($key, array_fill(0, count($key), true));
+			}
+
+			if(count($order) == 0)
+				return '';
+
+			$orderBy = [];
+			foreach($order as $col => $asc)
+				$orderBy[] = $col.' '.($asc?'ASC':'DESC');
+
+			return ' ORDER BY '.join(', ',$orderBy);
+		}
+
 		/**
 		 * var IErrorHandler $error
 		 */
 		private $error;
+
+		/**
+		 * var array $order
+		 * Key is column name, value is bool. False = descending, True = ascending
+		 */
+		protected $order = [];
 	}
 ?>
