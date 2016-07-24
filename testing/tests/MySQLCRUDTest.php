@@ -28,7 +28,7 @@
 			$db->begin();
 			$result = $crud->read();
 			$sql = $db->end();
-			$this->assertEquals('SELECT * FROM __mock__', $sql, 'Select all query mismatch');
+			$this->assertEquals('SELECT * FROM __mock__ ORDER BY id ASC', $sql, 'Select all query mismatch');
 		}
 
 		/**
@@ -98,7 +98,7 @@
 			$db->begin();
 			$result = $crud->read();
 			$sql = $db->end();
-			$this->assertEquals('SELECT * FROM __mock__', $sql, 'Select all query mismatch');
+			$this->assertEquals('SELECT * FROM __mock__ ORDER BY a ASC, b ASC', $sql, 'Select all query mismatch');
 		}
 
 		/**
@@ -112,7 +112,7 @@
 			$db->begin();
 			$result = $crud->read(array('a' => 1, 'b' => '*'));
 			$sql = $db->end();
-			$this->assertEquals('SELECT * FROM __mock__ WHERE (:a_null = 1 OR a = :a) AND (:b_null = 1 OR b = :b)', $sql, 'Select all query mismatch');
+			$this->assertEquals('SELECT * FROM __mock__ WHERE (:a_null = 1 OR a = :a) AND (:b_null = 1 OR b = :b) ORDER BY a ASC, b ASC', $sql, 'Select all query mismatch');
 		}
 
 		/**
