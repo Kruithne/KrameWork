@@ -82,18 +82,21 @@
 		 */
 		public function bind($statement)
 		{
-			if (is_array($this->value))
+			if ($this->value !== null)
 			{
-				foreach ($this->value as $pf => $value)
+				if (is_array($this->value))
 				{
-					$key = $this->column . $this->level . '_' . $pf;
-					$statement->$key = $value;
+					foreach ($this->value as $pf => $value)
+					{
+						$key = $this->column . $this->level . '_' . $pf;
+						$statement->$key = $value;
+					}
 				}
-			}
-			else
-			{
-				$key = $this->column . $this->level;
-				$statement->$key = $this->value;
+				else
+				{
+					$key = $this->column . $this->level;
+					$statement->$key = $this->value;
+				}
 			}
 
 			if ($this->anchor)
