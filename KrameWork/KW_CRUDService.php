@@ -297,11 +297,28 @@
 				$key = array_shift($keys);
 				$q = $q ? $q->andColumn($key) : $this->search($key);
 				if (strpos($query[$key], '%') !== false)
-					$q = $q->like($query[$key]);
+					$q->like($query[$key]);
 				else
-					$q = $q->equals($query[$key]);
+					$q->equals($query[$key]);
 			}
 			while (count($keys));
+			if(isset($_GET['_orderby']))
+			{
+				$order = explode(',',$_GET['_orderby']);
+				foreach($order as $col)
+				{
+					if($col[0] == '-')
+						$q->descending(substr($col,1));
+					if($col[0] == '+')
+						$q->ascending(substr($col,1));
+					else
+						$q->ascending($col);
+				}
+			}
+			if(isset($_GET['_limit']))
+				$q->limit($_GET['_limit']);
+			if(isset($_GET['_offset']))
+				$q->offset($_GET['_offset']);
 			return $q->execute();
 		}
 
