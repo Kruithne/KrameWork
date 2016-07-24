@@ -277,7 +277,11 @@
 				$key = [$key];
 			foreach ($_GET as $k => $v)
 				if (in_array($k, $cols) || in_array($k, $key))
+				{
+					if ($v === 'NULL')
+						$v = null;
 					$query[$k] = $v;
+				}
 			return $this->readQuery($query);
 		}
 
