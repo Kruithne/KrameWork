@@ -271,7 +271,7 @@
 			if ($this->$key == null)
 				$this->$key = $this->db->prepare($sql);
 
-			$this->$key->execute();
+			return $this->$key->execute();
 		}
 
 		/**

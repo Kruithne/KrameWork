@@ -89,7 +89,7 @@
 			);
 
 			if ($result == AUTH_ERR_UNKNOWN)
-				return ['name' => null, 'state' => AUTH_ERR_UNKNOWN];
+				return ['id' => null, 'name' => null, 'state' => AUTH_ERR_UNKNOWN];
 
 			global $user;
 			$user = $this->users->getUser($request->username);
@@ -112,11 +112,11 @@
 
 			global $user;
 			if ($user)
-				return (object)['name' => $user->name, 'state' => $_SESSION['state']];
+				return (object)['id' => $user->id, 'name' => $user->name, 'state' => $_SESSION['state']];
 			else if ($auto)
-				return (object)['name' => $auto->name, 'state' => $_SESSION['state']];
+				return (object)['id' => $auto->id, 'name' => $auto->name, 'state' => $_SESSION['state']];
 			else
-				return (object)['name' => null, 'state' => 0];
+				return (object)['id' => null, 'name' => null, 'state' => 0];
 		}
 
 		/**
@@ -248,7 +248,7 @@
 
 				session_destroy();
 			}
-			return ['name' => null, 'state' => 0];
+			return ['id' => null, 'name' => null, 'state' => 0];
 		}
 
 		private $users;
