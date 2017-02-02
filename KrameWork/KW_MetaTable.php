@@ -40,6 +40,16 @@ INSERT INTO `_metatable` (`table`,`version`) VALUES (:table,:version)
 	ON DUPLICATE KEY UPDATE `version`=VALUES(`version`)
 ');
 					break;
+				case 'dblib':
+					$this->exists = $this->db->prepare('SELECT [TABLE_NAME] FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=\'dbo\' AND TABLE_NAME=\'_metatable\'');
+					$this->load = $this->db->prepare('SELECT * FROM [_metatable]');
+					$this->save = $this->db->prepare('UPDATE [_metatable] SET [version]=:version WHERE [table]=:table');
+					$this->create = $this->db->prepare('
+INSERT INTO dbo.[_metatable] ([table],[version])
+SELECT :table, 0
+WHERE NOT EXISTS (SELECT * FROM [_metatable] WHERE [table]=:table
+');
+					break;
 				default:
 					trigger_error('The database driver "'.$this->db->getType().'" is not yet supported by SchemaManager, sorry!', E_USER_ERROR);
 			}
@@ -74,6 +84,10 @@ CREATE TABLE _metatable (
 						)
 					);
 					break;
+				case 'dblib':
+					return [
+						1 => ['CREATE TABLE dbo.[_metatable] ([table] VARCHAR(50) NOT NULL, [version] INT NOT NULL)']
+					];
 				default:
 					return array(
 						1 => array('
