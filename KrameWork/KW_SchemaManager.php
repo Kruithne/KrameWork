@@ -94,10 +94,13 @@
 		 */
 		public function upgrade(ISchemaTable $spec)
 		{
-			if ($this->db->getType() == 'pgsql')
+			switch ($this->db->getType())
 			{
-				$this->_metatable->create->table = $spec->getName();
-				$this->_metatable->create->execute();
+				case 'pgsql':
+				case 'dblib':
+					$this->_metatable->create->table = $spec->getName();
+					$this->_metatable->create->execute();
+					break;
 			}
 
 			$save = $this->_metatable->save;
