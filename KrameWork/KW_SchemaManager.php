@@ -98,8 +98,11 @@
 			{
 				case 'pgsql':
 				case 'dblib':
-					$this->_metatable->create->table = $spec->getName();
-					$this->_metatable->create->execute();
+					if ($spec->getName() != '_metatable')
+					{
+						$this->_metatable->create->table = $spec->getName();
+						$this->_metatable->create->execute();
+					}
 					break;
 			}
 
