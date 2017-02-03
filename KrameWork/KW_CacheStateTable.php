@@ -45,6 +45,12 @@
 					$this->insert = $this->db->prepare('INSERT INTO _cache ("key","timestamp") VALUES (:key, :timestamp)');
 					break;
 
+				case 'dblib':
+					$this->select = $this->db->prepare('SELECT [timestamp] FROM _cache WHERE [key] = :key');
+					$this->update = $this->db->prepare('UPDATE _cache SET [timestamp] = :timestamp WHERE [key] = :key');
+					$this->insert = $this->db->prepare('INSERT INTO _cache ([key],[timestamp]) VALUES (:key, :timestamp)');
+					break;
+
 				default:
 					$this->select = $this->db->prepare('SELECT `timestamp` FROM _cache WHERE `key` = :key');
 					$this->update = $this->db->prepare('UPDATE _cache SET `timestamp` = :timestamp WHERE `key` = :key');
@@ -77,6 +83,17 @@
 						)
 					);
 					break;
+
+				case 'dblib':
+					return [
+						1 => ['
+							CREATE TABLE [_cache] (
+								[key] VARCHAR(100),
+								[timestamp] INTEGER,
+								CONSTRAINT PK__cache PRIMARY KEY NONCLUSTERED ([key])
+							)'
+						]
+					];
 
 				default:
 					return array(
