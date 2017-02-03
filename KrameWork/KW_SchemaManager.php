@@ -106,18 +106,6 @@
 		 */
 		public function upgrade(ISchemaTable $spec)
 		{
-			switch ($this->db->getType())
-			{
-				case 'pgsql':
-				case 'dblib':
-					if ($spec->getName() != '_metatable')
-					{
-						$this->_metatable->create->table = $spec->getName();
-						$this->_metatable->create->execute();
-					}
-					break;
-			}
-
 			$save = $this->_metatable->save;
 			$sql = $spec->getQueries();
 			$from = $this->getCurrentVersion($spec->getName());
@@ -130,6 +118,16 @@
 				if (isset($sql[$i]))
 					foreach ($sql[$i] as $step)
 						$this->db->execute($step);
+
+
+				switch ($this->db->getType())
+				{
+					case 'pgsql':
+					case 'dblib':
+						$this->_metatable->create->table = $spec->getName();
+						$this->_metatable->create->execute();
+						break;
+				}
 
 				$save->table = $spec->getName();
 				$save->version = $i;
