@@ -237,6 +237,10 @@
 		 */
 		private function constructComponent($class_name)
 		{
+			if (in_array($class_name, $this->constructorStack))
+				throw new KW_ClassDependencyException(join('/',$this->constructorStack).'/'.$class_name, "Circular dependency detected for %s");
+			array_push($this->constructorStack, $class_name);
+
 			$class = new ReflectionClass($class_name);
 
 			if (!$class->isInstantiable())
@@ -270,6 +274,7 @@
 			if ($this->classes[$class_name] === null)
 				$this->classes[$class_name] = $object;
 
+			array_pop($this->constructorStack);
 			return $object;
 		}
  
@@ -409,5 +414,10 @@
 		 * @var bool
 		 */
 		protected $autoAddDepends = false;
+
+		/**
+		 * @var string[]
+		 */
+		private $constructorStack = [];
 	}
 ?>
