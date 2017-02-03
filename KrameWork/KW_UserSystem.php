@@ -200,7 +200,7 @@
 				case 'dblib':
 					return [
 						1 => ['
-CREATE TABLE ['.$table.' (
+CREATE TABLE ['.$table.'] (
 	id BIGINT NOT NULL IDENTITY(1,1),
 	username VARCHAR(50) NOT NULL,
 	name VARCHAR(50) NOT NULL,
