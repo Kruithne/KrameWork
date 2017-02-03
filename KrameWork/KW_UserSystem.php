@@ -163,36 +163,62 @@
 		public function getQueries()
 		{
 			$table = $this->getName();
-			return array(
-				1 => array('
-					CREATE TABLE '. $table. ' (
-						id SERIAL NOT NULL,
-						username VARCHAR(50) NOT NULL,
-						name VARCHAR(50) NOT NULL,
-						passphrase VARCHAR(100) NOT NULL,
-						secret VARCHAR(32),
-						lastcode INTEGER,
-						email VARCHAR(100) NOT NULL,
-						created TIMESTAMP NOT NULL,
-						pp_changed TIMESTAMP NOT NULL,
-						pp_locked TIMESTAMP,
-						active BOOLEAN NOT NULL,
-						PRIMARY KEY (id),
-						UNIQUE (username),
-						UNIQUE (email)
-					)'
-				),
-				2 => array('
-					ALTER TABLE '. $table. '
-						ADD COLUMN session_salt VARCHAR(32),
-						ADD COLUMN failed_logins SMALLINT
-					'),
-				3 => array('UPDATE '. $table. ' SET failed_logins = 0'),
-				4 => array('
-					ALTER TABLE '. $table. '
-						ADD COLUMN last_login TIMESTAMP
-					')
-			);
+			switch($this->db->getType())
+			{
+				case 'pgsql':
+					return array(
+						1 => array('
+							CREATE TABLE '. $table. ' (
+								id SERIAL NOT NULL,
+								username VARCHAR(50) NOT NULL,
+								name VARCHAR(50) NOT NULL,
+								passphrase VARCHAR(100) NOT NULL,
+								secret VARCHAR(32),
+								lastcode INTEGER,
+								email VARCHAR(100) NOT NULL,
+								created TIMESTAMP NOT NULL,
+								pp_changed TIMESTAMP NOT NULL,
+								pp_locked TIMESTAMP,
+								active BOOLEAN NOT NULL,
+								PRIMARY KEY (id),
+								UNIQUE (username),
+								UNIQUE (email)
+							)'
+						),
+						2 => array('
+							ALTER TABLE '. $table. '
+								ADD COLUMN session_salt VARCHAR(32),
+								ADD COLUMN failed_logins SMALLINT
+							'),
+						3 => array('UPDATE '. $table. ' SET failed_logins = 0'),
+						4 => array('
+							ALTER TABLE '. $table. '
+								ADD COLUMN last_login TIMESTAMP
+							')
+					);
+
+				case 'dblib':
+					return [
+						1 => ['
+CREATE TABLE ['.$table.' (
+	id BIGINT NOT NULL IDENTITY(1,1),
+	username VARCHAR(50) NOT NULL,
+	name VARCHAR(50) NOT NULL,
+	passphrase VARCHAR(100) NOT NULL,
+	secret VARCHAR(32),
+	lastcode INT,
+	email VARCHAR(100) NOT NULL,
+	created DATETIME NOT NULL,
+	pp_changed DATETIME NOT NULL,
+	pp_locked DATETIME,
+	active BIT NOT NULL,
+	CONSTRAINT PK_'.$table.' PRIMARY KEY NONCLUSTERED (id)
+)',
+'CREATE UNIQUE INDEX AK_'.$table.'_username ON '.$table.' (username)',
+'CREATE UNIQUE INDEX AK_'.$table.'_email ON '.$table.' (email)'
+						]
+					];
+			}
 		}
 
 		public function authenticate($username, $passphrase)
