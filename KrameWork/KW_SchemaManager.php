@@ -64,7 +64,19 @@
 				$name = $spec->getName();
 				if (!isset($this->tables[$name]))
 					$this->addTable($spec);
-				$this->updateTable($spec, $verbose);
+				try
+				{
+					$this->updateTable($spec, $verbose);
+				}
+				catch(Exception $e)
+				{
+					if($verbose)
+					{
+						echo $e->getMessage();
+						continue;
+					}
+					throw $e;
+				}
 			}
 		}
 
