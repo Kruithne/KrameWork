@@ -219,6 +219,7 @@ CREATE TABLE ['.$table.' (
 						]
 					];
 			}
+			trigger_error('The database driver "'.$this->db->getType().'" is not yet supported by SchemaManager, sorry!', E_USER_ERROR);
 		}
 
 		public function authenticate($username, $passphrase)
