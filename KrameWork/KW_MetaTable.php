@@ -86,7 +86,14 @@ CREATE TABLE _metatable (
 					break;
 				case 'dblib':
 					return [
-						1 => ['CREATE TABLE dbo.[_metatable] ([table] VARCHAR(50) NOT NULL, [version] INT NOT NULL)']
+						1 => ['
+IF (NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = \'_metatable\'))
+BEGIN
+	CREATE TABLE dbo.[_metatable] (
+		[table] VARCHAR(50) NOT NULL,
+		[version] INT NOT NULL
+	)
+END']
 					];
 				default:
 					return array(
