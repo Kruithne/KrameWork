@@ -212,11 +212,15 @@ CREATE TABLE ['.$table.'] (
 	pp_changed DATETIME NOT NULL,
 	pp_locked DATETIME,
 	active BIT NOT NULL,
+	session_salt VARCHAR(32),
+	failed_logins SMALLINT DEFAULT 0,
+	last_login DATETIME,
 	CONSTRAINT PK_'.$table.' PRIMARY KEY NONCLUSTERED (id)
 )',
 'CREATE UNIQUE INDEX AK_'.$table.'_username ON '.$table.' (username)',
 'CREATE UNIQUE INDEX AK_'.$table.'_email ON '.$table.' (email)'
-						]
+						],
+						2 => [], 3 => [], 4 => []
 					];
 			}
 			trigger_error('The database driver "'.$this->db->getType().'" is not yet supported by SchemaManager, sorry!', E_USER_ERROR);
