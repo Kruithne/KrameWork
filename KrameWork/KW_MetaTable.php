@@ -47,7 +47,7 @@ INSERT INTO `_metatable` (`table`,`version`) VALUES (:table,:version)
 					$this->create = $this->db->prepare('
 INSERT INTO dbo.[_metatable] ([table],[version])
 SELECT :table, 0
-WHERE NOT EXISTS (SELECT * FROM [_metatable] WHERE [table]=:table
+WHERE NOT EXISTS (SELECT * FROM [_metatable] WHERE [table]=:table)
 ');
 					break;
 				default:
