@@ -72,7 +72,7 @@
 				{
 					if($verbose)
 					{
-						echo $e->getMessage();
+						echo 'WARNING: '.$e->getMessage()."\n";
 						continue;
 					}
 					throw $e;
