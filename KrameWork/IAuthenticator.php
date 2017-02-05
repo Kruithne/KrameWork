@@ -49,4 +49,3 @@
 		 */
 		public function setCodeLength($length);
 	}
-?>

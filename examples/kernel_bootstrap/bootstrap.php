@@ -10,4 +10,3 @@
 	$schema = $kernel->getComponent('KW_SchemaManager');
 
 	$kernel->start();
-?>

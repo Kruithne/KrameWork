@@ -126,4 +126,3 @@
 			$this->assertEquals('mockdecorator', $object->test(), 'Decorated function call fails');
 		}
 	}
-?>

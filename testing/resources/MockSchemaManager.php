@@ -52,4 +52,3 @@
 		private $tables;
 		private $db;
 	}
-?>

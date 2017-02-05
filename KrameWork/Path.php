@@ -21,4 +21,3 @@
 			return preg_replace("@[//\\\\]+@", DIRECTORY_SEPARATOR, $path);
 		}
 	}
-?>

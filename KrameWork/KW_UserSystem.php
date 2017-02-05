@@ -274,4 +274,3 @@
 		private $acl;
 		private $kernel;
 	}
-?>

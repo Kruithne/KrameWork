@@ -160,4 +160,3 @@
 	}
 	interface IQueryColumn extends IQueryBetween, IQueryEquals, IQueryEqualsCaseInsensitive, IQueryGreaterThan, IQueryLessThan, IQueryLike, IQueryNotLike, IQueryNull, IQueryNotNull, IQueryMaximum, IQueryMinimum {}
 	interface IQueryPredicate extends IQueryAnd, IQueryOr, IQueryLimit, IQueryOffset, IQueryOrderBy {}
-?>

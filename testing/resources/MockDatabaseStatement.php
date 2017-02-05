@@ -72,4 +72,3 @@
 		private $type = array();
 		private $mock;
 	}
-?>

@@ -6,4 +6,3 @@
 			print("ObjectA parameter result: " . $object);
 		}
 	}
-?>

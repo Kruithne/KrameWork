@@ -7,4 +7,3 @@
 	$err->slowWarn = 0.6;
 	$err->errorDocument = file_get_contents('error.html');
 	ob_start(array($err,'errorCatcher'));
-?>

@@ -122,4 +122,3 @@
 		 */
 		private static $encoding = 'UTF-8';
 	}
-?>

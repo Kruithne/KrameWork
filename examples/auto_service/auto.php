@@ -8,4 +8,3 @@
 
 	$service = new AutoService();
 	$service->execute();
-?>

@@ -11,4 +11,3 @@
 		public function reportException($exception) {}
 		public function sendErrorReport($report) {}
 	}
-?>

@@ -31,4 +31,3 @@
 		 */
 		public function getComponent($class_name);
 	}
-?>

@@ -68,4 +68,3 @@
 		private $id = 1;
 		private static $instance = array();
 	}
-?>

@@ -5,4 +5,3 @@
 	$system->addAutoLoadPath(getcwd()); // Auto-load from the current directory.
 
 	new BasicTestObject(); // Construct an object using an automatically loaded class.
-?>

@@ -531,4 +531,3 @@
 		 */
 		protected $order = [];
 	}
-?>

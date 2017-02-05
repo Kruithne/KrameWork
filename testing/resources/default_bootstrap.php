@@ -9,4 +9,3 @@
 	KW_ClassLoader::enableTesting();
 
 	$sys = new KrameSystem(0);
-?>

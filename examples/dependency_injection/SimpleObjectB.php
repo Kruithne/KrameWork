@@ -11,4 +11,3 @@
 			return "Output from SimpleObjectB";
 		}
 	}
-?>

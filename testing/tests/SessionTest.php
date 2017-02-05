@@ -35,4 +35,3 @@
 			$this->assertEquals(null, $rt, "Querying a deleted session value did not return null.");
 		}
 	}
-?>

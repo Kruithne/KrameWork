@@ -10,4 +10,3 @@
 				echo "RandomClass runs query and gets: " . $rows[0]->test_column;
 		}
 	}
-?>

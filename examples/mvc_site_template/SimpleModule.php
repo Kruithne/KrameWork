@@ -8,4 +8,3 @@
 			parent::__construct('Random Page', $page_template);
 		}
 	}
-?>

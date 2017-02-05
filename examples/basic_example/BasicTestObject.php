@@ -6,4 +6,3 @@
 			print(__CLASS__ . " constructed.");
 		}
 	}
-?>

@@ -42,4 +42,3 @@
 		 */
 		protected $sub_modules = array();
 	}
-?>

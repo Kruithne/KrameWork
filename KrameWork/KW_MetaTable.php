@@ -101,4 +101,3 @@ CREATE TABLE `_metatable` (
 			}
 		}
 	}
-?>

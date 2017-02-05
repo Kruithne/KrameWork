@@ -19,4 +19,3 @@
 	define('AUTH_MULTIFACTOR', 3);
 
 	define('HTML_EOL', '<br/>');
-?>

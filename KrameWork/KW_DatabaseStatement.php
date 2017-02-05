@@ -216,4 +216,3 @@
 		 */
 		private $types = array();
 	}
-?>

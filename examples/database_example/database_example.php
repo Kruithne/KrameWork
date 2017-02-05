@@ -37,4 +37,3 @@
 		echo $row->test_column . HTML_EOL;
 
 	// The output of this script will revert between 'Hello, world!' and 'World, hello!' each time it's run.
-?>

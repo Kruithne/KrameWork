@@ -424,4 +424,3 @@
 		 */
 		private $hints;
 	}
-?>

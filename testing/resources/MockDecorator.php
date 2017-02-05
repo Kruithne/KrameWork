@@ -24,4 +24,3 @@
 		private $target;
 		private $value = '+';
 	}
-?>

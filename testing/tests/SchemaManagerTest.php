@@ -45,4 +45,3 @@ WHERE _metatable."table" IS NULL
 			$this->assertEquals($db->end(), $expected, 'Meta table version does not match expected version number.');
 		}
 	}
-?>

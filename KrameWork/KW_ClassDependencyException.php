@@ -28,4 +28,3 @@
 		 */
 		protected $class_name;
 	}
-?>

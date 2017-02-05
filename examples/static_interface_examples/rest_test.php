@@ -11,4 +11,3 @@
 		print('The test value given was NOT a e-mail address.');
 	else
 		print('The test value given was a valid e-mail address!');
-?>

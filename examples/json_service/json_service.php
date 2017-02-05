@@ -7,4 +7,3 @@
 
 	$service = new SimpleService(); // Expose service to clients
 	$service->execute();
-?>
