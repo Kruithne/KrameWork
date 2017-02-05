@@ -238,6 +238,9 @@
 
 		public function encode($plaintext)
 		{
+			if (function_exists('random_bytes'))
+				return $this->hash($plaintext, base64_encode(random_bytes(21)));
+
 			return $this->hash($plaintext, base64_encode(mcrypt_create_iv(21)));
 		}
 
