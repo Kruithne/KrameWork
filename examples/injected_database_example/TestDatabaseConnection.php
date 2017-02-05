@@ -6,4 +6,3 @@
 			parent::__construct('sqlite:test_database.sq3', null, null);
 		}
 	}
-?>

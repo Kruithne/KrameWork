@@ -7,4 +7,3 @@
 		 */
 		public function inject($object);
 	}
-?>

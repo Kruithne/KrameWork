@@ -35,4 +35,3 @@
 			unset($_SESSION[$key]);
 		}
 	}
-?>

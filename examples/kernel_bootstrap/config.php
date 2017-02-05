@@ -22,4 +22,3 @@
 		new Decorator('IService','ServiceLogger'),
 		'KW_Template'
 	]);
-?>

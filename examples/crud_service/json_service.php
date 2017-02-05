@@ -12,4 +12,3 @@
 	$system->addComponent('SimpleService');
 
 	$system->getComponent('SimpleService')->execute(); // Expose service to clients
-?>

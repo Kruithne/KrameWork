@@ -84,4 +84,3 @@
 		 */
 		public function executeSQL($sql);
 	}
-?>

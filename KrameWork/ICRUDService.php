@@ -58,4 +58,3 @@
 		 */
 		public function authorize($user);
 	}
-?>

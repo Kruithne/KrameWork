@@ -11,4 +11,3 @@
 			parent::__construct($message);
 		}
 	}
-?>

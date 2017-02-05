@@ -199,4 +199,3 @@
 			$this->assertEquals('DELETE FROM __mock__', $sql, 'Delete query mismatch');
 		}
 	}
-?>

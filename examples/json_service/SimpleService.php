@@ -7,4 +7,3 @@
 			return array('request' => $request, 'result' => 'demo');
 		}
 	}
-?>

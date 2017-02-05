@@ -21,4 +21,3 @@
 			throw new Exception($msg);
 		}
 	}
-?>

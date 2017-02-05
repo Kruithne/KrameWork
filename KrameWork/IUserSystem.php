@@ -93,4 +93,3 @@
 		 */
 		public function isExpired(IDataContainer $user);
 	}
-?>

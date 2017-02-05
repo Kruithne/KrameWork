@@ -64,4 +64,3 @@
 		 */
 		public function sendErrorReport($report);
 	}
-?>

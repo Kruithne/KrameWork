@@ -420,4 +420,3 @@
 		 */
 		private $constructorStack = [];
 	}
-?>

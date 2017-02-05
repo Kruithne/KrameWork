@@ -14,4 +14,3 @@
 
 	// Let's throw an exception.
 	throw new KW_Exception('Something very bad happened here.');
-?>

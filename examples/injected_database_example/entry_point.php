@@ -10,4 +10,3 @@
 
 	// Call the object so it gets constructed.
 	$random_class = $system->getComponent('RandomClass');
-?>

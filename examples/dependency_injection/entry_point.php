@@ -9,4 +9,3 @@
 	$system->addComponent('SimpleObjectA');
 
 	$object = $system->getComponent('SimpleObjectA');
-?>

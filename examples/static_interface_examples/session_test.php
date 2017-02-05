@@ -10,4 +10,3 @@
 
 	Session::Delete('test'); // Delete the value we just stored.
 	var_dump(Session::Get('test')); // Try printing the value, will return null.
-?>

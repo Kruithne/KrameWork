@@ -9,4 +9,3 @@
 	// Calling run() on our test will execute the specified amount of cycles before
 	// giving us some basic timing statistics about the execution.
 	print_r($test->run());
-?>

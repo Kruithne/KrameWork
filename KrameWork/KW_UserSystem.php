@@ -305,4 +305,3 @@ CREATE TABLE ['.$table.'] (
 		private $acl;
 		private $kernel;
 	}
-?>

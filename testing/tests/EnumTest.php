@@ -21,4 +21,3 @@
 			$this->assertEquals(null, $enum->valueOf('missingKey', false), 'Enum value "missingKey" does not equal null.');
 		}
 	}
-?>

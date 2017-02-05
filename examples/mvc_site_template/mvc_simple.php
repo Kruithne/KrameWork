@@ -6,4 +6,3 @@
 	$system->addAutoLoadPath(getcwd()); // Auto-load from the current directory.
 
 	echo new SimpleModule(); // Render our simple module example.
-?>

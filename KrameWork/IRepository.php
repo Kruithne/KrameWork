@@ -20,4 +20,3 @@
 		 */
 		public function prepare();
 	}
-?>

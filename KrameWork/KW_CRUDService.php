@@ -357,4 +357,3 @@
 		protected $changeTracking = false;
 		protected $user;
 	}
-?>

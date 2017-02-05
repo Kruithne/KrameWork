@@ -116,4 +116,3 @@
 		 */
 		private static $testing = false;
 	}
-?>

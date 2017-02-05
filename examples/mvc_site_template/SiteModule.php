@@ -13,4 +13,3 @@
 
 		private $template;
 	}
-?>

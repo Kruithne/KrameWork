@@ -9,4 +9,3 @@
 		 */
 		public function isMemberOf($what, $who);
 	}
-?>

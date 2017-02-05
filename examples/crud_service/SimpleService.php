@@ -44,4 +44,3 @@ CREATE TABLE _test (
 			);
 		}
 	}
-?>

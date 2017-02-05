@@ -11,4 +11,3 @@
 			$this->assertEquals(true, true, "The world as we know it, has broken.");
 		}
 	}
-?>

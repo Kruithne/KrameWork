@@ -53,4 +53,3 @@
 	// For some reason, sqlite still finds the row after it was deleted..
 	//	$data = $test->read($object->rowid);
 	//	printf($data ? "Object not deleted\n" : "Object deleted\n");
-?>

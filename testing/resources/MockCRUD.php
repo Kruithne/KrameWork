@@ -36,4 +36,3 @@
 		private $queries;
 		private $factory;
 	}
-?>
