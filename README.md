@@ -1,3 +1,6 @@
+## Disclaimer
+**This project has been entirely superceded by [KrameWork7](https://github.com/Kruithne/KrameWork7). As such, this project is no longer maintained and is likely out of date.**
+
 ![Build Status](https://travis-ci.org/Kruithne/KrameWork.svg?branch=master)
 
 ## KrameWork - A simple web framework for PHP
