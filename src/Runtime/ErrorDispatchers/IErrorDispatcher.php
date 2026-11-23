@@ -29,7 +29,7 @@
 	 * Interface IErrorDispatcher
 	 * Represents classes in charge of dispatching error reports.
 	 *
-	 * @package Kramework\Runtime\ErrorDispatchers
+	 * @package KrameWork\Runtime\ErrorDispatchers
 	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	interface IErrorDispatcher

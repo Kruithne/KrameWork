@@ -22,7 +22,7 @@
 	 * SOFTWARE.
 	 */
 
-	namespace Kramework\Utils;
+	namespace KrameWork\Utils;
 	use KrameWork\Security\IMaskable;
 
 	require_once(__DIR__ . '/../Security/IMaskable.php');
@@ -31,7 +31,7 @@
 	 * Class StringUtil
 	 * String manipulation utilities.
 	 *
-	 * @package Kramework\Utils
+	 * @package KrameWork\Utils
 	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class StringUtil

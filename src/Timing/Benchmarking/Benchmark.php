@@ -22,13 +22,13 @@
 	 * SOFTWARE.
 	 */
 
-	namespace Kramework\Timing\Benchmarking;
+	namespace KrameWork\Timing\Benchmarking;
 
 	require_once(__DIR__ . '/BenchmarkResult.php');
 
 	/**
 	 * Interface IBenchmark
-	 * @package Kramework\Timing\Benchmarking
+	 * @package KrameWork\Timing\Benchmarking
 	 */
 	interface IBenchmark
 	{
@@ -56,7 +56,7 @@
 
 	/**
 	 * Class Benchmark
-	 * @package Kramework\Timing\Benchmarking
+	 * @package KrameWork\Timing\Benchmarking
 	 */
 	abstract class Benchmark implements IBenchmark
 	{

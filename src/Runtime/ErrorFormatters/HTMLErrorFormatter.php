@@ -6,7 +6,7 @@
 	use KrameWork\Runtime\ErrorReports\IErrorReport;
 	use KrameWork\Runtime\ErrorTypes\IError;
 	use KrameWork\Timing\Timer;
-	use Kramework\Utils\StringUtil;
+	use KrameWork\Utils\StringUtil;
 
 	require_once(__DIR__ . '/../../Reporting/HTMLReport/HTMLReportTemplate.php');
 	require_once(__DIR__ . '/../../Utils/StringUtil.php');

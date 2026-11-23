@@ -29,7 +29,7 @@
 	use KrameWork\Runtime\ErrorTypes\IError;
 	use KrameWork\Timing\Timer;
 	use KrameWork\Utils\StringBuilder;
-	use Kramework\Utils\StringUtil;
+	use KrameWork\Utils\StringUtil;
 
 	require_once(__DIR__ . '/../../Utils/StringBuilder.php');
 	require_once(__DIR__ . '/../../Utils/StringUtil.php');
