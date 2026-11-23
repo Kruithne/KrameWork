@@ -40,14 +40,14 @@
 		/**
 		 * QueryBuilder constructor.
 		 * @api __construct
-		 * @param Database $db The connection we want to run our query against
+		 * @param Generic $db The connection we want to run our query against
 		 * @param string $column The name of the column we are searching
-		 * @param QueryBuilder $anchor The previous step in the chain
+		 * @param QueryBuilder|null $anchor The previous step in the chain
 		 * @param IManagedTable $table The table we are querying
 		 * @param int $level The nth column in the where statement
 		 * @throws \Exception For tables that belong to an unsupported database
 		 */
-		public function __construct(Database $db, string $column, ?QueryBuilder $anchor, IManagedTable $table, int $level = 1)
+		public function __construct(Generic $db, string $column, ?QueryBuilder $anchor, IManagedTable $table, int $level = 1)
 		{
 			$this->db = $db;
 			$this->column = $column;
