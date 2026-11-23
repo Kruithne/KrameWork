@@ -174,13 +174,14 @@ parameter | type | description
 exception | reason
 --- | ---
 `DuplicateClassException` | Class with that name has already been added.
-##### > getComponent() : `object`
+##### > getComponent() : `?object`
 Obtain the injectors instance of a specific component. Non-constructed object instances will be instantiated.
 
 parameter | type | description
 --- | --- | ---
 `$className` | `string` | Class name of the component to create.
 `$add` | `bool` | Attempt to add the class to the injector if missing.
+`$throw` | `bool` | If the component cannot be found, throws an error. Otherwise returns NULL.
 
 exception | reason
 --- | ---
