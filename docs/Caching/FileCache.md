@@ -35,7 +35,7 @@ parameter | type | description
 
 exception | reason
 --- | ---
-`InvalidFileException` | File could not be found/opened.
+`InvalidFileException` | File could not be opened, or does not contain valid cache data.
 
 ##### > persist() : `void`
 Persist the cache state to disk.

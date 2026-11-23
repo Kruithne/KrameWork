@@ -1,5 +1,6 @@
 <?php
 	use KrameWork\Caching\FileCache;
+	use KrameWork\Caching\InvalidFileException;
 	require_once(__DIR__ . '/../src/Caching/FileCache.php');
 
 	class FileCacheTest extends PHPUnit\Framework\TestCase
@@ -226,5 +227,19 @@
 			$this->assertNull($cache->foo);
 
 			unset($cache);
+		}
+
+		/**
+		 * Test that a cache file without array data is rejected.
+		 */
+		public function testInvalidFileData() {
+			file_put_contents('file_cache_test.dat', base64_encode(serialize('foo')) . "\0" . base64_encode(serialize([])));
+
+			try {
+				$this->expectException(InvalidFileException::class);
+				new FileCache('file_cache_test.dat', false);
+			} finally {
+				@unlink('file_cache_test.dat'); // Clean-up.
+			}
 		}
 	}

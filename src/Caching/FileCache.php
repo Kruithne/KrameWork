@@ -39,15 +39,23 @@
 				if (\count($parts) !== 2)
 					throw new InvalidFileException('Cache file does not contain expected data.');
 
-				$this->data = \unserialize(\base64_decode($parts[0]));
-				$this->index = \unserialize(\base64_decode($parts[1]));
+				$data = \unserialize(\base64_decode($parts[0]));
+				$index = \unserialize(\base64_decode($parts[1]), ['allowed_classes' => false]);
 
-				// Clean out expired values.
-				if ($cleanOnLoad) {
-					$time = \time();
-					foreach ($this->index as $key => $expire)
-						if ($expire < $time)
-							unset($this->data[$key], $this->index[$key]);
+				if (!\is_array($data) || !\is_array($index))
+					throw new InvalidFileException('Cache file does not contain expected data.');
+
+				$this->data = $data;
+				$time = \time();
+
+				foreach ($index as $key => $expire) {
+					if (!\is_int($expire))
+						throw new InvalidFileException('Cache file does not contain expected data.');
+
+					if ($cleanOnLoad && $expire < $time)
+						unset($this->data[$key]);
+					else
+						$this->index[$key] = $expire;
 				}
 			}
 		}
@@ -199,12 +207,12 @@
 		}
 
 		/**
-		 * @var array<string, mixed>
+		 * @var array<array-key, mixed>
 		 */
 		private $data;
 
 		/**
-		 * @var array<string, int>
+		 * @var array<array-key, int>
 		 */
 		private $index;
 	}
