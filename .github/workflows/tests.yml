@@ -17,6 +17,8 @@ jobs:
           php-version: '8.3'
           extensions: apcu, pdo_sqlite
           ini-values: apc.enable_cli=1
-          tools: phpunit:12
+          tools: composer
 
-      - run: phpunit --configuration phpunit.xml tests
+      - run: composer install --no-interaction --no-progress
+
+      - run: vendor/bin/phpunit --configuration phpunit.xml tests
