@@ -152,7 +152,7 @@
 
 			if ($this->method == self::METHOD_GET) {
 				if (\strlen($content)) {
-					$url .= (\strpos($url, '?') !== false ? '&' : '?');
+					$url .= (\str_contains($url, '?') ? '&' : '?');
 					$url .= $content;
 				}
 			} else if ($this->method == self::METHOD_POST) {

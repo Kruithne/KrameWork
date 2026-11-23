@@ -357,7 +357,7 @@
 			} else {
 				// NGINX
 				foreach ($_SERVER as $name => $value) {
-					if (\substr($name, 0, 5) === 'HTTP_') {
+					if (\str_starts_with($name, 'HTTP_')) {
 						$headers[\str_replace('_', '-', \strtolower(\substr($name, 5)))] = $value;
 					}
 				}

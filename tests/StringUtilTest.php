@@ -6,24 +6,6 @@
 	class StringUtilTest extends PHPUnit\Framework\TestCase
 	{
 		/**
-		 * Test StringUtil::startsWith() function.
-		 */
-		public function testStartsWith() {
-			$data = "A short dog farted.";
-			$this->assertTrue(StringUtil::startsWith($data, "A short "));
-			$this->assertFalse(StringUtil::startsWith($data, "A hairy "));
-		}
-
-		/**
-		 * Test StringUtil::endsWith() function
-		 */
-		public function testEndsWith() {
-			$data = "A fat dog jumped.";
-			$this->assertTrue(StringUtil::endsWith($data, " jumped."));
-			$this->assertFalse(StringUtil::endsWith($data, " ran away."));
-		}
-
-		/**
 		 * Test the functionality of StringUtil::formatSlashes
 		 */
 		public function testFormatSlashes() {

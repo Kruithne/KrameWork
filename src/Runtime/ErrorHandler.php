@@ -9,14 +9,12 @@
 	use KrameWork\Runtime\ErrorTypes\ExceptionError;
 	use KrameWork\Runtime\ErrorTypes\IError;
 	use KrameWork\Runtime\ErrorTypes\RuntimeError;
-	use KrameWork\Utils\StringUtil;
 
 	require_once(__DIR__ . '/ErrorDispatchers/IBufferDispatcher.php');
 	require_once(__DIR__ . '/ErrorDispatchers/IErrorDispatcher.php');
 	require_once(__DIR__ . '/ErrorReports/ErrorReport.php');
 	require_once(__DIR__ . '/ErrorTypes/ExceptionError.php');
 	require_once(__DIR__ . '/ErrorTypes/RuntimeError.php');
-	require_once(__DIR__ . '/../Utils/StringUtil.php');
 
 	/**
 	 * Class ErrorHandler
@@ -324,7 +322,7 @@
 
 			foreach ($trace as $frame) {
 				$class = $frame['class'] ?? '';
-				if ($class == '' || !StringUtil::startsWith($class, 'KrameWork\Runtime'))
+				if ($class == '' || !\str_starts_with($class, 'KrameWork\Runtime'))
 					break;
 				// Skip core error catcher callback method
 				if ($class == 'KrameWork\Runtime\ErrorHandler' && $frame['function'] == 'catchCoreError')

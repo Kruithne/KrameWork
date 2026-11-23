@@ -14,32 +14,6 @@
 	class StringUtil
 	{
 		/**
-		 * Check if a string starts with another string.
-		 *
-		 * @api startsWith
-		 * @param string $haystack String to search.
-		 * @param string $needle What the string should start with.
-		 * @return bool
-		 */
-		static function startsWith(string $haystack, string $needle):bool {
-			return \strncmp($haystack, $needle, \strlen($needle)) === 0;
-		}
-
-		/**
-		 * Check if a string ends with another string.
-		 * Adapted from http://stackoverflow.com/a/834355/6997644
-		 *
-		 * @api endsWith
-		 * @param string $haystack String to search.
-		 * @param string $needle What the string should end with.
-		 * @return bool
-		 */
-		static function endsWith(string $haystack, string $needle):bool {
-			$length = \strlen($needle);
-			return (\substr($haystack, -$length, $length) === $needle);
-		}
-
-		/**
 		 * Convert all slashes in a string to match the environment directory separator.
 		 *
 		 * @api formatDirectorySlashes

@@ -34,7 +34,7 @@
 			if (!$this->hasHeader('Content-type'))
 				$this->setHeader('Content-type', 'application/json');
 
-			$url = $this->url . (\strpos($this->url, '?') !== false ? '&' : '?');
+			$url = $this->url . (\str_contains($this->url, '?') ? '&' : '?');
 			$url .= \http_build_query($this->data);
 
 			$this->sendRequest($url, \json_encode($object));

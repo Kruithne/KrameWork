@@ -9,20 +9,6 @@ ___
 The `StringUtil` class provides static methods for common string manipulation tasks that are used by some other components provided by KrameWork but benefit from being contained in their own transportable class.
 ___
 ### Functions
-##### > startsWith() : `bool`
-Check if a string starts with another string.
-
-parameter | type | description
---- | --- | ---
-`$haystack` | `string` | String to search.
-`$needle` | `string` | What the string should start with.
-##### > endsWith() : `bool`
-Check if a string ends with another string. Adapted from http://stackoverflow.com/a/834355/6997644
-
-parameter | type | description
---- | --- | ---
-`$haystack` | `string` | String to search.
-`$needle` | `string` | What the string should end with.
 ##### > formatDirectorySlashes() : `string`
 Convert all slashes in a string to match the environment directory separator.
 
