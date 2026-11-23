@@ -43,7 +43,7 @@
 		 * @param string $type Content-type (with trailing parameters).
 		 * @param MailMultipart $parent
 		 */
-		public function __construct(string $type, MailMultipart $parent = null) {
+		public function __construct(string $type, ?MailMultipart $parent = null) {
 			$this->headers = [];
 			$this->content = '';
 			$this->addHeader('Content-Type', $type);

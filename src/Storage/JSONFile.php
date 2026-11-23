@@ -128,7 +128,7 @@
 		 * @param bool $overwrite Overwrite file if it exists.
 		 * @throws JSONException
 		 */
-		public function save(string $file = null, bool $overwrite = true) {
+		public function save(?string $file = null, bool $overwrite = true) {
 			$encoded = \json_encode($this->jsonData);
 			if ($encoded === null)
 				$this->throwJSONError();

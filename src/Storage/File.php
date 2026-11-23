@@ -164,7 +164,7 @@
 		 * @param bool $overwrite Overwrite the file if it exists.
 		 * @throws FileWriteException
 		 */
-		public function save(string $file = null, bool $overwrite = true) {
+		public function save(?string $file = null, bool $overwrite = true) {
 			$file = $file ?? $this->path;
 
 			if (!$overwrite && \is_file($file))

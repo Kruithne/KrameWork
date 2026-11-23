@@ -47,7 +47,7 @@
 		 * @param int $ttl Number of seconds to cache the results, 0 forces refresh
 		 * @return array|\ArrayObject[]
 		 */
-		function getAll(string $sql, array $param = [], int $ttl = null): array {
+		function getAll(string $sql, array $param = [], ?int $ttl = null): array {
 			if ($ttl === null)
 				$ttl = $this->ttl;
 
@@ -68,7 +68,7 @@
 		 * @param int $ttl Number of seconds to cache the results, 0 forces refresh
 		 * @return \ArrayObject
 		 */
-		function getRow(string $sql, array $param = [], int $ttl = null): \ArrayObject {
+		function getRow(string $sql, array $param = [], ?int $ttl = null): \ArrayObject {
 			if ($ttl === null)
 				$ttl = $this->ttl;
 
@@ -89,7 +89,7 @@
 		 * @param int $ttl Number of seconds to cache the results, 0 forces refresh
 		 * @return array
 		 */
-		function getColumn(string $sql, array $param = [], int $ttl = null): array {
+		function getColumn(string $sql, array $param = [], ?int $ttl = null): array {
 			if ($ttl === null)
 				$ttl = $this->ttl;
 
@@ -110,7 +110,7 @@
 		 * @param int $ttl Number of seconds to cache the results, 0 forces refresh
 		 * @return mixed
 		 */
-		function getValue(string $sql, array $param = [], int $ttl = null) {
+		function getValue(string $sql, array $param = [], ?int $ttl = null) {
 			if ($ttl === null)
 				$ttl = $this->ttl;
 

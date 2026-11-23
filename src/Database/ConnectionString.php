@@ -38,7 +38,7 @@
 		 * @param string $username A username to log on
 		 * @param string $password A password to log on
 		 */
-		public function __construct(string $connection, string $username = null, string $password = null) {
+		public function __construct(string $connection, ?string $username = null, ?string $password = null) {
 			$this->connection = $connection;
 			$this->username = $username;
 			$this->password = $password;

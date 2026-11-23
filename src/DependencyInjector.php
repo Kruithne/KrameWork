@@ -50,7 +50,7 @@
 		 * @param array $components Initial components.
 		 * @param array $bindings Initial bindings.
 		 */
-		public function __construct(int $flags = self::DEFAULT_FLAGS, array $components = null, array $bindings = null) {
+		public function __construct(int $flags = self::DEFAULT_FLAGS, ?array $components = null, ?array $bindings = null) {
 			$this->flags = $flags;
 			$this->classList = [];
 			$this->bindingList = [];
@@ -131,7 +131,7 @@
 		 * @return string|string[]
 		 * @throws ClassResolutionException
 		 */
-		public function resolveClassName($class, array &$output = null) {
+		public function resolveClassName($class, ?array &$output = null) {
 			$classes = &$output ?? [];
 
 			// Array given, loop elements and process.

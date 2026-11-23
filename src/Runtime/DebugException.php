@@ -31,7 +31,7 @@
 		 * @param int $code
 		 * @param Throwable $previous
 		 */
-		public function __construct($message, $data, int $code = 0, \Throwable $previous = null) {
+		public function __construct($message, $data, int $code = 0, ?\Throwable $previous = null) {
 			parent::__construct($message, $code, $previous);
 			$this->data = $data;
 		}

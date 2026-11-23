@@ -48,7 +48,7 @@
 		 * @param string $senderName Name of the e-mail sender.
 		 * @param string|array $subject Subject string or callable generator.
 		 */
-		public function __construct(array $recipients, string $sender, string $senderName = null, $subject = 'Error Report') {
+		public function __construct(array $recipients, string $sender, ?string $senderName = null, $subject = 'Error Report') {
 			$this->mail = new Mail();
 			$this->mail->to->add($recipients);
 			$this->mail->setSender($sender, $senderName, true);

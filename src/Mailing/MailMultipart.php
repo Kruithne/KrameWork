@@ -57,7 +57,7 @@
 		 * @param string $type Multipart type, such as 'mixed' or 'alternative'.
 		 * @param MailMultipart $parent Parent of this multipart block.
 		 */
-		public function __construct(string $type, MailMultipart $parent = null) {
+		public function __construct(string $type, ?MailMultipart $parent = null) {
 			$this->parts = [];
 			$this->type = $type;
 			$this->boundaryID = \uniqid('==_mimepart_' . self::$id++);
@@ -105,7 +105,7 @@
 		 * @return StringBuilder|null
 		 * @throws InvalidParentException
 		 */
-		public function compile(StringBuilder $builder = null, IMailPart $parent = null) {
+		public function compile(?StringBuilder $builder = null, ?IMailPart $parent = null) {
 			$builder = $builder ?? new StringBuilder(StringBuilder::LE_UNIX);
 
 			if ($parent) {
