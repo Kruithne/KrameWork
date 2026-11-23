@@ -15,6 +15,11 @@
 
 		protected string $currency;
 
+		/**
+		 * CurrencyValue constructor.
+		 * @param int|float|string|null $value Value to be cast to float and encapsulated
+		 * @param string|null $currency ISO 4217 currency code, defaults to USD
+		 */
 		public function __construct(mixed $value, ?string $currency = null) {
 			parent::__construct($value);
 			$this->currency = Currency::normalize($currency ?? Currency::DEFAULT_CODE);

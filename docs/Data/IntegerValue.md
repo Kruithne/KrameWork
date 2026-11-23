@@ -22,7 +22,7 @@ IntegerValue constructor.
 
 parameter | type | description
 --- | --- | ---
-`$value` | `mixed|null` | Any value, will be converted to integer.
+`$value` | `int|float|string|null` | Any value, will be converted to integer.
 
 
 ##### > real() : `int|null`
@@ -33,7 +33,7 @@ Returns the value passed to the constructor as an integer.
 API for `JsonSerialization`.
 
 ##### > compare() : `int`
-Compares the value to another value. Used in sorting operations.
+Compares the value to another value. Used in sorting operations. Values that are not scalar are sorted as null.
 
 parameter | type | description
 --- | --- | ---

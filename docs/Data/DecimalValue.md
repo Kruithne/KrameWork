@@ -28,7 +28,7 @@ DecimalValue constructor.
 
 parameter | type | description
 --- | --- | ---
-`$value` | `mixed|null` | Any value, will be cast to float automatically.
+`$value` | `int|float|string|null` | Any value, will be cast to float automatically.
 
 
 ##### > real() : `float|null`
@@ -39,7 +39,7 @@ Returns the value passed to the constructor converted to a float.
 API for `JsonSerialization`.
 
 ##### > compare() : `int`
-Compares the value to another value. Used in sorting operations.
+Compares the value to another value. Used in sorting operations. Values that are not scalar are sorted as null.
 
 parameter | type | description
 --- | --- | ---

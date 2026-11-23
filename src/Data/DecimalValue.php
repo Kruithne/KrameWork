@@ -6,6 +6,7 @@
 	 * Class DecimalValue
 	 * A decimal value
 	 * @author docpify <morten@runsafe.no>
+	 * @extends Value<float|null>
 	 */
 	class DecimalValue extends Value
 	{
@@ -14,7 +15,7 @@
 
 		/**
 		 * DecimalValue constructor.
-		 * @param float|mixed $value Value to be cast to float and encapsulated
+		 * @param int|float|string|null $value Value to be cast to float and encapsulated
 		 */
 		public function __construct(mixed $value) {
 			parent::__construct($value === null ? null : (float) $value);
@@ -27,19 +28,14 @@
 		 */
 		public function compare(mixed $to): int|float {
 			$a = $this->value;
-			if ($to instanceof Value)
-				$b = $to->real();
-			else
-				$b = $to;
+			$b = $to instanceof Value ? $to->real() : $to;
 
-			if ($b === null)
+			if (!\is_scalar($b))
 				return $a === null ? 0 : 1;
-			else
-				$b = (float) $b;
 			if ($a === null)
 				return -1;
 
-			return $a <=> $b;
+			return $a <=> (float) $b;
 		}
 
 		/**

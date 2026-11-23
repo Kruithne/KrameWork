@@ -22,10 +22,10 @@ Value constructor.
 
 parameter | type | description
 --- | --- | ---
-`$value` | `mixed|null` | Any value.
+`$value` | `scalar|null` | Any scalar value.
 
 
-##### > real() : `mixed|null`
+##### > real() : `scalar|null`
 Returns the value passed to the constructor.
 
 ##### > json() : `mixed|null`
@@ -33,7 +33,7 @@ Returns the value passed to the constructor.
 API for `JsonSerialization` in derived classes.
 
 ##### > compare() : `int`
-Compares the value to another value using `strnatcasecmp`. Used in sorting operations.
+Compares the value to another value using `strnatcasecmp`. Used in sorting operations. Values that are not scalar are sorted as null.
 
 parameter | type | description
 --- | --- | ---

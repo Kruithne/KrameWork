@@ -22,7 +22,7 @@ DateTimeValue constructor.
 
 parameter | type | description
 --- | --- | ---
-`$value` | `mixed|null` | Any value. Will be passed through `strtotime`
+`$value` | `string|int|float|null` | A unix timestamp, or a string that will be passed through `strtotime`. An invalid string is stored as null.
 
 
 ##### > real() : `int|null`
@@ -33,11 +33,11 @@ Returns the value passed to the constructor, converted into an ISO 8601 timestam
 API for `JsonSerialization`.
 
 ##### > compare() : `int`
-Compares the value to another value. Used in sorting operations.
+Compares the value to another value. Used in sorting operations. A unix timestamp or a date string can be given instead of a `DateValue`.
 
 parameter | type | description
 --- | --- | ---
-`$to` | `mixed|null` | Another value to compare with.
+`$to` | `DateValue|string|int|null` | Another value to compare with.
 ##### > __toString() : `string`
 Returns the inner value converted to a string.
 A null value will be converted to an empty string.

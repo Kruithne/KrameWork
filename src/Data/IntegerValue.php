@@ -6,12 +6,13 @@
 	 * Class IntegerValue
 	 * An integer value
 	 * @author docpify <morten@runsafe.no>
+	 * @extends Value<int|null>
 	 */
 	class IntegerValue extends Value
 	{
 		/**
 		 * IntegerValue constructor.
-		 * @param int|mixed $value A value to be cast to int and encapsulated
+		 * @param int|float|string|null $value A value to be cast to int and encapsulated
 		 */
 		public function __construct(mixed $value) {
 			parent::__construct($value === null ? null : (int) $value);
@@ -24,18 +25,13 @@
 		 */
 		public function compare(mixed $to): int|float {
 			$a = $this->value;
-			if ($to instanceof Value)
-				$b = $to->real();
-			else
-				$b = $to;
+			$b = $to instanceof Value ? $to->real() : $to;
 
-			if ($b === null)
+			if (!\is_scalar($b))
 				return $a === null ? 0 : 1;
-			else
-				$b = (int) $b;
 			if ($a === null)
 				return -1;
 
-			return $a - $b;
+			return $a - (int) $b;
 		}
 	}

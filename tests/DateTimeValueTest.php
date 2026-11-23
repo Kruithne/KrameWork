@@ -73,4 +73,12 @@
 			$this->assertEquals(0, $value->compare(null));
 			$this->assertEquals(0, $value->compare(new DateTimeValue(null)));
 		}
+
+		/**
+		 * Verify that the unix epoch converts to a date string
+		 */
+		public function testEpochValueToString() {
+			$value = new DateTimeValue(0);
+			$this->assertEquals("01.01.1970 00:00", (string)$value);
+		}
 	}

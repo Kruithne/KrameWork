@@ -40,7 +40,7 @@ CurrencyValue constructor.
 
 parameter | type | description
 --- | --- | ---
-`$value` | `mixed|null` | Any value, will be cast to float automatically.
+`$value` | `int|float|string|null` | Any value, will be cast to float automatically.
 `$currency` | `string|null` | ISO 4217 currency code, such as `NOK`. Not case-sensitive. Defaults to `USD`. Throws `InvalidArgumentException` for an unknown code.
 
 ##### > currency() : `string`
@@ -55,7 +55,7 @@ Returns an array with the keys `amount` (`float|null`) and `currency` (`string`)
 API for `JsonSerialization`.
 
 ##### > compare() : `int`
-Compares the value to another value. Used in sorting operations. If both values are `CurrencyValue` with different currency codes, the codes are compared instead of the amounts.
+Compares the value to another value. Used in sorting operations. If both values are `CurrencyValue` with different currency codes, the codes are compared instead of the amounts. Values that are not scalar are sorted as null.
 
 parameter | type | description
 --- | --- | ---

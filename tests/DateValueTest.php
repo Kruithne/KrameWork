@@ -72,4 +72,28 @@
 			$this->assertEquals(0, $value->compare(null));
 			$this->assertEquals(0, $value->compare(new DateValue(null)));
 		}
+
+		/**
+		 * Verify that a null value converts to an empty string
+		 */
+		public function testNullValueToString() {
+			$value = new DateValue(null);
+			$this->assertEquals('', (string)$value);
+		}
+
+		/**
+		 * Verify that an invalid date string is stored as null
+		 */
+		public function testInvalidStringValue() {
+			$value = new DateValue('not a date');
+			$this->assertNull($value->real());
+		}
+
+		/**
+		 * Verify that a value compares equal to a unix timestamp on the same date
+		 */
+		public function testValueCompareTimestamp() {
+			$value = new DateValue('1980-01-01');
+			$this->assertEquals(0, $value->compare(strtotime('1980-01-01 12:00')));
+		}
 	}

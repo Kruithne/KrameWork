@@ -5,17 +5,18 @@
 	 * Class Value
 	 * A generic value
 	 * @author docpify <morten@runsafe.no>
+	 * @template T of scalar|null
 	 */
 	class Value
 	{
 		/**
 		 * Value constructor.
-		 * @param $value mixed The encapsulated value
+		 * @param T $value The encapsulated value
 		 */
 		public function __construct(protected mixed $value) {}
 
 		/**
-		 * @return mixed The encapsulated value
+		 * @return T The encapsulated value
 		 */
 		public function real(): mixed {
 			return $this->value;
@@ -35,12 +36,9 @@
 		 */
 		public function compare(mixed $to): int|float {
 			$a = $this->value;
-			if ($to instanceof Value)
-				$b = $to->real();
-			else
-				$b = $to;
+			$b = $to instanceof Value ? $to->real() : $to;
 
-			if ($b === null)
+			if (!\is_scalar($b))
 				return $a === null ? 0 : 1;
 			if ($a === null)
 				return -1;

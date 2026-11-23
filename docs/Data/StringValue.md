@@ -33,7 +33,7 @@ Returns the string value.
 API for `JsonSerialization`.
 
 ##### > compare() : `int`
-Compares the value to another value with `strnatcasecmp`. Used in sorting operations.
+Compares the value to another value with `strnatcasecmp`. Used in sorting operations. Values that are not scalar are sorted as null.
 
 parameter | type | description
 --- | --- | ---

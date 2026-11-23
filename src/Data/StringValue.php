@@ -7,6 +7,7 @@
 	 * Class StringValue
 	 * A String value
 	 * @author docpify <morten@runsafe.no>
+	 * @extends Value<scalar|null>
 	 */
 	class StringValue extends Value
 	{
