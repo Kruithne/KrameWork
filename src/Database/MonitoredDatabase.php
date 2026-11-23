@@ -20,11 +20,10 @@
 		 * @param int $driver A Database::DB_DRIVER_ constant
 		 * @param int $threshold Trigger a warning if execution takes longer than $threshold seconds
 		 */
-		function __construct(ConnectionString $connection, int $driver, int $threshold = 2) {
+		function __construct(ConnectionString $connection, int $driver, private int $threshold = 2) {
 			parent::__construct($connection, $driver);
 			$this->timer = new Timer(Timer::FORMAT_MICROSECONDS);
 			$this->statistics = [];
-			$this->threshold = $threshold;
 		}
 
 		/**
@@ -146,9 +145,4 @@
 		 * @var array
 		 */
 		private array $statistics;
-
-		/**
-		 * @var int
-		 */
-		private int $threshold;
 	}

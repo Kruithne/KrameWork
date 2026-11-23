@@ -23,14 +23,7 @@
 		 * @param int $execs Executions per set.
 		 * @param string|null $name Name of the benchmark.
 		 */
-		public function __construct(float $average, float $shortest, float $longest, float $elapsed, float $stddev, int $sets, int $execs, ?string $name = null) {
-			$this->average = $average;
-			$this->shortest = $shortest;
-			$this->longest = $longest;
-			$this->elapsed = $elapsed;
-			$this->stddev = $stddev;
-			$this->sets = $sets;
-			$this->executions = $execs;
+		public function __construct(private float $average, private float $shortest, private float $longest, private float $elapsed, private float $stddev, private int $sets, private int $execs, ?string $name = null) {
 			$this->name = $name ?? 'Benchmark' . self::$index++;
 
 			$this->format = '%.5e';
@@ -173,48 +166,13 @@
 		 * @return int
 		 */
 		public function getExecutionsPerSet():int {
-			return $this->executions;
+			return $this->execs;
 		}
 
 		/**
 		 * @var string
 		 */
 		private string $name;
-
-		/**
-		 * @var float
-		 */
-		private float $average;
-
-		/**
-		 * @var float
-		 */
-		private float $shortest;
-
-		/**
-		 * @var float
-		 */
-		private float $longest;
-
-		/**
-		 * @var float
-		 */
-		private float $elapsed;
-
-		/**
-		 * @var int
-		 */
-		private int $sets;
-
-		/**
-		 * @var float
-		 */
-		private float $stddev;
-
-		/**
-		 * @var int
-		 */
-		private int $executions;
 
 		/**
 		 * @var string

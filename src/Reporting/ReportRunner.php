@@ -26,11 +26,7 @@
 		 * @param string $key The key to access the cached report data
 		 * @param int $cacheTTL The number of seconds the report should remain cached
 		 */
-		public function __construct(IDataCache $cache, string $key, int $cacheTTL = 300) {
-			$this->cacheTTL = $cacheTTL;
-			$this->key = $key;
-			$this->cache = $cache;
-		}
+		public function __construct(protected IDataCache $cache, protected string $key, protected int $cacheTTL = 300) {}
 
 		/**
 		 * Executes the report, return the data to be processed and stored in cache.
@@ -116,19 +112,4 @@
 			}
 			return $output;
 		}
-
-		/**
-		 * @var int Cache Time To Live
-		 */
-		protected int $cacheTTL;
-
-		/**
-		 * @var string Cache storage key
-		 */
-		protected string $key;
-
-		/**
-		 * @var IDataCache Cache engine
-		 */
-		protected IDataCache $cache;
 	}

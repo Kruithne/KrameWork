@@ -27,8 +27,7 @@
 		 * @param array $components Initial components.
 		 * @param array $bindings Initial bindings.
 		 */
-		public function __construct(int $flags = self::DEFAULT_FLAGS, ?array $components = null, ?array $bindings = null) {
-			$this->flags = $flags;
+		public function __construct(private int $flags = self::DEFAULT_FLAGS, ?array $components = null, ?array $bindings = null) {
 			$this->classList = [];
 			$this->bindingList = [];
 
@@ -328,9 +327,4 @@
 		 * @var array
 		 */
 		private array $bindingList;
-
-		/**
-		 * @var int
-		 */
-		private int $flags;
 	}

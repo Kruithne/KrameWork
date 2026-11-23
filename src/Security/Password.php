@@ -17,9 +17,7 @@
 		 * @api __construct
 		 * @param string $value Plaintext password.
 		 */
-		public function __construct(string $value) {
-			$this->value = $value;
-		}
+		public function __construct(private string $value) {}
 
 		/**
 		 * Return the password as an MD5 hash.
@@ -85,9 +83,4 @@
 		function __toString():string {
 			return $this->value;
 		}
-
-		/**
-		 * @var string
-		 */
-		private string $value;
 	}

@@ -18,12 +18,7 @@
 		const REQUEST_TIMEOUT = 5;
 		const CACHE_PREFIX = 'kw_github_dispatch_';
 
-		public function __construct(string $token, string $repository, array $labels = [], int $throttle = 86400, ?IDataCache $cache = null, ?callable $title = null) {
-			$this->token = $token;
-			$this->repository = $repository;
-			$this->labels = $labels;
-			$this->throttle = $throttle;
-			$this->cache = $cache;
+		public function __construct(protected string $token, protected string $repository, protected array $labels = [], protected int $throttle = 86400, protected ?IDataCache $cache = null, ?callable $title = null) {
 			$this->title = $title;
 		}
 
@@ -134,16 +129,6 @@
 
 			return $throttled;
 		}
-
-		protected string $token;
-
-		protected string $repository;
-
-		protected array $labels;
-
-		protected int $throttle;
-
-		protected ?IDataCache $cache = null;
 
 		protected mixed $title = null;
 	}

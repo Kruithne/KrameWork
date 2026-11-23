@@ -10,11 +10,7 @@
 	 */
 	class DatabaseCache
 	{
-		public function __construct(IDataCache $cache, Database $database, int $defaultTtl) {
-			$this->cache = $cache;
-			$this->database = $database;
-			$this->ttl = $defaultTtl;
-		}
+		public function __construct(private IDataCache $cache, private Database $database, private int $defaultTtl) {}
 
 		/**
 		 * Execute a query and return an array of ArrayObjects, caching the results.
@@ -26,7 +22,7 @@
 		 */
 		function getAll(string $sql, array $param = [], ?int $ttl = null): array {
 			if ($ttl === null)
-				$ttl = $this->ttl;
+				$ttl = $this->defaultTtl;
 
 			$key = 'all_' . $this->getKey($sql, $param);
 			if ($this->cache->exists($key) && $ttl > 0)
@@ -47,7 +43,7 @@
 		 */
 		function getRow(string $sql, array $param = [], ?int $ttl = null): ?\stdClass {
 			if ($ttl === null)
-				$ttl = $this->ttl;
+				$ttl = $this->defaultTtl;
 
 			$key = 'row_' . $this->getKey($sql, $param);
 			if ($this->cache->exists($key) && $ttl > 0)
@@ -68,7 +64,7 @@
 		 */
 		function getColumn(string $sql, array $param = [], ?int $ttl = null): array {
 			if ($ttl === null)
-				$ttl = $this->ttl;
+				$ttl = $this->defaultTtl;
 
 			$key = 'col_' . $this->getKey($sql, $param);
 			if ($this->cache->exists($key) && $ttl > 0)
@@ -89,7 +85,7 @@
 		 */
 		function getValue(string $sql, array $param = [], ?int $ttl = null): mixed {
 			if ($ttl === null)
-				$ttl = $this->ttl;
+				$ttl = $this->defaultTtl;
 
 			$key = 'val_' . $this->getKey($sql, $param);
 			if ($this->cache->exists($key) && $ttl > 0)
@@ -119,19 +115,4 @@
 		private function getKey(string $sql, array $param): string {
 			return \sha1(\json_encode([$sql, $param]));
 		}
-
-		/**
-		 * @var IDataCache
-		 */
-		private IDataCache $cache;
-
-		/**
-		 * @var Database
-		 */
-		private Database $database;
-
-		/**
-		 * @var int
-		 */
-		private int $ttl;
 	}

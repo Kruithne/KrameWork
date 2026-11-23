@@ -45,11 +45,7 @@
 		 * @param int $executionsPerCycle How many executions per cycle?
 		 * @param string $name A name to identify this benchmark.
 		 */
-		public function __construct(int $sets = 200, int $executionsPerCycle = 1000, ?string $name = null) {
-			$this->name = $name;
-			$this->sets = $sets;
-			$this->executions = $executionsPerCycle;
-		}
+		public function __construct(private int $sets = 200, private int $executionsPerCycle = 1000, private ?string $name = null) {}
 
 		/**
 		 * Called just before the test is run.
@@ -87,7 +83,7 @@
 			for ($i = 0; $i < $this->sets; $i++) {
 				$cycleStartTime = microtime(true);
 
-				for ($e = 0; $e < $this->executions; $e++)
+				for ($e = 0; $e < $this->executionsPerCycle; $e++)
 					$this->execute();
 
 				$cycleTimes[$i] = microtime(true) - $cycleStartTime;
@@ -102,7 +98,7 @@
 				$testEndTime, // Elapsed time
 				$this->std_arr($cycleTimes),
 				$this->sets, // Set count
-				$this->executions, // Executions per set.
+				$this->executionsPerCycle, // Executions per set.
 				$this->name // Benchmark name
 			);
 
@@ -133,19 +129,4 @@
 			$size = count($arr);
 			return sqrt(array_sum(array_map([$this, 'std_square'], $arr, array_fill(0, $size,(array_sum($arr) / $size)))) / ($size - 1));
 		}
-
-		/**
-		 * @var int
-		 */
-		private int $sets;
-
-		/**
-		 * @var int
-		 */
-		private int $executions;
-
-		/**
-		 * @var string|null
-		 */
-		private ?string $name;
 	}

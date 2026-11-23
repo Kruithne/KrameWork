@@ -30,10 +30,8 @@
 		 * @param string $lineEnd Line-endings to use.
 		 * @param bool $wrapPreTags Wrap the report in HTML <pre/> tags.
 		 */
-		public function __construct(string $lineEnd = StringBuilder::LE_UNIX, bool $wrapPreTags = false) {
+		public function __construct(protected string $lineEnd = StringBuilder::LE_UNIX, protected bool $wrapPreTags = false) {
 			$this->timer = new Timer(Timer::FORMAT_MICROSECONDS, false);
-			$this->wrapPreTags = $wrapPreTags;
-			$this->lineEnd = $lineEnd;
 		}
 
 		/**
@@ -215,14 +213,4 @@
 		 * @var StringBuilder|null
 		 */
 		protected ?StringBuilder $report = null;
-
-		/**
-		 * @var bool
-		 */
-		protected bool $wrapPreTags;
-
-		/**
-		 * @var string
-		 */
-		protected string $lineEnd;
 	}

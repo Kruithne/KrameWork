@@ -20,8 +20,7 @@
 		 * @param int $format Timing format, use Timer::FORMAT_ constants.
 		 * @param bool $autoStart Timer will start when constructed.
 		 */
-		public function __construct(int $format = self::FORMAT_SECONDS, bool $autoStart = false) {
-			$this->format = $format;
+		public function __construct(private int $format = self::FORMAT_SECONDS, bool $autoStart = false) {
 			if ($autoStart)
 				$this->start();
 		}
@@ -117,11 +116,6 @@
 
 			return \time(); // Seconds (or default).
 		}
-
-		/**
-		 * @var int
-		 */
-		private int $format;
 
 		/**
 		 * @var int|float|null

@@ -16,8 +16,7 @@
 		 * @api __construct
 		 * @param ConnectionString $connection
 		 */
-		public function __construct(ConnectionString $connection) {
-			$this->conn = $connection;
+		public function __construct(private ConnectionString $connection) {
 			$this->connect();
 		}
 
@@ -28,8 +27,8 @@
 			$error = false;
 			try
 			{
-				$this->connection = new \PDO($this->conn->__toString(), $this->conn->getUsername(), $this->conn->getPassword());
-				$this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+				$this->pdo = new \PDO($this->connection->__toString(), $this->connection->getUsername(), $this->connection->getPassword());
+				$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 			}
 			catch (\Throwable $e)
 			{
@@ -41,15 +40,13 @@
 				throw new \Exception($error);
 		}
 
-		public function __sleep(): array { return ['conn']; }
+		public function __sleep(): array { return ['connection']; }
 		public function __wakeup(): void { $this->connect(); }
-
-		private ConnectionString $conn;
 
 		/**
 		 * @var \PDO
 		 */
-		private \PDO $connection;
+		private \PDO $pdo;
 
 		/**
 		 * @var \PDOStatement|null
@@ -64,7 +61,7 @@
 		 * @return \stdClass[]
 		 */
 		function getAll(string $sql, array $param): array {
-			$query = $this->lastQuery = $this->connection->prepare($sql);
+			$query = $this->lastQuery = $this->pdo->prepare($sql);
 			$this->bind($query, $param);
 			$query->execute();
 			return $query->fetchAll(\PDO::FETCH_OBJ);
@@ -78,7 +75,7 @@
 		 * @return \stdClass|null
 		 */
 		function getRow(string $sql, array $param): ?\stdClass {
-			$query = $this->lastQuery = $this->connection->prepare($sql);
+			$query = $this->lastQuery = $this->pdo->prepare($sql);
 			$this->bind($query, $param);
 			$query->execute();
 			return $query->fetchObject() ?: null;
@@ -92,7 +89,7 @@
 		 * @return array
 		 */
 		function getColumn(string $sql, array $param): array {
-			$query = $this->lastQuery = $this->connection->prepare($sql);
+			$query = $this->lastQuery = $this->pdo->prepare($sql);
 			$this->bind($query, $param);
 			$query->execute();
 			return $query->fetchAll(\PDO::FETCH_COLUMN, 0);
@@ -106,7 +103,7 @@
 		 * @return mixed|null
 		 */
 		function getValue(string $sql, array $param): mixed {
-			$query = $this->lastQuery = $this->connection->prepare($sql);
+			$query = $this->lastQuery = $this->pdo->prepare($sql);
 			$this->bind($query, $param);
 			$query->execute();
 
@@ -122,7 +119,7 @@
 		 * @return int
 		 */
 		function execute(string $sql, array $param): int {
-			$query = $this->lastQuery = $this->connection->prepare($sql);
+			$query = $this->lastQuery = $this->pdo->prepare($sql);
 			$this->bind($query, $param);
 			$query->execute();
 			return $query->rowCount();
@@ -134,7 +131,7 @@
 		 * @return array
 		 */
 		function getLastError(): array {
-			return $this->connection->errorInfo();
+			return $this->pdo->errorInfo();
 		}
 
 		/**
@@ -150,7 +147,7 @@
 		 * @return string
 		 */
 		function getLastInsertID(): string {
-			return $this->connection->lastInsertId();
+			return $this->pdo->lastInsertId();
 		}
 
 		/**
@@ -158,7 +155,7 @@
 		 * Open a database transaction
 		 */
 		public function beginTransaction(): bool {
-			return $this->connection->beginTransaction();
+			return $this->pdo->beginTransaction();
 		}
 
 		/**
@@ -166,7 +163,7 @@
 		 * Rolls back the current transaction
 		 */
 		public function rollbackTransaction(): bool {
-			return $this->connection->rollBack();
+			return $this->pdo->rollBack();
 		}
 
 		/**
@@ -174,7 +171,7 @@
 		 * Commits the current transaction
 		 */
 		public function commitTransaction(): bool {
-			return $this->connection->commit();
+			return $this->pdo->commit();
 		}
 
 		/**

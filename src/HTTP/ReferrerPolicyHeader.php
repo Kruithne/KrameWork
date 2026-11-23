@@ -26,9 +26,7 @@
 		 * @api __construct
 		 * @param string $value Initial value, use class constants.
 		 */
-		public function __construct(string $value = self::EMPTY) {
-			$this->value = $value;
-		}
+		public function __construct(private string $value = self::EMPTY) {}
 
 		/**
 		 * Set the value of this header.
@@ -60,9 +58,4 @@
 		public function getFieldValue(): string {
 			return $this->value;
 		}
-
-		/**
-		 * @var string
-		 */
-		private string $value;
 	}

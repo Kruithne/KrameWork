@@ -24,9 +24,7 @@
 		 * @param string $url Request endpoint.
 		 * @param string $method Request method (use class constants).
 		 */
-		public function __construct(string $url, string $method = self::METHOD_GET) {
-			$this->url = $url;
-			$this->method = $method;
+		public function __construct(protected string $url, protected string $method = self::METHOD_GET) {
 			$this->data = [];
 			$this->headers = ['Content-type' => 'application/x-www-form-urlencoded'];
 		}
@@ -225,16 +223,6 @@
 		 * @var array
 		 */
 		protected array $data;
-
-		/**
-		 * @var string
-		 */
-		protected string $url;
-
-		/**
-		 * @var string
-		 */
-		protected string $method;
 
 		/**
 		 * @var array

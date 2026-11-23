@@ -13,11 +13,9 @@
 		 * ReportResults constructor.
 		 * @param array|ReportRow[] $data The contents of the report
 		 */
-		public function __construct(array $data) {
-			$this->data = $data;
+		public function __construct(public array $data) {
 			$this->hash = \sha1(\serialize($data));
 		}
 
 		public string $hash;
-		public array $data;
 	}

@@ -18,8 +18,7 @@
 		 * @param string $content Data for the file.
 		 * @param string $contentType Data content-type.
 		 */
-		public function __construct(string|File $name, string $content, string $contentType = "text/plain") {
-			$this->contentType = $contentType;
+		public function __construct(string|File $name, string $content, protected string $contentType = "text/plain") {
 			$this->valid = true;
 			$this->data = $content;
 
@@ -114,11 +113,6 @@
 			$this->contentType = $file->getFileType();
 			$this->valid = $file->isValid();
 		}
-
-		/**
-		 * @var string
-		 */
-		protected string $contentType;
 
 		/**
 		 * @var bool

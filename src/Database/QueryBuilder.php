@@ -24,13 +24,8 @@
 		 * @param int $level The nth column in the where statement
 		 * @throws \Exception For tables that belong to an unsupported database
 		 */
-		public function __construct(Generic $db, string $column, ?QueryBuilder $anchor, IManagedTable $table, int $level = 1)
+		public function __construct(private Generic $db, private string $column, private ?QueryBuilder $anchor, private IManagedTable $table, private int $level = 1)
 		{
-			$this->db = $db;
-			$this->column = $column;
-			$this->anchor = $anchor;
-			$this->table = $table;
-			$this->level = $level;
 			$this->isMSSQL = $table instanceof MSSQLManagedTable;
 			$this->isMySQL = $table instanceof MySQLManagedTable;
 			$this->isPostgreSQL = $table instanceof PostgreSQLManagedTable;
@@ -236,11 +231,6 @@
 		private ?string $glue = null;
 
 		/**
-		 * @var string column name
-		 */
-		private string $column;
-
-		/**
 		 * @var string|null SQL Fragment
 		 */
 		private ?string $format = null;
@@ -251,21 +241,6 @@
 		private mixed $value = null;
 
 		/**
-		 * @var Generic
-		 */
-		private Generic $db;
-
-		/**
-		 * @var int
-		 */
-		private int $level;
-
-		/**
-		 * @var QueryBuilder|null
-		 */
-		private ?QueryBuilder $anchor = null;
-
-		/**
 		 * @var int|null
 		 */
 		private ?int $query_limit = null;
@@ -274,11 +249,6 @@
 		 * @var int|null
 		 */
 		private ?int $query_offset = null;
-
-		/**
-		 * @var IManagedTable
-		 */
-		private IManagedTable $table;
 
 		/**
 		 * @var array

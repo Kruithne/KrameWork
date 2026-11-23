@@ -34,9 +34,8 @@
 		 * @param string $type Multipart type, such as 'mixed' or 'alternative'.
 		 * @param MailMultipart|null $parent Parent of this multipart block.
 		 */
-		public function __construct(string $type, ?MailMultipart $parent = null) {
+		public function __construct(private string $type, ?MailMultipart $parent = null) {
 			$this->parts = [];
-			$this->type = $type;
 			$this->boundaryID = \uniqid('==_mimepart_' . self::$id++);
 
 			if ($parent)
@@ -106,11 +105,6 @@
 		 * @var IMailPart[]
 		 */
 		private array $parts;
-
-		/**
-		 * @var string
-		 */
-		private string $type;
 
 		/**
 		 * @var string

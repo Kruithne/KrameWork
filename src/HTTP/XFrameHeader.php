@@ -20,9 +20,7 @@
 		 * @api __construct
 		 * @param string $option Framing option for this header.
 		 */
-		public function __construct(string $option = self::DENY) {
-			$this->option = $option;
-		}
+		public function __construct(protected string $option = self::DENY) {}
 
 		/**
 		 * Set the framing option for this header.
@@ -54,9 +52,4 @@
 		public function getFieldValue(): string {
 			return $this->option;
 		}
-
-		/**
-		 * @var string
-		 */
-		protected string $option;
 	}

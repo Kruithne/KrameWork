@@ -14,9 +14,7 @@
 		 * ReportRow constructor.
 		 * @param array|object|null $data The underlying result row
 		 */
-		public function __construct(array|object|null $data) {
-			$this->data = $data;
-		}
+		public function __construct(private array|object|null $data) {}
 
 		function jsonSerialize(): mixed {
 			$serialize = [];
@@ -132,11 +130,6 @@
 		 * @var array|null Numerically indexed keys for iteration purposes
 		 */
 		private ?array $keys = null;
-
-		/**
-		 * @var array|object|null The data contained in the row
-		 */
-		private array|object|null $data = null;
 
 		/**
 		 * @var int

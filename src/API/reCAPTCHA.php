@@ -25,9 +25,7 @@
 		 * @api __construct
 		 * @param string $secret Secret API key.
 		 */
-		public function __construct(string $secret) {
-			$this->secret = $secret;
-		}
+		public function __construct(private string $secret) {}
 
 		/**
 		 * Manually set the remote IP to use.
@@ -66,11 +64,6 @@
 
 			return $resp->success;
 		}
-
-		/**
-		 * @var string
-		 */
-		private string $secret;
 
 		/**
 		 * @var string|null

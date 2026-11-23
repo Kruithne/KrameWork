@@ -20,9 +20,7 @@
 		 * @api __construct
 		 * @param string $encoding Content encoding.
 		 */
-		public function __construct(string $encoding = self::E_7BIT) {
-			$this->encoding = $encoding;
-		}
+		public function __construct(private string $encoding = self::E_7BIT) {}
 
 		/**
 		 * Set the content of this container.
@@ -88,12 +86,6 @@
 
 			return $content;
 		}
-
-
-		/**
-		 * @var string
-		 */
-		private string $encoding;
 
 		/**
 		 * @var string|null

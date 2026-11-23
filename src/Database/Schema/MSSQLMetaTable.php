@@ -9,9 +9,8 @@
 
 	class MSSQLMetaTable implements IMetaTable
 	{
-		public function __construct(Generic $db)
+		public function __construct(private Generic $db)
 		{
-			$this->db = $db;
 			$installed = $this->db->getValue('
 SELECT tables.name
 FROM sys.schemas
@@ -62,9 +61,4 @@ WHERE p.[table] IS NULL
 		{
 			return "[{$this->getSchema()}].[{$this->getName()}]";
 		}
-
-		/**
-		 * @var Generic
-		 */
-		private Generic $db;
 	}

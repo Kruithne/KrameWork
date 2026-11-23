@@ -21,10 +21,7 @@
 		 * @param array $param Query parameters
 		 * @param int $cacheTTL Number of seconds to store the results in cache.
 		 */
-		public function __construct(IDataCache $cache, Generic $db, string $sql, array $param = [], int $cacheTTL = 300) {
-			$this->db = $db;
-			$this->sql = $sql;
-			$this->param = $param;
+		public function __construct(IDataCache $cache, private Generic $db, private string $sql, private array $param = [], int $cacheTTL = 300) {
 			parent::__construct($cache, \sha1(\serialize([$db, $sql, $param])), $cacheTTL);
 		}
 
@@ -52,19 +49,4 @@
 			}
 			return $output;
 		}
-
-		/**
-		 * @var Generic Database engine
-		 */
-		private Generic $db;
-
-		/**
-		 * @var string SQL Query
-		 */
-		private string $sql;
-
-		/**
-		 * @var array SQL Parameters
-		 */
-		private array $param;
 	}

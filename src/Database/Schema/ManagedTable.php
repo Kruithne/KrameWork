@@ -16,10 +16,7 @@
 	 */
 	abstract class ManagedTable implements IManagedTable
 	{
-		public function __construct(Generic $db, IMetaTable $metaTable) {
-			$this->db = $db;
-			$this->meta = $metaTable;
-		}
+		public function __construct(protected Generic $db, protected IMetaTable $metaTable) {}
 
 		/**
 		 * @param string $column
@@ -35,7 +32,7 @@
 		 * @return string Status
 		 */
 		public function update(): string {
-			$current = $this->meta->getVersion($this->GetName());
+			$current = $this->metaTable->getVersion($this->GetName());
 			if($current < 1)
 				return $this->create();
 
@@ -56,7 +53,7 @@
 					foreach ($version->sql as $sql)
 						$this->db->execute($sql, []);
 					$v++;
-					$this->meta->setVersion($this->getName(), $v);
+					$this->metaTable->setVersion($this->getName(), $v);
 					$version->AfterExecution($this->db);
 					$this->db->commitTransaction();
 				}
@@ -64,7 +61,7 @@
 			catch (\Throwable $e)
 			{
 				$this->db->rollbackTransaction();
-				$current = $this->meta->getVersion($this->GetName());
+				$current = $this->metaTable->getVersion($this->GetName());
 				return 'Table update failed with message "'.$e->getMessage().'". Current revision is '.$current;
 			}
 			return 'Table updated to revision '.$v;
@@ -87,7 +84,7 @@
 			$v = \count($this->versionLog());
 			foreach ($this->latestVersion() as $sql)
 				$this->db->execute($sql, []);
-			$this->meta->setVersion($this->getName(), $v);
+			$this->metaTable->setVersion($this->getName(), $v);
 			return "Table created with revision $v";
 		}
 
@@ -104,15 +101,4 @@
 		public function quoteIdentifier(string $identifier): string {
 			return "\"{$identifier}\"";
 		}
-
-
-		/**
-		 * @var \KrameWork\Database\Driver\Generic
-		 */
-		protected Generic $db;
-
-		/**
-		 * @var IMetaTable
-		 */
-		protected IMetaTable $meta;
 	}

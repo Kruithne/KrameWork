@@ -8,9 +8,8 @@
 		 * @param int $code
 		 * @param \Throwable|null $previous
 		 */
-		public function __construct(string $message, mixed $data, int $code = 0, ?\Throwable $previous = null) {
+		public function __construct(string $message, private mixed $data, int $code = 0, ?\Throwable $previous = null) {
 			parent::__construct($message, $code, $previous);
-			$this->data = $data;
 		}
 
 		/**
@@ -20,9 +19,4 @@
 		public function getDebugData(): mixed {
 			return $this->data;
 		}
-
-		/**
-		 * @var mixed
-		 */
-		private mixed $data = null;
 	}

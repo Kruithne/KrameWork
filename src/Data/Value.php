@@ -12,9 +12,7 @@
 		 * Value constructor.
 		 * @param $value mixed The encapsulated value
 		 */
-		public function __construct(mixed $value) {
-			$this->value = $value;
-		}
+		public function __construct(protected mixed $value) {}
 
 		/**
 		 * @return mixed The encapsulated value
@@ -56,9 +54,4 @@
 		public function __toString(): string {
 			return (string)$this->value;
 		}
-
-		/**
-		 * @var mixed The encapsulated value
-		 */
-		protected mixed $value = null;
 	}

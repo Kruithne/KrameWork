@@ -5,10 +5,7 @@
 
 	class TableVersion
 	{
-		public function __construct(int $version, array $sql) {
-			$this->version = $version;
-			$this->sql = $sql;
-		}
+		public function __construct(public int $version, public array $sql) {}
 
 		/**
 		 * @api BeforeExecution
@@ -23,14 +20,4 @@
 		 */
 		public function AfterExecution(Generic $db): void {
 		}
-
-		/**
-		 * @var int
-		 */
-		public int $version;
-
-		/**
-		 * @var string[]
-		 */
-		public array $sql;
 	}

@@ -15,12 +15,7 @@
 		 * @param string $extension Extension for storing this file.
 		 * @param string $report
 		 */
-		public function __construct(IError $error, string $contentType, string $extension, string $report) {
-			$this->error = $error;
-			$this->contentType = $contentType;
-			$this->extension = $extension;
-			$this->report = $report;
-		}
+		public function __construct(protected IError $error, protected string $contentType, protected string $extension, protected string $report) {}
 
 		/**
 		 * Get the underlying error this report is for.
@@ -62,24 +57,4 @@
 		public function __toString(): string {
 			return $this->report;
 		}
-
-		/**
-		 * @var IError
-		 */
-		protected IError $error;
-
-		/**
-		 * @var string
-		 */
-		protected string $contentType;
-
-		/**
-		 * @var string
-		 */
-		protected string $extension;
-
-		/**
-		 * @var string
-		 */
-		protected string $report;
 	}

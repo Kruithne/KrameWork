@@ -21,12 +21,7 @@
 		 * @param string $file File where the error occurred.
 		 * @param int $line Line of code the error occurred.
 		 */
-		public function __construct(int $type, string $message, string $file, int $line) {
-			$this->type = $type;
-			$this->message = $message;
-			$this->file = $file;
-			$this->line = $line;
-		}
+		public function __construct(protected int $type, protected string $message, protected string $file, protected int $line) {}
 
 		/**
 		 * Get a prefix for this error type.
@@ -125,24 +120,4 @@
 		public function getDebugData(): mixed {
 			return null;
 		}
-
-		/**
-		 * @var int
-		 */
-		protected int $type;
-
-		/**
-		 * @var string
-		 */
-		protected string $message;
-
-		/**
-		 * @var string
-		 */
-		protected string $file;
-
-		/**
-		 * @var int
-		 */
-		protected int $line;
 	}

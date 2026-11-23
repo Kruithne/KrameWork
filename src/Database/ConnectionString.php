@@ -15,11 +15,7 @@
 		 * @param string|null $username A username to log on
 		 * @param string|null $password A password to log on
 		 */
-		public function __construct(string $connection, ?string $username = null, ?string $password = null) {
-			$this->connection = $connection;
-			$this->username = $username;
-			$this->password = $password;
-		}
+		public function __construct(protected string $connection, protected ?string $username = null, protected ?string $password = null) {}
 
 		/**
 		 * Returns the connection string used to connect to the database
@@ -47,11 +43,4 @@
 		public function getPassword(): ?string {
 			return $this->password;
 		}
-
-		/**
-		 * @var string The connection string
-		 */
-		protected string $connection;
-		protected ?string $username = null;
-		protected ?string $password = null;
 	}

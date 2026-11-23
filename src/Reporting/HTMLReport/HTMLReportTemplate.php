@@ -19,10 +19,9 @@
 		 * @param string $content Content of the template.
 		 * @link http://php.net/manual/en/language.oop5.decon.php
 		 */
-		public function __construct(string $content) {
+		public function __construct(protected string $content) {
 			$this->replacements = [];
 			$this->sections = [];
-			$this->content = $content;
 		}
 
 		/**
@@ -89,11 +88,6 @@
 		 * @var HTMLReportSection[]
 		 */
 		protected array $sections;
-
-		/**
-		 * @var string
-		 */
-		protected string $content;
 
 		/**
 		 * @var array

@@ -23,8 +23,7 @@
 		 * @param bool $autoLoad Attempt to read data from the file on instantiation.
 		 * @throws JSONException
 		 */
-		public function __construct(string|File|null $source = null, bool $useContainer = true, bool $autoLoad = true) {
-			$this->useContainer = $useContainer;
+		public function __construct(string|File|null $source = null, protected bool $useContainer = true, bool $autoLoad = true) {
 			if ($useContainer)
 				$this->jsonData = new \ArrayObject([], \ArrayObject::ARRAY_AS_PROPS);
 
@@ -248,11 +247,6 @@
 		 * @var mixed
 		 */
 		protected mixed $jsonData = null;
-
-		/**
-		 * @var bool Store data inside an ArrayObject.
-		 */
-		protected bool $useContainer;
 
 		/**
 		 * @var int Recursion depth.

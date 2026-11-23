@@ -21,10 +21,8 @@
 		 * @param string|null $templatePath Path to HTML template.
 		 * @param string|null $cssPath CSS file to be prepended to the report.
 		 */
-		public function __construct(?string $templatePath = null, ?string $cssPath = null) {
+		public function __construct(protected ?string $templatePath = null, protected ?string $cssPath = null) {
 			$this->timer = new Timer(Timer::FORMAT_MICROSECONDS, false);
-			$this->templatePath = $templatePath;
-			$this->cssPath = $cssPath;
 		}
 
 		/**
@@ -277,14 +275,4 @@
 		 * @var string|null
 		 */
 		protected ?string $template = null;
-
-		/**
-		 * @var string|null
-		 */
-		protected ?string $templatePath = null;
-
-		/**
-		 * @var string|null
-		 */
-		protected ?string $cssPath = null;
 	}

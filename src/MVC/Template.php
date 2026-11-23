@@ -12,11 +12,10 @@
 		 * @param string $file Path to a template file.
 		 * @throws InvalidTemplateException
 		 */
-		public function __construct(string $file) {
+		public function __construct(protected string $file) {
 			if (!\is_file($file))
 				throw new InvalidTemplateException('Template source does not exist.');
 
-			$this->file = $file;
 			$this->data = [];
 		}
 
@@ -54,10 +53,7 @@
 
 			// Sandbox template execution.
 			new class ($this->file, $this->data) {
-				public function __construct(string $file, array $data) {
-					$this->file = $file;
-					$this->data = $data;
-
+				public function __construct(private string $file, private array $data) {
 					$this->run();
 				}
 
@@ -65,9 +61,6 @@
 					\extract($this->data);
 					require($this->file);
 				}
-
-				private string $file;
-				private array $data;
 			};
 
 			return \ob_get_clean();
@@ -77,9 +70,4 @@
 		 * @var array
 		 */
 		protected array $data;
-
-		/**
-		 * @var string
-		 */
-		protected string $file;
 	}

@@ -23,11 +23,9 @@
 		 * @param bool $cleanOnLoad Expired values will be cleaned on cache load.
 		 * @throws InvalidFileException
 		 */
-		public function __construct(string $file, bool $autoPersist = true, bool $cleanOnLoad = true) {
+		public function __construct(private string $file, private bool $autoPersist = true, bool $cleanOnLoad = true) {
 			$this->data = [];
 			$this->index = [];
-			$this->file = $file;
-			$this->autoPersist = $autoPersist;
 
 			if (\file_exists($file)) {
 				if (!\is_file($file))
@@ -201,11 +199,6 @@
 		}
 
 		/**
-		 * @var string
-		 */
-		private string $file;
-
-		/**
 		 * @var array
 		 */
 		private $data;
@@ -214,9 +207,4 @@
 		 * @var array
 		 */
 		private $index;
-
-		/**
-		 * @var bool
-		 */
-		private bool $autoPersist;
 	}

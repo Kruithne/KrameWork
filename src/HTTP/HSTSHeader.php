@@ -19,11 +19,7 @@
 		 * @param bool $preload Include on HSTSHeader preload list.
 		 * @link https://hstspreload.org/
 		 */
-		public function __construct(int $maxAge = 63072000, bool $includeSubDomains = true, bool $preload = true) {
-			$this->maxAge = $maxAge;
-			$this->includeSubDomains = $includeSubDomains;
-			$this->preload = $preload;
-		}
+		public function __construct(protected int $maxAge = 63072000, protected bool $includeSubDomains = true, protected bool $preload = true) {}
 
 		/**
 		 * Set how long user-agents will redirect to HTTPS in seconds.
@@ -83,19 +79,4 @@
 
 			return $value;
 		}
-
-		/**
-		 * @var int
-		 */
-		protected int $maxAge;
-
-		/**
-		 * @var bool
-		 */
-		protected bool $includeSubDomains;
-
-		/**
-		 * @var bool
-		 */
-		protected bool $preload;
 	}
