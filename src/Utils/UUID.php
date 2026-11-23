@@ -62,13 +62,11 @@
 		 * @return string
 		 */
 		public static function generate_v4():string {
-			return \sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-				\random_int(0, 0xffff), \random_int(0, 0xffff), // 32 bits for "time_low"
-				\random_int(0, 0xffff), // 16 bits for "time_mid"
-				\random_int(0, 0x0fff) | 0x4000, // 16 bits for "time_hi_and_version", four most significant bits holds version number 4
-				\random_int(0, 0x3fff) | 0x8000, // 16 bits, 8 bits for "clk_seq_hi_res", 8 bits for "clk_seq_low", two most significant bits holds zero and one for variant DCE1.1
-				\random_int(0, 0xffff), \random_int(0, 0xffff), \random_int(0, 0xffff) // 48 bits for "node"
-			);
+			$bytes = \random_bytes(16);
+			$bytes[6] = \chr((\ord($bytes[6]) & 0x0f) | 0x40);
+			$bytes[8] = \chr((\ord($bytes[8]) & 0x3f) | 0x80);
+
+			return self::format($bytes);
 		}
 
 		/**
@@ -121,6 +119,17 @@
 				(\hexdec(\substr($hash, 16, 4)) & 0x3fff) | 0x8000, // 16 bits, 8 bits for "clk_seq_hi_res", 8 bits for "clk_seq_low", two most significant bits holds zero and one for variant DCE1.1
 				\substr($hash, 20, 12) // 48 bits for "node"
 			);
+		}
+
+		/**
+		 * Format 16 bytes as a hyphenated UUID string.
+		 *
+		 * @internal
+		 * @param string $bytes 16 bytes of UUID data.
+		 * @return string
+		 */
+		private static function format(string $bytes):string {
+			return \vsprintf('%s%s-%s-%s-%s-%s%s%s', \str_split(\bin2hex($bytes), 4));
 		}
 
 		/**
