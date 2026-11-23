@@ -11,13 +11,13 @@
 	{
 		/**
 		 * ReportResults constructor.
-		 * @param $data array|ReportRow[] The contents of the report
+		 * @param array|ReportRow[] $data The contents of the report
 		 */
-		public function __construct($data) {
+		public function __construct(array $data) {
 			$this->data = $data;
 			$this->hash = \sha1(\serialize($data));
 		}
 
-		public $hash;
-		public $data;
+		public string $hash;
+		public array $data;
 	}

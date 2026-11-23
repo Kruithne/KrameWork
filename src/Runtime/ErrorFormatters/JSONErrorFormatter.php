@@ -21,7 +21,7 @@
 		 *
 		 * @api beginReport
 		 */
-		public function beginReport() {
+		public function beginReport(): void {
 			$this->node = ['data' => []];
 		}
 
@@ -31,7 +31,7 @@
 		 * @api handleError
 		 * @param IError $error Error which occurred.
 		 */
-		public function reportError(IError $error) {
+		public function reportError(IError $error): void {
 			$this->error = $error;
 			$this->node['prefix'] = $error->getPrefix();
 			$this->node['name'] = $error->getName();
@@ -50,9 +50,9 @@
 		/**
 		 * Format debug data and add it to the report.
 		 *
-		 * @param $debug array Key/Value pairs
+		 * @param array $debug Key/Value pairs
 		 */
-		public function reportDebug(array $debug) {
+		public function reportDebug(array $debug): void {
 			$this->node['debug'] = $debug;
 		}
 
@@ -63,7 +63,7 @@
 		 * @param string $name Name for the array.
 		 * @param array $arr Array of data.
 		 */
-		public function reportArray(string $name, array $arr) {
+		public function reportArray(string $name, array $arr): void {
 			$this->node['data'][$name] = $arr;
 		}
 
@@ -74,7 +74,7 @@
 		 * @param string $name Name of the data string.
 		 * @param string $str Data string.
 		 */
-		public function reportString(string $name, string $str) {
+		public function reportString(string $name, string $str): void {
 			$this->node['data'][$name] = $str;
 		}
 
@@ -84,7 +84,7 @@
 		 * @api reportStacktrace
 		 * @param array $trace Stacktrace.
 		 */
-		public function reportStacktrace(array $trace) {
+		public function reportStacktrace(array $trace): void {
 			$this->node['trace'] = $trace;
 		}
 
@@ -94,17 +94,17 @@
 		 * @api generate
 		 * @return IErrorReport
 		 */
-		public function generate():IErrorReport {
+		public function generate(): IErrorReport {
 			return new ErrorReport($this->error, 'application/json', '.json', \json_encode($this->node));
 		}
 
 		/**
-		 * @var array
+		 * @var array|null
 		 */
-		protected $node;
+		protected ?array $node = null;
 
 		/**
-		 * @var IError
+		 * @var IError|null
 		 */
-		protected $error;
+		protected ?IError $error = null;
 	}

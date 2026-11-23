@@ -21,7 +21,7 @@
 		 * @param string|null $templatePath Path to HTML template.
 		 * @param string|null $cssPath CSS file to be prepended to the report.
 		 */
-		public function __construct($templatePath = null, $cssPath = null) {
+		public function __construct(?string $templatePath = null, ?string $cssPath = null) {
 			$this->timer = new Timer(Timer::FORMAT_MICROSECONDS, false);
 			$this->templatePath = $templatePath;
 			$this->cssPath = $cssPath;
@@ -32,7 +32,7 @@
 		 *
 		 * @api beginReport
 		 */
-		public function beginReport() {
+		public function beginReport(): void {
 			$this->timer->start();
 			$this->data = [];
 			$this->basicData = [];
@@ -45,7 +45,7 @@
 		 * @api handleError
 		 * @param IError $error Error which occurred.
 		 */
-		public function reportError(IError $error) {
+		public function reportError(IError $error): void {
 			$this->error = $error;
 			$this->basicData = [
 				'server' => \php_uname(),
@@ -66,9 +66,9 @@
 		/**
 		 * Format debug data and add it to the report.
 		 *
-		 * @param $debug array Key/Value pairs
+		 * @param array $debug Key/Value pairs
 		 */
-		public function reportDebug(array $debug)
+		public function reportDebug(array $debug): void
 		{
 			$this->debug = $debug;
 		}
@@ -80,7 +80,7 @@
 		 * @param string $name Name for the array.
 		 * @param array $arr Array of data.
 		 */
-		public function reportArray(string $name, array $arr) {
+		public function reportArray(string $name, array $arr): void {
 			$this->data[$name] = $arr;
 		}
 
@@ -91,7 +91,7 @@
 		 * @param string $name Name of the data string.
 		 * @param string $str Data string.
 		 */
-		public function reportString(string $name, string $str) {
+		public function reportString(string $name, string $str): void {
 			$this->data[$name] = $str;
 		}
 
@@ -101,7 +101,7 @@
 		 * @api reportStacktrace
 		 * @param array $trace Stacktrace.
 		 */
-		public function reportStacktrace(array $trace) {
+		public function reportStacktrace(array $trace): void {
 			$this->trace = $trace;
 		}
 
@@ -111,7 +111,7 @@
 		 * @api generate
 		 * @return IErrorReport
 		 */
-		public function generate():IErrorReport {
+		public function generate(): IErrorReport {
 			$report = new HTMLReportTemplate($this->getTemplate());
 
 			// Handle basic data.
@@ -199,7 +199,7 @@
 		 * @internal
 		 * @return string
 		 */
-		private function getTemplate():string {
+		private function getTemplate(): string {
 			if ($this->template !== null)
 				return $this->template;
 
@@ -233,7 +233,7 @@
 		 * @param string $file File to load the template from.
 		 * @return string|null
 		 */
-		private function loadTemplateFile(string $file) {
+		private function loadTemplateFile(string $file): ?string {
 			if (\is_file($file)) {
 				$data = \file_get_contents($file);
 				if ($data !== false) {
@@ -246,45 +246,45 @@
 		/**
 		 * @var Timer
 		 */
-		protected $timer;
+		protected Timer $timer;
 
 		/**
-		 * @var IError
+		 * @var IError|null
 		 */
-		protected $error;
+		protected ?IError $error = null;
 
 		/**
-		 * @var array
+		 * @var array|null
 		 */
-		protected $debug;
+		protected ?array $debug = null;
 
 		/**
-		 * @var array
+		 * @var array|null
 		 */
-		protected $data;
+		protected ?array $data = null;
 
 		/**
-		 * @var array
+		 * @var array|null
 		 */
-		protected $basicData;
+		protected ?array $basicData = null;
 
 		/**
-		 * @var array
+		 * @var array|null
 		 */
-		protected $trace;
-
-		/**
-		 * @var string|null
-		 */
-		protected $template;
+		protected ?array $trace = null;
 
 		/**
 		 * @var string|null
 		 */
-		protected $templatePath;
+		protected ?string $template = null;
 
 		/**
 		 * @var string|null
 		 */
-		protected $cssPath;
+		protected ?string $templatePath = null;
+
+		/**
+		 * @var string|null
+		 */
+		protected ?string $cssPath = null;
 	}

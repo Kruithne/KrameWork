@@ -18,17 +18,17 @@
 		/**
 		 * Overwrite and include the code to benchmark inside this function.
 		 */
-		public function execute();
+		public function execute(): void;
 
 		/**
 		 * Called just before the test is run.
 		 */
-		public function onStart();
+		public function onStart(): void;
 
 		/**
 		 * Called just after the test is run.
 		 */
-		public function onEnd();
+		public function onEnd(): void;
 	}
 
 	/**
@@ -57,7 +57,7 @@
 		 *
 		 * @api onStart
 		 */
-		public function onStart() {
+		public function onStart(): void {
 			// Overwrite to obtain functionality.
 		}
 
@@ -67,7 +67,7 @@
 		 *
 		 * @api onEnd
 		 */
-		public function onEnd() {
+		public function onEnd(): void {
 			// Overwrite to obtain functionality.
 		}
 
@@ -114,11 +114,11 @@
 		 * Calculate the square of value-mean.
 		 *
 		 * @internal
-		 * @param number $value
-		 * @param number $mean
-		 * @return number
+		 * @param int|float $value
+		 * @param int|float $mean
+		 * @return int|float
 		 */
-		private function std_square($value, $mean) {
+		private function std_square(int|float $value, int|float $mean): int|float {
 			return pow($value - $mean, 2);
 		}
 
@@ -126,10 +126,10 @@
 		 * Calculate the standard deviation of an array.
 		 *
 		 * @internal
-		 * @param $arr
+		 * @param array $arr
 		 * @return float
 		 */
-		private function std_arr($arr) {
+		private function std_arr(array $arr): float {
 			$size = count($arr);
 			return sqrt(array_sum(array_map([$this, 'std_square'], $arr, array_fill(0, $size,(array_sum($arr) / $size)))) / ($size - 1));
 		}
@@ -137,15 +137,15 @@
 		/**
 		 * @var int
 		 */
-		private $sets;
+		private int $sets;
 
 		/**
 		 * @var int
 		 */
-		private $executions;
+		private int $executions;
 
 		/**
-		 * @var string
+		 * @var string|null
 		 */
-		private $name;
+		private ?string $name;
 	}

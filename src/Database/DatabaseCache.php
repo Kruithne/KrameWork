@@ -21,8 +21,8 @@
 		 * @api getAll
 		 * @param string $sql An SQL query statement
 		 * @param array $param An array of values to inject in the statement
-		 * @param int $ttl Number of seconds to cache the results, 0 forces refresh
-		 * @return array|\ArrayObject[]
+		 * @param int|null $ttl Number of seconds to cache the results, 0 forces refresh
+		 * @return \stdClass[]
 		 */
 		function getAll(string $sql, array $param = [], ?int $ttl = null): array {
 			if ($ttl === null)
@@ -42,10 +42,10 @@
 		 * @api getRow
 		 * @param string $sql An SQL query statement
 		 * @param array $param An array of values to inject in the statement
-		 * @param int $ttl Number of seconds to cache the results, 0 forces refresh
-		 * @return \ArrayObject
+		 * @param int|null $ttl Number of seconds to cache the results, 0 forces refresh
+		 * @return \stdClass|null
 		 */
-		function getRow(string $sql, array $param = [], ?int $ttl = null): \ArrayObject {
+		function getRow(string $sql, array $param = [], ?int $ttl = null): ?\stdClass {
 			if ($ttl === null)
 				$ttl = $this->ttl;
 
@@ -63,7 +63,7 @@
 		 * @api getColumn
 		 * @param string $sql An SQL query statement
 		 * @param array $param An array of values to inject in the statement
-		 * @param int $ttl Number of seconds to cache the results, 0 forces refresh
+		 * @param int|null $ttl Number of seconds to cache the results, 0 forces refresh
 		 * @return array
 		 */
 		function getColumn(string $sql, array $param = [], ?int $ttl = null): array {
@@ -84,10 +84,10 @@
 		 * @api getValue
 		 * @param string $sql An SQL query statement
 		 * @param array $param An array of values to inject in the statement
-		 * @param int $ttl Number of seconds to cache the results, 0 forces refresh
+		 * @param int|null $ttl Number of seconds to cache the results, 0 forces refresh
 		 * @return mixed
 		 */
-		function getValue(string $sql, array $param = [], ?int $ttl = null) {
+		function getValue(string $sql, array $param = [], ?int $ttl = null): mixed {
 			if ($ttl === null)
 				$ttl = $this->ttl;
 
@@ -112,26 +112,26 @@
 		}
 
 		/**
-		 * @param $sql string An SQL statement
-		 * @param $param array SQL parameters
+		 * @param string $sql An SQL statement
+		 * @param array $param SQL parameters
 		 * @return string The cache key
 		 */
-		private function getKey($sql, $param): string {
+		private function getKey(string $sql, array $param): string {
 			return \sha1(\json_encode([$sql, $param]));
 		}
 
 		/**
 		 * @var IDataCache
 		 */
-		private $cache;
+		private IDataCache $cache;
 
 		/**
 		 * @var Database
 		 */
-		private $database;
+		private Database $database;
 
 		/**
 		 * @var int
 		 */
-		private $ttl;
+		private int $ttl;
 	}

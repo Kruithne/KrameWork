@@ -37,7 +37,7 @@
 		 * Override this to implement your report.
 		 * @return array
 		 */
-		protected abstract function run();
+		protected abstract function run(): array;
 
 		/**
 		 * Executes the report if necessary and returns the cached result set.
@@ -60,19 +60,19 @@
 		/**
 		 * Flushes cached data, forcing a fresh run of the report
 		 */
-		public function clear() {
+		public function clear(): void {
 			$this->cache->__unset($this->key);
 		}
 
 		/**
 		 * @return ReportColumn[]
 		 */
-		public abstract function columns();
+		public abstract function columns(): array;
 
 		/**
 		 * @return \Closure[] Filters in the format function(&$row)
 		 */
-		protected function getFilters() {
+		protected function getFilters(): array {
 			$filters = [];
 			foreach ($this->columns() as $key => $col) {
 				switch ($col->type) {
@@ -93,7 +93,7 @@
 		 * @param string $class Column container class
 		 * @return \Closure
 		 */
-		protected function makeFilter(string $key, string $class) {
+		protected function makeFilter(string $key, string $class): \Closure {
 			return function (&$row) use ($key, $class) {
 				if (!isset($row->$key) || $row->$key == null || $row->$key instanceof Value)
 					return;
@@ -106,7 +106,7 @@
 		 * @param array $data
 		 * @return ReportRow[]
 		 */
-		protected function postProcess(array $data) {
+		protected function postProcess(array $data): array {
 			$filters = $this->getFilters();
 			$output = [];
 			foreach ($data as $row) {
@@ -120,15 +120,15 @@
 		/**
 		 * @var int Cache Time To Live
 		 */
-		protected $cacheTTL;
+		protected int $cacheTTL;
 
 		/**
 		 * @var string Cache storage key
 		 */
-		protected $key;
+		protected string $key;
 
 		/**
 		 * @var IDataCache Cache engine
 		 */
-		protected $cache;
+		protected IDataCache $cache;
 	}

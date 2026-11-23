@@ -53,9 +53,9 @@
 		 * Add a formatted field to the target string builder.
 		 *
 		 * @internal
-		 * @param mixed $content
+		 * @param string|int $content
 		 */
-		private function addField($content)
+		private function addField(string|int $content): void
 		{
 			$this->builder->append(\str_pad($content, 10), "\t");
 		}
@@ -63,5 +63,5 @@
 		/**
 		 * @var StringBuilder
 		 */
-		private $builder;
+		private StringBuilder $builder;
 	}

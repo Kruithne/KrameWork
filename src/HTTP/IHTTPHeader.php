@@ -15,7 +15,7 @@
 		 *
 		 * @api apply
 		 */
-		public function apply();
+		public function apply(): void;
 
 		/**
 		 * Get the field name for this header.

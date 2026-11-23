@@ -11,7 +11,7 @@
 	 */
 	abstract class sqliteManagedTable extends ManagedTable
 	{
-		public function getSchema() {
+		public function getSchema(): string {
 			return 'main';
 		}
 	}

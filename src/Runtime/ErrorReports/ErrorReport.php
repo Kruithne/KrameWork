@@ -66,20 +66,20 @@
 		/**
 		 * @var IError
 		 */
-		protected $error;
+		protected IError $error;
 
 		/**
 		 * @var string
 		 */
-		protected $contentType;
+		protected string $contentType;
 
 		/**
 		 * @var string
 		 */
-		protected $extension;
+		protected string $extension;
 
 		/**
 		 * @var string
 		 */
-		protected $report;
+		protected string $report;
 	}

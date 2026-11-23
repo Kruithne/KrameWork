@@ -23,9 +23,9 @@
 		 * @param array $recipients Recipients to receive this report.
 		 * @param string $sender Sender e-mail address.
 		 * @param string $senderName Name of the e-mail sender.
-		 * @param string|array $subject Subject string or callable generator.
+		 * @param string|array|callable $subject Subject string or callable generator.
 		 */
-		public function __construct(array $recipients, string $sender, ?string $senderName = null, $subject = 'Error Report') {
+		public function __construct(array $recipients, string $sender, ?string $senderName = null, string|array|callable $subject = 'Error Report') {
 			$this->mail = new Mail();
 			$this->mail->to->add($recipients);
 			$this->mail->setSender($sender, $senderName, true);
@@ -43,7 +43,7 @@
 		 * @param IErrorReport|string $report Report to dispatch.
 		 * @return bool
 		 */
-		public function dispatch($report):bool {
+		public function dispatch(IErrorReport|string $report): bool {
 			if ($this->subjectGen) {
 				$subject = $this->subjectGen;
 				if (\is_array($subject))
@@ -62,10 +62,10 @@
 		/**
 		 * @var Mail
 		 */
-		protected $mail;
+		protected Mail $mail;
 
 		/**
-		 * @var array
+		 * @var callable|array|null
 		 */
-		protected $subjectGen;
+		protected mixed $subjectGen = null;
 	}

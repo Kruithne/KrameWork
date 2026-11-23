@@ -13,54 +13,53 @@
 		 * Returns the name of the database schema
 		 * @return string The database schema name
 		 */
-		public function getSchema();
+		public function getSchema(): string;
 
 		/**
 		 * @api getName
 		 * Returns the name of the database table
 		 * @return string The database table name
 		 */
-		public function getName();
+		public function getName(): string;
 
 		/**
 		 * @api getFullName
 		 * Returns the fully qualified table name, including schema.
 		 * @return string Fully qualified table name
 		 */
-		public function getFullName();
+		public function getFullName(): string;
 
 		/**
 		 * @api getRevision
 		 * Returns a set of revision definitions
 		 * @return TableVersion[]
 		 */
-		public function versionLog();
+		public function versionLog(): array;
 
 		/**
 		 * @api getLatestVersion
 		 * Returns a set of queries to create the latest revision of the table
 		 * @return string[]
 		 */
-		public function latestVersion();
+		public function latestVersion(): array;
 
 		/**
 		 * @api update
 		 * Updates the table in the database
 		 * @return string Status
 		 */
-		public function update();
+		public function update(): string;
 
 		/**
 		 * @api drop
 		 * Delete the table from the database
-		 * @return bool Success
 		 */
-		public function drop();
+		public function drop(): void;
 
 		/**
 		 * @api create
 		 * Create the table in the database
-		 * @return bool Success
+		 * @return string Status
 		 */
-		public function create();
+		public function create(): string;
 	}

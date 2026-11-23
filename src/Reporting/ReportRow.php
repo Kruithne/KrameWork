@@ -12,9 +12,9 @@
 	{
 		/**
 		 * ReportRow constructor.
-		 * @param $data object The underlying result row
+		 * @param array|object|null $data The underlying result row
 		 */
-		public function __construct($data) {
+		public function __construct(array|object|null $data) {
 			$this->data = $data;
 		}
 
@@ -109,14 +109,14 @@
 
 		/**
 		 * @param int $index
-		 * @return string|null
+		 * @return int|string|null
 		 */
-		private function getKeyAt(int $index) {
+		private function getKeyAt(int $index): int|string|null {
 			$this->indexKeys();
 			return isset($this->keys[$index]) ? $this->keys[$index] : null;
 		}
 
-		private function indexKeys() {
+		private function indexKeys(): void {
 			if ($this->keys == null)
 			{
 				if (is_array($this->data))
@@ -131,15 +131,15 @@
 		/**
 		 * @var array|null Numerically indexed keys for iteration purposes
 		 */
-		private $keys;
+		private ?array $keys = null;
 
 		/**
-		 * @var object The data contained in the row
+		 * @var array|object|null The data contained in the row
 		 */
-		private $data;
+		private array|object|null $data = null;
 
 		/**
 		 * @var int
 		 */
-		private $position = 0;
+		private int $position = 0;
 	}

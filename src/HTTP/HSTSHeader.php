@@ -32,7 +32,7 @@
 		 * @api setMaxAge
 		 * @param int $maxAge Time period HTTPs will be supported.
 		 */
-		public function setMaxAge(int $maxAge) {
+		public function setMaxAge(int $maxAge): void {
 			$this->maxAge = $maxAge;
 		}
 
@@ -42,7 +42,7 @@
 		 * @api setIncludeSubDomains
 		 * @param bool $include Include sub-domains.
 		 */
-		public function setIncludeSubDomains(bool $include) {
+		public function setIncludeSubDomains(bool $include): void {
 			$this->includeSubDomains = $include;
 		}
 
@@ -52,7 +52,7 @@
 		 * @api setPreload
 		 * @param bool $preload Add to preload lists.
 		 */
-		public function setPreload(bool $preload) {
+		public function setPreload(bool $preload): void {
 			$this->preload = $preload;
 		}
 
@@ -87,15 +87,15 @@
 		/**
 		 * @var int
 		 */
-		protected $maxAge;
+		protected int $maxAge;
 
 		/**
 		 * @var bool
 		 */
-		protected $includeSubDomains;
+		protected bool $includeSubDomains;
 
 		/**
 		 * @var bool
 		 */
-		protected $preload;
+		protected bool $preload;
 	}

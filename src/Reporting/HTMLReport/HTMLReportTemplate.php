@@ -44,10 +44,10 @@
 		 *
 		 * @api __set
 		 * @param string $tag Tag to search for.
-		 * @param mixed $value Replacement value.
+		 * @param string $value Replacement value.
 		 * @link http://php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members
 		 */
-		public function __set(string $tag, string $value) {
+		public function __set(string $tag, string $value): void {
 			$this->replacements[$tag] = $value;
 		}
 
@@ -88,15 +88,15 @@
 		/**
 		 * @var HTMLReportSection[]
 		 */
-		protected $sections;
+		protected array $sections;
 
 		/**
 		 * @var string
 		 */
-		protected $content;
+		protected string $content;
 
 		/**
 		 * @var array
 		 */
-		protected $replacements;
+		protected array $replacements;
 	}

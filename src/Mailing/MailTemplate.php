@@ -42,8 +42,9 @@
 		 * Compile the template to a string.
 		 *
 		 * @internal
+		 * @return string
 		 */
-		private function compile() {
+		private function compile(): string {
 			if ($this->compiled === null) {
 				$comp = $this->raw;
 				foreach ($this->subs as $key => $value)
@@ -58,22 +59,22 @@
 		 * Return the compiled template.
 		 * @return string
 		 */
-		public function __toString() {
+		public function __toString(): string {
 			return $this->compile();
 		}
 
 		/**
 		 * @var string
 		 */
-		private $raw;
+		private string $raw;
 
 		/**
 		 * @var array
 		 */
-		private $subs;
+		private array $subs;
 
 		/**
-		 * @var string
+		 * @var string|null
 		 */
-		private $compiled;
+		private ?string $compiled = null;
 	}

@@ -14,23 +14,23 @@
 		 * @api BeforeExecution
 		 * Override this function to execute custom code before SQL application.
 		 */
-		public function BeforeExecution(Generic $db) {
+		public function BeforeExecution(Generic $db): void {
 		}
 
 		/**
 		 * @api BeforeExecution
 		 * Override this function to execute custom code after SQL application.
 		 */
-		public function AfterExecution(Generic $db) {
+		public function AfterExecution(Generic $db): void {
 		}
 
 		/**
 		 * @var int
 		 */
-		public $version;
+		public int $version;
 
 		/**
 		 * @var string[]
 		 */
-		public $sql;
+		public array $sql;
 	}

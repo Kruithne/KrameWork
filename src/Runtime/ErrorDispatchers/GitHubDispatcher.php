@@ -27,7 +27,7 @@
 			$this->title = $title;
 		}
 
-		public function dispatch($report):bool {
+		public function dispatch(IErrorReport|string $report): bool {
 			ErrorHandler::suspend();
 
 			try {
@@ -42,7 +42,7 @@
 			return false;
 		}
 
-		private function getTitle($report): string {
+		private function getTitle(IErrorReport|string $report): string {
 			if ($this->title !== null)
 				return ($this->title)($report);
 
@@ -53,7 +53,7 @@
 			return \sprintf('%s: %s in %s:%d', $error->getPrefix(), $error->getName(), \basename($error->getFile()), $error->getLine());
 		}
 
-		private function getBody($report): string {
+		private function getBody(IErrorReport|string $report): string {
 			$body = (string) $report;
 
 			if (!($report instanceof IErrorReport) || !\str_starts_with($report->getContentType(), 'text/markdown')) {
@@ -70,7 +70,7 @@
 			return $body;
 		}
 
-		private function createIssue(string $title, string $body) {
+		private function createIssue(string $title, string $body): void {
 			$payload = ['title' => $title, 'body' => $body];
 			if ($this->labels)
 				$payload['labels'] = $this->labels;
@@ -135,15 +135,15 @@
 			return $throttled;
 		}
 
-		protected $token;
+		protected string $token;
 
-		protected $repository;
+		protected string $repository;
 
-		protected $labels;
+		protected array $labels;
 
-		protected $throttle;
+		protected int $throttle;
 
-		protected $cache;
+		protected ?IDataCache $cache = null;
 
-		protected $title;
+		protected mixed $title = null;
 	}

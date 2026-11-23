@@ -14,12 +14,12 @@
 		 * Executes the report, storing the results in cache.
 		 * Override this to implement your report.
 		 */
-		protected function run() {
+		protected function run(): array {
 			$this->runCalled = true;
 			return $this->data;
 		}
 
-		protected function postProcess(array $data) {
+		protected function postProcess(array $data): array {
 			$this->postProcessCalled = true;
 			return parent::postProcess($data);
 		}
@@ -30,7 +30,7 @@
 		/**
 		 * @return ReportColumn[]
 		 */
-		public function columns() {
+		public function columns(): array {
 			return $this->columns;
 		}
 

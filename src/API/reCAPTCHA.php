@@ -35,7 +35,7 @@
 		 * @api setRemoteIP
 		 * @param string $ip IP to use.
 		 */
-		public function setRemoteIP(string $ip) {
+		public function setRemoteIP(string $ip): void {
 			$this->ip = $ip;
 		}
 
@@ -70,10 +70,10 @@
 		/**
 		 * @var string
 		 */
-		private $secret;
+		private string $secret;
 
 		/**
-		 * @var string
+		 * @var string|null
 		 */
-		private $ip;
+		private ?string $ip = null;
 	}

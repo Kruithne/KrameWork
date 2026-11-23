@@ -107,7 +107,7 @@
 		 * @param BenchmarkResult $b
 		 * @return int
 		 */
-		public function sortResults(BenchmarkResult $a, BenchmarkResult $b) {
+		public function sortResults(BenchmarkResult $a, BenchmarkResult $b): int {
 			if ($a->getAverage() == $b->getAverage()) {
 				return 0;
 			}
@@ -121,17 +121,17 @@
 		 * @return string
 		 * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
 		 */
-		public function __toString() {
+		public function __toString(): string {
 			return $this->run();
 		}
 
 		/**
 		 * @var Benchmark[]
 		 */
-		private $benchmarks;
+		private array $benchmarks;
 
 		/**
 		 * @var IBenchmarkReportFormatter
 		 */
-		private $formatter;
+		private IBenchmarkReportFormatter $formatter;
 	}

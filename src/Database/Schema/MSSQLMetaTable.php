@@ -34,7 +34,7 @@ WHERE schemas.name = ? AND tables.name = ?',
 			return $this->db->getValue("SELECT [version] FROM {$this->getFullName()} WHERE [table] = ?", [$table]) ?? 0;
 		}
 
-		public function setVersion(string $table, int $version)
+		public function setVersion(string $table, int $version): void
 		{
 			$this->db->execute("
 INSERT INTO {$this->getFullName()} ([table],[version])
@@ -48,17 +48,17 @@ WHERE p.[table] IS NULL
 			$this->db->execute("UPDATE {$this->getFullName()} SET [version]=? WHERE [table]=?", [$version, $table]);
 		}
 
-		public function getSchema()
+		public function getSchema(): string
 		{
 			return 'dbo';
 		}
 
-		public function getName()
+		public function getName(): string
 		{
 			return '_tables';
 		}
 
-		public function getFullName()
+		public function getFullName(): string
 		{
 			return "[{$this->getSchema()}].[{$this->getName()}]";
 		}
@@ -66,5 +66,5 @@ WHERE p.[table] IS NULL
 		/**
 		 * @var Generic
 		 */
-		private $db;
+		private Generic $db;
 	}

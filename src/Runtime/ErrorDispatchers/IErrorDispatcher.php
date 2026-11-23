@@ -18,5 +18,5 @@
 		 * @param IErrorReport|string $report Report to dispatch.
 		 * @return bool Terminate script.
 		 */
-		public function dispatch($report):bool;
+		public function dispatch(IErrorReport|string $report): bool;
 	}

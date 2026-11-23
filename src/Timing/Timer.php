@@ -31,7 +31,7 @@
 		 *
 		 * @api start
 		 */
-		public function start() {
+		public function start(): void {
 			$this->startTime = $this->getCurrentTime();
 			$this->stopTime = null;
 		}
@@ -40,8 +40,9 @@
 		 * Stop the timer and return the current elapsed time.
 		 *
 		 * @api stop
+		 * @return float|int
 		 */
-		public function stop() {
+		public function stop(): int|float {
 			$this->stopTime = $this->getCurrentTime();
 			return $this->getElapsed();
 		}
@@ -50,8 +51,9 @@
 		 * Restart the timer and return the current elapsed time.
 		 *
 		 * @api restart
+		 * @return float|int
 		 */
-		public function restart() {
+		public function restart(): int|float {
 			$stop = $this->stop();
 			$this->start();
 			return $stop;
@@ -63,7 +65,7 @@
 		 * @api getElapsed
 		 * @return float|int
 		 */
-		public function getElapsed() {
+		public function getElapsed(): int|float {
 			if ($this->startTime == null)
 				return 0;
 
@@ -77,7 +79,7 @@
 		 * @api getStartTimestamp
 		 * @return float|int
 		 */
-		public function getStartTimestamp() {
+		public function getStartTimestamp(): int|float {
 			return $this->startTime ?? 0;
 		}
 
@@ -109,7 +111,7 @@
 		 * @internal
 		 * @return int|float
 		 */
-		private function getCurrentTime() {
+		private function getCurrentTime(): int|float {
 			if ($this->format == self::FORMAT_MICROSECONDS)
 				return \microtime(true);
 
@@ -119,15 +121,15 @@
 		/**
 		 * @var int
 		 */
-		private $format;
+		private int $format;
 
 		/**
-		 * @var int|float
+		 * @var int|float|null
 		 */
-		private $startTime;
+		private int|float|null $startTime = null;
 
 		/**
-		 * @var int|float
+		 * @var int|float|null
 		 */
-		private $stopTime;
+		private int|float|null $stopTime = null;
 	}

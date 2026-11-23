@@ -23,7 +23,7 @@
 		 * @param IErrorReport|string $report Report to dispatch.
 		 * @return bool
 		 */
-		public function dispatch($report):bool {
+		public function dispatch(IErrorReport|string $report): bool {
 			// Clear all output already sent.
 			while (\ob_get_level())
 				\ob_end_clean();

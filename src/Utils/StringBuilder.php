@@ -20,7 +20,7 @@
 		 * @api __construct
 		 * @param array $args Initial elements to append to the builder.
 		 */
-		public function __construct(...$args) {
+		public function __construct(mixed ...$args) {
 			$this->clear();
 			$this->append($args);
 		}
@@ -33,7 +33,7 @@
 		 * @param array $args Elements to append to the builder.
 		 * @return StringBuilder
 		 */
-		public function append(...$args):StringBuilder {
+		public function append(mixed ...$args):StringBuilder {
 			foreach ($args as $arg) {
 				if (\is_array($arg)) {
 					foreach ($arg as $subArg)
@@ -69,7 +69,7 @@
 		 * @param bool $suffix Line-end will be suffix, otherwise prefix.
 		 * @return StringBuilder
 		 */
-		public function appendLine($line = null, bool $suffix = true):StringBuilder {
+		public function appendLine(mixed $line = null, bool $suffix = true):StringBuilder {
 			if ($line === null)
 				return $this->newLine(true);
 
@@ -89,7 +89,7 @@
 		 * @param array $args Components for the format pattern.
 		 * @return StringBuilder
 		 */
-		public function appendf(string $format, ...$args):StringBuilder {
+		public function appendf(string $format, mixed ...$args):StringBuilder {
 			\array_unshift($args, $format); // Push the format string onto the args.
 			return $this->append(\call_user_func_array('\sprintf', $args));
 		}
@@ -115,7 +115,7 @@
 		 * @param array $args Elements to prepend to the builder.
 		 * @return StringBuilder
 		 */
-		public function prepend(...$args):StringBuilder {
+		public function prepend(mixed ...$args):StringBuilder {
 			foreach ($args as $arg) {
 				if (\is_array($arg)) {
 					foreach ($arg as $subArg)
@@ -150,7 +150,7 @@
 		 * @param bool $suffix Line-end will be suffix, otherwise prefix.
 		 * @return StringBuilder
 		 */
-		public function prependLine($line = null, bool $suffix = true):StringBuilder {
+		public function prependLine(mixed $line = null, bool $suffix = true):StringBuilder {
 			if ($line === null)
 				return $this->newLine(false);
 
@@ -170,7 +170,7 @@
 		 * @param array $args Components for the format pattern.
 		 * @return StringBuilder
 		 */
-		public function prependf(string $format, ...$args):StringBuilder {
+		public function prependf(string $format, mixed ...$args):StringBuilder {
 			\array_unshift($args, $format); // Push the format string onto the args.
 			return $this->prepend(\call_user_func_array('\sprintf', $args));
 		}
@@ -198,7 +198,7 @@
 		 * @param bool $append Append the element, otherwise prepend.
 		 * @return StringBuilder
 		 */
-		public function repeat($input, int $count = 1, bool $append = true):StringBuilder {
+		public function repeat(mixed $input, int $count = 1, bool $append = true):StringBuilder {
 			for ($i = 0; $i < $count; $i++)
 				$append ? $this->append($input) : $this->prepend($input);
 
@@ -263,7 +263,7 @@
 		 * @param string|null $sep Separator character.
 		 * @return StringBuilder
 		 */
-		public function setSeparator($sep):StringBuilder {
+		public function setSeparator(?string $sep):StringBuilder {
 			$this->separator = $sep;
 			return $this;
 		}
@@ -297,7 +297,7 @@
 		 * @return string
 		 * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
 		 */
-		public function __toString() {
+		public function __toString(): string {
 			return \implode($this->getLineEnd(), $this->data);
 		}
 
@@ -307,7 +307,7 @@
 		 * @internal
 		 * @return int
 		 */
-		private function getLineIndex() {
+		private function getLineIndex(): int {
 			return \count($this->data) - 1;
 		}
 
@@ -338,20 +338,20 @@
 		/**
 		 * @var int
 		 */
-		private $indent;
+		private int $indent = 0;
 
 		/**
 		 * @var array
 		 */
-		private $data;
+		private array $data;
 
 		/**
 		 * @var string|null
 		 */
-		private $separator;
+		private ?string $separator = null;
 
 		/**
 		 * @var string|null
 		 */
-		private $lineEnd;
+		private ?string $lineEnd = null;
 	}

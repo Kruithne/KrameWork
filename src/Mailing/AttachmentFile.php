@@ -19,7 +19,7 @@
 		 * @api setInline
 		 * @param bool $inline Embed attachment inline.
 		 */
-		public function setInline(bool $inline) {
+		public function setInline(bool $inline): void {
 			$this->isInline = $inline;
 		}
 
@@ -39,7 +39,7 @@
 		 * @api setContentID
 		 * @param string $id CID for this attachment.
 		 */
-		public function setContentID(string $id) {
+		public function setContentID(string $id): void {
 			$this->contentID = $id;
 		}
 
@@ -54,12 +54,12 @@
 		}
 
 		/**
-		 * @var bool
+		 * @var bool|null
 		 */
-		private $isInline;
+		private ?bool $isInline = null;
 
 		/**
-		 * @var string
+		 * @var string|null
 		 */
-		private $contentID;
+		private ?string $contentID = null;
 	}

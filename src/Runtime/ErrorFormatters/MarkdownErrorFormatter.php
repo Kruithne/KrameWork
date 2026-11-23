@@ -12,11 +12,11 @@
 
 	class MarkdownErrorFormatter implements IErrorFormatter
 	{
-		public function beginReport() {
+		public function beginReport(): void {
 			$this->lines = [];
 		}
 
-		public function reportError(IError $error) {
+		public function reportError(IError $error): void {
 			$this->error = $error;
 			$this->lines[] = '## ' . $error->getPrefix() . ': ' . $error->getName();
 			$this->lines[] = '';
@@ -33,14 +33,14 @@
 				$this->addCodeBlock('Exception Debug Data', \var_export($debug, true));
 		}
 
-		public function reportDebug(array $debug) {
+		public function reportDebug(array $debug): void {
 			if (!$debug)
 				return;
 
 			$this->addTable('Application Debug Data', $debug);
 		}
 
-		public function reportStacktrace(array $trace) {
+		public function reportStacktrace(array $trace): void {
 			$frames = [];
 			foreach ($trace as $node) {
 				$args = [];
@@ -61,20 +61,20 @@
 			$this->addCodeBlock('Stack Trace (' . \count($trace) . ' steps)', \implode("\n", $frames));
 		}
 
-		public function reportArray(string $name, array $arr) {
+		public function reportArray(string $name, array $arr): void {
 			$this->addTable($name . ' (' . \count($arr) . ' items)', $arr);
 		}
 
-		public function reportString(string $name, string $str) {
+		public function reportString(string $name, string $str): void {
 			$this->addCodeBlock($name, $str);
 		}
 
-		public function generate():IErrorReport {
+		public function generate(): IErrorReport {
 			$this->lines[] = '_Report generated automatically on ' . \date(\DATE_RFC2822) . '._';
 			return new ErrorReport($this->error, 'text/markdown; charset=utf-8', '.md', \implode("\n", $this->lines));
 		}
 
-		private function addTable(string $title, array $arr) {
+		private function addTable(string $title, array $arr): void {
 			$this->lines[] = '### ' . $title;
 			$this->lines[] = '';
 
@@ -93,7 +93,7 @@
 			$this->lines[] = '';
 		}
 
-		private function addCodeBlock(string $title, string $content) {
+		private function addCodeBlock(string $title, string $content): void {
 			$fence = $this->fence($content, 3);
 			$this->lines[] = '### ' . $title;
 			$this->lines[] = '';
@@ -117,7 +117,7 @@
 			return $fence;
 		}
 
-		protected $error;
+		protected ?IError $error = null;
 
-		protected $lines;
+		protected ?array $lines = null;
 	}

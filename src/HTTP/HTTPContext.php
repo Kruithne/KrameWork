@@ -23,7 +23,7 @@
 		 * @param bool $useWrappers Use KrameWork file wrappers.
 		 * @return \ArrayObject[]|\KrameWork\Storage\UploadedFile[]
 		 */
-		public static function getFiles(string $key, bool $useWrappers = true) {
+		public static function getFiles(string $key, bool $useWrappers = true): array {
 			$files = [];
 			$node = $_FILES[$key] ?? null;
 
@@ -62,7 +62,7 @@
 		 * @param string $key Key to check for.
 		 * @return bool
 		 */
-		public static function hasFile(string $key) {
+		public static function hasFile(string $key): bool {
 			return \array_key_exists($key, $_FILES);
 		}
 
@@ -72,7 +72,7 @@
 		 * @api getQueryData
 		 * @return array
 		 */
-		public static function getQueryData() {
+		public static function getQueryData(): array {
 			if (self::$cacheQueryData)
 				return self::$cacheQueryData;
 
@@ -87,7 +87,7 @@
 		 * @param string $key Key contained in the query string.
 		 * @return mixed|null
 		 */
-		public static function getQueryDataValue(string $key) {
+		public static function getQueryDataValue(string $key): mixed {
 			return self::getQueryData()[$key] ?? null;
 		}
 
@@ -141,7 +141,7 @@
 		 * @param string $key Key to get value for.
 		 * @return mixed|null
 		 */
-		public static function getFormDataValue(string $key) {
+		public static function getFormDataValue(string $key): mixed {
 			return self::getFormData()[$key] ?? null;
 		}
 
@@ -192,10 +192,10 @@
 		 * @param bool $decode Parse the string and validate it.
 		 * @param bool $ignoreContentType Skip validation of the content-type.
 		 * @param bool $wrapper Wrap the decoded JSON object in a JSONFile wrapper.
-		 * @return mixed|string
+		 * @return JSONFile|mixed|string
 		 * @throws InvalidRequestTypeException
 		 */
-		public static function getJSON(bool $decode = true, bool $ignoreContentType = false, bool $wrapper = true) {
+		public static function getJSON(bool $decode = true, bool $ignoreContentType = false, bool $wrapper = true): mixed {
 			if (!$ignoreContentType && self::getContentType(false) != 'application/json')
 				throw new InvalidRequestTypeException('Request content is not declared as application/json.');
 
@@ -371,11 +371,11 @@
 		 * Retrieves a specific request header or NULL if it was not sent.
 		 * @return mixed|null
 		 */
-		public static function getRequestHeader(string $key) {
+		public static function getRequestHeader(string $key): mixed {
 			return self::getRequestHeaders()[\strtolower($key)] ?? null;
 		}
 
-		public static function reset() {
+		public static function reset(): void {
 			self::$hasFormData = null;
 			self::$hasMultipartFormData = null;
 			self::$cacheFormData = null;
@@ -388,7 +388,7 @@
 		 *
 		 * @internal
 		 */
-		private static function checkFormDataPresence() {
+		private static function checkFormDataPresence(): void {
 			$contentType = self::getContentType(false);
 			self::$hasMultipartFormData = $contentType == 'multipart/form-data';
 			self::$hasFormData = self::$hasMultipartFormData || $contentType == 'application/x-www-form-urlencoded';
@@ -408,31 +408,31 @@
 
 		/**
 		 * True if the request has form data.
-		 * @var bool
+		 * @var bool|null
 		 */
-		private static $hasFormData;
+		private static ?bool $hasFormData = null;
 
 		/**
 		 * True if the form data is multipart.
-		 * @var bool
+		 * @var bool|null
 		 */
-		private static $hasMultipartFormData;
+		private static ?bool $hasMultipartFormData = null;
 
 		/**
 		 * Internal cache for parsed form data.
-		 * @var array
+		 * @var array|null
 		 */
-		private static $cacheFormData;
+		private static ?array $cacheFormData = null;
 
 		/**
 		 * Internal cache for parsed query data.
-		 * @var array
+		 * @var array|null
 		 */
-		private static $cacheQueryData;
+		private static ?array $cacheQueryData = null;
 
 		/**
 		 * Internal cache for request headers.
-		 * @var array
+		 * @var array|null
 		 */
-		private static $cacheRequestHeaders;
+		private static ?array $cacheRequestHeaders = null;
 	}

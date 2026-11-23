@@ -30,7 +30,7 @@
 		 * @param string $source Path to the directory.
 		 * @param bool $create Create directory if missing.
 		 */
-		public function __construct($source, bool $create = false) {
+		public function __construct(string $source, bool $create = false) {
 			parent::__construct($source);
 
 			if (!$this->exists() && $create)
@@ -55,7 +55,7 @@
 		 * @param int $mode File permissions (No effect on Windows).
 		 * @return bool
 		 */
-		public function create($recursive = true, $mode = 0777):bool {
+		public function create(bool $recursive = true, int $mode = 0777):bool {
 			return @\mkdir($this->path, $mode, $recursive);
 		}
 
@@ -66,7 +66,7 @@
 		 * @param bool $recursive Recursively delete the directory.
 		 * @return bool
 		 */
-		public function delete($recursive = false):bool {
+		public function delete(bool $recursive = false):bool {
 			if ($recursive) {
 				$success = true;
 				foreach ($this->getItems(self::USE_WRAPPERS | self::INCLUDE_ALL) as $item) {
@@ -133,7 +133,7 @@
 		 * @param int $flags Bit-mask flags to control retrieval.
 		 * @return array
 		 */
-		public function getFiles($flags = self::DEFAULT_FLAGS):array {
+		public function getFiles(int $flags = self::DEFAULT_FLAGS):array {
 			return $this->getItems(($flags & ~self::INCLUDE_DIRECTORIES) | self::INCLUDE_FILES);
 		}
 
@@ -145,7 +145,7 @@
 		 * @param int $flags Bit-mask flags to control retrieval.
 		 * @return array
 		 */
-		public function getDirectories($flags = self::DEFAULT_FLAGS):array {
+		public function getDirectories(int $flags = self::DEFAULT_FLAGS):array {
 			return $this->getItems(($flags & ~self::INCLUDE_FILES) | self::INCLUDE_DIRECTORIES);
 		}
 
@@ -198,7 +198,7 @@
 		 * @return Directory
 		 * @throws FileAlreadyExistsException
 		 */
-		public function createDirectory(string $name, $mode = 0777):Directory {
+		public function createDirectory(string $name, int $mode = 0777):Directory {
 			if ($this->hasItem($name))
 				throw new FileAlreadyExistsException();
 

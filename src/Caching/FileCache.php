@@ -59,7 +59,7 @@
 		 *
 		 * @api persist
 		 */
-		public function persist() {
+		public function persist(): void {
 			$data = \base64_encode(\serialize($this->data));
 			$index = \base64_encode(\serialize($this->index));
 
@@ -74,7 +74,7 @@
 		 * @param string $key Key of the value.
 		 * @return mixed|null
 		 */
-		public function __get(string $key) {
+		public function __get(string $key): mixed {
 			// Check value expiry.
 			if (\array_key_exists($key, $this->index))
 				if ($this->index[$key] < time())
@@ -91,7 +91,7 @@
 		 * @param string $key Key to store the value under.
 		 * @param mixed $value Value to store in the cache.
 		 */
-		public function __set(string $key, $value) {
+		public function __set(string $key, mixed $value): void {
 			if($value === null)
 			{
 				$this->__unset($key);
@@ -112,7 +112,7 @@
 		 * @param mixed $value Value to store in the cache.
 		 * @param int $expire 60*60*24*30 >= Unix Timestamp, otherwise seconds. 0 = Never.
 		 */
-		public function store(string $key, $value, int $expire = 0) {
+		public function store(string $key, mixed $value, int $expire = 0): void {
 			if($value === null)
 			{
 				$this->__unset($key);
@@ -152,7 +152,7 @@
 		 * @api __unset
 		 * @param string $key Key of the item to remove.
 		 */
-		public function __unset(string $key) {
+		public function __unset(string $key): void {
 			unset($this->data[$key], $this->index[$key]);
 
 			if ($this->autoPersist)
@@ -164,7 +164,7 @@
 		 *
 		 * @api flush
 		 */
-		public function flush() {
+		public function flush(): void {
 			$this->data = [];
 			$this->index = [];
 
@@ -179,7 +179,7 @@
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to increment the value.
 		 */
-		public function increment(string $key, int $weight = 1) {
+		public function increment(string $key, int $weight = 1): void {
 			$this->data[$key] = ($this->$key ?? 0) + $weight;
 
 			if ($this->autoPersist)
@@ -193,7 +193,7 @@
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to decrement the value.
 		 */
-		public function decrement(string $key, int $weight = 1) {
+		public function decrement(string $key, int $weight = 1): void {
 			$this->data[$key] = ($this->$key ?? 0) - $weight;
 
 			if ($this->autoPersist)
@@ -203,7 +203,7 @@
 		/**
 		 * @var string
 		 */
-		private $file;
+		private string $file;
 
 		/**
 		 * @var array
@@ -218,5 +218,5 @@
 		/**
 		 * @var bool
 		 */
-		private $autoPersist;
+		private bool $autoPersist;
 	}

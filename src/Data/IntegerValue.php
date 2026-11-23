@@ -13,16 +13,16 @@
 		 * IntegerValue constructor.
 		 * @param int|mixed $value A value to be cast to int and encapsulated
 		 */
-		public function __construct($value) {
+		public function __construct(mixed $value) {
 			parent::__construct($value === null ? null : (int) $value);
 		}
 
 		/**
 		 * Utility function for sorting a list of values
 		 * @param $to Value|mixed A value to compare against
-		 * @return int Sorting index
+		 * @return int|float Sorting index
 		 */
-		public function compare($to) {
+		public function compare(mixed $to): int|float {
 			$a = $this->value;
 			if ($to instanceof Value)
 				$b = $to->real();

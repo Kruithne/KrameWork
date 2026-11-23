@@ -30,7 +30,7 @@
 		 * @api setContent
 		 * @param string $content Content data.
 		 */
-		public function setContent($content) {
+		public function setContent(string $content): void {
 			$this->content = $content;
 		}
 
@@ -67,7 +67,7 @@
 		 * @api getEncoding
 		 * @return string
 		 */
-		public function getEncoding() {
+		public function getEncoding(): string {
 			return $this->encoding;
 		}
 
@@ -78,7 +78,7 @@
 		 * @return string
 		 * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
 		 */
-		function __toString() {
+		function __toString(): string {
 			$content = $this->content;
 
 			if ($this->encoding == self::E_BASE64)
@@ -93,10 +93,10 @@
 		/**
 		 * @var string
 		 */
-		private $encoding;
+		private string $encoding;
 
 		/**
-		 * @var string
+		 * @var string|null
 		 */
-		private $content;
+		private ?string $content = null;
 	}

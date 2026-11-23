@@ -25,7 +25,7 @@
 		 * @param array $param An array of values to inject in the statement
 		 * @return \stdClass|null
 		 */
-		function getRow(string $sql, array $param);
+		function getRow(string $sql, array $param): ?\stdClass;
 
 		/**
 		 * Execute a query and return the first column of each row
@@ -43,7 +43,7 @@
 		 * @param array $param An array of values to inject in the statement
 		 * @return mixed|null
 		 */
-		function getValue(string $sql, array $param);
+		function getValue(string $sql, array $param): mixed;
 
 		/**
 		 * Execute a statement and return the number of affected rows
@@ -57,15 +57,15 @@
 		/**
 		 * Return the last error for this database connection
 		 * For query-specific errors, use getLastQueryError().
-		 * @return mixed
+		 * @return array|null
 		 */
-		function getLastError();
+		function getLastError(): ?array;
 
 		/**
 		 * Returns the error for the last executed query.
-		 * @return mixed
+		 * @return array|null
 		 */
-		function getLastQueryError();
+		function getLastQueryError(): ?array;
 
 		/**
 		 * Returns the ID of the last inserted row.
@@ -77,17 +77,17 @@
 		 * @api beginTransaction
 		 * Open a database transaction
 		 */
-		function beginTransaction();
+		function beginTransaction(): bool;
 
 		/**
 		 * @api rollbackTransaction
 		 * Rolls back the current transaction
 		 */
-		function rollbackTransaction();
+		function rollbackTransaction(): bool;
 
 		/**
 		 * @api commitTransaction
 		 * Commits the current transaction
 		 */
-		function commitTransaction();
+		function commitTransaction(): bool;
 	}

@@ -19,7 +19,7 @@
 		 * @api __construct
 		 * @param array|string $input Policy array (header objects) or pre-compiled string.
 		 */
-		public function __construct($input = []) {
+		public function __construct(array|string $input = []) {
 			$this->compiled = [];
 
 			if (\is_array($input)) {
@@ -42,7 +42,7 @@
 		 * @api add
 		 * @param HTTPHeader $header Header to add.
 		 */
-		public function add(HTTPHeader $header) {
+		public function add(HTTPHeader $header): void {
 			$this->headers[] = $header;
 		}
 
@@ -52,7 +52,7 @@
 		 *
 		 * @api apply
 		 */
-		public function apply() {
+		public function apply(): void {
 			foreach ($this->compiled as $header)
 				\header($header);
 		}
@@ -63,7 +63,7 @@
 		 *
 		 * @api compile
 		 */
-		public function compile() {
+		public function compile(): void {
 			$this->compiled = [];
 			foreach ($this->headers as $header)
 				$this->compiled[] = (string) $header;
@@ -88,7 +88,7 @@
 		 * @param string|null $file Optional file to write out to.
 		 * @return string
 		 */
-		public function generateApacheConfig($file = null):string {
+		public function generateApacheConfig(?string $file = null): string {
 			require_once(__DIR__ . '/../Utils/StringBuilder.php');
 			$builder = new StringBuilder();
 
@@ -106,7 +106,7 @@
 		/**
 		 * @var HTTPHeader[]
 		 */
-		protected $headers;
+		protected array $headers;
 
 		/**
 		 * @var string[]

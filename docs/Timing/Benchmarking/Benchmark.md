@@ -14,12 +14,12 @@ ___
 The `Benchmark` class provided by KrameWork is an easy-to-use class for creating simple benchmarks of your code. The quickest (and most common) method of using this class is to create an anonymous class that extends `Benchmark`.
 ```php
 $benchmark = new class extends Benchmark {
-  public function runCycle() {
+  public function execute(): void {
   	// Your code to benchmark here!
   }
 };
 ```
-Your anonymous class must implement the `runCycle()` function, which is called by default **2000** times once the benchmark test is run, which we'll do now!
+Your anonymous class must implement the `execute()` function, which is called by default **2000** times once the benchmark test is run, which we'll do now!
 ```php
 $result = $benchmark->runTest();
 ```
@@ -52,21 +52,21 @@ $benchmark = new class(100, 'Carl') extends Benchmark {
 It's common that your benchmark will most likely have some data or operations to perform before the test is run, and similar deconstruction operations to perform once the test is done. This can be achieved by overwriting the `onStart()` and `onEnd()` functions within the class.
 ```php
 $benchmark = new class extends Benchmark {
-	public function onStart() {
+	public function onStart(): void {
 		// This will be called just before the benchmark starts.
 	}
 	
-	public function runCycle() {
+	public function execute(): void {
 		// Your code to benchmark here!
 	}
 
-	public function onEnd() {
+	public function onEnd(): void {
 		// This will be called once the benchmark is finished, just before
 		// the result is returned.
 	}
 };
 ```
-Neither `onStart()` or `onEnd()` are included in the benchmark timings, only the execution of `runCycle()`.
+Neither `onStart()` or `onEnd()` are included in the benchmark timings, only the execution of `execute()`.
 ___
 ### Functions
 ##### > __construct() : `void`

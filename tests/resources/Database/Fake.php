@@ -26,7 +26,7 @@
 		 * @param array $param An array of values to inject in the statement
 		 * @return \stdClass|null
 		 */
-		function getRow(string $sql, array $param) {
+		function getRow(string $sql, array $param): ?\stdClass {
 			return (object)['sql' => $sql, 'param' => $param];
 		}
 
@@ -48,7 +48,7 @@
 		 * @param array $param An array of values to inject in the statement
 		 * @return mixed
 		 */
-		function getValue(string $sql, array $param) {
+		function getValue(string $sql, array $param): mixed {
 			return $sql;
 		}
 
@@ -63,11 +63,11 @@
 			return count($param);
 		}
 
-		function getLastError() {
+		function getLastError(): ?array {
 			return null;
 		}
 
-		function getLastQueryError() {
+		function getLastQueryError(): ?array {
 			return null;
 		}
 
@@ -79,23 +79,26 @@
 		 * @api beginTransaction
 		 * Open a database transaction
 		 */
-		function beginTransaction()
+		function beginTransaction(): bool
 		{
+			return true;
 		}
 
 		/**
 		 * @api rollbackTransaction
 		 * Rolls back the current transaction
 		 */
-		function rollbackTransaction()
+		function rollbackTransaction(): bool
 		{
+			return true;
 		}
 
 		/**
 		 * @api commitTransaction
 		 * Commits the current transaction
 		 */
-		function commitTransaction()
+		function commitTransaction(): bool
 		{
+			return true;
 		}
 	}

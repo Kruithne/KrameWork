@@ -46,7 +46,7 @@
 		 * @param bool $glue Whether or not more columns will be added later
 		 * @return string An SQL fragment
 		 */
-		public function build($glue = true)
+		public function build(bool $glue = true): string
 		{
 			$base = ($this->anchor ? $this->anchor->build() . ' ' : 'SELECT * FROM ' . $this->table->getFullName() . ' WHERE ')
 				. \sprintf($this->format, $this->column, $this->level)
@@ -82,7 +82,7 @@
 		 * @param array $params
 		 * @return array Query parameters
 		 */
-		public function arguments(array $params = [])
+		public function arguments(array $params = []): array
 		{
 			if ($this->value !== null)
 			{
@@ -105,99 +105,99 @@
 
 		/**
 		 * @api andColumn
-		 * @param $column
+		 * @param string $column
 		 * @return QueryBuilder
 		 */
-		public function andColumn($column)
+		public function andColumn(string $column): self
 		{
 			$this->glue = 'AND';
 			return new self($this->db, $column, $this, $this->table, $this->level + 1);
 		}
 
-		public function orColumn($column)
+		public function orColumn(string $column): self
 		{
 			$this->glue = 'OR';
 			return new self($this->db, $column, $this, $this->table, $this->level + 1);
 		}
 
-		public function like($value)
+		public function like(mixed $value): static
 		{
 			$this->format = '%1$s LIKE :%1$s%2$s';
 			$this->value = $value;
 			return $this;
 		}
 
-		public function notLike($value)
+		public function notLike(mixed $value): static
 		{
 			$this->format = '%1$s NOT LIKE :%1$s%2$s';
 			$this->value = $value;
 			return $this;
 		}
 
-		public function isNull()
+		public function isNull(): static
 		{
 			$this->format = '%1$s IS NULL';
 			$this->value = null;
 			return $this;
 		}
 
-		public function maximum()
+		public function maximum(): static
 		{
 			$this->format = '%1$s = (SELECT MAX(%1$s) FROM '.$this->table->getFullName().')';
 			$this->value = null;
 			return $this;
 		}
 
-		public function minimum()
+		public function minimum(): static
 		{
 			$this->format = '%1$s = (SELECT MIN(%1$s) FROM '.$this->table->getFullName().')';
 			$this->value = null;
 			return $this;
 		}
 
-		public function notNull()
+		public function notNull(): static
 		{
 			$this->format = '%1$s IS NOT NULL';
 			$this->value = null;
 			return $this;
 		}
 
-		public function lessThan($value)
+		public function lessThan(mixed $value): static
 		{
 			$this->format = '%1$s < :%1$s%2$s';
 			$this->value = $value;
 			return $this;
 		}
 
-		public function greaterThan($value)
+		public function greaterThan(mixed $value): static
 		{
 			$this->format = '%1$s > :%1$s%2$s';
 			$this->value = $value;
 			return $this;
 		}
 
-		public function equals($value)
+		public function equals(mixed $value): static
 		{
 			$this->format = '%1$s = :%1$s%2$s';
 			$this->value = $value;
 			return $this;
 		}
 
-		public function equalsCaseInsensitive($value)
+		public function equalsCaseInsensitive(string $value): static
 		{
 			$this->format = 'LOWER(%1$s) = :%1$s%2$s';
 			$this->value = \strtolower($value);
 			return $this;
 		}
 
-		public function between($low, $high)
+		public function between(mixed $low, mixed $high): static
 		{
 			$this->format = '(%1$s > :%1$s%2$s_low AND %1$s < :%1$s%2$s_high)';
 			$this->value = array('low' => $low, 'high' => $high);
 			return $this;
 		}
 
-		public function offset($offset)
+		public function offset(int $offset): static
 		{
 			if($this->isMSSQL)
 				throw new \Exception('Unsupported database type');
@@ -206,103 +206,103 @@
 			return $this;
 		}
 
-		public function limit($count)
+		public function limit(int $count): static
 		{
 			$this->query_limit = $count;
 			return $this;
 		}
 
-		public function descending($column)
+		public function descending(string $column): static
 		{
 			$this->orderBy[$column] = false;
 			return $this;
 		}
 
-		public function ascending($column)
+		public function ascending(string $column): static
 		{
 			$this->orderBy[$column] = true;
 			return $this;
 		}
 
-		public function execute()
+		public function execute(): array
 		{
 			$sql = $this->build(false);
 			return $this->db->getAll($sql, $this->arguments());
 		}
 
 		/**
-		 * @var string AND/OR
+		 * @var string|null AND/OR
 		 */
-		private $glue;
+		private ?string $glue = null;
 
 		/**
 		 * @var string column name
 		 */
-		private $column;
+		private string $column;
 
 		/**
-		 * @var string SQL Fragment
+		 * @var string|null SQL Fragment
 		 */
-		private $format;
+		private ?string $format = null;
 
 		/**
 		 * @var mixed Search value
 		 */
-		private $value;
+		private mixed $value = null;
 
 		/**
 		 * @var Generic
 		 */
-		private $db;
+		private Generic $db;
 
 		/**
 		 * @var int
 		 */
-		private $level;
+		private int $level;
 
 		/**
-		 * @var QueryBuilder
+		 * @var QueryBuilder|null
 		 */
-		private $anchor;
+		private ?QueryBuilder $anchor = null;
 
 		/**
-		 * @var int
+		 * @var int|null
 		 */
-		private $query_limit;
+		private ?int $query_limit = null;
 
 		/**
-		 * @var int
+		 * @var int|null
 		 */
-		private $query_offset;
+		private ?int $query_offset = null;
 
 		/**
 		 * @var IManagedTable
 		 */
-		private $table;
+		private IManagedTable $table;
 
 		/**
 		 * @var array
 		 * Key is column name, value is bool. False = descending, True = ascending
 		 */
-		private $orderBy = [];
+		private array $orderBy = [];
 
 		/**
 		 * @var bool
 		 */
-		private $isMSSQL;
+		private bool $isMSSQL;
 
 		/**
 		 * @var bool
 		 */
-		private $isMySQL;
+		private bool $isMySQL;
 
 		/**
 		 * @var bool
 		 */
-		private $isPostgreSQL;
+		private bool $isPostgreSQL;
 
 		/**
 		 * @var bool
 		 */
-		private $isSqlite;
+		private bool $isSqlite;
 	}

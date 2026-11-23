@@ -31,7 +31,7 @@
 		 * @api setOption
 		 * @param string $option Directive for this header.
 		 */
-		public function setOption(string $option) {
+		public function setOption(string $option): void {
 			$this->option = $option;
 		}
 
@@ -58,5 +58,5 @@
 		/**
 		 * @var string
 		 */
-		protected $option;
+		protected string $option;
 	}

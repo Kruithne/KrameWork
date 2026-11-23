@@ -23,7 +23,7 @@
 		 * @param bool $autoLoad Attempt to read data from the file on instantiation.
 		 * @throws JSONException
 		 */
-		public function __construct($source = null, bool $useContainer = true, bool $autoLoad = true) {
+		public function __construct(string|File|null $source = null, bool $useContainer = true, bool $autoLoad = true) {
 			$this->useContainer = $useContainer;
 			if ($useContainer)
 				$this->jsonData = new \ArrayObject([], \ArrayObject::ARRAY_AS_PROPS);
@@ -48,7 +48,7 @@
 		 * @return mixed|null
 		 * @throws JSONException
 		 */
-		public function __get(string $key) {
+		public function __get(string $key): mixed {
 			$this->verifyDataObject();
 			return $this->jsonData[$key] ?? null;
 		}
@@ -61,7 +61,7 @@
 		 * @param mixed $value Value to store at the given key.
 		 * @throws JSONException
 		 */
-		public function __set(string $key, $value) {
+		public function __set(string $key, mixed $value): void {
 			$this->verifyDataObject();
 			$this->jsonData[$key] = $value;
 		}
@@ -72,7 +72,7 @@
 		 * @api __unset
 		 * @param string $key Key to remove from the container.
 		 */
-		public function __unset(string $key) {
+		public function __unset(string $key): void {
 			$this->verifyDataObject();
 			unset($this->jsonData[$key]);
 		}
@@ -84,7 +84,7 @@
 		 * @api read
 		 * @throws JSONException
 		 */
-		public function read() {
+		public function read(): void {
 			if ($this->path != null)
 				parent::read();
 
@@ -105,7 +105,7 @@
 		 * @param bool $overwrite Overwrite file if it exists.
 		 * @throws JSONException
 		 */
-		public function save(?string $file = null, bool $overwrite = true) {
+		public function save(?string $file = null, bool $overwrite = true): void {
 			$encoded = \json_encode($this->jsonData);
 			if ($encoded === null)
 				$this->throwJSONError();
@@ -120,7 +120,7 @@
 		 * @internal
 		 * @throws JSONException
 		 */
-		private function throwJSONError() {
+		private function throwJSONError(): void {
 			throw new JSONException('JSON error: ' . \json_last_error_msg());
 		}
 
@@ -130,7 +130,7 @@
 		 * @internal
 		 * @throws JSONException
 		 */
-		private function verifyDataObject() {
+		private function verifyDataObject(): void {
 			if ($this->jsonData === null)
 				throw new JSONException('Attempt to invoke value on a non-initiated JSON file.');
 		}
@@ -140,7 +140,7 @@
 		 *
 		 * @param bool $applyHeader If true, content-type header will be set.
 		 */
-		public function sendToBuffer($applyHeader = true) {
+		public function sendToBuffer(bool $applyHeader = true): void {
 			if ($applyHeader)
 				\header('Content-Type: application/json');
 
@@ -153,9 +153,9 @@
 		 *
 		 * @api getData
 		 * @param bool $forceRead Call read() if no data.
-		 * @return \ArrayObject|null|string
+		 * @return mixed
 		 */
-		public function getData(bool $forceRead = false) {
+		public function getData(bool $forceRead = false): mixed {
 			if ($forceRead && $this->data === null)
 				$this->read();
 
@@ -169,7 +169,7 @@
 		 * @api setData
 		 * @param mixed $data JSON object.
 		 */
-		public function setData($data) {
+		public function setData(mixed $data): void {
 			$this->jsonData = $data;
 		}
 
@@ -179,7 +179,7 @@
 		 * @api getRawData
 		 * @return string|null
 		 */
-		public function getRawData() {
+		public function getRawData(): ?string {
 			return $this->data;
 		}
 
@@ -189,7 +189,7 @@
 		 * @api setRawData
 		 * @param string $data Raw data.
 		 */
-		public function setRawData(string $data) {
+		public function setRawData(string $data): void {
 			$this->data = $data;
 		}
 
@@ -200,7 +200,7 @@
 		 * @api setRecursionDepth
 		 * @param int $depth Recursion depth.
 		 */
-		public function setRecursionDepth(int $depth) {
+		public function setRecursionDepth(int $depth): void {
 			$this->depth = $depth;
 		}
 
@@ -211,7 +211,7 @@
 		 * @api setAssociative
 		 * @param bool $assoc Associative state.
 		 */
-		public function setAssociative(bool $assoc) {
+		public function setAssociative(bool $assoc): void {
 			$this->assoc = $assoc;
 		}
 
@@ -221,7 +221,7 @@
 		 * @api setOptions
 		 * @param int $mask Bit-mask options flag.
 		 */
-		public function setOptions(int $mask) {
+		public function setOptions(int $mask): void {
 			$this->options = $mask;
 		}
 
@@ -231,7 +231,7 @@
 		 * @api marshalFrom
 		 * @param File $file
 		 */
-		public function marshalFrom(File $file) {
+		public function marshalFrom(File $file): void {
 			parent::marshalFrom($file);
 
 			if ($file instanceof JSONFile) {
@@ -245,27 +245,27 @@
 
 
 		/**
-		 * @var \ArrayObject|string
+		 * @var mixed
 		 */
-		protected $jsonData;
+		protected mixed $jsonData = null;
 
 		/**
 		 * @var bool Store data inside an ArrayObject.
 		 */
-		protected $useContainer;
+		protected bool $useContainer;
 
 		/**
 		 * @var int Recursion depth.
 		 */
-		protected $depth = 512;
+		protected int $depth = 512;
 
 		/**
 		 * @var bool Convert objects into associative arrays.
 		 */
-		protected $assoc = false;
+		protected bool $assoc = false;
 
 		/**
 		 * @var int Bit-mask for JSON encoding options.
 		 */
-		protected $options = 0;
+		protected int $options = 0;
 	}

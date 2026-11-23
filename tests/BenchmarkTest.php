@@ -10,7 +10,7 @@
 				/**
 				 * Overwrite and include the code to benchmark inside this function.
 				 */
-				public function execute() {
+				public function execute(): void {
 					usleep(1000);
 				}
 			};

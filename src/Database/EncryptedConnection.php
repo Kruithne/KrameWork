@@ -12,7 +12,7 @@
 		 * @api __toString
 		 * @return string The decrypted connection string
 		 */
-		public function __toString() {
+		public function __toString(): string {
 			$connection = \base64_decode($this->connection);
 			switch (\substr($connection, 0, 3)) {
 				case 'H1$':
@@ -25,11 +25,11 @@
 		/**
 		 * Encrypt a connection string
 		 * @api encrypt
-		 * @param $dsn string A connection string
-		 * @param $type int Encryption format
+		 * @param string $dsn A connection string
+		 * @param int $type Encryption format
 		 * @return string An encrypted connection string
 		 */
-		public static function encrypt(string $dsn, int $type) {
+		public static function encrypt(string $dsn, int $type): string {
 			$salt = \base64_encode(\random_bytes(16));
 			if ($type == 1)
 				return \base64_encode('H1$' . $salt . '$' . \openssl_encrypt($dsn, 'AES-256-ECB', self::getKey(1, $salt)));

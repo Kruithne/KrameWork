@@ -25,7 +25,7 @@
 		 * @param string $column
 		 * @return IQueryColumn
 		 */
-		public function where(string $column) {
+		public function where(string $column): QueryBuilder {
 			return new QueryBuilder($this->db, $column, null, $this);
 		}
 
@@ -34,7 +34,7 @@
 		 * Updates the table in the database
 		 * @return string Status
 		 */
-		public function update() {
+		public function update(): string {
 			$current = $this->meta->getVersion($this->GetName());
 			if($current < 1)
 				return $this->create();
@@ -73,18 +73,17 @@
 		/**
 		 * @api drop
 		 * Delete the table from the database
-		 * @return bool Success
 		 */
-		public function drop() {
+		public function drop(): void {
 			$this->db->execute('DROP TABLE '.$this->GetFullName(), []);
 		}
 
 		/**
 		 * @api create
 		 * Create the table in the database
-		 * @return bool Success
+		 * @return string Status
 		 */
-		public function create() {
+		public function create(): string {
 			$v = \count($this->versionLog());
 			foreach ($this->latestVersion() as $sql)
 				$this->db->execute($sql, []);
@@ -92,17 +91,17 @@
 			return "Table created with revision $v";
 		}
 
-		public function getFullName() {
+		public function getFullName(): string {
 			return $this->quoteIdentifier($this->getSchema()).'.'.$this->quoteIdentifier($this->getName());
 		}
 
 		/**
 		 * Quotes the identifier for use in an SQL statement
 		 *
-		 * @param $identifier
+		 * @param string $identifier
 		 * @return string The quoted identifier
 		 */
-		public function quoteIdentifier($identifier) {
+		public function quoteIdentifier(string $identifier): string {
 			return "\"{$identifier}\"";
 		}
 
@@ -110,10 +109,10 @@
 		/**
 		 * @var \KrameWork\Database\Driver\Generic
 		 */
-		protected $db;
+		protected Generic $db;
 
 		/**
 		 * @var IMetaTable
 		 */
-		protected $meta;
+		protected IMetaTable $meta;
 	}

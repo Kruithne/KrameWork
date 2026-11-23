@@ -21,7 +21,7 @@
 			$this->connect();
 		}
 
-		private function connect()
+		private function connect(): void
 		{
 			if (\class_exists('\KrameWork\Runtime\ErrorHandler'))
 				\KrameWork\Runtime\ErrorHandler::suspend();
@@ -41,20 +41,20 @@
 				throw new \Exception($error);
 		}
 
-		public function __sleep(){ return ['conn']; }
-		public function __wakeup(){ $this->connect(); }
+		public function __sleep(): array { return ['conn']; }
+		public function __wakeup(): void { $this->connect(); }
 
-		private $conn;
+		private ConnectionString $conn;
 
 		/**
 		 * @var \PDO
 		 */
-		private $connection;
+		private \PDO $connection;
 
 		/**
-		 * @var \PDOStatement
+		 * @var \PDOStatement|null
 		 */
-		private $lastQuery;
+		private ?\PDOStatement $lastQuery = null;
 
 		/**
 		 * Execute a query and return an array of ArrayObjects
@@ -77,7 +77,7 @@
 		 * @param array $param An array of values to inject in the statement
 		 * @return \stdClass|null
 		 */
-		function getRow(string $sql, array $param) {
+		function getRow(string $sql, array $param): ?\stdClass {
 			$query = $this->lastQuery = $this->connection->prepare($sql);
 			$this->bind($query, $param);
 			$query->execute();
@@ -105,7 +105,7 @@
 		 * @param array $param An array of values to inject in the statement
 		 * @return mixed|null
 		 */
-		function getValue(string $sql, array $param) {
+		function getValue(string $sql, array $param): mixed {
 			$query = $this->lastQuery = $this->connection->prepare($sql);
 			$this->bind($query, $param);
 			$query->execute();
@@ -131,17 +131,17 @@
 		/**
 		 * Return the last error for this database connection
 		 * For query-specific errors, use getLastQueryError().
-		 * @return mixed
+		 * @return array
 		 */
-		function getLastError() {
+		function getLastError(): array {
 			return $this->connection->errorInfo();
 		}
 
 		/**
 		 * Returns the error for the last executed query.
-		 * @return mixed
+		 * @return array|null
 		 */
-		function getLastQueryError() {
+		function getLastQueryError(): ?array {
 			return $this->lastQuery?->errorInfo();
 		}
 
@@ -157,7 +157,7 @@
 		 * @api beginTransaction
 		 * Open a database transaction
 		 */
-		public function beginTransaction() {
+		public function beginTransaction(): bool {
 			return $this->connection->beginTransaction();
 		}
 
@@ -165,7 +165,7 @@
 		 * @api rollbackTransaction
 		 * Rolls back the current transaction
 		 */
-		public function rollbackTransaction() {
+		public function rollbackTransaction(): bool {
 			return $this->connection->rollBack();
 		}
 
@@ -173,7 +173,7 @@
 		 * @api commitTransaction
 		 * Commits the current transaction
 		 */
-		public function commitTransaction() {
+		public function commitTransaction(): bool {
 			return $this->connection->commit();
 		}
 
@@ -183,7 +183,7 @@
 		 * @param array $param Parameters to bind
 		 * @throws \Exception If a mixed usage of numeric and string indices are detected
 		 */
-		private function bind(\PDOStatement $query, array $param)
+		private function bind(\PDOStatement $query, array $param): void
 		{
 			if (!$param)
 				return;

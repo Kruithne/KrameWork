@@ -11,9 +11,9 @@
 		/**
 		 * ConnectionString constructor.
 		 * @api __construct
-		 * @param $connection string A connection string
-		 * @param string $username A username to log on
-		 * @param string $password A password to log on
+		 * @param string $connection A connection string
+		 * @param string|null $username A username to log on
+		 * @param string|null $password A password to log on
 		 */
 		public function __construct(string $connection, ?string $username = null, ?string $password = null) {
 			$this->connection = $connection;
@@ -26,7 +26,7 @@
 		 * @api __toString
 		 * @return string The connection string
 		 */
-		function __toString() {
+		function __toString(): string {
 			return $this->connection;
 		}
 
@@ -35,7 +35,7 @@
 		 * @api getUsername
 		 * @return string|null
 		 */
-		public function getUsername() {
+		public function getUsername(): ?string {
 			return $this->username;
 		}
 
@@ -44,14 +44,14 @@
 		 * @api getPassword
 		 * @return string|null
 		 */
-		public function getPassword() {
+		public function getPassword(): ?string {
 			return $this->password;
 		}
 
 		/**
 		 * @var string The connection string
 		 */
-		protected $connection;
-		protected $username;
-		protected $password;
+		protected string $connection;
+		protected ?string $username = null;
+		protected ?string $password = null;
 	}

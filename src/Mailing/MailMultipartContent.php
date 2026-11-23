@@ -18,7 +18,7 @@
 		 *
 		 * @api
 		 * @param string $type Content-type (with trailing parameters).
-		 * @param MailMultipart $parent
+		 * @param MailMultipart|null $parent
 		 */
 		public function __construct(string $type, ?MailMultipart $parent = null) {
 			$this->headers = [];
@@ -35,7 +35,7 @@
 		 * @api
 		 * @param string $encoding
 		 */
-		public function setTransferEncoding(string $encoding) {
+		public function setTransferEncoding(string $encoding): void {
 			$this->addHeader('Content-Transfer-Encoding', $encoding);
 		}
 
@@ -46,7 +46,7 @@
 		 * @api
 		 * @param string $disposition
 		 */
-		public function setContentDisposition(string $disposition) {
+		public function setContentDisposition(string $disposition): void {
 			$this->addHeader('Content-Disposition', $disposition);
 		}
 
@@ -56,7 +56,7 @@
 		 * @api
 		 * @param string $id
 		 */
-		public function setAttachmentID(string $id) {
+		public function setAttachmentID(string $id): void {
 			$this->addHeader('Content-ID', '<' . $id . '>');
 			$this->addHeader('X-Attachment-Id', $id);
 		}
@@ -68,7 +68,7 @@
 		 * @param string $content Content for this block.
 		 * @param bool $encodeBase64 Encode the content in base64.
 		 */
-		public function setContent(string $content, bool $encodeBase64 = false) {
+		public function setContent(string $content, bool $encodeBase64 = false): void {
 			if ($encodeBase64)
 				$content = \chunk_split(\base64_encode($content), 70, "\r\n");
 
@@ -82,7 +82,7 @@
 		 * @param string $name Name of the header.
 		 * @param string $value Value of the header.
 		 */
-		public function addHeader(string $name, string $value) {
+		public function addHeader(string $name, string $value): void {
 			$this->headers[$name] = $value;
 		}
 
@@ -92,10 +92,10 @@
 		 * @api
 		 * @param StringBuilder $builder Compilation target.
 		 * @param IMailPart $parent Parent of the block.
-		 * @return StringBuilder|null|void
+		 * @return void
 		 * @throws InvalidParentException
 		 */
-		public function compile(StringBuilder $builder, IMailPart $parent) {
+		public function compile(StringBuilder $builder, IMailPart $parent): void {
 			if (!($parent instanceof MailMultipart))
 				throw new InvalidParentException('MailMultipartContent parent needs to be MailMultipart');
 
@@ -109,10 +109,10 @@
 		/**
 		 * @var array
 		 */
-		private $headers;
+		private array $headers;
 
 		/**
 		 * @var string
 		 */
-		private $content;
+		private string $content;
 	}

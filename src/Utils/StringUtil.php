@@ -71,7 +71,7 @@
 		 * @param mixed $var Variable to represent.
 		 * @return string
 		 */
-		static function variableAsString($var):string {
+		static function variableAsString(mixed $var):string {
 			$type = \gettype($var);
 			if ($type == 'object') {
 				if ($var instanceof IMaskable) {

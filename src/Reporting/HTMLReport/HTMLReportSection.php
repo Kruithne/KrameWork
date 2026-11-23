@@ -107,30 +107,30 @@
 		/**
 		 * @var string
 		 */
-		protected $pattern;
+		protected string $pattern;
 
 		/**
 		 * @var bool
 		 */
-		protected $isValid;
+		protected bool $isValid;
 
 		/**
 		 * @var HTMLReportTemplate[]
 		 */
-		protected $frames;
+		protected array $frames;
 
 		/**
-		 * @var int
+		 * @var int|null
 		 */
-		protected $sectionStart;
+		protected ?int $sectionStart = null;
 
 		/**
-		 * @var int
+		 * @var int|null
 		 */
-		protected $sectionLength;
+		protected ?int $sectionLength = null;
 
 		/**
 		 * @var string
 		 */
-		protected $content;
+		protected string $content;
 	}

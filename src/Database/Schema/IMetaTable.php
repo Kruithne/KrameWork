@@ -14,5 +14,5 @@
 		 * @param string $table
 		 * @param int $version
 		 */
-		public function setVersion(string $table, int $version);
+		public function setVersion(string $table, int $version): void;
 	}

@@ -9,8 +9,8 @@
 		 * Compile this multipart block into the given StringBuilder.
 		 *
 		 * @api
-		 * @param StringBuilder|null $builder Compilation target.
-		 * @param IMailPart|null $parent Parent multipart block.
+		 * @param StringBuilder $builder Compilation target.
+		 * @param IMailPart $parent Parent multipart block.
 		 * @return StringBuilder|null
 		 */
 		public function compile(StringBuilder $builder, IMailPart $parent);
@@ -32,7 +32,7 @@
 		 *
 		 * @api
 		 * @param string $type Multipart type, such as 'mixed' or 'alternative'.
-		 * @param MailMultipart $parent Parent of this multipart block.
+		 * @param MailMultipart|null $parent Parent of this multipart block.
 		 */
 		public function __construct(string $type, ?MailMultipart $parent = null) {
 			$this->parts = [];
@@ -59,7 +59,7 @@
 		 * @api
 		 * @param IMailPart $part Block to add to this.
 		 */
-		public function add(IMailPart $part) {
+		public function add(IMailPart $part): void {
 			$this->parts[] = $part;
 		}
 
@@ -79,10 +79,10 @@
 		 * @api
 		 * @param StringBuilder|null $builder Compilation target.
 		 * @param IMailPart|null $parent Parent multipart block.
-		 * @return StringBuilder|null
+		 * @return StringBuilder
 		 * @throws InvalidParentException
 		 */
-		public function compile(?StringBuilder $builder = null, ?IMailPart $parent = null) {
+		public function compile(?StringBuilder $builder = null, ?IMailPart $parent = null): StringBuilder {
 			$builder = $builder ?? new StringBuilder(StringBuilder::LE_UNIX);
 
 			if ($parent) {
@@ -105,20 +105,20 @@
 		/**
 		 * @var IMailPart[]
 		 */
-		private $parts;
+		private array $parts;
 
 		/**
 		 * @var string
 		 */
-		private $type;
+		private string $type;
 
 		/**
 		 * @var string
 		 */
-		private $boundaryID;
+		private string $boundaryID;
 
 		/**
 		 * @var int
 		 */
-		private static $id = 1;
+		private static int $id = 1;
 	}

@@ -64,5 +64,5 @@
 		 * @api getDebugData
 		 * @return mixed
 		 */
-		public function getDebugData();
+		public function getDebugData(): mixed;
 	}

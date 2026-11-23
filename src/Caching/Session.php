@@ -28,7 +28,7 @@
 		 *
 		 * @api start
 		 */
-		public function start() {
+		public function start(): void {
 			// Check if session is already started.
 			if ($this->isActive())
 				return;
@@ -46,7 +46,7 @@
 		 *
 		 * @api flush
 		 */
-		public function flush() {
+		public function flush(): void {
 			\session_unset();
 			\session_regenerate_id(false);
 			\session_destroy();
@@ -59,7 +59,7 @@
 		 * @api isActive
 		 * @return bool
 		 */
-		public function isActive() {
+		public function isActive(): bool {
 			// CLI does not support sessions.
 			if (\PHP_SAPI == 'cli')
 				return false;
@@ -71,11 +71,11 @@
 		 * Retrieve a session value.
 		 *
 		 * @api __get
-		 * @param $name string Key to retrieve from the session.
+		 * @param string $name Key to retrieve from the session.
 		 * @return mixed
 		 * @link http://php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members
 		 */
-		function __get(string $name) {
+		function __get(string $name): mixed {
 			return $_SESSION[$name] ?? null;
 		}
 
@@ -83,12 +83,12 @@
 		 * Set a session value.
 		 *
 		 * @api __set
-		 * @param $name string Key to set the value with.
-		 * @param $value mixed Value to store in the session.
+		 * @param string $name Key to set the value with.
+		 * @param mixed $value Value to store in the session.
 		 * @return void
 		 * @link http://php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members
 		 */
-		function __set(string $name, $value) {
+		function __set(string $name, mixed $value): void {
 			if($value === null)
 			{
 				$this->__unset($name);
@@ -101,11 +101,11 @@
 		 * Unset a session value.
 		 *
 		 * @api __unset
-		 * @param $name string Key to remove from the session.
+		 * @param string $name Key to remove from the session.
 		 * @return void
 		 * @link http://php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members
 		 */
-		function __unset(string $name) {
+		function __unset(string $name): void {
 			unset($_SESSION[$name]);
 		}
 
@@ -117,7 +117,7 @@
 		 * @param mixed $value Value to store in the cache.
 		 * @param int $expire No effect for this implementation.
 		 */
-		public function store(string $key, $value, int $expire = 0) {
+		public function store(string $key, mixed $value, int $expire = 0): void {
 			if($value === null)
 			{
 				$this->__unset($key);
@@ -143,7 +143,7 @@
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to increment the value.
 		 */
-		public function increment(string $key, int $weight = 1) {
+		public function increment(string $key, int $weight = 1): void {
 			$this->store($key, ($this->$key ?? 0) + $weight);
 		}
 
@@ -154,7 +154,7 @@
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to decrement the value.
 		 */
-		public function decrement(string $key, int $weight = 1) {
+		public function decrement(string $key, int $weight = 1): void {
 			$this->store($key, ($this->$key ?? 0) - $weight);
 		}
 	}

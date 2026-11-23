@@ -31,8 +31,9 @@
 		/**
 		 * Executes the report, storing the results in APC
 		 * @api run
+		 * @return \stdClass[]
 		 */
-		protected function run() {
+		protected function run(): array {
 			return $this->db->getAll($this->sql, $this->param);
 		}
 
@@ -41,7 +42,7 @@
 		 * @param \stdClass[] $data
 		 * @return ReportRow[]
 		 */
-		protected function postProcess(array $data) {
+		protected function postProcess(array $data): array {
 			$filters = $this->getFilters();
 			$output = [];
 			foreach ($data as $row) {
@@ -55,15 +56,15 @@
 		/**
 		 * @var Generic Database engine
 		 */
-		private $db;
+		private Generic $db;
 
 		/**
 		 * @var string SQL Query
 		 */
-		private $sql;
+		private string $sql;
 
 		/**
 		 * @var array SQL Parameters
 		 */
-		private $param;
+		private array $param;
 	}

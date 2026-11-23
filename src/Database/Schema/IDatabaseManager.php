@@ -14,14 +14,14 @@
 		 * @param string $name
 		 * @param IManagedTable $table
 		 */
-		public function __set(string $name, IManagedTable $table);
+		public function __set(string $name, IManagedTable $table): void;
 
 		/**
 		 * @api __get
 		 * @param string $name A table name
-		 * @return IDatabaseTable|IManagedTable A table driver
+		 * @return IManagedTable|null A table driver
 		 */
-		public function __get(string $name);
+		public function __get(string $name): mixed;
 
 		/**
 		 * @api updateSchema

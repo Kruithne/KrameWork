@@ -6,9 +6,9 @@
 		 * @param string $message
 		 * @param mixed $data
 		 * @param int $code
-		 * @param Throwable $previous
+		 * @param \Throwable|null $previous
 		 */
-		public function __construct($message, $data, int $code = 0, ?\Throwable $previous = null) {
+		public function __construct(string $message, mixed $data, int $code = 0, ?\Throwable $previous = null) {
 			parent::__construct($message, $code, $previous);
 			$this->data = $data;
 		}
@@ -17,12 +17,12 @@
 		 * Retrieve the debugging data provided by this exception.
 		 * @return mixed
 		 */
-		public function getDebugData() {
+		public function getDebugData(): mixed {
 			return $this->data;
 		}
 
 		/**
-		 * @mixed
+		 * @var mixed
 		 */
-		private $data;
+		private mixed $data = null;
 	}

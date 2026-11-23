@@ -23,7 +23,7 @@
 		 * @param int $execs Executions per set.
 		 * @param string|null $name Name of the benchmark.
 		 */
-		public function __construct(float $average, float $shortest, float $longest, float $elapsed, float $stddev, int $sets, int $execs, $name = null) {
+		public function __construct(float $average, float $shortest, float $longest, float $elapsed, float $stddev, int $sets, int $execs, ?string $name = null) {
 			$this->average = $average;
 			$this->shortest = $shortest;
 			$this->longest = $longest;
@@ -40,9 +40,9 @@
 		 * Set the format used for formatted methods.
 		 *
 		 * @api
-		 * @param $format String format.
+		 * @param string $format String format.
 		 */
-		public function setFormat($format) {
+		public function setFormat(string $format): void {
 			$this->format = $format;
 		}
 
@@ -179,50 +179,50 @@
 		/**
 		 * @var string
 		 */
-		private $name;
+		private string $name;
 
 		/**
 		 * @var float
 		 */
-		private $average;
+		private float $average;
 
 		/**
 		 * @var float
 		 */
-		private $shortest;
+		private float $shortest;
 
 		/**
 		 * @var float
 		 */
-		private $longest;
+		private float $longest;
 
 		/**
 		 * @var float
 		 */
-		private $elapsed;
+		private float $elapsed;
 
 		/**
 		 * @var int
 		 */
-		private $sets;
+		private int $sets;
 
 		/**
 		 * @var float
 		 */
-		private $stddev;
+		private float $stddev;
 
 		/**
 		 * @var int
 		 */
-		private $executions;
+		private int $executions;
 
 		/**
 		 * @var string
 		 */
-		private $format;
+		private string $format;
 
 		/**
 		 * @var int
 		 */
-		private static $index = 1;
+		private static int $index = 1;
 	}

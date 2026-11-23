@@ -18,7 +18,7 @@
 		 * @param string $content Data for the file.
 		 * @param string $contentType Data content-type.
 		 */
-		public function __construct($name, string $content, string $contentType = "text/plain") {
+		public function __construct(string|File $name, string $content, string $contentType = "text/plain") {
 			$this->contentType = $contentType;
 			$this->valid = true;
 			$this->data = $content;
@@ -64,7 +64,7 @@
 		 * @param bool $forceRead No effect, included for implementation sake.
 		 * @return null|string
 		 */
-		public function getData(bool $forceRead = false) {
+		public function getData(bool $forceRead = false): ?string {
 			return $this->data;
 		}
 
@@ -72,9 +72,9 @@
 		 * Set the data contained in this memory file.
 		 *
 		 * @api setData
-		 * @param mixed $data Data to store in the wrapper.
+		 * @param string|null $data Data to store in the wrapper.
 		 */
-		public function setData($data) {
+		public function setData(?string $data): void {
 			$this->data = $data;
 		}
 
@@ -108,7 +108,7 @@
 		 * @api marshalFrom
 		 * @param File $file
 		 */
-		public function marshalFrom(File $file) {
+		public function marshalFrom(File $file): void {
 			parent::marshalFrom($file);
 
 			$this->contentType = $file->getFileType();
@@ -118,10 +118,10 @@
 		/**
 		 * @var string
 		 */
-		protected $contentType;
+		protected string $contentType;
 
 		/**
 		 * @var bool
 		 */
-		protected $valid;
+		protected bool $valid;
 	}

@@ -26,9 +26,9 @@
 		 *
 		 * @api __get
 		 * @param string $key Key to get the value for.
-		 * @return mixed|null
+		 * @return mixed
 		 */
-		public function __get(string $key) {
+		public function __get(string $key): mixed {
 			return $this->data[$key] ?? null;
 		}
 
@@ -39,7 +39,7 @@
 		 * @param string $key Key to store the value with.
 		 * @param mixed $value Value to store.
 		 */
-		public function __set(string $key, $value) {
+		public function __set(string $key, mixed $value): void {
 			$this->data[$key] = $value;
 		}
 
@@ -54,20 +54,20 @@
 
 			// Sandbox template execution.
 			new class ($this->file, $this->data) {
-				public function __construct($file, $data) {
+				public function __construct(string $file, array $data) {
 					$this->file = $file;
 					$this->data = $data;
 
 					$this->run();
 				}
 
-				private function run() {
+				private function run(): void {
 					\extract($this->data);
 					require($this->file);
 				}
 
-				private $file;
-				private $data;
+				private string $file;
+				private array $data;
 			};
 
 			return \ob_get_clean();
@@ -76,10 +76,10 @@
 		/**
 		 * @var array
 		 */
-		protected $data;
+		protected array $data;
 
 		/**
 		 * @var string
 		 */
-		protected $file;
+		protected string $file;
 	}

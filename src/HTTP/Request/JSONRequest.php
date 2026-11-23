@@ -13,7 +13,7 @@
 	 */
 	class JSONRequest extends WebRequest
 	{
-		public function __construct($url, $method = self::METHOD_GET) {
+		public function __construct(string $url, string $method = self::METHOD_GET) {
 			parent::__construct($url, $method);
 			$this->setHeader('Accept', 'application/json');
 		}
@@ -23,7 +23,7 @@
 		 * Return boolean indicates success.
 		 *
 		 * @api postJson
-		 * @param mixed $object The data to encode as JSON and post to the server
+		 * @param object $object The data to encode as JSON and post to the server
 		 * @return bool
 		 * @throws InvalidMethodException
 		 */
@@ -49,7 +49,7 @@
 		 * @return mixed
 		 * @throws ResponseNotAvailableException
 		 */
-		public function getResponse() {
+		public function getResponse(): mixed {
 			return \json_decode(parent::getResponse());
 		}
 	}

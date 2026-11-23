@@ -5,6 +5,7 @@
 	use KrameWork\Runtime\ErrorDispatchers\IErrorDispatcher;
 	use KrameWork\Runtime\ErrorFormatters\IErrorFormatter;
 	use KrameWork\Runtime\ErrorReports\ErrorReport;
+	use KrameWork\Runtime\ErrorReports\IErrorReport;
 	use KrameWork\Runtime\ErrorTypes\ExceptionError;
 	use KrameWork\Runtime\ErrorTypes\IError;
 	use KrameWork\Runtime\ErrorTypes\RuntimeError;
@@ -41,7 +42,7 @@
 		 * @param IErrorDispatcher|null $dispatcher Dispatcher to use.
 		 * @param IErrorFormatter|null $formatter Formatter for the dispatcher.
 		 */
-		public function __construct($dispatcher = null, $formatter = null) {
+		public function __construct(?IErrorDispatcher $dispatcher = null, ?IErrorFormatter $formatter = null) {
 			$this->dispatch = [];
 
 			if ($dispatcher instanceof IErrorDispatcher && $formatter instanceof IErrorFormatter)
@@ -66,7 +67,7 @@
 		 * @api setErrorLevel
 		 * @param int $level Error level.
 		 */
-		public function setErrorLevel(int $level) {
+		public function setErrorLevel(int $level): void {
 			$this->level = $level;
 		}
 
@@ -77,7 +78,7 @@
 		 * @param IErrorDispatcher $dispatcher Dispatcher to send reports.
 		 * @param IErrorFormatter $formatter Formatter for dispatcher to use.
 		 */
-		public function addDispatch(IErrorDispatcher $dispatcher, IErrorFormatter $formatter) {
+		public function addDispatch(IErrorDispatcher $dispatcher, IErrorFormatter $formatter): void {
 			$this->dispatch[] = [$dispatcher, $formatter];
 		}
 
@@ -88,19 +89,19 @@
 		 * @api setMaxErrors
 		 * @param int $max Maximum error threshold.
 		 */
-		public function setMaxErrors(int $max) {
+		public function setMaxErrors(int $max): void {
 			$this->maxErrors = $max;
 		}
 
-		public function setRedactedKeys(array $keys) {
+		public function setRedactedKeys(array $keys): void {
 			$this->redactedKeys = $keys;
 		}
 
-		public function setReportSensitive(bool $enabled) {
+		public function setReportSensitive(bool $enabled): void {
 			$this->reportSensitive = $enabled;
 		}
 
-		public function setSanitize(bool $enabled) {
+		public function setSanitize(bool $enabled): void {
 			$this->sanitize = $enabled;
 		}
 
@@ -114,7 +115,7 @@
 		 *
 		 * @api deactivate
 		 */
-		public function deactivate() {
+		public function deactivate(): void {
 			$this->active = false;
 			\set_error_handler($this->previousErrorHandler);
 			\set_exception_handler($this->previousExceptionHandler);
@@ -127,7 +128,7 @@
 		 *
 		 * @api suspend
 		 */
-		public static function suspend() {
+		public static function suspend(): void {
 			self::$suspended++;
 		}
 
@@ -136,7 +137,7 @@
 		 *
 		 * @api resume
 		 */
-		public static function resume() {
+		public static function resume(): void {
 			if (self::$suspended > 0)
 				self::$suspended--;
 		}
@@ -147,7 +148,7 @@
 		 * @api logException
 		 * @param \Throwable $exception An exception to report
 		 */
-		public function logException(\Throwable $exception)
+		public function logException(\Throwable $exception): void
 		{
 			$this->catch(new ExceptionError($exception), false);
 		}
@@ -158,7 +159,7 @@
 		 * @api addHook
 		 * @param IDebugHook $hook An object implementing the IDebugHook interface
 		 */
-		public function addHook(IDebugHook $hook) {
+		public function addHook(IDebugHook $hook): void {
 			$this->hooks[] = $hook;
 		}
 
@@ -168,7 +169,7 @@
 		 * @api setCoreErrorFormatter
 		 * @param IErrorFormatter $formatter Custom error page provider.
 		 */
-		public function setCoreErrorFormatter(IErrorFormatter $formatter) {
+		public function setCoreErrorFormatter(IErrorFormatter $formatter): void {
 			$this->coreErrorFormatter = $formatter;
 		}
 
@@ -181,7 +182,7 @@
 		 * @param string $file File which the error occurred in.
 		 * @param int $line Line of code the error occurred on.
 		 */
-		public function catchRuntimeError($type, $message, $file, $line) {
+		public function catchRuntimeError(int $type, string $message, string $file, int $line): void {
 			if (($type & $this->level)) {
 				$this->catch(new RuntimeError($type, $message, $file, $line), false);
 			}
@@ -193,7 +194,7 @@
 		 * @internal
 		 * @param \Throwable $exception The exception which occurred.
 		 */
-		public function catchException(\Throwable $exception) {
+		public function catchException(\Throwable $exception): void {
 			$this->catch(new ExceptionError($exception), false);
 		}
 
@@ -205,7 +206,7 @@
 		 * @param string $buffer PHP output buffer.
 		 * @return string
 		 */
-		public function catchCoreError(string $buffer) {
+		public function catchCoreError(string $buffer): string {
 			if (!$this->active || self::$suspended)
 				return $buffer;
 
@@ -223,10 +224,10 @@
 		 * Handles a PHP core error.
 		 *
 		 * @internal
-		 * @param $data array
+		 * @param array $data
 		 * @return string
 		 */
-		private function handleCoreError($data) {
+		private function handleCoreError(array $data): string {
 			$error = $data[1]; // Error message.
 			$errorObj = null;
 
@@ -265,7 +266,7 @@
 		 * @param IError $error
 		 * @param bool $terminate Terminate script after error is dispatched.
 		 */
-		private function catch(IError $error, bool $terminate) {
+		private function catch(IError $error, bool $terminate): void {
 			if (!$this->active || self::$suspended)
 				return;
 
@@ -292,10 +293,12 @@
 		 *
 		 * @internal
 		 * @param IError $error
-		 * @param bool $terminate Terminate script after error is dispatched.
-		 * @return string
+		 * @param array $trace
+		 * @param array $debug
+		 * @param IErrorFormatter $formatter
+		 * @return IErrorReport
 		 */
-		private function formatError(IError $error, array $trace, array $debug, IErrorFormatter $formatter) {
+		private function formatError(IError $error, array $trace, array $debug, IErrorFormatter $formatter): IErrorReport {
 			$formatter->beginReport();
 			$formatter->reportError($error);
 			$formatter->reportDebug($debug);
@@ -316,7 +319,7 @@
 		 * @param array $trace Trace to filter.
 		 * @return array
 		 */
-		private function filterStacktrace(array $trace):array {
+		private function filterStacktrace(array $trace): array {
 			$startIndex = 0;
 
 			foreach ($trace as $frame) {
@@ -360,7 +363,7 @@
 		 * @internal
 		 * @param IErrorFormatter $report Report to pack.
 		 */
-		private function packReport(IErrorFormatter $report) {
+		private function packReport(IErrorFormatter $report): void {
 			// CLI arguments, if available.
 			if (\PHP_SAPI == 'cli') {
 				global $argv;
@@ -401,61 +404,61 @@
 		/**
 		 * @var int
 		 */
-		protected $level;
+		protected int $level;
 
 		/**
 		 * @var bool
 		 */
-		protected $active;
+		protected bool $active;
 
 		/**
 		 * @var array
 		 */
-		protected $dispatch;
+		protected array $dispatch;
 
 		/**
-		 * @var string
+		 * @var callable|null
 		 */
-		protected $previousErrorHandler;
+		protected mixed $previousErrorHandler = null;
 
 		/**
-		 * @var string
+		 * @var callable|null
 		 */
-		protected $previousExceptionHandler;
-
-		/**
-		 * @var int
-		 */
-		protected $previousErrorLevel;
+		protected mixed $previousExceptionHandler = null;
 
 		/**
 		 * @var int
 		 */
-		protected $maxErrors;
+		protected int $previousErrorLevel;
 
 		/**
 		 * @var int
 		 */
-		protected $errorCount;
+		protected int $maxErrors;
+
+		/**
+		 * @var int
+		 */
+		protected int $errorCount;
 
 		/**
 		 * @var IDebugHook[]
 		 */
-		protected $hooks = [];
+		protected array $hooks = [];
 
-		protected $redactedKeys = ['pass', 'pwd', 'secret', 'token', 'auth', 'cookie', 'session', 'key'];
+		protected array $redactedKeys = ['pass', 'pwd', 'secret', 'token', 'auth', 'cookie', 'session', 'key'];
 
-		protected $reportSensitive = false;
+		protected bool $reportSensitive = false;
 
-		protected $sanitize = false;
+		protected bool $sanitize = false;
 
 		/**
-		 * @var IErrorFormatter
+		 * @var IErrorFormatter|null
 		 */
-		protected $coreErrorFormatter;
+		protected ?IErrorFormatter $coreErrorFormatter = null;
 
 		/**
 		 * @var int
 		 */
-		protected static $suspended = 0;
+		protected static int $suspended = 0;
 	}

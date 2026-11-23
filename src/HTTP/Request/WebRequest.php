@@ -38,7 +38,7 @@
 		 * @param string $fieldName Field name of the header.
 		 * @param string $fieldValue Field value of the header.
 		 */
-		public function setHeader(string $fieldName, string $fieldValue) {
+		public function setHeader(string $fieldName, string $fieldValue): void {
 			$this->headers[$fieldName] = $fieldValue;
 		}
 
@@ -48,7 +48,7 @@
 		 * @api addHeaderObject
 		 * @param HTTPHeader $header Header object to add.
 		 */
-		public function setHeaderObject(HTTPHeader $header) {
+		public function setHeaderObject(HTTPHeader $header): void {
 			$this->setHeader($header->getFieldName(), $header->getFieldValue());
 		}
 
@@ -59,7 +59,7 @@
 		 * @api addHeaders
 		 * @param array $headers Array of headers to add.
 		 */
-		public function setHeaders(array $headers) {
+		public function setHeaders(array $headers): void {
 			foreach ($headers as $fieldName => $fieldValue)
 				$this->setHeader($fieldName, $fieldValue);
 		}
@@ -83,7 +83,7 @@
 		 * @param string $getName Field name of the header.
 		 * @return array|null
 		 */
-		public function getHeader(string $getName) {
+		public function getHeader(string $getName): ?array {
 			$getName = \strtolower($getName);
 			foreach ($this->headers as $fieldName => $fieldValue)
 				if (\strtolower($fieldName) == $getName)
@@ -99,7 +99,7 @@
 		 * @return mixed
 		 * @link http://php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members
 		 */
-		function __get(string $name) {
+		function __get(string $name): mixed {
 			return $this->data[$name] ?? null;
 		}
 
@@ -110,7 +110,7 @@
 		 * @param mixed $value Value itself.
 		 * @link http://php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members
 		 */
-		function __set(string $name, $value) {
+		function __set(string $name, mixed $value): void {
 			if (\is_bool($value))
 				$value = $value ? 'true' : 'false';
 
@@ -149,7 +149,7 @@
 		 * @param string $url URL endpoint to request.
 		 * @param string $content Content to send with the request.
 		 */
-		protected function sendRequest(string $url, string $content) {
+		protected function sendRequest(string $url, string $content): void {
 			$params = ['method' => $this->method];
 
 			if ($this->method == self::METHOD_GET) {
@@ -178,7 +178,7 @@
 		 * @return string
 		 * @throws ResponseNotAvailableException
 		 */
-		public function getResponse() {
+		public function getResponse(): mixed {
 			if ($this->result == null)
 				throw new ResponseNotAvailableException('Response not available (request failed/not sent)');
 
@@ -192,7 +192,7 @@
 		 * @api success
 		 * @return bool|null
 		 */
-		public function success() {
+		public function success(): ?bool {
 			return $this->success;
 		}
 
@@ -214,30 +214,30 @@
 		/**
 		 * @var null|bool
 		 */
-		protected $success;
+		protected ?bool $success = null;
 
 		/**
-		 * @var string
+		 * @var string|null
 		 */
-		protected $result;
-
-		/**
-		 * @var array
-		 */
-		protected $data;
-
-		/**
-		 * @var string
-		 */
-		protected $url;
-
-		/**
-		 * @var string
-		 */
-		protected $method;
+		protected ?string $result = null;
 
 		/**
 		 * @var array
 		 */
-		protected $headers;
+		protected array $data;
+
+		/**
+		 * @var string
+		 */
+		protected string $url;
+
+		/**
+		 * @var string
+		 */
+		protected string $method;
+
+		/**
+		 * @var array
+		 */
+		protected array $headers;
 	}

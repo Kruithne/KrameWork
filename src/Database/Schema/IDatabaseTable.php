@@ -13,21 +13,21 @@
 		 * @api truncate
 		 * @return bool Success
 		 */
-		public function truncate();
+		public function truncate(): bool;
 
 		/**
 		 * @api where
 		 * @param array $filterSpec Filter specification
-		 * @return IQueryPredicate
+		 * @return \KrameWork\Database\IQueryPredicate
 		 */
-		public function where(array $filterSpec);
+		public function where(array $filterSpec): \KrameWork\Database\IQueryPredicate;
 
 		/**
 		 * @api insert
 		 * @param array $data Array of key/value pairs to add to the table as a new row
 		 * @return bool Success
 		 */
-		public function insert(array $data);
+		public function insert(array $data): bool;
 
 		/**
 		 * @api lastAutoId

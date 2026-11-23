@@ -41,7 +41,7 @@
 		 * @api __construct
 		 * @param array|null $arr Initial policy input.
 		 */
-		public function __construct($arr = null) {
+		public function __construct(?array $arr = null) {
 			$this->directives = [];
 			$this->directives[self::DIRECTIVE_DEFAULT] = self::SOURCE_SELF;
 
@@ -55,7 +55,7 @@
 		 * @api fromArray
 		 * @param array $arr Directive/source pair array.
 		 */
-		public function fromArray(array $arr) {
+		public function fromArray(array $arr): void {
 			foreach ($arr as $directive => $source)
 				$this->add($directive, $source);
 		}
@@ -67,7 +67,7 @@
 		 * @param array|string $directives Directive (use CSPHeader:: constants).
 		 * @param array|string $source Source directive.
 		 */
-		public function add($directives, $source) {
+		public function add(array|string $directives, array|string $source): void {
 			if (\is_array($source))
 				$source = \implode(' ', $source);
 
@@ -102,5 +102,5 @@
 		/**
 		 * @var array
 		 */
-		private $directives;
+		private array $directives;
 	}

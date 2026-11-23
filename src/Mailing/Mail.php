@@ -64,11 +64,11 @@
 		 *
 		 * @api setSender
 		 * @param string $senderEmail E-mail address of the sender.
-		 * @param string $senderName Name of the sender.
+		 * @param string|null $senderName Name of the sender.
 		 * @param bool $generateMessageID Generate a Message-Id header using this sender.
 		 * @return Mail
 		 */
-		public function setSender(string $senderEmail, $senderName = null, bool $generateMessageID = false):Mail {
+		public function setSender(string $senderEmail, ?string $senderName = null, bool $generateMessageID = false):Mail {
 			// Store e-mail address for setting envelope sender later.
 			$this->sender = $senderEmail;
 
@@ -111,7 +111,7 @@
 		 * @throws AttachmentNotFoundException
 		 * @throws DuplicateAttachmentException
 		 */
-		public function attachFile($attachment, bool $inline = false):Mail {
+		public function attachFile(string|File $attachment, bool $inline = false):Mail {
 			if (!($attachment instanceof AttachmentFile)) {
 				$attachment = new AttachmentFile($attachment, false, false);
 				if (!$attachment->isValid())
@@ -133,7 +133,7 @@
 		 * @param string|AttachmentFile $attachment Attachment to remove.
 		 * @return Mail
 		 */
-		public function removeFile($attachment):Mail {
+		public function removeFile(string|AttachmentFile $attachment):Mail {
 			if ($attachment instanceof AttachmentFile)
 				$attachment = $attachment->getName();
 			else
@@ -163,7 +163,7 @@
 		 * @throws InvalidRecipientException
 		 * @throws MissingSenderException
 		 */
-		public function send() {
+		public function send(): void {
 			if ($this->to->isEmpty())
 				throw new InvalidRecipientException('Cannot send mail without recipients.');
 
@@ -235,7 +235,7 @@
 		 * @param MailMultipart $container
 		 * @throws AttachmentNotFoundException
 		 */
-		private function compileAttachments(MailMultipart $container) {
+		private function compileAttachments(MailMultipart $container): void {
 			if ($this->files) {
 				foreach ($this->files as $file) {
 					if (!$file->isValid())
@@ -255,45 +255,45 @@
 		/**
 		 * @var RecipientCollection
 		 */
-		public $to;
+		public RecipientCollection $to;
 
 		/**
 		 * @var RecipientCollection
 		 */
-		public $cc;
+		public RecipientCollection $cc;
 
 		/**
 		 * @var RecipientCollection
 		 */
-		public $bcc;
+		public RecipientCollection $bcc;
 
 		/**
-		 * @var string
+		 * @var string|null
 		 */
-		private $sender;
-
-		/**
-		 * @var EncodedContent
-		 */
-		public $plainContent;
+		private ?string $sender = null;
 
 		/**
 		 * @var EncodedContent
 		 */
-		public $htmlContent;
+		public EncodedContent $plainContent;
 
 		/**
-		 * @var string
+		 * @var EncodedContent
 		 */
-		private $subject;
+		public EncodedContent $htmlContent;
+
+		/**
+		 * @var string|null
+		 */
+		private ?string $subject = null;
 
 		/**
 		 * @var array
 		 */
-		private $headers;
+		private array $headers;
 
 		/**
 		 * @var AttachmentFile[]
 		 */
-		private $files;
+		private array $files;
 	}

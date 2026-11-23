@@ -37,7 +37,7 @@
 		 * @api setValue
 		 * @param string $value Value for the header.
 		 */
-		public function setValue(string $value) {
+		public function setValue(string $value): void {
 			$this->value = $value;
 		}
 
@@ -64,5 +64,5 @@
 		/**
 		 * @var string
 		 */
-		private $value;
+		private string $value;
 	}

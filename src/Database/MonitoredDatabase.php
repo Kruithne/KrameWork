@@ -32,9 +32,9 @@
 		 * @api getAll
 		 * @param string $sql An SQL query statement
 		 * @param array $param An array of values to inject in the statement
-		 * @return \ArrayObject[]
+		 * @return \stdClass[]
 		 */
-		function getAll(string $sql, array $param): array {
+		function getAll(string $sql, array $param = []): array {
 			$this->timer->start();
 			$result = parent::getAll($sql, $param);
 			$this->log($sql, $param);
@@ -48,7 +48,7 @@
 		 * @param array $param An array of values to inject in the statement
 		 * @return array
 		 */
-		function getColumn(string $sql, array $param): array {
+		function getColumn(string $sql, array $param = []): array {
 			$this->timer->start();
 			$result = parent::getColumn($sql, $param);
 			$this->log($sql, $param);
@@ -60,9 +60,9 @@
 		 * @api getRow
 		 * @param string $sql An SQL query statement
 		 * @param array $param An array of values to inject in the statement
-		 * @return \ArrayObject|null
+		 * @return \stdClass|null
 		 */
-		function getRow(string $sql, array $param) {
+		function getRow(string $sql, array $param = []): ?\stdClass {
 			$this->timer->start();
 			$result = parent::getRow($sql, $param);
 			$this->log($sql, $param);
@@ -76,7 +76,7 @@
 		 * @param array $param An array of values to inject in the statement
 		 * @return mixed
 		 */
-		function getValue(string $sql, array $param) {
+		function getValue(string $sql, array $param = []): mixed {
 			$this->timer->start();
 			$result = parent::getValue($sql, $param);
 			$this->log($sql, $param);
@@ -90,7 +90,7 @@
 		 * @param array $param An array of values to inject in the statement
 		 * @return int
 		 */
-		function execute(string $sql, array $param): int {
+		function execute(string $sql, array $param = []): int {
 			$this->timer->start();
 			$result = parent::execute($sql, $param);
 			$this->log($sql, $param);
@@ -100,10 +100,10 @@
 		/**
 		 * Log timing information about a completed database statement.
 		 * @internal
-		 * @param $sql
-		 * @param $param
+		 * @param string $sql
+		 * @param array $param
 		 */
-		private function log($sql, $param) {
+		private function log(string $sql, array $param): void {
 			$time = $this->timer->stop();
 			$start = (string)$this->timer->getStartTimestamp();
 			if ($time > $this->threshold)
@@ -124,7 +124,7 @@
 		 * @param float $time The number of seconds execution took.
 		 * @return string
 		 */
-		private function formatWarning(string $sql, array $param, float $time) {
+		private function formatWarning(string $sql, array $param, float $time): string {
 			return \sprintf('Query completed in %3$.2e seconds: %1$s {%2$s}', $sql, \json_encode($param), $time);
 		}
 
@@ -140,15 +140,15 @@
 		/**
 		 * @var Timer
 		 */
-		private $timer;
+		private Timer $timer;
 
 		/**
 		 * @var array
 		 */
-		private $statistics;
+		private array $statistics;
 
 		/**
 		 * @var int
 		 */
-		private $threshold;
+		private int $threshold;
 	}

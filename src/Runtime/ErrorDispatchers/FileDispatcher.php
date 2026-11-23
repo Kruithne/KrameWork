@@ -19,9 +19,9 @@
 		 *
 		 * @api __construct
 		 * @param string $directory Directory to store files in.
-		 * @param string|array $name File name. Arrays are treated as callbacks.
+		 * @param string|array|callable $name File name. Arrays are treated as callbacks.
 		 */
-		public function __construct(string $directory, $name = 'error') {
+		public function __construct(string $directory, string|array|callable $name = 'error') {
 			$check = \realpath($directory);
 			if ($check === false || !\is_dir($check))
 				$check = __DIR__;
@@ -37,7 +37,7 @@
 		 * @param IErrorReport|string $report Report to dispatch.
 		 * @return bool
 		 */
-		public function dispatch($report):bool {
+		public function dispatch(IErrorReport|string $report): bool {
 			$file = $this->name;
 			if (\is_array($file)) // Execute callback.
 				$file = \call_user_func(\count($file) == 1 ? $file[0] : $file, $report);
@@ -59,12 +59,12 @@
 		}
 
 		/**
-		 * @var string|array
+		 * @var string|array|callable
 		 */
-		protected $name;
+		protected mixed $name;
 
 		/**
 		 * @var string
 		 */
-		protected $path;
+		protected string $path;
 	}

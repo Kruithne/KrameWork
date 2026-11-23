@@ -18,7 +18,7 @@
 		 * @param string $key Key of the value.
 		 * @return mixed|null
 		 */
-		public function __get(string $key);
+		public function __get(string $key): mixed;
 
 		/**
 		 * Store a value in the cache.
@@ -28,7 +28,7 @@
 		 * @param string $key Key to store the value under.
 		 * @param mixed $value Value to store in the cache.
 		 */
-		public function __set(string $key, $value);
+		public function __set(string $key, mixed $value): void;
 
 		/**
 		 * Store a value in the cache.
@@ -38,7 +38,7 @@
 		 * @param mixed $value Value to store in the cache.
 		 * @param int $expire 60*60*24*30 >= Unix Timestamp, otherwise seconds. 0 = Never.
 		 */
-		public function store(string $key, $value, int $expire = 0);
+		public function store(string $key, mixed $value, int $expire = 0): void;
 
 		/**
 		 * Check if a value exists in the cache.
@@ -54,14 +54,14 @@
 		 * @api __unset
 		 * @param string $key Key of the item to remove.
 		 */
-		public function __unset(string $key);
+		public function __unset(string $key): void;
 
 		/**
 		 * Flush the cache, removing all stored data.
 		 *
 		 * @api flush
 		 */
-		public function flush();
+		public function flush(): void;
 
 		/**
 		 * Increase a numeric value in the cache.
@@ -70,7 +70,7 @@
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to increment the value.
 		 */
-		public function increment(string $key, int $weight = 1);
+		public function increment(string $key, int $weight = 1): void;
 
 		/**
 		 * Decrease a numeric value in the cache.
@@ -79,5 +79,5 @@
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to decrement the value.
 		 */
-		public function decrement(string $key, int $weight = 1);
+		public function decrement(string $key, int $weight = 1): void;
 	}

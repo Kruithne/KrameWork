@@ -16,11 +16,11 @@
 		 * UploadedFile constructor.
 		 *
 		 * @api __construct
-		 * @param string $source|File Temporary location, or another File instance.
+		 * @param string|File $source Temporary location, or another File instance.
 		 * @param string $name Uploaded name.
 		 * @param int $errorCode Upload error code.
 		 */
-		public function __construct($source, string $name, int $errorCode) {
+		public function __construct(string|File $source, string $name, int $errorCode) {
 			$this->name = $name;
 			$this->errorCode = $errorCode;
 
@@ -53,7 +53,7 @@
 		 * @api marshalFrom
 		 * @param File $file
 		 */
-		public function marshalFrom(File $file) {
+		public function marshalFrom(File $file): void {
 			parent::marshalFrom($file);
 
 			if ($file instanceof UploadedFile)
@@ -64,5 +64,5 @@
 		/**
 		 * @var int Error code for the upload.
 		 */
-		protected $errorCode;
+		protected int $errorCode;
 	}

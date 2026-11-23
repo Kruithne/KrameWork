@@ -32,7 +32,7 @@
 		 * @return RecipientCollection
 		 * @throws InvalidRecipientException
 		 */
-		public function add($email, $name = null, $encode = true):RecipientCollection {
+		public function add(string|array $email, ?string $name = null, bool $encode = true):RecipientCollection {
 			// Array: Treat array as $email => $name key/value pair array.
 			if (\is_array($email)) {
 				foreach ($email as $nodeEmail => $nodeName)
@@ -62,7 +62,7 @@
 		 * @param string|array $email E-mail address(es) to remove.
 		 * @return RecipientCollection
 		 */
-		public function remove($email):RecipientCollection {
+		public function remove(string|array $email):RecipientCollection {
 			// Array: Treat all elements as individual recipients.
 			if (\is_array($email)) {
 				foreach ($email as $node)
@@ -105,7 +105,7 @@
 		 * @api __toString
 		 * @return string
 		 */
-		public function __toString() {
+		public function __toString(): string {
 			$result = [];
 			foreach ($this->recipients as $email => $name)
 				$result[] = '"' . $name . '" <' . $email . '>';
@@ -116,5 +116,5 @@
 		/**
 		 * @var array
 		 */
-		private $recipients;
+		private array $recipients;
 	}

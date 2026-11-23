@@ -13,32 +13,32 @@ ___
 ### Example
 ```php
 $b_dq = new class (1000, 1000000, 'Double Quotes') extends Benchmark {
-	public function execute() {
+	public function execute(): void {
 		$str = "Foo" . "Foo" . "Foo";
 	}
 };
 
 $b_sq = new class (1000, 1000000, 'Single Quotes') extends Benchmark {
-	public function execute() {
+	public function execute(): void {
 		$str = 'Foo' . 'Foo'. 'Foo';
 	}
 };
 
 $b_sprintf = new class (1000, 1000000, 'sprintf') extends Benchmark {
-	public function execute() {
+	public function execute(): void {
 		$str = sprintf('%s%s%s', 'Foo', 'Foo', 'Foo');
 	}
 };
 
 $b_ilv = new class (1000, 1000000, 'Inline Variables') extends Benchmark {
-	public function execute() {
+	public function execute(): void {
 		$foo = 'Foo';
 		$str = "$foo$foo$foo";
 	}
 };
 
 $b_arr = new class(1000, 1000000, 'Arr Implosion') extends Benchmark {
-	public function execute() {
+	public function execute(): void {
 		$str = implode('', ['Foo', 'Foo', 'Foo']);
 	}
 };

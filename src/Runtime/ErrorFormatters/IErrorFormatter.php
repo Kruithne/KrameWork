@@ -18,7 +18,7 @@
 		 *
 		 * @api beginReport
 		 */
-		public function beginReport();
+		public function beginReport(): void;
 
 		/**
 		 * Format a stacktrace and add it to the report.
@@ -26,7 +26,7 @@
 		 * @api reportStacktrace
 		 * @param array $trace Stacktrace.
 		 */
-		public function reportStacktrace(array $trace);
+		public function reportStacktrace(array $trace): void;
 
 		/**
 		 * Format an error and add it to the report.
@@ -34,14 +34,14 @@
 		 * @api handleError
 		 * @param IError $error Error which occurred.
 		 */
-		public function reportError(IError $error);
+		public function reportError(IError $error): void;
 
 		/**
 		 * Format debug data and add it to the report.
 		 *
-		 * @param $debug array Key/Value pairs
+		 * @param array $debug Key/Value pairs
 		 */
-		public function reportDebug(array $debug);
+		public function reportDebug(array $debug): void;
 
 		/**
 		 * Format an array and add it to the report.
@@ -50,7 +50,7 @@
 		 * @param string $name Name for the array.
 		 * @param array $arr Array of data.
 		 */
-		public function reportArray(string $name, array $arr);
+		public function reportArray(string $name, array $arr): void;
 
 		/**
 		 * Format a data string and add it to the report.
@@ -59,7 +59,7 @@
 		 * @param string $name Name of the data string.
 		 * @param string $str Data string.
 		 */
-		public function reportString(string $name, string $str);
+		public function reportString(string $name, string $str): void;
 
 		/**
 		 * Generate a report.
@@ -67,5 +67,5 @@
 		 * @api generate
 		 * @return IErrorReport
 		 */
-		public function generate():IErrorReport;
+		public function generate(): IErrorReport;
 	}

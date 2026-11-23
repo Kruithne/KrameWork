@@ -11,16 +11,16 @@
 		 * @param string $name
 		 * @param IManagedTable $table
 		 */
-		public function __set(string $name, IManagedTable $table) {
+		public function __set(string $name, IManagedTable $table): void {
 			$this->tables[$name] = $table;
 		}
 
 		/**
 		 * @api __get
 		 * @param string $name A table name
-		 * @return IDatabaseTable|IManagedTable A table driver
+		 * @return IManagedTable|null A table driver
 		 */
-		public function __get(string $name) {
+		public function __get(string $name): mixed {
 			return isset($this->tables[$name]) ? $this->tables[$name] : null;
 		}
 
@@ -39,7 +39,7 @@
 		}
 
 		/**
-		 * @var array
+		 * @var array|null
 		 */
-		private $tables;
+		private ?array $tables = null;
 	}

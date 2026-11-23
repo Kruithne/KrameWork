@@ -44,7 +44,7 @@
 		/**
 		 * @var Driver\Generic The database driver we are using to run queries
 		 */
-		private $driver;
+		private Driver\Generic $driver;
 
 		/**
 		 * Execute a query and return an array of ArrayObjects
@@ -64,7 +64,7 @@
 		 * @param array $param An array of values to inject in the statement
 		 * @return \stdClass|null
 		 */
-		function getRow(string $sql, array $param = []) {
+		function getRow(string $sql, array $param = []): ?\stdClass {
 			return $this->driver->getRow($sql, $param);
 		}
 
@@ -86,7 +86,7 @@
 		 * @param array $param An array of values to inject in the statement
 		 * @return mixed|null
 		 */
-		function getValue(string $sql, array $param = []) {
+		function getValue(string $sql, array $param = []): mixed {
 			return $this->driver->getValue($sql, $param);
 		}
 
@@ -104,17 +104,17 @@
 		/**
 		 * Return the last error for this database connection
 		 * For query-specific errors, use getLastQueryError().
-		 * @return mixed
+		 * @return array|null
 		 */
-		function getLastError() {
+		function getLastError(): ?array {
 			return $this->driver->getLastError();
 		}
 
 		/**
 		 * Returns the error for the last executed query.
-		 * @return mixed
+		 * @return array|null
 		 */
-		function getLastQueryError() {
+		function getLastQueryError(): ?array {
 			return $this->driver->getLastQueryError();
 		}
 
@@ -126,15 +126,15 @@
 			return $this->driver->getLastInsertID();
 		}
 
-		function beginTransaction() {
+		function beginTransaction(): bool {
 			return $this->driver->beginTransaction();
 		}
 
-		function commitTransaction() {
+		function commitTransaction(): bool {
 			return $this->driver->commitTransaction();
 		}
 
-		function rollbackTransaction() {
+		function rollbackTransaction(): bool {
 			return $this->driver->rollbackTransaction();
 		}
 	}

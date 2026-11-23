@@ -16,11 +16,11 @@
 		 * Returns the name of the database schema
 		 * @return string The database schema name
 		 */
-		public function getSchema() {
+		public function getSchema(): string {
 			return 'dbo';
 		}
 
-		public function quoteIdentifier($identifier)
+		public function quoteIdentifier(string $identifier): string
 		{
 			return "[{$identifier}]";
 		}

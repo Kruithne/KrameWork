@@ -29,7 +29,7 @@
 		 * @throws FileNotFoundException
 		 * @throws FileReadException
 		 */
-		public function __construct($source = null, bool $autoLoad = true, bool $touch = false) {
+		public function __construct(string|File|null $source = null, bool $autoLoad = true, bool $touch = false) {
 			if (self::$hasFileinfo === NULL) {
 				self::$hasFileinfo = \extension_loaded('fileinfo');
 			}
@@ -117,7 +117,7 @@
 		 * @throws FileNotFoundException
 		 * @throws FileReadException
 		 */
-		public function read() {
+		public function read(): void {
 			if ($this->path === null)
 				throw new FileNotFoundException('Cannot resolve file: No path given.');
 
@@ -141,7 +141,7 @@
 		 * @param bool $overwrite Overwrite the file if it exists.
 		 * @throws FileWriteException
 		 */
-		public function save(?string $file = null, bool $overwrite = true) {
+		public function save(?string $file = null, bool $overwrite = true): void {
 			$file = $file ?? $this->path;
 
 			if (!$overwrite && \is_file($file))
@@ -157,7 +157,7 @@
 		 * @param bool $forceRead Call read() if data is missing.
 		 * @return null|string
 		 */
-		public function getData(bool $forceRead = false) {
+		public function getData(bool $forceRead = false): mixed {
 			if ($forceRead && $this->data === null)
 				$this->read();
 
@@ -179,9 +179,9 @@
 		 * Set the data for this file wrapper. Overwrites existing.
 		 *
 		 * @api setData
-		 * @param mixed $data Data to store in the wrapper.
+		 * @param string|null $data Data to store in the wrapper.
 		 */
-		public function setData($data) {
+		public function setData(?string $data): void {
 			$this->data = $data;
 		}
 
@@ -191,7 +191,7 @@
 		 * @api marshalFrom
 		 * @param File $file
 		 */
-		public function marshalFrom(File $file) {
+		public function marshalFrom(File $file): void {
 			$this->name = $file->name;
 			$this->path = $file->path;
 			$this->data = $file->data;
@@ -201,7 +201,7 @@
 		 * Data loaded from the file.
 		 * @var string|null
 		 */
-		protected $data;
+		protected ?string $data = null;
 
 		/**
 		 * Holds a check to see if fileinfo extension for PHP is loaded
@@ -210,5 +210,5 @@
 		 *
 		 * @var bool|null
 		 */
-		private static $hasFileinfo;
+		private static ?bool $hasFileinfo = null;
 	}

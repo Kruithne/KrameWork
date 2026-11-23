@@ -41,7 +41,7 @@
 		 *
 		 * @api beginReport
 		 */
-		public function beginReport() {
+		public function beginReport(): void {
 			$this->report = new StringBuilder();
 			$this->report->setLineEnd($this->lineEnd);
 			$this->timer->start();
@@ -54,7 +54,7 @@
 		 * @param string $name Name of the data string.
 		 * @param string $str Data string.
 		 */
-		public function reportString(string $name, string $str) {
+		public function reportString(string $name, string $str): void {
 			$this->report->appendf('> %s => %s', $name, StringUtil::variableAsString($str));
 			$this->report->newLine()->newLine();
 		}
@@ -66,7 +66,7 @@
 		 * @param string $name Name for the array.
 		 * @param array $arr Array of data.
 		 */
-		public function reportArray(string $name, array $arr) {
+		public function reportArray(string $name, array $arr): void {
 			if ($arr) {
 				$this->report->appendf('> %s [%s items]', $name, \count($arr))->newLine()->indent();
 				foreach ($arr as $key => $value)
@@ -85,7 +85,7 @@
 		 * @api handleError
 		 * @param IError $error Error which occurred.
 		 */
-		public function reportError(IError $error) {
+		public function reportError(IError $error): void {
 			$this->error = $error;
 			$this->report->appendLine($error->getPrefix() . ' : ' . $error->getName())->indent();
 			$this->report->appendLine('> Server: ' . \php_uname());
@@ -104,9 +104,9 @@
 		/**
 		 * Format debug data and add it to the report.
 		 *
-		 * @param $debug array Key/Value pairs
+		 * @param array $debug Key/Value pairs
 		 */
-		public function reportDebug(array $debug)
+		public function reportDebug(array $debug): void
 		{
 			$this->report->newLine()->newLine();
 			$this->report->appendf('> Application debug data:')->indent()->newLine();
@@ -122,7 +122,7 @@
 		 * @api reportStacktrace
 		 * @param array $trace Stacktrace.
 		 */
-		public function reportStacktrace(array $trace) {
+		public function reportStacktrace(array $trace): void {
 			$this->report->newLine()->newLine();
 			$this->report->appendf('> Stack trace [%s steps]:', \count($trace))->indent()->newLine();
 			foreach($trace as $node) {
@@ -185,7 +185,7 @@
 		 * @api generate
 		 * @return IErrorReport
 		 */
-		public function generate():IErrorReport {
+		public function generate(): IErrorReport {
 			$this->report->outdent()->newLine();
 			$this->report->appendf('Report generated automatically on %$2s (%$1s).', $t = \time(), \date(\DATE_RFC822, $t));
 
@@ -204,25 +204,25 @@
 		/**
 		 * @var Timer
 		 */
-		protected $timer;
+		protected Timer $timer;
 
 		/**
-		 * @var IError
+		 * @var IError|null
 		 */
-		protected $error;
+		protected ?IError $error = null;
 
 		/**
-		 * @var StringBuilder
+		 * @var StringBuilder|null
 		 */
-		protected $report;
+		protected ?StringBuilder $report = null;
 
 		/**
 		 * @var bool
 		 */
-		protected $wrapPreTags;
+		protected bool $wrapPreTags;
 
 		/**
 		 * @var string
 		 */
-		protected $lineEnd;
+		protected string $lineEnd;
 	}

@@ -107,37 +107,37 @@
 		 * @api getDebugData
 		 * @return mixed
 		 */
-		public function getDebugData() {
+		public function getDebugData(): mixed {
 			return $this->data ?? null;
 		}
 
 		/**
 		 * @var string
 		 */
-		protected $type;
+		protected string $type;
 
 		/**
 		 * @var string
 		 */
-		protected $message;
+		protected string $message;
 
 		/**
 		 * @var string
 		 */
-		protected $file;
+		protected string $file;
 
 		/**
 		 * @var int
 		 */
-		protected $line;
+		protected int $line;
 
 		/**
 		 * @var array
 		 */
-		protected $trace;
+		protected array $trace;
 
 		/**
 		 * @var mixed
 		 */
-		protected $data;
+		protected mixed $data = null;
 	}

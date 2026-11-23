@@ -16,7 +16,7 @@
 		 *
 		 * @api apply
 		 */
-		public function apply() {
+		public function apply(): void {
 			\header((string) $this);
 		}
 

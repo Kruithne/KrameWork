@@ -3,15 +3,15 @@
 
 	class DummyCache implements \KrameWork\Caching\IDataCache
 	{
-		public function __get(string $key) {
+		public function __get(string $key): mixed {
 			return isset($this->data[$key]) ? $this->data[$key] : null;
 		}
 
-		public function __set(string $key, $value) {
+		public function __set(string $key, mixed $value): void {
 			$this->data[$key] = $value;
 		}
 
-		public function store(string $key, $value, int $expire = 0) {
+		public function store(string $key, mixed $value, int $expire = 0): void {
 			$this->data[$key] = $value;
 			$this->ttl[$key] = $expire;
 		}
@@ -20,7 +20,7 @@
 			return isset($this->data[$key]);
 		}
 
-		public function __unset(string $key) {
+		public function __unset(string $key): void {
 			unset($this->data[$key]);
 		}
 
@@ -28,11 +28,11 @@
 			$this->data = [];
 		}
 
-		public function increment(string $key, int $weight = 1) {
+		public function increment(string $key, int $weight = 1): void {
 			$this->data[$key]++;
 		}
 
-		public function decrement(string $key, int $weight = 1) {
+		public function decrement(string $key, int $weight = 1): void {
 			$this->data[$key]--;
 		}
 

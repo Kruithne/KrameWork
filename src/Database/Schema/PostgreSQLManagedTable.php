@@ -11,7 +11,7 @@
 	 */
 	abstract class PostgreSQLManagedTable extends ManagedTable
 	{
-		public function getSchema() {
+		public function getSchema(): string {
 			return 'public';
 		}
 	}

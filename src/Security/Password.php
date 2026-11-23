@@ -89,5 +89,5 @@
 		/**
 		 * @var string
 		 */
-		private $value;
+		private string $value;
 	}

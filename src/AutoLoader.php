@@ -55,7 +55,7 @@
 		 * @api setExtensions
 		 * @param array $extensions Extensions to be loaded.
 		 */
-		public function setExtensions(array $extensions) {
+		public function setExtensions(array $extensions): void {
 			// Remove any leading periods from extensions.
 			foreach ($extensions as $ext)
 				$this->extensions[] = \ltrim($ext, ".");
@@ -68,7 +68,7 @@
 		 * @param array $sources Namespace => Path mapping.
 		 * @throws InvalidSourcePathException
 		 */
-		public function addSources(array $sources) {
+		public function addSources(array $sources): void {
 			foreach ($sources as $sourceName => $sourcePath) {
 				// Verify source path.
 				$real = \realpath(StringUtil::formatDirectorySlashes($sourcePath));
@@ -93,7 +93,7 @@
 		 * @api loadClass
 		 * @param string $className Name of the class to load.
 		 */
-		public function loadClass(string $className) {
+		public function loadClass(string $className): void {
 			if (!$this->enabled)
 				return;
 
@@ -151,7 +151,7 @@
 		 *
 		 * @api disable
 		 */
-		public function disable() {
+		public function disable(): void {
 			$this->enabled = false;
 		}
 
@@ -160,27 +160,27 @@
 		 *
 		 * @api enable
 		 */
-		public function enable() {
+		public function enable(): void {
 			$this->enabled = true;
 		}
 
 		/**
 		 * @var array
 		 */
-		private $sources;
+		private array $sources;
 
 		/**
 		 * @var string[]
 		 */
-		private $extensions;
+		private array $extensions;
 
 		/**
 		 * @var int
 		 */
-		private $flags;
+		private int $flags;
 
 		/**
 		 * @var bool
 		 */
-		private $enabled;
+		private bool $enabled;
 	}

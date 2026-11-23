@@ -52,10 +52,10 @@
 		 * array: Multiple of the above.
 		 *
 		 * @api addComponent
-		 * @param string|array|object $class
+		 * @param string|array|object|null $class
 		 * @throws DuplicateClassException
 		 */
-		public function addComponent($class) {
+		public function addComponent(mixed $class): void {
 			// Null: Do nothing.
 			if (!$class)
 				return;
@@ -104,11 +104,11 @@
 		 *
 		 * @internal
 		 * @param mixed $class
-		 * @param array $output
+		 * @param array|null $output
 		 * @return string|string[]
 		 * @throws ClassResolutionException
 		 */
-		public function resolveClassName($class, ?array &$output = null) {
+		public function resolveClassName(mixed $class, ?array &$output = null): string|array {
 			$classes = &$output ?? [];
 
 			// Array given, loop elements and process.
@@ -147,7 +147,7 @@
 		 * @throws ClassResolutionException
 		 * @throws ClassInstantiationException
 		 */
-		public function getComponent(string $className, ?bool $add = false, ?bool $throw = true) {
+		public function getComponent(string $className, ?bool $add = false, ?bool $throw = true): ?object {
 			$resolve = $this->resolveClassName($className);
 
 			// getComponent() should only ever return a single component.
@@ -178,7 +178,7 @@
 		 * @param bool $add Attempt to add the class to the injector if missing.
 		 * @return array
 		 */
-		public function getImplementors(string $interfaceName, bool $add = false) {
+		public function getImplementors(string $interfaceName, bool $add = false): array {
 			$resolves = $this->resolveClassName($interfaceName);
 			if (!\is_array($resolves))
 				$resolves = [$resolves];
@@ -211,7 +211,7 @@
 		 * @return object Constructed class.
 		 * @throws ClassInstantiationException
 		 */
-		public function constructComponent(string $className) {
+		public function constructComponent(string $className): object {
 			$class = new \ReflectionClass($className);
 
 			if (!$class->isInstantiable())
@@ -234,7 +234,7 @@
 			return $object;
 		}
 
-		private function resolveParameter(\ReflectionParameter $param, string $className) {
+		private function resolveParameter(\ReflectionParameter $param, string $className): mixed {
 			$paramType = $param->getType();
 			if (!$paramType)
 				throw new ClassInstantiationException('Constructor contains undefined parameter: ' . $className);
@@ -266,7 +266,7 @@
 		 * @throws ClassInstantiationException
 		 * @return object|null
 		 */
-		private function resolveNamedTypeComponent(\ReflectionNamedType $type, string $className) {
+		private function resolveNamedTypeComponent(\ReflectionNamedType $type, string $className): ?object {
 			if ($type->isBuiltin())
 				return null;
 
@@ -283,7 +283,7 @@
 		 * @internal
 		 * @param string $className Class to bind interfaces for.
 		 */
-		private function bindInterfaces(string $className) {
+		private function bindInterfaces(string $className): void {
 			$class = new \ReflectionClass($className);
 			foreach ($class->getInterfaceNames() as $interface)
 				$this->bind($interface, $className);
@@ -296,10 +296,10 @@
 		 *
 		 * @api bind
 		 * @param string $interface Interface name to bind class to.
-		 * @param string|object $class Class to bind the interface to.
+		 * @param mixed $class Class (string or object) to bind the interface to.
 		 * @throws InterfaceBindingException
 		 */
-		public function bind(string $interface, $class) {
+		public function bind(string $interface, mixed $class): void {
 			if (\is_object($class))
 				$class = \get_class($class);
 
@@ -322,15 +322,15 @@
 		/**
 		 * @var array
 		 */
-		private $classList;
+		private array $classList;
 
 		/**
 		 * @var array
 		 */
-		private $bindingList;
+		private array $bindingList;
 
 		/**
 		 * @var int
 		 */
-		private $flags;
+		private int $flags;
 	}
