@@ -351,9 +351,7 @@
 			$headers = [];
 			if (\function_exists('apache_request_headers')) {
 				// Apache
-				$apacheHeaders = \apache_request_headers();
-				if ($apacheHeaders !== false)
-					$headers = \array_change_key_case($apacheHeaders, CASE_LOWER);
+				$headers = \array_change_key_case(\apache_request_headers(), \CASE_LOWER);
 			} else {
 				// NGINX
 				foreach ($_SERVER as $name => $value) {
