@@ -83,6 +83,21 @@
 		}
 
 		/**
+		 * Generate an RFC 9562 compliant v7 (time-ordered) UUID.
+		 *
+		 * @api generate_v7
+		 * @return string
+		 */
+		public static function generate_v7():string {
+			$time = (int) (\microtime(true) * 1000);
+			$bytes = \substr(\pack('J', $time), 2) . \random_bytes(10);
+			$bytes[6] = \chr((\ord($bytes[6]) & 0x0f) | 0x70);
+			$bytes[8] = \chr((\ord($bytes[8]) & 0x3f) | 0x80);
+
+			return self::format($bytes);
+		}
+
+		/**
 		 * Generate an RFC 4122 compliant namespace UUID.
 		 * Currently supports v3 and v5.
 		 * Returns UUID::NIL when given an invalid namespace or version.

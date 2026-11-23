@@ -7,7 +7,7 @@
 
 ___
 ### Overview
-`UUID` is a static class that provides generation of RFC 4122 compliant v3, v4 and v5 UUIDs.
+`UUID` is a static class that provides generation of RFC 4122 compliant v3, v4 and v5 UUIDs, and RFC 9562 compliant v7 UUIDs.
 ___
 ### Example
 Below are some examples of how this class works.
@@ -33,6 +33,9 @@ print($uuid == UUID::NIL ? 'Invalid UUID' : 'Valid UUID'); // > Invalid UUID
 
 // Generate a v4 (pseudo-random) UUID.
 print(UUID::generate_v4() . PHP_EOL); // > 5665420c-3b97-4c52-a4f0-07c4752390da
+
+// Generate a v7 (time-ordered) UUID.
+print(UUID::generate_v7() . PHP_EOL); // > 019ab0e2-6f40-7c3a-9e1b-4d2f8a6c3e17
 ```
 ___
 ### Functions
@@ -54,6 +57,9 @@ parameter | type | description
 --- | --- | ---
 `$namespace` | `string` | UUID namespace.
 `$name` | `string` | UUID name.
+
+##### > generate_v7() : `string`
+Generate an RFC 9562 compliant v7 (time-ordered) UUID. UUIDs made in a later millisecond sort after earlier ones.
 
 ##### > isValid() : `bool`
 Check if the given UUID is RFC 4122 compliant.

@@ -107,4 +107,30 @@
 				$stack[$uuid] = true;
 			}
 		}
+
+		/**
+		 * Test generation of time-ordered v7 UUIDs.
+		 */
+		public function testV7Generation() {
+			$stack = [];
+
+			for ($i = 1; $i < 10; $i++) {
+				$uuid = UUID::generate_v7();
+				$this->assertTrue(UUID::isValid($uuid));
+				$this->assertSame('7', $uuid[14]);
+				$this->assertFalse(array_key_exists($uuid, $stack));
+				$stack[$uuid] = true;
+			}
+		}
+
+		/**
+		 * Test that v7 UUIDs from later milliseconds sort after earlier ones.
+		 */
+		public function testV7Ordering() {
+			$first = UUID::generate_v7();
+			usleep(2000);
+			$second = UUID::generate_v7();
+
+			$this->assertLessThan(0, strcmp($first, $second));
+		}
 	}
