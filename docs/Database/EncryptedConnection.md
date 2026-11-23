@@ -11,14 +11,14 @@ This class provides the ability to hide connection strings in plain text, by usi
 ___
 ### Examples
 ```php
-$dsn = new EncryptedConnection('H1$....');
+$dsn = new EncryptedConnection('SDEk....');
 $database = new Database($dsn);
 $data = $database->getAll('SELECT data FROM source');
 ```
 
-The get the encrypted value `H1$...` you will need to run code like this in CLI:
+To get the encrypted value `SDEk...` you will need to run code like this in CLI:
 ```php
-echo EncryptedConnection::encrypt('dblib:....');
+echo EncryptedConnection::encrypt('dblib:....', 1);
 ```
 
 ___
