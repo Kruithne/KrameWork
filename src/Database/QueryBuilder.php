@@ -225,16 +225,12 @@
 			if($this->isMSSQL)
 				throw new \Exception('Unsupported database type');
 
-			if($this->anchor)
-				return $this->anchor->offset($offset);
 			$this->query_offset = $offset;
 			return $this;
 		}
 
 		public function limit($count)
 		{
-			if($this->anchor)
-				return $this->anchor->limit($count);
 			$this->query_limit = $count;
 			return $this;
 		}
