@@ -2,6 +2,9 @@
     "name": "kruithne/kramework7",
     "description": "Modular OOP Framework for PHP",
     "license": "MIT",
+    "require": {
+        "php": ">=8.0"
+    },
     "autoload": {
         "psr-4": {
             "KrameWork\\": "src/"
