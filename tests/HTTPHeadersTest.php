@@ -15,4 +15,12 @@
 			$headers = new HTTPHeaders($corrupt);
 			$this->assertEquals(\base64_encode('[]'), (string) $headers);
 		}
+
+		/**
+		 * Test that a pre-compiled string with non-array JSON is rejected.
+		 */
+		public function testNonArrayJSONIsRejected() {
+			$headers = new HTTPHeaders(\base64_encode('"abc"'));
+			$this->assertEquals(\base64_encode('[]'), (string) $headers);
+		}
 	}

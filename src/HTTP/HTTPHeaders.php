@@ -30,7 +30,7 @@
 				$decode = \base64_decode($input, true);
 				if ($decode !== false) {
 					$parsed = \json_decode($decode);
-					if ($parsed !== null)
+					if (\is_array($parsed))
 						$this->compiled = $parsed;
 				}
 			}
