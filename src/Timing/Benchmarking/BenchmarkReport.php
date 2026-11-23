@@ -22,14 +22,7 @@
 	 * SOFTWARE.
 	 */
 
-	namespace KrameWork\Timing;
-
-	use KrameWork\Timing\Benchmarking\Benchmark;
-	use KrameWork\Timing\Benchmarking\BenchmarkResult;
-	use KrameWork\Timing\Benchmarking\HTMLReportFormatter;
-	use KrameWork\Timing\Benchmarking\IBenchmarkReportFormatter;
-	use KrameWork\Timing\Benchmarking\MarkdownReportFormatter;
-	use KrameWork\Timing\Benchmarking\PlainReportFormatter;
+	namespace KrameWork\Timing\Benchmarking;
 
 	require_once(__DIR__ . '/Benchmark.php');
 
@@ -37,7 +30,7 @@
 	 * Class BenchmarkReport
 	 * Reporting tool to combine results of benchmarks.
 	 *
-	 * @package KrameWork\Timing
+	 * @package KrameWork\Timing\Benchmarking
 	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class BenchmarkReport
