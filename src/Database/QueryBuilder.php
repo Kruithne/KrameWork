@@ -238,11 +238,13 @@
 		public function descending($column)
 		{
 			$this->orderBy[$column] = false;
+			return $this;
 		}
 
 		public function ascending($column)
 		{
 			$this->orderBy[$column] = true;
+			return $this;
 		}
 
 		public function execute()
