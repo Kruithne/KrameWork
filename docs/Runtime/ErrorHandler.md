@@ -7,7 +7,7 @@
 
 ___
 ### Overview
-The `ErrorHandler` is a meaty class that intercepts all exceptions and errors that occur during runtime and produces a report for each, and dispatches said report. The method of report generation and the method of dispatch are controlled by the instances you provide to the error handler, either using ready-made ones provided by KW7, or your own home-cooked ones.
+The `ErrorHandler` is a meaty class that intercepts all exceptions and errors that occur during runtime and produces a report for each, and dispatches said report. The method of report generation and the method of dispatch are controlled by the instances you provide to the error handler, either using ready-made ones provided by KrameWork, or your own home-cooked ones.
 
 Upon creation, the error handler will take over the current **error handler**, **exception handler** and set the **error level** to `E_ALL`. Disabling the error handler using `deactivate()` will restore these three things back to **before** the error handler was constructed. While the error level is set to `E_ALL`, the handler reserve the level of reporting set before it took over and only dispatch errors of that level. If you wish to change the reporting level after the handler has been created, you can do so with a call to `setErrorLevel()`.
 
@@ -29,7 +29,7 @@ Using `addDispatch()`, multiple dispatchers and formatters can be paired togethe
 ```php
 $handler = new ErrorHandler(new BufferDispatcher(), new PlainTextErrorFormatter());
 ```
-The above configuration will clear all output buffers and produce a plain-text report of an error that occurs. Naturally, this is a terrible mess, so spend some time and check out the different formatters and dispatchers KW7 provides, shown below.
+The above configuration will clear all output buffers and produce a plain-text report of an error that occurs. Naturally, this is a terrible mess, so spend some time and check out the different formatters and dispatchers KrameWork provides, shown below.
 ##### Formatters
 The formatter is responsible for taking the raw data of errors that occur and producing a report with it. Some formatters have unique behavior which can be controlled, check out the individual documentation for each formatter for more information.
 
@@ -61,7 +61,7 @@ auto_prepend_file = /path/to/error.php
 ```
 In addition to these changes to your runtime configuration, you'll also need to provide the output buffer to the `ErrorHandler` class, this should be done within the file referenced as `auto_prepend_file` above; below is a basic example of that file.
 ```php
-// * Specify auto-loader or import needed ErrorHandler classes from KW7 here.
+// * Specify auto-loader or import needed ErrorHandler classes from KrameWork here.
 $errFormatter = new PlainTextErrorFormatter();
 $errDispatcher = new FileDispatcher();
 $errHandler = new ErrorHandler();

@@ -6,7 +6,7 @@
 
 ___
 ### Overview
-The `StringUtil` class provides static methods for common string manipulation tasks that are used by some other components provided by KW7 but benefit from being contained in their own transportable class.
+The `StringUtil` class provides static methods for common string manipulation tasks that are used by some other components provided by KrameWork but benefit from being contained in their own transportable class.
 ___
 ### Functions
 ##### > startsWith() : `bool`

@@ -7,7 +7,7 @@
 
 ___
 ### Overview
-`Template` is a basic class that plays a key role in the MVC structure of a site. Unlike in KW5, the `Module` classes are not provided in KW7; take a look below at how this would be employed in a very basic manner.
+`Template` is a basic class that plays a key role in the MVC structure of a site. Unlike in KrameWork5, the `Module` classes are not provided in KrameWork; take a look below at how this would be employed in a very basic manner.
 ___
 ### Example
 This is a basic use-case example of the `Template` class; actual implementations would likely be more advanced.

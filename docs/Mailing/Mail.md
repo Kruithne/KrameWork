@@ -86,7 +86,7 @@ $mail->addHeader('Reply-To', 'foo@bar.net');
 > **Note**: When calling `send()`, the headers `Content-Type`, `Content-Transfer-Encoding` and `Content-Disposition` may be over-written by the mailer depending on content type/attachments.
 
 ### Adding Attachments
-Attachments can be added to a mail object by simply calling `attachFile(file)`, where `file` is either a path to a file (string) or an instance of the `AttachmentFile`, an extension of the KW7 `File` class; some examples of these different cases can be seen below.
+Attachments can be added to a mail object by simply calling `attachFile(file)`, where `file` is either a path to a file (string) or an instance of the `AttachmentFile`, an extension of the KrameWork `File` class; some examples of these different cases can be seen below.
 ```php
 // Example: Using a file path (string).
 $mail->attachFile('attachments/duckPic.jpg');

@@ -163,7 +163,7 @@
 		 */
 		public function testGETRequestWithoutParameters() {
 			$req = new WebRequest('https://jsonplaceholder.typicode.com/users', WebRequest::METHOD_GET);
-			$req->setHeader('User-agent', 'KrameWork7 Unit Testing');
+			$req->setHeader('User-agent', 'KrameWork Unit Testing');
 
 			$this->assertTrue($req->send());
 			$this->assertTrue($req->success());
@@ -179,7 +179,7 @@
 		 */
 		public function testGETRequestWithParameters() {
 			$req = new WebRequest('https://jsonplaceholder.typicode.com/users', WebRequest::METHOD_GET);
-			$req->setHeader('User-agent', 'KrameWork7 Unit Testing');
+			$req->setHeader('User-agent', 'KrameWork Unit Testing');
 
 			$req->id = 1;
 
@@ -197,7 +197,7 @@
 		 */
 		public function testPOSTRequestWithoutParameters() {
 			$req = new WebRequest('https://jsonplaceholder.typicode.com/users', WebRequest::METHOD_POST);
-			$req->setHeader('User-agent', 'KrameWork7 Unit Testing');
+			$req->setHeader('User-agent', 'KrameWork Unit Testing');
 
 			$this->assertTrue($req->send());
 			$this->assertTrue($req->success());
@@ -213,7 +213,7 @@
 		 */
 		public function testPOSTRequestWithParameters() {
 			$req = new WebRequest('https://jsonplaceholder.typicode.com/users', WebRequest::METHOD_POST);
-			$req->setHeader('User-agent', 'KrameWork7 Unit Testing');
+			$req->setHeader('User-agent', 'KrameWork Unit Testing');
 
 			$req->foo = 'bar';
 			$req->other = 42;

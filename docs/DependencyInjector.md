@@ -47,7 +47,7 @@ class MyClass {
 }
 ```
 
-As of PHP 7.1.X, parameter types can be marked as nullable by prefixing the type name with a question mark. When encountering a nullable parameter, the dependency injector will first try to resolve it, but if it fails, it will provide a NULL rather than throw an error.
+Parameter types can be marked as nullable by prefixing the type name with a question mark. When encountering a nullable parameter, the dependency injector will first try to resolve it, but if it fails, it will provide a NULL rather than throw an error.
 ```php
 class MyClass {
 	public function __construct(?Foo $bar) {

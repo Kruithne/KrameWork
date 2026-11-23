@@ -14,7 +14,7 @@ The `PlainTextErrorFormatter` is an implementation of `IErrorFormatter` for use 
 RUNTIME ERROR : USER NOTICE
 	> Message: Something blew up!
 	> Occurred: Fri, 17 Feb 2017 02:17:07 +0000 (1487297827)
-	> Script: D:\KrameWork7\src\Runtime\handling.test.php (Line 20)
+	> Script: D:\KrameWork\src\Runtime\handling.test.php (Line 20)
 
 	> Stack trace [7 steps]:
 		PlainTextErrorFormatter.php:104 - KrameWork\Runtime\ErrorTypes\RuntimeError->getTrace()
@@ -42,7 +42,7 @@ RUNTIME ERROR : USER NOTICE
 		MYSQLCONNECTOR_ASSEMBLIESPATH => (string) (62) "C:\MySQL\Connector.NET 6.9\Assemblies\v4.5"
 		NUMBER_OF_PROCESSORS => (string) (1) "8"
 		OS => (string) (10) "Windows_NT"
-		Path => (string) (993) "C:\Ruby23-x64\bin;C:\Program Files (x86)\PHP7"
+		Path => (string) (993) "C:\Ruby23-x64\bin;C:\Program Files (x86)\PHP"
 		PATHEXT => (string) (57) ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY"
 		PROCESSOR_ARCHITECTURE => (string) (3) "x86"
 		PROCESSOR_ARCHITEW6432 => (string) (5) "AMD64"
@@ -67,9 +67,9 @@ RUNTIME ERROR : USER NOTICE
 		VS110COMNTOOLS => (string) (66) "C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\Tools\"
 		VS140COMNTOOLS => (string) (66) "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\"
 		windir => (string) (10) "C:\Windows"
-		SCRIPT_NAME => (string) (41) "/KrameWork7/src/Runtime/handling.test.php"
-		SCRIPT_FILENAME => (string) (43) "D:\KrameWork7\src\Runtime\handling.test.php"
-		DOCUMENT_ROOT => (string) (13) "D:\KrameWork7"
+		SCRIPT_NAME => (string) (41) "/KrameWork/src/Runtime/handling.test.php"
+		SCRIPT_FILENAME => (string) (43) "D:\KrameWork\src\Runtime\handling.test.php"
+		DOCUMENT_ROOT => (string) (13) "D:\KrameWork"
 		HTTP_CONTENT_LENGTH => (string) (1) "0"
 		HTTP_COOKIE => (string) (10) "[REDACTED]"
 		HTTP_ACCEPT_LANGUAGE => (string) (14) "en-US,en;q=0.8"
@@ -87,14 +87,14 @@ RUNTIME ERROR : USER NOTICE
 		GATEWAY_INTERFACE => (string) (7) "CGI/1.1"
 		SERVER_PORT => (string) (5) "55565"
 		SERVER_ADDR => (string) (9) "127.0.0.1"
-		SERVER_NAME => (string) (17) "KW7 TestBench 7.0.1 NTS x86"
-		SERVER_SOFTWARE => (string) (17) "KW7 TestBench 7.0.1 NTS x86"
+		SERVER_NAME => (string) (17) "KrameWork TestBench 8.3.0 NTS x86"
+		SERVER_SOFTWARE => (string) (17) "KrameWork TestBench 8.3.0 NTS x86"
 		REMOTE_PORT => (string) (5) "62206"
 		REMOTE_ADDR => (string) (9) "127.0.0.1"
 		REQUEST_METHOD => (string) (3) "GET"
-		REQUEST_URI => (string) (72) "/KrameWork7/src/Runtime/handling.test.php?sid=k10ac6g9vskqfg9dj0k7ne67o"
+		REQUEST_URI => (string) (72) "/KrameWork/src/Runtime/handling.test.php?sid=k10ac6g9vskqfg9dj0k7ne67o"
 		FCGI_ROLE => (string) (9) "RESPONDER"
-		PHP_SELF => (string) (41) "/KrameWork7/src/Runtime/handling.test.php"
+		PHP_SELF => (string) (41) "/KrameWork/src/Runtime/handling.test.php"
 		REQUEST_TIME_FLOAT => (double) 1487297827.1276
 		REQUEST_TIME => (integer) 1487297827
 

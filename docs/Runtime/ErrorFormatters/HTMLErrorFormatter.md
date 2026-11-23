@@ -6,7 +6,7 @@
 
 ___
 ### Overview
-The `HTMLErrorFormatter` is an implementation of `IErrorFormatter` for use with the `ErrorHandler` class. Error reports will be formatted using a provided HTML template. If no template file is provided, the formatter will attempt to use the default included with KrameWork7, located at `/templates/error_report.php`.
+The `HTMLErrorFormatter` is an implementation of `IErrorFormatter` for use with the `ErrorHandler` class. Error reports will be formatted using a provided HTML template. If no template file is provided, the formatter will attempt to use the default included with KrameWork, located at `/templates/error_report.php`.
 ___
 ### Functions
 ##### > __construct() : `void`

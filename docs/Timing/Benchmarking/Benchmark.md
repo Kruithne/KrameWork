@@ -11,7 +11,7 @@ ___
 ___
 ### Examples
 ##### Basic Usage
-The `Benchmark` class provided by KrameWork7 is an easy-to-use class for creating simple benchmarks of your code. The quickest (and most common) method of using this class is to create an anonymous class that extends `Benchmark`.
+The `Benchmark` class provided by KrameWork is an easy-to-use class for creating simple benchmarks of your code. The quickest (and most common) method of using this class is to create an anonymous class that extends `Benchmark`.
 ```php
 $benchmark = new class extends Benchmark {
   public function runCycle() {

@@ -1,7 +1,7 @@
 <?php
 	/*
 	 * Copyright (c) 2017 Kruithne (kruithne@gmail.com)
-	 * https://github.com/Kruithne/KrameWork7
+	 * https://github.com/Kruithne/KrameWork
 	 *
 	 * Permission is hereby granted, free of charge, to any person obtaining a copy
 	 * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@
 	 * UUID generation functions.
 	 *
 	 * @package KrameWork\Utils
-	 * @author Kruithne <kruithne@gmail.com> (KW7 implementation)
+	 * @author Kruithne <kruithne@gmail.com> (KrameWork implementation)
 	 * @author Andrew Moore (v3, v4, v5 base)
 	 * @author Ben Ramsey <ben@benramsey.com> (class constants)
 	 */

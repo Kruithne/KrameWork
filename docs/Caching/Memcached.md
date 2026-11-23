@@ -7,7 +7,7 @@
 
 ___
 ### Overview
-The `Memcached` class provided by KW7 is a basic interface for Memcached which conforms to the `IDataCache` interface, providing compatibility with other caching solutions provided in the same namespace.
+The `Memcached` class provided by KrameWork is a basic interface for Memcached which conforms to the `IDataCache` interface, providing compatibility with other caching solutions provided in the same namespace.
 > **Note**: Usage of this class requires a Memcached server set-up, running and accessible to the server which is executing your PHP script. Failure to do so will result in demons, lots of demons.
 
 > **Note**: Memcached works with shared memory, meaning data stored within will be accesible to every request, and even other processes; it is not restricted to a specific user like sessions are. **Don't let sensitive data leak!**

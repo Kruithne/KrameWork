@@ -1,7 +1,7 @@
 <?php
 	/*
 	 * Copyright (c) 2022 Kruithne (kruithne@gmail.com)
-	 * https://github.com/Kruithne/KrameWork7
+	 * https://github.com/Kruithne/KrameWork
 	 *
 	 * Permission is hereby granted, free of charge, to any person obtaining a copy
 	 * of this software and associated documentation files (the "Software"), to deal

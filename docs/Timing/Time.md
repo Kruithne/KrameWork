@@ -6,7 +6,7 @@
 
 ___
 ### Overview
-The `Time` class provides static data values for common time operations. Some other components provided in KW7 make use of this class, however it works as a standalone too, if needed.
+The `Time` class provides static data values for common time operations. Some other components provided in KrameWork make use of this class, however it works as a standalone too, if needed.
 ___
 ### Constants
 The constants provided with the `Time` class; all values are in seconds.

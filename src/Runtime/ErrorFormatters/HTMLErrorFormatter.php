@@ -221,7 +221,7 @@
 				}
 			}
 
-			// Fallback to KW7 built-in template if possible.
+			// Fallback to KrameWork built-in template if possible.
 			$template .= $this->loadTemplateFile(__DIR__ . '/../../../templates/error_report.html') ?? '';
 			return $template;
 		}

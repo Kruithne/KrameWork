@@ -14,10 +14,10 @@ ___
 Define one or more classes extending ManagedTable and add them to an instance of DatabaseManager.
 
 ```php
-require('KrameWork7/src/Database/Database.php');
-require('KrameWork7/src/Database/Schema/MSSQLMetaTable.php');
-require('KrameWork7/src/Database/Schema/DatabaseManager.php');
-require('KrameWork7/src/Database/Schema/MSSQLManagedTable.php');
+require('KrameWork/src/Database/Database.php');
+require('KrameWork/src/Database/Schema/MSSQLMetaTable.php');
+require('KrameWork/src/Database/Schema/DatabaseManager.php');
+require('KrameWork/src/Database/Schema/MSSQLManagedTable.php');
 
 use KrameWork\Database\ConnectionString;
 use KrameWork\Database\Database;
