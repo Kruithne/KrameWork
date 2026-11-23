@@ -125,7 +125,7 @@
 				throw new FileNotFoundException('Cannot resolve file: It does not exist.');
 
 			$raw = \file_get_contents($this->path);
-			if ($raw === null)
+			if ($raw === false)
 				throw new FileReadException('Unable to read data from file.');
 
 			$this->data = $raw;
