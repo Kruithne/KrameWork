@@ -269,7 +269,7 @@
 			if ($typeName === $className)
 				throw new ClassInstantiationException('Cyclic dependency in class ' . $className);
 
-			return $this->getComponent($typeName, $this->flags & self::AUTO_ADD_DEPENDENCIES, false);
+			return $this->getComponent($typeName, ($this->flags & self::AUTO_ADD_DEPENDENCIES) !== 0, false);
 		}
 
 		/**
