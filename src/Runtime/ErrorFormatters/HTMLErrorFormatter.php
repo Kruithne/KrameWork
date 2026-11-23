@@ -141,7 +141,7 @@
 						$args[] = htmlentities(StringUtil::variableAsString($arg));
 
 					$frame = $traceSection->createFrame();
-					$frame->index = $index++;
+					$frame->index = (string)$index++;
 					$frame->file = $traceFrame['file'] ?? 'interpreter';
 					$frame->line = $traceFrame['line'] ?? '?';
 					$frame->class = $traceFrame['class'] ?? '';
