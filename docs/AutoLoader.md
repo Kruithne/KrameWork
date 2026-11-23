@@ -19,12 +19,12 @@ new AutoLoader();
 Initiating the auto-loader without any parameters, will adopt the following default behavior:
 - [x] Files inside of the working directory will be sourced for auto-loading `[INCLUDE_WORKING_DIRECTORY]`.
 - [x] Files inside of the KrameWork directory will be sourced for auto-loading `[INCLUDE_KRAMEWORK_DIRECTORY]`.
-- [x] Auto-loader will search recursively for class files `[RECURSIVE_SOURCING]`.
+- [ ] Auto-loader will search recursively for class files `[RECURSIVE_SOURCING]`.
 
 These options can be configured by providing the constructor a bit-mask flag as the third parameter. Check the constants section further down in this document for full details on what the flags do.
 ```php
-// Here, we create an auto-loader with RECURSIVE_SOURCING disabled.
-new AutoLoader(null, null, AutoLoader::DEFAULT_FLAGS & ~AutoLoader::RECURSIVE_SOURCING);
+// Here, we create an auto-loader with RECURSIVE_SOURCING enabled.
+new AutoLoader(null, null, AutoLoader::DEFAULT_FLAGS | AutoLoader::RECURSIVE_SOURCING);
 ```
 ##### Adding Source Locations
 To provide custom locations to source class files from, pass an array of paths to the constructor as the first parameter. Some things 
@@ -72,7 +72,7 @@ constant | value | description
 `RECURSIVE_SOURCING` | `0x1` | Search recursively in added source locations for class files.
 `INCLUDE_WORKING_DIRECTORY` | `0x2` | Working directory of the script will be added to the source list.
 `INCLUDE_KRAMEWORK_DIRECTORY` | `0x4` | KrameWork directory will be added to the source list (same directory as AutoLoader.php)
-`DEFAULT_FLAGS` | `*` | Alias flag which includes all of the above flags enabled.
+`DEFAULT_FLAGS` | `*` | Alias flag which includes `INCLUDE_WORKING_DIRECTORY` and `INCLUDE_KRAMEWORK_DIRECTORY`.
 ___
 ### Functions
 ##### > __construct() : `void`
