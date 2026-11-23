@@ -2,6 +2,9 @@
 	namespace KrameWork\Timing\Benchmarking;
 
 	require_once(__DIR__ . '/Benchmark.php');
+	require_once(__DIR__ . '/HTMLReportFormatter.php');
+	require_once(__DIR__ . '/MarkdownReportFormatter.php');
+	require_once(__DIR__ . '/PlainReportFormatter.php');
 
 	/**
 	 * Class BenchmarkReport
@@ -25,23 +28,11 @@
 		public function __construct(int $format = self::FORMAT_HTML) {
 			$this->benchmarks = [];
 
-			switch ($format) {
-				case self::FORMAT_MARKDOWN:
-					require_once(__DIR__ . '/MarkdownReportFormatter.php');
-					$this->formatter = new MarkdownReportFormatter();
-					break;
-
-				case self::FORMAT_HTML:
-					require_once(__DIR__ . '/HTMLReportFormatter.php');
-					$this->formatter = new HTMLReportFormatter();
-					break;
-
-				case self::FORMAT_PLAIN:
-				default:
-				require_once(__DIR__ . '/PlainReportFormatter.php');
-					$this->formatter = new PlainReportFormatter();
-					break;
-			}
+			$this->formatter = match ($format) {
+				self::FORMAT_MARKDOWN => new MarkdownReportFormatter(),
+				self::FORMAT_HTML => new HTMLReportFormatter(),
+				default => new PlainReportFormatter()
+			};
 		}
 
 		/**

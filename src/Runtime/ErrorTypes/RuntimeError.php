@@ -50,25 +50,23 @@
 		 * @return string
 		 */
 		public function getName():string {
-			switch ($this->type)
-			{
-				case E_ERROR:				return 'ERROR';
-				case E_WARNING:				return 'WARNING';
-				case E_PARSE:				return 'PARSE';
-				case E_NOTICE:				return 'NOTICE';
-				case E_CORE_ERROR:			return 'CORE ERROR';
-				case E_CORE_WARNING:		return 'CORE WARNING';
-				case E_COMPILE_ERROR:		return 'COMPILE ERROR';
-				case E_COMPILE_WARNING:		return 'COMPILE WARNING';
-				case E_USER_ERROR:			return 'USER ERROR';
-				case E_USER_WARNING:		return 'USER WARNING';
-				case E_USER_NOTICE:			return 'USER NOTICE';
-				case E_USER_DEPRECATED:		return 'DEPRECATED';
-				case E_STRICT:				return 'STRICT';
-				case E_DEPRECATED:			return 'DEPRECATED';
-				case E_RECOVERABLE_ERROR:	return 'RECOVERABLE';
-				default:					return 'UNKNOWN';
-			}
+			return match ($this->type) {
+				E_ERROR => 'ERROR',
+				E_WARNING => 'WARNING',
+				E_PARSE => 'PARSE',
+				E_NOTICE => 'NOTICE',
+				E_CORE_ERROR => 'CORE ERROR',
+				E_CORE_WARNING => 'CORE WARNING',
+				E_COMPILE_ERROR => 'COMPILE ERROR',
+				E_COMPILE_WARNING => 'COMPILE WARNING',
+				E_USER_ERROR => 'USER ERROR',
+				E_USER_WARNING => 'USER WARNING',
+				E_USER_NOTICE => 'USER NOTICE',
+				E_USER_DEPRECATED, E_DEPRECATED => 'DEPRECATED',
+				E_STRICT => 'STRICT',
+				E_RECOVERABLE_ERROR => 'RECOVERABLE',
+				default => 'UNKNOWN'
+			};
 		}
 
 		/**

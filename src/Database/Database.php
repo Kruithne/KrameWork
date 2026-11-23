@@ -2,6 +2,7 @@
 	namespace KrameWork\Database;
 
 	require_once(__DIR__ . '/Driver/Generic.php');
+	require_once(__DIR__ . '/Driver/PDO.php');
 	require_once(__DIR__ . '/ConnectionString.php');
 
 	class UnknownDriverException extends \Exception {}
@@ -28,17 +29,11 @@
 		 * @throws UnknownDriverException
 		 */
 		public function __construct(ConnectionString $connection, int $driver = self::DB_DRIVER_PDO) {
-			switch ($driver) {
-				case self::DB_DRIVER_FAKE:
-					$this->driver = new Driver\Fake($connection);
-					break;
-				case self::DB_DRIVER_PDO:
-					require_once(__DIR__ . '/Driver/PDO.php');
-					$this->driver = new Driver\PDO($connection);
-					break;
-				default:
-					throw new UnknownDriverException('Unsupported driver type '.$driver);
-			}
+			$this->driver = match ($driver) {
+				self::DB_DRIVER_FAKE => new Driver\Fake($connection),
+				self::DB_DRIVER_PDO => new Driver\PDO($connection),
+				default => throw new UnknownDriverException('Unsupported driver type '.$driver)
+			};
 		}
 
 		/**
