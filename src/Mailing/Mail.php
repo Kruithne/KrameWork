@@ -75,7 +75,7 @@
 			// Generate message-ID if requested.
 			if ($generateMessageID) {
 				$domain = \explode('@', $senderEmail);
-				$this->addHeader('Message-Id', '<' . \uniqid(\rand()) . '@' . $domain[\count($domain) - 1] . '>');
+				$this->addHeader('Message-Id', '<' . \bin2hex(\random_bytes(16)) . '@' . $domain[\count($domain) - 1] . '>');
 			}
 
 			// Store as header.
