@@ -31,10 +31,9 @@
 		 */
 		public function updateSchema(): array {
 			$state = [];
-			foreach ($this->tables as $name => $table) {
-				if($table instanceof IManagedTable)
-					$state[$name] = $table->update();
-			}
+			foreach ($this->tables as $name => $table)
+				$state[$name] = $table->update();
+
 			return $state;
 		}
 
