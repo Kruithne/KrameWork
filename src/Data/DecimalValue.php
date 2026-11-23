@@ -9,6 +9,9 @@
 	 */
 	class DecimalValue extends Value
 	{
+		public static string $decimalSeparator = ',';
+		public static string $thousandsSeparator = ' ';
+
 		/**
 		 * DecimalValue constructor.
 		 * @param float|mixed $value Value to be cast to float and encapsulated
@@ -43,9 +46,13 @@
 		 * @return string The encapsulated value as presented by a string
 		 */
 		public function __toString(): string {
+			return $this->format(2);
+		}
+
+		protected function format(int $decimals): string {
 			if ($this->value === null)
 				return '';
 
-			return \number_format($this->value, 2, ',', ' ');
+			return \number_format($this->value, $decimals, static::$decimalSeparator, static::$thousandsSeparator);
 		}
 	}

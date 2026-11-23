@@ -1,5 +1,8 @@
 <?php
 	namespace KrameWork\Reporting;
+	require_once(__DIR__.'/../Data/Currency.php');
+
+	use KrameWork\Data\Currency;
 
 	/**
 	 * @property string label
@@ -23,7 +26,7 @@
 		 * @param string $type Column type, use SQLReportColumn COL_ constants.
 		 * @throws \Exception
 		 */
-		public function __construct(string $label, string $type = self::COL_STRING) {
+		public function __construct(string $label, string $type = self::COL_STRING, ?string $currency = null, public ?string $currencyField = null) {
 			switch ($type) {
 				case self::COL_NONE:
 				case self::COL_STRING:
@@ -40,10 +43,12 @@
 
 			$this->label = $label;
 			$this->type = $type;
+			$this->currency = $currency === null ? null : Currency::normalize($currency);
 		}
 
 		public string $label;
 		public string $type;
+		public ?string $currency;
 
 		public function jsonSerialize(): mixed {
 			return ['Label' => $this->label, 'Type' => $this->type];

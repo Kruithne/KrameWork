@@ -26,7 +26,7 @@
 		 */
 		public function testValueToString() {
 			$value = new CurrencyValue(4.2);
-			$this->assertEquals("4,20", (string)$value);
+			$this->assertEquals("4.20 USD", (string)$value);
 		}
 
 		/**
@@ -34,7 +34,7 @@
 		 */
 		public function testValueToJSON() {
 			$value = new CurrencyValue(4.2);
-			$this->assertEquals(4.2, $value->json());
+			$this->assertEquals(['amount' => 4.2, 'currency' => 'USD'], $value->json());
 		}
 
 		/**

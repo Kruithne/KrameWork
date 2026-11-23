@@ -11,6 +11,7 @@
 	require_once(__DIR__.'/../Data/StringValue.php');
 
 	use KrameWork\Caching\IDataCache;
+	use KrameWork\Data\CurrencyValue;
 	use KrameWork\Data\Value;
 
 	/**
@@ -65,6 +66,10 @@
 		 */
 		public abstract function columns(): array;
 
+		protected function currency(): ?string {
+			return null;
+		}
+
 		/**
 		 * @return \Closure[] Filters in the format function(&$row)
 		 */
@@ -72,8 +77,10 @@
 			$filters = [];
 			foreach ($this->columns() as $key => $col) {
 				switch ($col->type) {
-					case ReportColumn::COL_DECIMAL:
 					case ReportColumn::COL_CURRENCY:
+						$filters[] = $this->makeCurrencyFilter($key, $col);
+						break;
+					case ReportColumn::COL_DECIMAL:
 					case ReportColumn::COL_INTEGER:
 					case ReportColumn::COL_DATETIME:
 					case ReportColumn::COL_DATE:
@@ -94,6 +101,18 @@
 				if (!isset($row->$key) || $row->$key == null || $row->$key instanceof Value)
 					return;
 				$row->{$key} = new $class($row->{$key});
+			};
+		}
+
+		protected function makeCurrencyFilter(string $key, ReportColumn $col): \Closure {
+			$fallback = $col->currency ?? $this->currency();
+			$field = $col->currencyField;
+			return function (&$row) use ($key, $field, $fallback) {
+				if (!isset($row->$key) || $row->$key == null || $row->$key instanceof Value)
+					return;
+
+				$code = $field === null ? null : ($row->$field ?? null);
+				$row->{$key} = new CurrencyValue($row->{$key}, $code ?: $fallback);
 			};
 		}
 

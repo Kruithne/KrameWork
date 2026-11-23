@@ -45,3 +45,5 @@ Returns the result set of the report, running the report if necessary, or readin
 Forces the report to rerun by clearing the cache. A subsequent call to `data()` will execute the report.
 ##### > columns() : `ReportColumn[]`
 Returns the column specifications for the report 
+##### > currency() : `string|null`
+Returns the default currency code for the `COL_CURRENCY` columns in the report. Override this to set the code for the full report. Returns `null` by default, which gives `USD`. See `ReportColumn` for the full order of currency sources.

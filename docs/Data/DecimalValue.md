@@ -12,8 +12,14 @@ ___
 ### Examples
 The value stored in the `DecimalValue` class will automatically be converted to string when necessary.
 ```php
-$value = new DecimalValue(4.2);
-print($value);
+$value = new DecimalValue(1234.5);
+print($value); // > 1 234,50
+```
+The separators are set for all `DecimalValue` instances with static properties. The defaults are `,` for decimals and a space for thousands. `CurrencyValue` has its own separators.
+```php
+DecimalValue::$decimalSeparator = '.';
+DecimalValue::$thousandsSeparator = ',';
+print(new DecimalValue(1234.5)); // > 1,234.50
 ```
 ___
 ### Functions
