@@ -122,7 +122,7 @@
 		 * Calculate the standard deviation of an array.
 		 *
 		 * @internal
-		 * @param array $arr
+		 * @param float[] $arr
 		 * @return float
 		 */
 		private function std_arr(array $arr): float {

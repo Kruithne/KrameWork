@@ -39,7 +39,7 @@
 		 * CSPHeader constructor.
 		 *
 		 * @api __construct
-		 * @param array|null $arr Initial policy input.
+		 * @param array<string, string|string[]>|null $arr Initial policy input.
 		 */
 		public function __construct(?array $arr = null) {
 			$this->directives = [];
@@ -53,7 +53,7 @@
 		 * Add directive/source pairs from an array.
 		 *
 		 * @api fromArray
-		 * @param array $arr Directive/source pair array.
+		 * @param array<string, string|string[]> $arr Directive/source pair array.
 		 */
 		public function fromArray(array $arr): void {
 			foreach ($arr as $directive => $source)
@@ -64,8 +64,8 @@
 		 * Add a directive to this policy.
 		 *
 		 * @api add
-		 * @param array|string $directives Directive (use CSPHeader:: constants).
-		 * @param array|string $source Source directive.
+		 * @param string[]|string $directives Directive (use CSPHeader:: constants).
+		 * @param string[]|string $source Source directive.
 		 */
 		public function add(array|string $directives, array|string $source): void {
 			if (\is_array($source))
@@ -100,7 +100,7 @@
 		}
 
 		/**
-		 * @var array
+		 * @var array<string, string>
 		 */
 		private array $directives;
 	}

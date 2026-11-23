@@ -18,7 +18,7 @@
 		 * @param IDataCache $cache A cache to hold report data
 		 * @param Generic $db A database access object ie. Database
 		 * @param string $sql An SQL Query
-		 * @param array $param Query parameters
+		 * @param array<int|string, mixed> $param Query parameters
 		 * @param int $cacheTTL Number of seconds to store the results in cache.
 		 */
 		public function __construct(IDataCache $cache, private Generic $db, private string $sql, private array $param = [], int $cacheTTL = 300) {

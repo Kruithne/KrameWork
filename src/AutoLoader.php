@@ -24,7 +24,7 @@
 		 * AutoLoader constructor.
 		 *
 		 * @api __construct
-		 * @param array $sources List of sources (strings) or namespace/source key-value array.
+		 * @param array<int|string, string> $sources List of sources (strings) or namespace/source key-value array.
 		 * @param string[] $extensions Allowed extensions.
 		 * @param int $flags Flags to control auto-loading.
 		 * @throws InvalidSourcePathException
@@ -53,7 +53,7 @@
 		 * Set the extensions which can be loaded by this auto loader.
 		 *
 		 * @api setExtensions
-		 * @param array $extensions Extensions to be loaded.
+		 * @param string[] $extensions Extensions to be loaded.
 		 */
 		public function setExtensions(array $extensions): void {
 			// Remove any leading periods from extensions.
@@ -65,7 +65,7 @@
 		 * Add sources to this auto-loader.
 		 *
 		 * @api addSources
-		 * @param array $sources Namespace => Path mapping.
+		 * @param array<int|string, string> $sources Namespace => Path mapping.
 		 * @throws InvalidSourcePathException
 		 */
 		public function addSources(array $sources): void {
@@ -165,7 +165,7 @@
 		}
 
 		/**
-		 * @var array
+		 * @var (string|array{string, string})[]
 		 */
 		private array $sources;
 

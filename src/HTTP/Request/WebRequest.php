@@ -55,7 +55,7 @@
 		 * Array must be in fieldName => fieldValue format.
 		 *
 		 * @api addHeaders
-		 * @param array $headers Array of headers to add.
+		 * @param array<string, string> $headers Array of headers to add.
 		 */
 		public function setHeaders(array $headers): void {
 			foreach ($headers as $fieldName => $fieldValue)
@@ -79,7 +79,7 @@
 		 *
 		 * @api getHeader
 		 * @param string $getName Field name of the header.
-		 * @return array|null
+		 * @return string[]|null
 		 */
 		public function getHeader(string $getName): ?array {
 			$getName = \strtolower($getName);
@@ -220,12 +220,12 @@
 		protected ?string $result = null;
 
 		/**
-		 * @var array
+		 * @var array<string, mixed>
 		 */
 		protected array $data;
 
 		/**
-		 * @var array
+		 * @var array<string, string>
 		 */
 		protected array $headers;
 	}

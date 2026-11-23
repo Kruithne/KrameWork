@@ -32,7 +32,7 @@
 		/**
 		 * Executes the report, return the data to be processed and stored in cache.
 		 * Override this to implement your report.
-		 * @return array
+		 * @return (array<string, mixed>|object)[]
 		 */
 		protected abstract function run(): array;
 
@@ -118,7 +118,7 @@
 
 		/**
 		 * Format data values for presentation based on column type
-		 * @param array $data
+		 * @param (array<string, mixed>|object)[] $data
 		 * @return ReportRow[]
 		 */
 		protected function postProcess(array $data): array {

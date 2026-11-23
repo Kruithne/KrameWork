@@ -38,7 +38,7 @@
 		 * Get the stacktrace for this error.
 		 *
 		 * @api getTrace
-		 * @return array
+		 * @return array<int, array<string, mixed>>
 		 */
 		public function getTrace():array;
 

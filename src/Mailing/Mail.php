@@ -288,7 +288,7 @@
 		private ?string $subject = null;
 
 		/**
-		 * @var array
+		 * @var array<string, string>
 		 */
 		private array $headers;
 

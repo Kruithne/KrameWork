@@ -24,7 +24,7 @@
 		 * Format a stacktrace and add it to the report.
 		 *
 		 * @api reportStacktrace
-		 * @param array $trace Stacktrace.
+		 * @param array<int, array<string, mixed>> $trace Stacktrace.
 		 */
 		public function reportStacktrace(array $trace): void;
 
@@ -39,7 +39,7 @@
 		/**
 		 * Format debug data and add it to the report.
 		 *
-		 * @param array $debug Key/Value pairs
+		 * @param array<string, mixed> $debug Key/Value pairs
 		 */
 		public function reportDebug(array $debug): void;
 
@@ -48,7 +48,7 @@
 		 *
 		 * @api formatArray
 		 * @param string $name Name for the array.
-		 * @param array $arr Array of data.
+		 * @param array<int|string, mixed> $arr Array of data.
 		 */
 		public function reportArray(string $name, array $arr): void;
 

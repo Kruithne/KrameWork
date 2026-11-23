@@ -19,7 +19,7 @@
 		 *
 		 * @api __construct
 		 * @param string $directory Directory to store files in.
-		 * @param string|array|callable $name File name. Arrays are treated as callbacks.
+		 * @param string|callable(IErrorReport|string): string|array{callable(IErrorReport|string): string} $name File name. Arrays are treated as callbacks.
 		 */
 		public function __construct(string $directory, string|array|callable $name = 'error') {
 			$check = \realpath($directory);
@@ -59,7 +59,7 @@
 		}
 
 		/**
-		 * @var string|array|callable
+		 * @var string|callable(IErrorReport|string): string|array{callable(IErrorReport|string): string}
 		 */
 		protected mixed $name;
 

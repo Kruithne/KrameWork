@@ -20,10 +20,10 @@
 		 * MailDispatcher constructor.
 		 *
 		 * @api __construct
-		 * @param array $recipients Recipients to receive this report.
+		 * @param array<string, string|null> $recipients Recipients to receive this report.
 		 * @param string $sender Sender e-mail address.
 		 * @param string $senderName Name of the e-mail sender.
-		 * @param string|array|callable $subject Subject string or callable generator.
+		 * @param string|callable(IErrorReport|string): string|array{callable(IErrorReport|string): string} $subject Subject string or callable generator.
 		 */
 		public function __construct(array $recipients, string $sender, ?string $senderName = null, string|array|callable $subject = 'Error Report') {
 			$this->mail = new Mail();
@@ -65,7 +65,7 @@
 		protected Mail $mail;
 
 		/**
-		 * @var callable|array|null
+		 * @var callable(IErrorReport|string): string|array{callable(IErrorReport|string): string}|null
 		 */
 		protected mixed $subjectGen = null;
 	}

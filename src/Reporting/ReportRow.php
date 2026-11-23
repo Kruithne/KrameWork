@@ -7,12 +7,14 @@
 	 * Class ResultRow
 	 * Encapsulates a result row of formatted data, with support for JSON serialization
 	 * @author docpify <morten@runsafe.no>
+	 * @implements \Iterator<int|string, mixed>
+	 * @implements \ArrayAccess<int|string, mixed>
 	 */
 	class ReportRow implements \JsonSerializable, \Iterator, \ArrayAccess
 	{
 		/**
 		 * ReportRow constructor.
-		 * @param array|object|null $data The underlying result row
+		 * @param array<string, mixed>|object|null $data The underlying result row
 		 */
 		public function __construct(private array|object|null $data) {}
 
@@ -127,7 +129,7 @@
 		}
 
 		/**
-		 * @var array|null Numerically indexed keys for iteration purposes
+		 * @var (int|string)[]|null Numerically indexed keys for iteration purposes
 		 */
 		private ?array $keys = null;
 

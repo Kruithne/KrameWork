@@ -21,7 +21,7 @@
 		 * @api getFiles
 		 * @param string $key Key to lookup files for.
 		 * @param bool $useWrappers Use KrameWork file wrappers.
-		 * @return \ArrayObject[]|\KrameWork\Storage\UploadedFile[]
+		 * @return \ArrayObject<string, mixed>[]|\KrameWork\Storage\UploadedFile[]
 		 */
 		public static function getFiles(string $key, bool $useWrappers = true): array {
 			$files = [];
@@ -70,7 +70,7 @@
 		 * Retrieve the decoded query string for this request.
 		 *
 		 * @api getQueryData
-		 * @return array
+		 * @return array<int|string, mixed>
 		 */
 		public static function getQueryData(): array {
 			if (self::$cacheQueryData)
@@ -96,7 +96,7 @@
 		 * Accepts a variable amount of string arguments.
 		 *
 		 * @api getQueryDataValues
-		 * @return array
+		 * @return mixed[]
 		 */
 		public static function getQueryDataValues():array {
 			$out = [];
@@ -150,7 +150,7 @@
 		 * Accepts variable amount of string arguments.
 		 *
 		 * @api getFormDataValues
-		 * @return array
+		 * @return mixed[]
 		 */
 		public static function getFormDataValues():array {
 			$out = [];
@@ -166,7 +166,7 @@
 		 * Array values (foo[]) are returned as arrays.
 		 *
 		 * @api getFormData
-		 * @return array
+		 * @return array<int|string, mixed>
 		 */
 		public static function getFormData():array {
 			if (self::$cacheFormData)
@@ -342,7 +342,7 @@
 		/**
 		 * Returns request headers as a key/value array.
 		 * All header names will be lowercase regardless of how they were sent.
-		 * @return array
+		 * @return array<string, string>
 		 */
 		public static function getRequestHeaders():array {
 			if (self::$cacheRequestHeaders)
@@ -397,7 +397,7 @@
 		 *
 		 * @internal
 		 * @param string $input URL encoded string to decode.
-		 * @return array Decoded key/value pair array.
+		 * @return array<int|string, mixed> Decoded key/value pair array.
 		 */
 		private static function extractURLEncodedData(string $input):array {
 			\mb_parse_str($input, $out);
@@ -418,19 +418,19 @@
 
 		/**
 		 * Internal cache for parsed form data.
-		 * @var array|null
+		 * @var array<int|string, mixed>|null
 		 */
 		private static ?array $cacheFormData = null;
 
 		/**
 		 * Internal cache for parsed query data.
-		 * @var array|null
+		 * @var array<int|string, mixed>|null
 		 */
 		private static ?array $cacheQueryData = null;
 
 		/**
 		 * Internal cache for request headers.
-		 * @var array|null
+		 * @var array<string, string>|null
 		 */
 		private static ?array $cacheRequestHeaders = null;
 	}

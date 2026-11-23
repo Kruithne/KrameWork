@@ -65,7 +65,7 @@
 		 * Note: One line-end added per function call, not per element.
 		 *
 		 * @api appendLine
-		 * @param string|array|null $line Element(s) to append.
+		 * @param string|mixed[]|null $line Element(s) to append.
 		 * @param bool $suffix Line-end will be suffix, otherwise prefix.
 		 * @return StringBuilder
 		 */
@@ -98,7 +98,7 @@
 		 * Append an array to the string builder with the given separator.
 		 *
 		 * @api appendArray
-		 * @param array $arr Array to append.
+		 * @param (string|int|float|bool|\Stringable|null)[] $arr Array to append.
 		 * @param string $sep Separator for array items.
 		 * @return StringBuilder
 		 */
@@ -146,7 +146,7 @@
 		 * Note: One line-end added per function call, not per element.
 		 *
 		 * @api prependLine
-		 * @param string|array|null $line Element to prepend.
+		 * @param string|mixed[]|null $line Element to prepend.
 		 * @param bool $suffix Line-end will be suffix, otherwise prefix.
 		 * @return StringBuilder
 		 */
@@ -179,7 +179,7 @@
 		 * Prepend an array to the string builder with the given separator.
 		 *
 		 * @api appendArray
-		 * @param array $arr Array to append.
+		 * @param (string|int|float|bool|\Stringable|null)[] $arr Array to append.
 		 * @param string $sep Separator for array items.
 		 * @return StringBuilder
 		 */
@@ -193,7 +193,7 @@
 		 * Arrays will be recursively iterated with each element added.
 		 *
 		 * @api repeat
-		 * @param string|array $input Element to repeat.
+		 * @param string|mixed[] $input Element to repeat.
 		 * @param int $count How many times to append/prepend the element.
 		 * @param bool $append Append the element, otherwise prepend.
 		 * @return StringBuilder
@@ -341,7 +341,7 @@
 		private int $indent = 0;
 
 		/**
-		 * @var array
+		 * @var string[]
 		 */
 		private array $data;
 

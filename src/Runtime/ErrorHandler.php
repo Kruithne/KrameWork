@@ -91,6 +91,12 @@
 			$this->maxErrors = $max;
 		}
 
+		/**
+		 * Set the words used to redact report values.
+		 *
+		 * @api setRedactedKeys
+		 * @param string[] $keys Words to match against keys.
+		 */
 		public function setRedactedKeys(array $keys): void {
 			$this->redactedKeys = $keys;
 		}
@@ -225,7 +231,7 @@
 		 * Handles a PHP core error.
 		 *
 		 * @internal
-		 * @param array $data
+		 * @param string[] $data
 		 * @return string
 		 */
 		private function handleCoreError(array $data): string {
@@ -294,8 +300,8 @@
 		 *
 		 * @internal
 		 * @param IError $error
-		 * @param array $trace
-		 * @param array $debug
+		 * @param array<int, array<string, mixed>> $trace
+		 * @param array<string, mixed> $debug
 		 * @param IErrorFormatter $formatter
 		 * @return IErrorReport
 		 */
@@ -317,8 +323,8 @@
 		 * Filter error handling out of a stacktrace.
 		 *
 		 * @internal
-		 * @param array $trace Trace to filter.
-		 * @return array
+		 * @param array<int, array<string, mixed>> $trace Trace to filter.
+		 * @return array<int, array<string, mixed>>
 		 */
 		private function filterStacktrace(array $trace): array {
 			$startIndex = 0;
@@ -340,7 +346,7 @@
 		 * Get debug data from registered hooks
 		 *
 		 * @internal
-		 * @return array Key/Value pairs of debug data
+		 * @return array<string, mixed> Key/Value pairs of debug data
 		 */
 		private function getDebug(): array {
 			$debug = [];
@@ -382,6 +388,12 @@
 			}
 		}
 
+		/**
+		 * Redact values with sensitive keys.
+		 *
+		 * @param array<int|string, mixed> $data Data to redact.
+		 * @return array<int|string, mixed>
+		 */
 		private function redact(array $data): array {
 			foreach ($data as $key => $value) {
 				if ($this->isRedactedKey((string) $key))
@@ -413,7 +425,7 @@
 		protected bool $active;
 
 		/**
-		 * @var array
+		 * @var array{IErrorDispatcher, IErrorFormatter}[]
 		 */
 		protected array $dispatch;
 
@@ -447,6 +459,9 @@
 		 */
 		protected array $hooks = [];
 
+		/**
+		 * @var string[]
+		 */
 		protected array $redactedKeys = ['pass', 'pwd', 'secret', 'token', 'auth', 'cookie', 'session', 'key'];
 
 		protected bool $reportSensitive = false;

@@ -16,7 +16,7 @@
 		 * Execute a query and return an array of ArrayObjects, caching the results.
 		 * @api getAll
 		 * @param string $sql An SQL query statement
-		 * @param array $param An array of values to inject in the statement
+		 * @param array<int|string, mixed> $param An array of values to inject in the statement
 		 * @param int|null $ttl Number of seconds to cache the results, 0 forces refresh
 		 * @return \stdClass[]
 		 */
@@ -37,7 +37,7 @@
 		 * Execute a query and return the first row as an ArrayObject, caching the result.
 		 * @api getRow
 		 * @param string $sql An SQL query statement
-		 * @param array $param An array of values to inject in the statement
+		 * @param array<int|string, mixed> $param An array of values to inject in the statement
 		 * @param int|null $ttl Number of seconds to cache the results, 0 forces refresh
 		 * @return \stdClass|null
 		 */
@@ -58,9 +58,9 @@
 		 * Execute a query and return the first column of each row, caching the results.
 		 * @api getColumn
 		 * @param string $sql An SQL query statement
-		 * @param array $param An array of values to inject in the statement
+		 * @param array<int|string, mixed> $param An array of values to inject in the statement
 		 * @param int|null $ttl Number of seconds to cache the results, 0 forces refresh
-		 * @return array
+		 * @return mixed[]
 		 */
 		function getColumn(string $sql, array $param = [], ?int $ttl = null): array {
 			if ($ttl === null)
@@ -79,7 +79,7 @@
 		 * Execute a query and return the first value of the first row, caching the value.
 		 * @api getValue
 		 * @param string $sql An SQL query statement
-		 * @param array $param An array of values to inject in the statement
+		 * @param array<int|string, mixed> $param An array of values to inject in the statement
 		 * @param int|null $ttl Number of seconds to cache the results, 0 forces refresh
 		 * @return mixed
 		 */
@@ -100,7 +100,7 @@
 		 * Execute a statement and return the number of affected rows, without caching the result.
 		 * @api execute
 		 * @param string $sql An SQL statement
-		 * @param array $param An array of values to inject in the statement
+		 * @param array<int|string, mixed> $param An array of values to inject in the statement
 		 * @return int
 		 */
 		function execute(string $sql, array $param = []): int {
@@ -109,7 +109,7 @@
 
 		/**
 		 * @param string $sql An SQL statement
-		 * @param array $param SQL parameters
+		 * @param array<int|string, mixed> $param SQL parameters
 		 * @return string The cache key
 		 */
 		private function getKey(string $sql, array $param): string {

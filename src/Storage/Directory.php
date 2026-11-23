@@ -131,7 +131,7 @@
 		 *
 		 * @api getFiles
 		 * @param int $flags Bit-mask flags to control retrieval.
-		 * @return array
+		 * @return string[]|DirectoryItem[]
 		 */
 		public function getFiles(int $flags = self::DEFAULT_FLAGS):array {
 			return $this->getItems(($flags & ~self::INCLUDE_DIRECTORIES) | self::INCLUDE_FILES);
@@ -143,7 +143,7 @@
 		 *
 		 * @api getDirectories
 		 * @param int $flags Bit-mask flags to control retrieval.
-		 * @return array
+		 * @return string[]|DirectoryItem[]
 		 */
 		public function getDirectories(int $flags = self::DEFAULT_FLAGS):array {
 			return $this->getItems(($flags & ~self::INCLUDE_FILES) | self::INCLUDE_DIRECTORIES);

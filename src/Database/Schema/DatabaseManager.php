@@ -27,7 +27,7 @@
 		/**
 		 * @api updateSchema
 		 * Update the database schema according to managed tables
-		 * @return array Managed table names as keys with status for each as values
+		 * @return array<string, string> Managed table names as keys with status for each as values
 		 */
 		public function updateSchema(): array {
 			$state = [];

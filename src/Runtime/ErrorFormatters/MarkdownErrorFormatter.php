@@ -33,6 +33,12 @@
 				$this->addCodeBlock('Exception Debug Data', \var_export($debug, true));
 		}
 
+		/**
+		 * Format debug data and add it to the report.
+		 *
+		 * @api reportDebug
+		 * @param array<string, mixed> $debug Key/Value pairs
+		 */
 		public function reportDebug(array $debug): void {
 			if (!$debug)
 				return;
@@ -40,6 +46,12 @@
 			$this->addTable('Application Debug Data', $debug);
 		}
 
+		/**
+		 * Format a stacktrace and add it to the report.
+		 *
+		 * @api reportStacktrace
+		 * @param array<int, array<string, mixed>> $trace Stacktrace.
+		 */
 		public function reportStacktrace(array $trace): void {
 			$frames = [];
 			foreach ($trace as $node) {
@@ -61,6 +73,13 @@
 			$this->addCodeBlock('Stack Trace (' . \count($trace) . ' steps)', \implode("\n", $frames));
 		}
 
+		/**
+		 * Format an array and add it to the report.
+		 *
+		 * @api reportArray
+		 * @param string $name Name for the array.
+		 * @param array<int|string, mixed> $arr Array of data.
+		 */
 		public function reportArray(string $name, array $arr): void {
 			$this->addTable($name . ' (' . \count($arr) . ' items)', $arr);
 		}
@@ -74,6 +93,12 @@
 			return new ErrorReport($this->error, 'text/markdown; charset=utf-8', '.md', \implode("\n", $this->lines));
 		}
 
+		/**
+		 * Add a key/value table to the report.
+		 *
+		 * @param string $title Table title.
+		 * @param array<int|string, mixed> $arr Array of data.
+		 */
 		private function addTable(string $title, array $arr): void {
 			$this->lines[] = '### ' . $title;
 			$this->lines[] = '';
@@ -119,5 +144,8 @@
 
 		protected ?IError $error = null;
 
+		/**
+		 * @var string[]|null
+		 */
 		protected ?array $lines = null;
 	}

@@ -17,7 +17,7 @@
 		 * HTTPHeaders constructor.
 		 *
 		 * @api __construct
-		 * @param array|string $input Policy array (header objects) or pre-compiled string.
+		 * @param HTTPHeader[]|string $input Policy array (header objects) or pre-compiled string.
 		 */
 		public function __construct(array|string $input = []) {
 			$this->compiled = [];

@@ -24,6 +24,11 @@
 			return $this->currency;
 		}
 
+		/**
+		 * Convert the value into a format suitable for exporting in JSON
+		 * @api json
+		 * @return array{amount: float|null, currency: string} The amount and currency code
+		 */
 		public function json(): array {
 			return ['amount' => $this->value, 'currency' => $this->currency];
 		}

@@ -23,7 +23,7 @@
 		 *
 		 * @api
 		 * @param string $file Template file to use.
-		 * @param array $subs Substitutes for the template.
+		 * @param array<string, string> $subs Substitutes for the template.
 		 * @throws FileNotFoundException
 		 */
 		public function __construct(string $file, array $subs) {
@@ -69,7 +69,7 @@
 		private string $raw;
 
 		/**
-		 * @var array
+		 * @var array<string, string>
 		 */
 		private array $subs;
 

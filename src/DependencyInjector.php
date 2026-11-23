@@ -24,8 +24,8 @@
 		 *
 		 * @api __construct
 		 * @param int $flags Flags to control how this module behaves.
-		 * @param array $components Initial components.
-		 * @param array $bindings Initial bindings.
+		 * @param (string|object)[]|null $components Initial components.
+		 * @param array<string, string|object>|null $bindings Initial bindings.
 		 */
 		public function __construct(private int $flags = self::DEFAULT_FLAGS, ?array $components = null, ?array $bindings = null) {
 			$this->classList = [];
@@ -51,7 +51,7 @@
 		 * array: Multiple of the above.
 		 *
 		 * @api addComponent
-		 * @param string|array|object|null $class
+		 * @param string|(string|object)[]|object|null $class
 		 * @throws DuplicateClassException
 		 */
 		public function addComponent(string|array|object|null $class): void {
@@ -99,7 +99,7 @@
 		 *
 		 * @internal
 		 * @param mixed $class
-		 * @param array|null $output
+		 * @param string[]|null $output
 		 * @return string|string[]
 		 * @throws ClassResolutionException
 		 */
@@ -171,7 +171,7 @@
 		 * @api getImplementors
 		 * @param string $interfaceName Interface components must implement to be returned.
 		 * @param bool $add Attempt to add the class to the injector if missing.
-		 * @return array
+		 * @return object[]
 		 */
 		public function getImplementors(string $interfaceName, bool $add = false): array {
 			$resolves = $this->resolveClassName($interfaceName);
@@ -315,12 +315,12 @@
 		}
 
 		/**
-		 * @var array
+		 * @var array<string, object|object[]|null>
 		 */
 		private array $classList;
 
 		/**
-		 * @var array
+		 * @var array<string, string|string[]>
 		 */
 		private array $bindingList;
 	}

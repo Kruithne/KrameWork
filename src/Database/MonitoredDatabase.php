@@ -30,7 +30,7 @@
 		 * Execute a query and return an array of ArrayObjects
 		 * @api getAll
 		 * @param string $sql An SQL query statement
-		 * @param array $param An array of values to inject in the statement
+		 * @param array<int|string, mixed> $param An array of values to inject in the statement
 		 * @return \stdClass[]
 		 */
 		function getAll(string $sql, array $param = []): array {
@@ -44,8 +44,8 @@
 		 * Execute a query and return the first column of each row
 		 * @api getColumn
 		 * @param string $sql An SQL query statement
-		 * @param array $param An array of values to inject in the statement
-		 * @return array
+		 * @param array<int|string, mixed> $param An array of values to inject in the statement
+		 * @return mixed[]
 		 */
 		function getColumn(string $sql, array $param = []): array {
 			$this->timer->start();
@@ -58,7 +58,7 @@
 		 * Execute a query and return the first row as an ArrayObject
 		 * @api getRow
 		 * @param string $sql An SQL query statement
-		 * @param array $param An array of values to inject in the statement
+		 * @param array<int|string, mixed> $param An array of values to inject in the statement
 		 * @return \stdClass|null
 		 */
 		function getRow(string $sql, array $param = []): ?\stdClass {
@@ -72,7 +72,7 @@
 		 * Execute a query and return the first value of the first row
 		 * @api getValue
 		 * @param string $sql An SQL query statement
-		 * @param array $param An array of values to inject in the statement
+		 * @param array<int|string, mixed> $param An array of values to inject in the statement
 		 * @return mixed
 		 */
 		function getValue(string $sql, array $param = []): mixed {
@@ -86,7 +86,7 @@
 		 * Execute a statement and return the number of affected rows
 		 * @api execute
 		 * @param string $sql An SQL statement
-		 * @param array $param An array of values to inject in the statement
+		 * @param array<int|string, mixed> $param An array of values to inject in the statement
 		 * @return int
 		 */
 		function execute(string $sql, array $param = []): int {
@@ -100,7 +100,7 @@
 		 * Log timing information about a completed database statement.
 		 * @internal
 		 * @param string $sql
-		 * @param array $param
+		 * @param array<int|string, mixed> $param
 		 */
 		private function log(string $sql, array $param): void {
 			$time = $this->timer->stop();
@@ -119,7 +119,7 @@
 		 * Format a warning message when a statement takes longer to execute than the configured threshold.
 		 * @internal
 		 * @param string $sql The SQL statement that was executed.
-		 * @param array $param The parameters it was executed with.
+		 * @param array<int|string, mixed> $param The parameters it was executed with.
 		 * @param float $time The number of seconds execution took.
 		 * @return string
 		 */
@@ -130,7 +130,7 @@
 		/**
 		 * Returns statistics data collected over the lifetime of the object
 		 * @api getStatistics
-		 * @return array
+		 * @return array<int|string, array{0: string, 1: array<int|string, mixed>, 2: int|float}[]>
 		 */
 		public function getStatistics(): array {
 			return $this->statistics;
@@ -142,7 +142,7 @@
 		private Timer $timer;
 
 		/**
-		 * @var array
+		 * @var array<int|string, array{0: string, 1: array<int|string, mixed>, 2: int|float}[]>
 		 */
 		private array $statistics;
 	}

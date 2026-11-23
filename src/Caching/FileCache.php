@@ -199,12 +199,12 @@
 		}
 
 		/**
-		 * @var array
+		 * @var array<string, mixed>
 		 */
 		private $data;
 
 		/**
-		 * @var array
+		 * @var array<string, int>
 		 */
 		private $index;
 	}

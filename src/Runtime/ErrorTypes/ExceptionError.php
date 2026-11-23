@@ -85,7 +85,7 @@
 		 * Get the trace of this exception.
 		 *
 		 * @api getTrace
-		 * @return array
+		 * @return array<int, array<string, mixed>>
 		 */
 		public function getTrace():array {
 			return $this->trace;
@@ -132,7 +132,7 @@
 		protected int $line;
 
 		/**
-		 * @var array
+		 * @var array<int, array<string, mixed>>
 		 */
 		protected array $trace;
 

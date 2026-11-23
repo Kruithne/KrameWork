@@ -53,6 +53,13 @@
 
 			// Sandbox template execution.
 			new class ($this->file, $this->data) {
+				/**
+				 * Template sandbox constructor.
+				 *
+				 * @api __construct
+				 * @param string $file Path to a template file.
+				 * @param array<string, mixed> $data Template data.
+				 */
 				public function __construct(private string $file, private array $data) {
 					$this->run();
 				}
@@ -67,7 +74,7 @@
 		}
 
 		/**
-		 * @var array
+		 * @var array<string, mixed>
 		 */
 		protected array $data;
 	}

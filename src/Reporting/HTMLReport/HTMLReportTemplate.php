@@ -90,7 +90,7 @@
 		protected array $sections;
 
 		/**
-		 * @var array
+		 * @var array<string, string>
 		 */
 		protected array $replacements;
 	}

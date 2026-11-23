@@ -26,7 +26,7 @@
 		 * Arrays must be in an email=>name format (name can be null).
 		 *
 		 * @api add
-		 * @param string|array $email RFC 822 compliant e-mail address(es).
+		 * @param string|array<string, string|null> $email RFC 822 compliant e-mail address(es).
 		 * @param null|string $name Name of the e-mail recipient.
 		 * @param bool $encode Encode the e-mail recipient name.
 		 * @return RecipientCollection
@@ -59,7 +59,7 @@
 		 * Remove a recipient (or multiple) from this collection.
 		 *
 		 * @api remove
-		 * @param string|array $email E-mail address(es) to remove.
+		 * @param string|string[] $email E-mail address(es) to remove.
 		 * @return RecipientCollection
 		 */
 		public function remove(string|array $email):RecipientCollection {
@@ -114,7 +114,7 @@
 		}
 
 		/**
-		 * @var array
+		 * @var array<string, string|null>
 		 */
 		private array $recipients;
 	}
