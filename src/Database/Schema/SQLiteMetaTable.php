@@ -7,10 +7,10 @@
 	require_once(__DIR__ . '/../Driver/Generic.php');
 
 	/**
-	 * Class to store managed table versions in a sqlite database
+	 * Class to store managed table versions in an SQLite database
 	 * @package KrameWork\Database
 	 */
-	class sqliteMetaTable implements IMetaTable
+	class SQLiteMetaTable implements IMetaTable
 	{
 		/**
 		 * Creates the meta table if it does not exist
