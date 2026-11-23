@@ -13,13 +13,7 @@
 		 * @return string The decrypted connection string
 		 */
 		public function __toString(): string {
-			$connection = \base64_decode($this->connection);
-			switch (\substr($connection, 0, 3)) {
-				case 'H1$':
-					$connection = $this->decrypt($connection);
-					break;
-			}
-			return $connection;
+			return self::decrypt($this->connection);
 		}
 
 		/**
