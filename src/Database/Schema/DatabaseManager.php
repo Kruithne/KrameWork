@@ -39,7 +39,7 @@
 		}
 
 		/**
-		 * @var array|null
+		 * @var IManagedTable[]
 		 */
-		private ?array $tables = null;
+		private array $tables = [];
 	}
