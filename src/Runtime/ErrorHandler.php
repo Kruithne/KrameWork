@@ -237,7 +237,7 @@
 			$nParts = \count($parts);
 			if ($nParts == 5) {
 				$error = $parts[1] . ' - ' . $error;
-				$errorObj = new RuntimeError(\E_CORE_ERROR, $error, $parts[3], $parts[4]);
+				$errorObj = new RuntimeError(\E_CORE_ERROR, $error, $parts[3], (int) $parts[4]);
 			} else {
 				$error = 'Internal Error (' . $nParts . ') : ' . $error;
 				$errorObj = new RuntimeError(\E_CORE_ERROR, $error, __FILE__, __LINE__);
