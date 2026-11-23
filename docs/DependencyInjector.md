@@ -68,6 +68,7 @@ class MyClass {
 	}
 }
 ```
+Intersection types (such as `FooA&FooB`) are not supported. If the dependency injector encounters an intersection type, it will throw a `ClassInstantiationException`.
 
 Let's take a look at another example where `MyClass` implements an interface.
 ```php

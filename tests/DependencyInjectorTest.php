@@ -69,6 +69,17 @@
 		public $test;
 	}
 
+	class DIUnionTestClass
+	{
+		public function __construct(DITestInterfaceA|DITestClass $union, DITestInterface $after) {
+			$this->union = $union;
+			$this->after = $after;
+		}
+
+		public $union;
+		public $after;
+	}
+
 	class DependencyInjectorTest extends PHPUnit\Framework\TestCase
 	{
 		/**
@@ -534,5 +545,19 @@
 
 			$loader->disable();
 			unset($loader, $injector, $component);
+		}
+
+		/**
+		 * Test that a union parameter receives one argument from the first available type.
+		 */
+		public function testUnionParameter() {
+			$injector = new DependencyInjector(DependencyInjector::DEFAULT_FLAGS & ~DependencyInjector::AUTO_ADD_DEPENDENCIES);
+			$injector->addComponent(["DITestClass", "DIUnionTestClass"]);
+
+			$component = $injector->getComponent("DIUnionTestClass"); /** @var DIUnionTestClass $component */
+			$this->assertInstanceOf("DITestClass", $component->union, "Union parameter did not resolve to the first available type.");
+			$this->assertInstanceOf("DITestClass", $component->after, "Parameter after union did not receive the correct argument.");
+
+			unset($injector, $component);
 		}
 	}

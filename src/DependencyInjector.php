@@ -247,19 +247,8 @@
 			// Handle construction.
 			if ($constructor) {
 				// Process all parameters for the constructor.
-				foreach ($constructor->getParameters() as $param) {
-					$paramType = $param->getType();
-					if (!$paramType)
-						throw new ClassInstantiationException('Constructor contains undefined parameter: ' . $className);
-
-					if ($paramType instanceof \ReflectionUnionType) {
-						// In the event of a union, iterate and resolve the first available.
-						foreach ($paramType->getTypes() as $unionType)
-							$inject[] = $this->resolveNamedTypeComponent($unionType, $param, $className);
-					} else {
-						$inject[] = $this->resolveNamedTypeComponent($paramType, $param, $className);
-					}
-				}
+				foreach ($constructor->getParameters() as $param)
+					$inject[] = $this->resolveParameter($param, $className);
 
 				\call_user_func_array([$object, '__construct'], $inject);
 			}
@@ -268,47 +257,47 @@
 			return $object;
 		}
 
+		private function resolveParameter(\ReflectionParameter $param, string $className) {
+			$paramType = $param->getType();
+			if (!$paramType)
+				throw new ClassInstantiationException('Constructor contains undefined parameter: ' . $className);
+
+			$types = $paramType instanceof \ReflectionUnionType ? $paramType->getTypes() : [$paramType];
+			foreach ($types as $type) {
+				if (!($type instanceof \ReflectionNamedType))
+					throw new ClassInstantiationException(\sprintf('Intersection type for param #%d (%s) for %s is not supported', $param->getPosition(), $paramType, $className));
+
+				$component = $this->resolveNamedTypeComponent($type, $className);
+				if ($component !== null)
+					return $component;
+			}
+
+			if ($param->isOptional())
+				return $param->getDefaultValue();
+
+			if ($param->allowsNull())
+				return null;
+
+			throw new ClassInstantiationException(\sprintf('Injector cannot satisfy non-nullable param #%d (%s) for %s', $param->getPosition(), $paramType, $className));
+		}
+
 		/**
 		 * Resolves a component for a given named type.
 		 * @internal
-		 * @param \ReflectionNamedType $paramType
-		 * @param \ReflectionParameter $param
+		 * @param \ReflectionNamedType $type
 		 * @param string $className Name of the class the type belongs to.
 		 * @throws ClassInstantiationException
-		 * @return mixed|null
+		 * @return object|null
 		 */
-		private function resolveNamedTypeComponent(\ReflectionNamedType $paramType, \ReflectionParameter $param, string $className) {
-			// Dependency injector cannot provide builtin types.
-			if ($paramType->isBuiltin()) {
-				// In the event of an optional builtin, provide the default value.
-				if ($param->isOptional())
-					return $param->getDefaultValue();
-				
-				// For non-optional nullable builtins, provide null.
-				if ($paramType->allowsNull())
-					return null;
+		private function resolveNamedTypeComponent(\ReflectionNamedType $type, string $className) {
+			if ($type->isBuiltin())
+				return null;
 
-				throw new ClassInstantiationException(\sprintf('Constructor for %s contains non-optional, non-nullable parameter #%d (%s)', $className, $param->getPosition(), $paramType->getName()));
-			} else {
-				// A constructing instance cannot depend on itself.
-				$paramName = $paramType->getName();
-				if ($paramName === $className)
-					throw new ClassInstantiationException('Cyclic dependency in class ' . $className);
-	
-				$component = $this->getComponent($paramName, $this->flags & self::AUTO_ADD_DEPENDENCIES, false);
-				if ($component !== null)
-					return $component;
-	
-				// For optional parameters, provide the default value.
-				if ($param->isOptional())
-					return $param->getDefaultValue();
-	
-				// For non-optional nullable parameters, provide null.
-				if ($param->allowsNull())
-					return null;
-				
-				throw new ClassInstantiationException(\sprintf('Injector cannot satisfy non-nullable param #%d (%s) for %s', $param->getPosition(), $paramName, $className));
-			}
+			$typeName = $type->getName();
+			if ($typeName === $className)
+				throw new ClassInstantiationException('Cyclic dependency in class ' . $className);
+
+			return $this->getComponent($typeName, $this->flags & self::AUTO_ADD_DEPENDENCIES, false);
 		}
 
 		/**
