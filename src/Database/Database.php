@@ -18,7 +18,6 @@
 		/**
 		 * Connect using the PDO driver
 		 */
-		const DB_DRIVER_FAKE = 0; // For unit tests
 		const DB_DRIVER_PDO = 1;
 
 		/**
@@ -30,7 +29,6 @@
 		 */
 		public function __construct(ConnectionString $connection, int $driver = self::DB_DRIVER_PDO) {
 			$this->driver = match ($driver) {
-				self::DB_DRIVER_FAKE => new Driver\Fake($connection),
 				self::DB_DRIVER_PDO => new Driver\PDO($connection),
 				default => throw new UnknownDriverException('Unsupported driver type '.$driver)
 			};

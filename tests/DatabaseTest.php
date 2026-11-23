@@ -7,7 +7,6 @@
 	require_once(__DIR__ . '/../src/Database/Database.php');
 	require_once(__DIR__ . '/../src/Database/DatabaseCache.php');
 	require_once(__DIR__ . '/../src/Database/EncryptedConnection.php');
-	require_once(__DIR__ . '/resources/Database/Fake.php');
 	require_once(__DIR__ . '/resources/Cache/DummyCache.php');
 
 	class DatabaseTest extends \PHPUnit\Framework\TestCase
@@ -44,14 +43,13 @@
 
 		public function testCachedQuery() {
 			$cache = new DummyCache();
-			$connection = new ConnectionString('test:dsn', 'user', 'password');
-			$database = new Database($connection, Database::DB_DRIVER_FAKE);
+			$database = new Database(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO);
 			$cached = new \KrameWork\Database\DatabaseCache($cache, $database, 10);
-			$data = $cached->getAll('TESTING', [1], 10);
+			$data = $cached->getAll('SELECT ? AS value', [1], 10);
 			$key = key($cache->data);
 			$this->assertEquals($cache->data[$key], $data);
 			$cache->data[$key] = ['testvalue'];
-			$data = $cached->getAll('TESTING', [1], 10);
+			$data = $cached->getAll('SELECT ? AS value', [1], 10);
 			$this->assertEquals(['testvalue'], $data);
 		}
 	}
