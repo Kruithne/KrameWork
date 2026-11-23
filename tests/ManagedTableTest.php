@@ -14,24 +14,29 @@
 	class ManagedTableTest extends \PHPUnit\Framework\TestCase
 	{
 		/**
+		 * Checks that a new table is built by applying every revision in the log.
+		 */
+		public function testCreateAppliesAllRevisions() {
+			$db = new Database(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO);
+			$meta = new SQLiteMetaTable($db);
+			$table = $this->createTable($db, $meta, [
+				new TableVersion(1, ['CREATE TABLE "main"."users" ("id" INTEGER)']),
+				new TableVersion(2, ['ALTER TABLE "main"."users" ADD "name" TEXT'])
+			]);
+
+			$this->assertSame('Table created with revision 2', $table->update());
+			$this->assertSame(1, $db->execute('INSERT INTO "main"."users" ("id", "name") VALUES (?, ?)', [1, 'test']));
+		}
+
+		/**
 		 * Checks that a failed table creation rolls back the earlier statements and stores no version.
 		 */
 		public function testFailedCreateRollsBack() {
 			$db = new Database(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO);
 			$meta = new SQLiteMetaTable($db);
-			$table = new class($db, $meta) extends SQLiteManagedTable {
-				public function getName(): string {
-					return 'users';
-				}
-
-				public function versionLog(): array {
-					return [new TableVersion(1, [])];
-				}
-
-				public function latestVersion(): array {
-					return ['CREATE TABLE "main"."users" ("id" INTEGER)', 'INVALID SQL'];
-				}
-			};
+			$table = $this->createTable($db, $meta, [
+				new TableVersion(1, ['CREATE TABLE "main"."users" ("id" INTEGER)', 'INVALID SQL'])
+			]);
 
 			$this->assertStringStartsWith('Table creation failed', $table->create());
 			$this->assertSame(0, $meta->getVersion('users'));
@@ -87,10 +92,6 @@
 
 				public function versionLog(): array {
 					return $this->log;
-				}
-
-				public function latestVersion(): array {
-					return ['CREATE TABLE "main"."users" ("id" INTEGER)'];
 				}
 			};
 		}

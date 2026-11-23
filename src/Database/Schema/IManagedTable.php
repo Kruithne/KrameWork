@@ -37,13 +37,6 @@
 		public function versionLog(): array;
 
 		/**
-		 * @api getLatestVersion
-		 * Returns a set of queries to create the latest revision of the table
-		 * @return string[]
-		 */
-		public function latestVersion(): array;
-
-		/**
 		 * @api update
 		 * Updates the table in the database
 		 * @return string Status

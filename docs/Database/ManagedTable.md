@@ -23,16 +23,9 @@ class MyTable extends MSSQLManagedTable
     public function versionLog(): array
     {
         return [
-            new TableVersion(
-                1,
-                ['CREATE TABLE [dbo].[MyTable] ([column] VARCHAR(50) NOT NULL)']
-            )
+            new TableVersion(1, ['CREATE TABLE [dbo].[MyTable] ([column] VARCHAR(50) NOT NULL)']),
+            new TableVersion(2, ['ALTER TABLE [dbo].[MyTable] ADD [text] VARCHAR(50) NULL'])
         ];
-    }
-
-    public function latestVersion(): array
-    {
-        return ['CREATE TABLE [dbo].[MyTable] ([column] VARCHAR(50) NOT NULL)'];
     }
 }
 ```
@@ -51,25 +44,20 @@ Returns the fully qualified name of the table, ie. `schema.table`
 
 ##### > versionLog() : `TableVersion[]`
 Returns an array of TableVersion definition
-Used by the schema manager for updating the database.
+Used by the schema manager to create and update the table. The first version creates the table, and each later version changes it.
 The versions must be 1, 2, 3 and so on, in order, with no gaps. If not, `update()` and `create()` return an error status and change nothing. Only add new versions to the end of the log.
-
-##### > latestVersion() : `string[]`
-Returns a set of queries to create the latest revision of the table.
-Used by the schema manager to initialize a clean table.
-That is, during initial setup of the schema on a an empty database, or a new table.
 
 ##### > update() : `string`
 Called by the schema manager to perform an update.
-Each missing revision runs in its own transaction. If a revision fails, that revision rolls back and the earlier revisions stay applied.
+If the table does not exist, all revisions run, starting at version 1. If the table exists, only the missing revisions run. Each revision runs in its own transaction. If a revision fails, that revision rolls back and the earlier revisions stay applied.
 Returns a status message passed on to the caller.
 
 ##### > drop() : `void`
 Delete the table from the database
 
 ##### > create() : `string`
-Creates the current version of the table in the database.
-All statements from `latestVersion()` run in one transaction. If a statement fails, all of them roll back and no version is stored.
+Creates the table in the database by applying all revisions, starting at version 1.
+Each revision runs in its own transaction. If a revision fails, that revision rolls back and the earlier revisions stay applied.
 Returns a status message passed on to the caller.
 
 ___

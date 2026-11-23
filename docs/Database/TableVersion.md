@@ -9,6 +9,7 @@ ___
 ### Overview
 A representation of a version of a table.
 The SQL statements and the `BeforeExecution()` and `AfterExecution()` methods run in one transaction. If one of them fails, the version rolls back.
+Every version also runs when a new table is created, so `BeforeExecution()` and `AfterExecution()` must work on an empty table.
 ___
 ### Examples
 The most common use case
