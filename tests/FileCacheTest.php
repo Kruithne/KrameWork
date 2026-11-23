@@ -242,4 +242,20 @@
 				@unlink('file_cache_test.dat'); // Clean-up.
 			}
 		}
+
+		/**
+		 * Test that keys matching internal property names are treated as cache values.
+		 */
+		public function testIncrementReservedKey() {
+			@unlink('file_cache_test.dat'); // Delete from broken tests.
+			$cache = new FileCache('file_cache_test.dat', false);
+
+			$cache->increment('data');
+			$this->assertEquals(1, $cache->data);
+
+			$cache->decrement('index');
+			$this->assertEquals(-1, $cache->index);
+
+			unset($cache);
+		}
 	}

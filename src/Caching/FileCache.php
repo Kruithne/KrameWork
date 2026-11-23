@@ -186,7 +186,7 @@
 		 * @param int $weight How much to increment the value.
 		 */
 		public function increment(string $key, int $weight = 1): void {
-			$this->data[$key] = ($this->$key ?? 0) + $weight;
+			$this->data[$key] = ($this->__get($key) ?? 0) + $weight;
 
 			if ($this->autoPersist)
 				$this->persist();
@@ -200,7 +200,7 @@
 		 * @param int $weight How much to decrement the value.
 		 */
 		public function decrement(string $key, int $weight = 1): void {
-			$this->data[$key] = ($this->$key ?? 0) - $weight;
+			$this->data[$key] = ($this->__get($key) ?? 0) - $weight;
 
 			if ($this->autoPersist)
 				$this->persist();
