@@ -134,6 +134,13 @@
 		 * @return bool
 		 */
 		public static function isValid(string $uuid):bool {
-			return \preg_match('/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $uuid) === 1;
+			if (\preg_match('/^(\{)?[0-9a-f]{8}(-?)[0-9a-f]{4}\2[0-9a-f]{4}\2[0-9a-f]{4}\2[0-9a-f]{12}(?(1)\})$/i', $uuid) !== 1)
+				return false;
+
+			$hex = \strtolower(\str_replace(['-', '{', '}'], '', $uuid));
+			if ($hex === \str_repeat('0', 32) || $hex === \str_repeat('f', 32))
+				return true;
+
+			return \preg_match('/^.{12}[1-8].{3}[89ab]/', $hex) === 1;
 		}
 	}

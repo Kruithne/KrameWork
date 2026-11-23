@@ -13,6 +13,41 @@
 		}
 
 		/**
+		 * Test that UUID::isValid() rejects a UUID with only one brace.
+		 */
+		public function testIsValidRejectsMismatchedBraces() {
+			$this->assertFalse(UUID::isValid('{6ba7b810-9dad-11d1-80b4-00c04fd430c8'));
+		}
+
+		/**
+		 * Test that UUID::isValid() rejects a UUID with some hyphens missing.
+		 */
+		public function testIsValidRejectsMixedHyphens() {
+			$this->assertFalse(UUID::isValid('6ba7b8109dad-11d1-80b4-00c04fd430c8'));
+		}
+
+		/**
+		 * Test that UUID::isValid() rejects a UUID with an unknown version.
+		 */
+		public function testIsValidRejectsUnknownVersion() {
+			$this->assertFalse(UUID::isValid('6ba7b810-9dad-01d1-80b4-00c04fd430c8'));
+		}
+
+		/**
+		 * Test that UUID::isValid() rejects a UUID with a non-RFC variant.
+		 */
+		public function testIsValidRejectsUnknownVariant() {
+			$this->assertFalse(UUID::isValid('6ba7b810-9dad-11d1-c0b4-00c04fd430c8'));
+		}
+
+		/**
+		 * Test that UUID::isValid() accepts the nil UUID.
+		 */
+		public function testIsValidAcceptsNil() {
+			$this->assertTrue(UUID::isValid(UUID::NIL));
+		}
+
+		/**
 		 * Test generation of v3 namespace based UUID.
 		 */
 		public function testV3Generation() {
