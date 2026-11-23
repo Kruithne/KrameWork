@@ -258,7 +258,7 @@
 				$content = self::getRequestContent();
 				if ($decode) {
 					$decoded = \json_decode($content);
-					if ($decoded === false)
+					if (\json_last_error() !== JSON_ERROR_NONE)
 						throw new InvalidRequestTypeException('Request content did not contain valid json.');
 
 					return $decoded;
