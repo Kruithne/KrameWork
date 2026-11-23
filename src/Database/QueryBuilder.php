@@ -75,11 +75,11 @@
 				. \sprintf($this->format, $this->column, $this->level)
 				. ($glue ? ' ' . $this->glue : '');
 
-			if ($this->query_limit && $this->isMSSQL)
-				$base = \str_replace('SELECT *', 'SELECT TOP ' . $this->query_limit . ' *', $base);
-
 			if ($glue)
 				return $base;
+
+			if ($this->query_limit && $this->isMSSQL)
+				$base = \str_replace('SELECT *', 'SELECT TOP ' . $this->query_limit . ' *', $base);
 
 			if ($this->orderBy)
 			{
