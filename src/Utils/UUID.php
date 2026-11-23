@@ -102,13 +102,7 @@
 			if (!self::isValid($namespace))
 				return self::NIL;
 
-			$hex = \str_replace(['-', '{', '}'], '', $namespace); // Hex components.
-			$bin = ''; // Binary value.
-
-			// Convert namespace to bits.
-			for ($i = 0, $l = \strlen($hex); $i < $l; $i += 2)
-				$bin .= \chr(\hexdec($hex[$i] . $hex[$i + 1]));
-
+			$bin = \hex2bin(\str_replace(['-', '{', '}'], '', $namespace));
 			$hash = $version == 3 ? \md5($bin . $name) : \sha1($bin . $name); // Hash.
 			$versionBit = $version == 3 ? 0x3000 : 0x5000;
 
