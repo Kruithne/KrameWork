@@ -32,6 +32,22 @@
 		}
 
 		/**
+		 * Test HTTPContext->getContentLength() returns 0 without a warning when the header is missing.
+		 */
+		public function testContentLengthMissing() {
+			// Setup
+			$CONTENT_LENGTH = "CONTENT_LENGTH";
+			$orig = $_SERVER[$CONTENT_LENGTH] ?? null;
+			unset($_SERVER[$CONTENT_LENGTH]);
+
+			// Testing
+			$this->assertEquals(0, HTTPContext::getContentLength());
+
+			// Cleanup
+			$_SERVER[$CONTENT_LENGTH] = $orig;
+		}
+
+		/**
 		 * Test HTTPContext->getUserAgent().
 		 */
 		public function testUserAgent() {

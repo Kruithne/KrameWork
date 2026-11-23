@@ -252,7 +252,7 @@
 		 * @return int
 		 */
 		public static function getContentLength():int {
-			return intval($_SERVER['CONTENT_LENGTH']) ?? 0;
+			return \intval($_SERVER['CONTENT_LENGTH'] ?? 0);
 		}
 
 		/**
