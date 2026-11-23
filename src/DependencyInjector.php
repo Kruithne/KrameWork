@@ -54,7 +54,7 @@
 		 * @param string|array|object|null $class
 		 * @throws DuplicateClassException
 		 */
-		public function addComponent(mixed $class): void {
+		public function addComponent(string|array|object|null $class): void {
 			// Null: Do nothing.
 			if (!$class)
 				return;
@@ -81,18 +81,14 @@
 			}
 
 			// Object: Extract class and add that.
-			if (\is_object($class)) {
-				$className = \get_class($class);
-				if (\array_key_exists($className, $this->classList))
-					throw new DuplicateClassException('Duplicate class added to injector: ' . $className);
+			$className = \get_class($class);
+			if (\array_key_exists($className, $this->classList))
+				throw new DuplicateClassException('Duplicate class added to injector: ' . $className);
 
-				$this->classList[$className] = $class;
+			$this->classList[$className] = $class;
 
-				if ($this->flags & self::AUTO_BIND_INTERFACES)
-					$this->bindInterfaces($className);
-
-				return;
-			}
+			if ($this->flags & self::AUTO_BIND_INTERFACES)
+				$this->bindInterfaces($className);
 		}
 
 		/**

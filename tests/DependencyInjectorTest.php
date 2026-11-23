@@ -203,6 +203,22 @@
 		}
 
 		/**
+		 * Test that adding a component of an unsupported type throws a TypeError.
+		 */
+		public function testAddInvalidComponentType() {
+			$injector = new DependencyInjector();
+
+			try {
+				$injector->addComponent(5);
+				$this->fail("Invalid component type did not throw TypeError from injector.");
+			} catch (\TypeError $e) {
+				$this->assertTrue(true);
+			}
+
+			unset($injector);
+		}
+
+		/**
 		 * Test that an exception is thrown when we try to retrieve a missing component without auto-add.
 		 */
 		public function testMissingComponent() {
