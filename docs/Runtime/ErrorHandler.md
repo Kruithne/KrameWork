@@ -13,6 +13,8 @@ Upon creation, the error handler will take over the current **error handler**, *
 
 Reports include `$_SERVER`, `$_POST`, `$_GET` and `$_FILES`. Values with keys that contain a redacted word (case-insensitive) are replaced with `[REDACTED]`. The default words are `pass`, `pwd`, `secret`, `token`, `auth`, `cookie`, `session` and `key`. Use `setRedactedKeys()` to change this list. `$_COOKIE` and the raw request body are not included unless you call `setReportSensitive(true)`.
 
+Call `setSanitize(true)` to replace e-mail addresses and IP addresses in all reports. This is disabled by default. The `GitHubDispatcher` always sanitizes its reports.
+
 In the default configuration, the error handler will terminate script execution after `10` errors have occurred. This value can be changed using the `setMaxErrors()` function, however it is important to note that some dispatchers will halt the script after a single error is dispatched regardless of this value; check the 'Dispatchers' list below to see which ones do.
 ___
 ### Examples
@@ -36,6 +38,7 @@ The formatter is responsible for taking the raw data of errors that occur and pr
 | `PlainTextErrorFormatter` | Produces a plain-text report with `\n` line-endings (by default). |
 | `HTMLErrorFormatter` | HTML formatted report (uses provided template). |
 | `JSONErrorFormatter` | Produces a raw JSON formatted dump. |
+| `MarkdownErrorFormatter` | Produces a GitHub-flavored Markdown report. |
 ##### Dispatchers
 The dispatcher is responsible for taking the generated report and sending it somewhere. Some dispatchers have unique behavior which can be controlled, check out the individual documentation for each dispatcher for more information.
 
@@ -43,6 +46,7 @@ The dispatcher is responsible for taking the generated report and sending it som
 | ----- | ----------- | ----------------------- |
 | `BufferDispatcher` | Clears the PHP output buffer and dumps the report there. | `true` |
 | `FileDispatcher` | Creates a flat-file for each error report. | `false` |
+| `GitHubDispatcher` | Raises each error report as a GitHub issue, throttled by title. | `false` |
 
 ___
 ##### Catching Core Errors
@@ -142,6 +146,20 @@ Include `$_COOKIE` (redacted) and the raw request body in reports. Disabled by d
 parameter | type | description
 --- | --- | ---
 `$enabled` | `bool` | Include sensitive request data.
+
+##### > setSanitize(): `void`
+Replace e-mail addresses and IP addresses in all reports. Disabled by default.
+
+parameter | type | description
+--- | --- | ---
+`$enabled` | `bool` | Sanitize reports.
+
+##### > static sanitize(): `string`
+Replace e-mail addresses, IPv4 addresses and full-form IPv6 addresses in a string.
+
+parameter | type | description
+--- | --- | ---
+`$input` | `string` | String to sanitize.
 
 ##### > addHook(): `void`
 Register a debug provider with this error handler, that will be invoked to gather application specific data to add to any error report.

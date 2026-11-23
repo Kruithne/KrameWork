@@ -27,6 +27,7 @@
 	use KrameWork\Runtime\ErrorDispatchers\IBufferDispatcher;
 	use KrameWork\Runtime\ErrorDispatchers\IErrorDispatcher;
 	use KrameWork\Runtime\ErrorFormatters\IErrorFormatter;
+	use KrameWork\Runtime\ErrorReports\ErrorReport;
 	use KrameWork\Runtime\ErrorTypes\ExceptionError;
 	use KrameWork\Runtime\ErrorTypes\IError;
 	use KrameWork\Runtime\ErrorTypes\RuntimeError;
@@ -34,6 +35,7 @@
 
 	require_once(__DIR__ . '/ErrorDispatchers/IBufferDispatcher.php');
 	require_once(__DIR__ . '/ErrorDispatchers/IErrorDispatcher.php');
+	require_once(__DIR__ . '/ErrorReports/ErrorReport.php');
 	require_once(__DIR__ . '/ErrorTypes/ExceptionError.php');
 	require_once(__DIR__ . '/ErrorTypes/RuntimeError.php');
 	require_once(__DIR__ . '/../Utils/StringUtil.php');
@@ -47,6 +49,14 @@
 	 */
 	class ErrorHandler
 	{
+		const SANITIZE_PATTERNS = [
+			'/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/',
+			'/\b(?:\d{1,3}\.){3}\d{1,3}\b/',
+			'/\b(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b/'
+		];
+
+		const SANITIZE_REPLACEMENTS = ['[e-mail address]', '[IPv4 address]', '[IPv6 address]'];
+
 		/**
 		 * ErrorHandler constructor.
 		 *
@@ -111,6 +121,14 @@
 
 		public function setReportSensitive(bool $enabled) {
 			$this->reportSensitive = $enabled;
+		}
+
+		public function setSanitize(bool $enabled) {
+			$this->sanitize = $enabled;
+		}
+
+		public static function sanitize(string $input): string {
+			return \preg_replace(self::SANITIZE_PATTERNS, self::SANITIZE_REPLACEMENTS, $input) ?? $input;
 		}
 
 		/**
@@ -306,7 +324,12 @@
 			$formatter->reportDebug($debug);
 			$formatter->reportStacktrace($trace);
 			$this->packReport($formatter);
-			return $formatter->generate();
+			$report = $formatter->generate();
+
+			if (!$this->sanitize)
+				return $report;
+
+			return new ErrorReport($report->getError(), $report->getContentType(), $report->getExtension(), self::sanitize((string) $report));
 		}
 
 		/**
@@ -446,6 +469,8 @@
 		protected $redactedKeys = ['pass', 'pwd', 'secret', 'token', 'auth', 'cookie', 'session', 'key'];
 
 		protected $reportSensitive = false;
+
+		protected $sanitize = false;
 
 		/**
 		 * @var IErrorFormatter
