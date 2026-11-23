@@ -147,7 +147,8 @@
 			if (!$overwrite && \is_file($file))
 				throw new FileWriteException('Cannot write file: Already exists (specify overwrite?)');
 
-			\file_put_contents($file, $this->data ?? '');
+			if (\file_put_contents($file, $this->data ?? '') === false)
+				throw new FileWriteException('Unable to write data to file.');
 		}
 
 		/**
