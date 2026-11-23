@@ -93,7 +93,7 @@
 				$base .= \sprintf(' LIMIT %d', $this->query_limit);
 
 			if ($this->query_offset && ($this->isSqlite || $this->isPostgreSQL || $this->isMySQL))
-				$base .= \sprintf(' OFFSET %d', $this->query_limit);
+				$base .= \sprintf(' OFFSET %d', $this->query_offset);
 
 			return $base;
 		}
