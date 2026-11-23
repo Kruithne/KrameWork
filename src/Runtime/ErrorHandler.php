@@ -250,7 +250,7 @@
 			$debug = $this->getDebug();
 
 			foreach ($this->dispatch as $dispatch) {
-				if ($dispatch instanceof IBufferDispatcher)
+				if ($dispatch[0] instanceof IBufferDispatcher)
 					continue;
 				$output = $this->formatError($errorObj, $trace, $debug, $dispatch[1]);
 				$dispatch[0]->dispatch($output);
