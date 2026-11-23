@@ -18,7 +18,7 @@
 		 * StringBuilder constructor.
 		 *
 		 * @api __construct
-		 * @param array $args Initial elements to append to the builder.
+		 * @param mixed ...$args Initial elements to append to the builder.
 		 */
 		public function __construct(mixed ...$args) {
 			$this->clear();
@@ -30,7 +30,7 @@
 		 * Arrays will be recursively iterated with all elements appended.
 		 *
 		 * @api append
-		 * @param array $args Elements to append to the builder.
+		 * @param mixed ...$args Elements to append to the builder.
 		 * @return StringBuilder
 		 */
 		public function append(mixed ...$args):StringBuilder {
@@ -86,7 +86,7 @@
 		 *
 		 * @api appendf
 		 * @param string $format String format pattern.
-		 * @param array $args Components for the format pattern.
+		 * @param mixed ...$args Components for the format pattern.
 		 * @return StringBuilder
 		 */
 		public function appendf(string $format, mixed ...$args):StringBuilder {
@@ -112,7 +112,7 @@
 		 * Arrays will be recursively iterated with all elements prepended.
 		 *
 		 * @api prepend
-		 * @param array $args Elements to prepend to the builder.
+		 * @param mixed ...$args Elements to prepend to the builder.
 		 * @return StringBuilder
 		 */
 		public function prepend(mixed ...$args):StringBuilder {
@@ -167,7 +167,7 @@
 		 *
 		 * @api prependf
 		 * @param string $format String format pattern.
-		 * @param array $args Components for the format pattern.
+		 * @param mixed ...$args Components for the format pattern.
 		 * @return StringBuilder
 		 */
 		public function prependf(string $format, mixed ...$args):StringBuilder {

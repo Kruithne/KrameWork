@@ -40,13 +40,13 @@ StringBuilder constructor.
 
 parameter | type | description
 --- | --- | ---
-`$args` | `array` | Initial elements to append to the builder.
+`...$args` | `mixed` | Initial elements to append to the builder.
 ##### > append() : `StringBuilder`
 Append one or more elements to the builder. Arrays will be recursively iterated with all elements appended.
 
 parameter | type | description
 --- | --- | ---
-`$args` | `array` | Elements to append to the builder.
+`...$args` | `mixed` | Elements to append to the builder.
 ##### > appendLine() : `StringBuilder`
 Append elements to the builder with a line-end prefix/suffix. Defaults to Unix line-end unless specified using setLineEnd(). Providing a null element is equivalent to calling newLine(true). Note: One line-end added per function call, not per element.
 
@@ -60,13 +60,13 @@ Append a single formatted string to the builder.
 parameter | type | description
 --- | --- | ---
 `$format` | `string` | String format pattern.
-`$args` | `array` | Components for the format pattern.
+`...$args` | `mixed` | Components for the format pattern.
 ##### > prepend() : `StringBuilder`
 Prepend one or more element to the builder. Arrays will be recursively iterated with all elements prepended.
 
 parameter | type | description
 --- | --- | ---
-`$args` | `array` | Elements to prepend to the builder.
+`...$args` | `mixed` | Elements to prepend to the builder.
 ##### > prependLine() : `StringBuilder`
 Prepend elements to the builder with a line-end prefix/suffix. Defaults to Unix line-end unless specified using setLineEnd(). Providing a null element is equivalent to calling newLine(false). Note: One line-end added per function call, not per element.
 
@@ -80,7 +80,7 @@ Prepend a single formatted string to the builder.
 parameter | type | description
 --- | --- | ---
 `$format` | `string` | String format pattern.
-`$args` | `array` | Components for the format pattern.
+`...$args` | `mixed` | Components for the format pattern.
 ##### > repeat() : `StringBuilder`
 Add an element $count amount of times to the builder. Arrays will be recursively iterated with each element added.
 
