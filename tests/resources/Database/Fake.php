@@ -86,6 +86,18 @@
 			return count($param);
 		}
 
+		function getLastError() {
+			return null;
+		}
+
+		function getLastQueryError() {
+			return null;
+		}
+
+		function getLastInsertID(): string {
+			return '0';
+		}
+
 		/**
 		 * @api beginTransaction
 		 * Open a database transaction
