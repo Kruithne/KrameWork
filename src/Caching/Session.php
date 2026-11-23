@@ -24,10 +24,6 @@
 
 	namespace KrameWork\Caching;
 
-	require_once(__DIR__ . '/../HTTP/HTTPContext.php');
-
-	use KrameWork\HTTP\HTTPContext;
-
 	class SessionInitiationException extends \Exception {}
 
 	/**
@@ -44,11 +40,8 @@
 		 *
 		 * @api __construct
 		 * @param bool $autoStart Start session on instantiation.
-		 * @param bool $secure Prevent session theft.
 		 */
-		public function __construct(bool $autoStart = true, bool $secure = true) {
-			$this->secure = $secure;
-
+		public function __construct(bool $autoStart = true) {
 			if ($autoStart)
 				$this->start();
 		}
@@ -68,16 +61,6 @@
 				throw new SessionInitiationException('Session cannot be started in CLI environment.');
 
 			\session_start();
-
-			if ($this->secure) {
-				$remote = HTTPContext::getRemoteAddress();
-				$client = $_SESSION['__session_client'] ?? $remote;
-
-				if ($client != $remote) {
-					$this->flush();
-					$_SESSION['__session_client'] = $remote;
-				}
-			}
 		}
 
 		/**
@@ -197,9 +180,4 @@
 		public function decrement(string $key, int $weight = 1) {
 			$this->store($key, ($this->$key ?? 0) - $weight);
 		}
-
-		/**
-		 * @var bool
-		 */
-		private $secure;
 	}

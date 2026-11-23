@@ -7,7 +7,6 @@
 ___
 ### Overview
 The `Session` class provides an `IDataCache` compatible interface to the request session.
-This class depends on the HTTPContext class.
 ___
 ### Functions
 ##### > __construct() : `void`
@@ -16,7 +15,6 @@ Session constructor.
 parameter | type | description
 --- | --- | ---
 `$autoStart` | `bool` | Start session on instantiation.
-`$secure` | `bool` | Prevent session theft.
 
 ##### > start() : `void`
 Attempt to start a session.
