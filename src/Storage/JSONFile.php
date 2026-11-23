@@ -107,7 +107,7 @@
 		 */
 		public function save(?string $file = null, bool $overwrite = true): void {
 			$encoded = \json_encode($this->jsonData);
-			if ($encoded === null)
+			if ($encoded === false)
 				$this->throwJSONError();
 
 			$this->data = $encoded;
