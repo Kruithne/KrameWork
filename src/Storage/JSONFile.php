@@ -115,7 +115,7 @@
 			if ($decoded === null)
 				$this->throwJSONError();
 
-			$this->jsonData = $this->useContainer ? new \ArrayObject($decoded, \ArrayObject::ARRAY_AS_PROPS) : $decoded;
+			$this->jsonData = $this->useContainer ? new \ArrayObject((array) $decoded,\ArrayObject::ARRAY_AS_PROPS) : $decoded;
 		}
 
 		/**
