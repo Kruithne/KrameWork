@@ -42,7 +42,7 @@ Table version constructor.
 
 parameter | type | description
 --- | --- | ---
-`$version` | `int` | The numerical version
+`$version` | `int` | The numerical version. It must be equal to the position of this version in the revision log, starting at 1.
 `$sql` | `string[]` | A set of SQL statements to execute when applying this version.
 
 ##### > BeforeExecution() : `void`

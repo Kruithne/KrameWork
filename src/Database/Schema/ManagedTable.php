@@ -27,6 +27,10 @@
 				return $this->create();
 
 			$log = $this->versionLog();
+			$error = $this->validateLog($log);
+			if ($error !== null)
+				return $error;
+
 			$latest = \count($log);
 			if($current > $latest)
 				return 'Table is ahead of code: '.$current;
@@ -71,7 +75,12 @@
 		 * @return string Status
 		 */
 		public function create(): string {
-			$v = \count($this->versionLog());
+			$log = $this->versionLog();
+			$error = $this->validateLog($log);
+			if ($error !== null)
+				return $error;
+
+			$v = \count($log);
 			try {
 				$this->db->beginTransaction();
 				foreach ($this->latestVersion() as $sql)
@@ -99,5 +108,18 @@
 		 */
 		public function quoteIdentifier(string $identifier): string {
 			return "\"{$identifier}\"";
+		}
+
+		/**
+		 * Checks that each revision version matches its position in the log, starting at 1
+		 * @param TableVersion[] $log Revision log
+		 * @return string|null Error status, or null if the log is valid
+		 */
+		private function validateLog(array $log): ?string {
+			foreach (\array_values($log) as $i => $version) {
+				if ($version->version !== $i + 1)
+					return 'Revision log is invalid at position ' . ($i + 1) . ' (version ' . $version->version . ')';
+			}
+			return null;
 		}
 	}

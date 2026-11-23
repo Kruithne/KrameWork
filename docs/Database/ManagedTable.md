@@ -52,6 +52,7 @@ Returns the fully qualified name of the table, ie. `schema.table`
 ##### > versionLog() : `TableVersion[]`
 Returns an array of TableVersion definition
 Used by the schema manager for updating the database.
+The versions must be 1, 2, 3 and so on, in order, with no gaps. If not, `update()` and `create()` return an error status and change nothing. Only add new versions to the end of the log.
 
 ##### > latestVersion() : `string[]`
 Returns a set of queries to create the latest revision of the table.

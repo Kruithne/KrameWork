@@ -37,4 +37,61 @@
 			$this->assertSame(0, $meta->getVersion('users'));
 			$this->assertNull($db->getValue('SELECT name FROM sqlite_master WHERE type = ? AND name = ?', ['table', 'users']));
 		}
+
+		/**
+		 * Checks that table creation with a gap in the revision log is rejected and creates nothing.
+		 */
+		public function testCreateRejectsInvalidLog() {
+			$db = new Database(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO);
+			$meta = new SQLiteMetaTable($db);
+			$table = $this->createTable($db, $meta, [new TableVersion(1, []), new TableVersion(3, [])]);
+
+			$this->assertStringStartsWith('Revision log is invalid', $table->create());
+			$this->assertSame(0, $meta->getVersion('users'));
+			$this->assertNull($db->getValue('SELECT name FROM sqlite_master WHERE type = ? AND name = ?', ['table', 'users']));
+		}
+
+		/**
+		 * Checks that an update with a gap in the revision log is rejected and applies no revision.
+		 */
+		public function testUpdateRejectsInvalidLog() {
+			$db = new Database(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO);
+			$meta = new SQLiteMetaTable($db);
+			$db->execute('CREATE TABLE "main"."users" ("id" INTEGER)', []);
+			$meta->setVersion('users', 1);
+			$table = $this->createTable($db, $meta, [
+				new TableVersion(1, []),
+				new TableVersion(3, ['ALTER TABLE "main"."users" ADD "name" TEXT'])
+			]);
+
+			$this->assertStringStartsWith('Revision log is invalid', $table->update());
+			$this->assertSame(1, $meta->getVersion('users'));
+		}
+
+		/**
+		 * Creates a users table with the given revision log.
+		 * @param Database $db Database connection
+		 * @param SQLiteMetaTable $meta Meta table
+		 * @param TableVersion[] $log Revision log
+		 * @return SQLiteManagedTable Managed table
+		 */
+		private function createTable(Database $db, SQLiteMetaTable $meta, array $log): SQLiteManagedTable {
+			return new class($db, $meta, $log) extends SQLiteManagedTable {
+				public function __construct(Database $db, SQLiteMetaTable $meta, private array $log) {
+					parent::__construct($db, $meta);
+				}
+
+				public function getName(): string {
+					return 'users';
+				}
+
+				public function versionLog(): array {
+					return $this->log;
+				}
+
+				public function latestVersion(): array {
+					return ['CREATE TABLE "main"."users" ("id" INTEGER)'];
+				}
+			};
+		}
 	}
