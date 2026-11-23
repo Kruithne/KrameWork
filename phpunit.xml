@@ -1,2 +1,2 @@
-<phpunit convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true">
+<phpunit failOnWarning="true" failOnNotice="true">
 </phpunit>
