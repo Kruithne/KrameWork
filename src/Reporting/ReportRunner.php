@@ -98,7 +98,7 @@
 		 */
 		protected function makeFilter(string $key, string $class): \Closure {
 			return function (&$row) use ($key, $class) {
-				if (!isset($row->$key) || $row->$key == null || $row->$key instanceof Value)
+				if (!isset($row->$key) || $row->$key === '' || $row->$key instanceof Value)
 					return;
 				$row->{$key} = new $class($row->{$key});
 			};
@@ -108,7 +108,7 @@
 			$fallback = $col->currency ?? $this->currency();
 			$field = $col->currencyField;
 			return function (&$row) use ($key, $field, $fallback) {
-				if (!isset($row->$key) || $row->$key == null || $row->$key instanceof Value)
+				if (!isset($row->$key) || $row->$key === '' || $row->$key instanceof Value)
 					return;
 
 				$code = $field === null ? null : ($row->$field ?? null);
