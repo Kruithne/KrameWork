@@ -68,7 +68,7 @@
 		public $label;
 		public $type;
 
-		public function jsonSerialize() {
+		public function jsonSerialize(): mixed {
 			return ['Label' => $this->label, 'Type' => $this->type];
 		}
 	}

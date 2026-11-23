@@ -41,7 +41,7 @@
 			$this->data = $data;
 		}
 
-		function jsonSerialize() {
+		function jsonSerialize(): mixed {
 			$serialize = [];
 			$this->indexKeys();
 			foreach ($this->keys as $field) {
@@ -63,7 +63,7 @@
 		/**
 		 * @link http://php.net/manual/en/iterator.current.php
 		 */
-		public function current() {
+		public function current(): mixed {
 			$k = $this->key();
 			return $this->data->$k;
 		}
@@ -71,21 +71,21 @@
 		/**
 		 * @link http://php.net/manual/en/iterator.next.php
 		 */
-		public function next() {
+		public function next(): void {
 			$this->position++;
 		}
 
 		/**
 		 * @link http://php.net/manual/en/iterator.key.php
 		 */
-		public function key() {
+		public function key(): mixed {
 			return $this->getKeyAt($this->position);
 		}
 
 		/**
 		 * @link http://php.net/manual/en/iterator.valid.php
 		 */
-		public function valid() {
+		public function valid(): bool {
 			$this->indexKeys();
 			return $this->data && \count($this->keys) > $this->position;
 		}
@@ -93,14 +93,14 @@
 		/**
 		 * @link http://php.net/manual/en/iterator.rewind.php
 		 */
-		public function rewind() {
+		public function rewind(): void {
 			$this->position = 0;
 		}
 
 		/**
 		 * @link http://php.net/manual/en/arrayaccess.offsetexists.php
 		 */
-		public function offsetExists($offset) {
+		public function offsetExists(mixed $offset): bool {
 			$k = is_int($offset) ? $this->getKeyAt($offset) : $offset;
 			return $this->data && isset($this->data->$k);
 		}
@@ -108,7 +108,7 @@
 		/**
 		 * @link http://php.net/manual/en/arrayaccess.offsetget.php
 		 */
-		public function offsetGet($offset) {
+		public function offsetGet(mixed $offset): mixed {
 			$k = is_int($offset) ? $this->getKeyAt($offset) : $offset;
 			return $k ? $this->data->$k : null;
 		}
@@ -116,7 +116,7 @@
 		/**
 		 * @link http://php.net/manual/en/arrayaccess.offsetset.php
 		 */
-		public function offsetSet($offset, $value) {
+		public function offsetSet(mixed $offset, mixed $value): void {
 			$k = is_int($offset) ? $this->getKeyAt($offset) : $offset;
 			if($k)
 				$this->data->$k = $value;
@@ -125,7 +125,7 @@
 		/**
 		 * @link http://php.net/manual/en/arrayaccess.offsetunset.php
 		 */
-		public function offsetUnset($offset) {
+		public function offsetUnset(mixed $offset): void {
 			$k = is_int($offset) ? $this->getKeyAt($offset) : $offset;
 			unset($this->data->$k);
 		}
