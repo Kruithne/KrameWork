@@ -44,7 +44,7 @@
 
 		/**
 		 * Generate an RFC 4122 compliant v3 (namespace based) UUID.
-		 * Returns false when given an invalid namespace.
+		 * Returns UUID::NIL when given an invalid namespace.
 		 *
 		 * @api generate_v3
 		 * @param string $namespace UUID namespace.
@@ -71,7 +71,7 @@
 
 		/**
 		 * Generate an RFC 4122 compliant v5 (namespace based) UUID.
-		 * Returns false when given an invalid namespace.
+		 * Returns UUID::NIL when given an invalid namespace.
 		 *
 		 * @api generate_v5
 		 * @param string $namespace UUID namespace.
@@ -85,7 +85,7 @@
 		/**
 		 * Generate an RFC 4122 compliant namespace UUID.
 		 * Currently supports v3 and v5.
-		 * Returns false when given an invalid namespace or version.
+		 * Returns UUID::NIL when given an invalid namespace or version.
 		 *
 		 * @internal
 		 * @param string $namespace RFC 4122 compliant namespace UUID.

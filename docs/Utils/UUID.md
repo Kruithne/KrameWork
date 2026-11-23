@@ -37,7 +37,7 @@ print(UUID::generate_v4() . PHP_EOL); // > 5665420c-3b97-4c52-a4f0-07c4752390da
 ___
 ### Functions
 ##### > generate_v3() : `string`
-Generate an RFC 4122 compliant v3 (namespace based) UUID. Returns false when given an invalid namespace.
+Generate an RFC 4122 compliant v3 (namespace based) UUID. Returns UUID::NIL when given an invalid namespace.
 
 parameter | type | description
 --- | --- | ---
@@ -48,7 +48,7 @@ parameter | type | description
 Generate an RFC 4122 compliant v4 (pseudo-random) UUID.
 
 ##### > generate_v5() : `string`
-Generate an RFC 4122 compliant v5 (namespace based) UUID. Returns false when given an invalid namespace.
+Generate an RFC 4122 compliant v5 (namespace based) UUID. Returns UUID::NIL when given an invalid namespace.
 
 parameter | type | description
 --- | --- | ---
