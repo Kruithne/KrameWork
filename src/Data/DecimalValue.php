@@ -36,7 +36,7 @@
 			if ($a === null)
 				return -1;
 
-			return $a - $b;
+			return $a <=> $b;
 		}
 
 		/**
