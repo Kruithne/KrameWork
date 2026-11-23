@@ -39,28 +39,6 @@
 	class HTTPContext
 	{
 		/**
-		 * Obtain the connecting clients IP, if available.
-		 * Note that this can include the remote port, as some proxies add it to X-Forwarded-For.
-		 *
-		 * @api getClientIP
-		 * @return string|null
-		 */
-		public static function getClientIP() {
-			if (self::$ip)
-				return self::$ip;
-			else if (!isset($_SERVER))
-				return null;
-
-			else if (isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-				return self::$ip = \explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
-
-			else if (isset($_SERVER['REMOTE_ADDR']))
-				return self::$ip = $_SERVER['REMOTE_ADDR'];
-
-			return null;
-		}
-
-		/**
 		 * Obtain an array containing all files with the given key.
 		 *
 		 * @api getFiles
@@ -426,7 +404,6 @@
 			self::$cacheFormData = null;
 			self::$cacheQueryData = null;
 			self::$cacheRequestHeaders = null;
-			self::$ip = null;
 		}
 
 		/**
@@ -481,9 +458,4 @@
 		 * @var array
 		 */
 		private static $cacheRequestHeaders;
-
-		/**
-		 * Internal cache for client IP
-		 */
-		private static $ip;
 	}

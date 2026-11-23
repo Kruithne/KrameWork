@@ -16,10 +16,6 @@ By default, the request data will be decoded, and the content-type header will b
 Omitting both these checks will render the function redundant, and you might as well just call `getRequestContent()` for the raw data string.
 ___
 ### Functions
-##### > HTTPContext::getClientIP() : `string|null`
-Obtain the connecting clients IP, if available.
-Note that this can include the remote port, as some proxies add it to X-Forwarded-For.
-
 ##### > HTTPContext::getFiles() : `\ArrayObject[]|Storage\UploadedFile[]`
 Obtain an array containing all files with the given key.
 
@@ -87,6 +83,7 @@ parameter | type | description
 `$parameters` | `bool` | Include content-type parameters.
 ##### > HTTPContext::getRemoteAddress() : `string`
 Retrieve the remote address for this request. Returns an empty string if not available.
+Behind a reverse proxy, this is the address of the proxy. To get the client address, configure the web server to set `REMOTE_ADDR` from `X-Forwarded-For` for trusted proxies only (nginx: `ngx_http_realip_module`, Apache: `mod_remoteip`).
 ##### > HTTPContext::getRequestURI() : `string`
 Retrieve the URI of this request (includes query string). Returns an empty string if not available.
 ##### > HTTPContext::getQueryString() : `string`

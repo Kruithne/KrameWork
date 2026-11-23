@@ -70,7 +70,7 @@
 			\session_start();
 
 			if ($this->secure) {
-				$remote = HTTPContext::getClientIP() ?? '';
+				$remote = HTTPContext::getRemoteAddress();
 				$client = $_SESSION['__session_client'] ?? $remote;
 
 				if ($client != $remote) {

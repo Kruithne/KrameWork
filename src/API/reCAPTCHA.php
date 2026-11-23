@@ -70,7 +70,7 @@
 		 * @throws reCAPTCHAException
 		 */
 		public function validate(string $token):bool {
-			$ip = $this->ip ?? HTTPContext::getClientIP();
+			$ip = $this->ip ?? HTTPContext::getRemoteAddress();
 			if (!$ip)
 				throw new reCAPTCHAException('Remote IP is invalid or missing.');
 
