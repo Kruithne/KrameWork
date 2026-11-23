@@ -47,7 +47,7 @@
 		 * @param int $level The nth column in the where statement
 		 * @throws \Exception For tables that belong to an unsupported database
 		 */
-		public function __construct(Database $db, string $column, QueryBuilder $anchor, IManagedTable $table, int $level = 1)
+		public function __construct(Database $db, string $column, ?QueryBuilder $anchor, IManagedTable $table, int $level = 1)
 		{
 			$this->db = $db;
 			$this->column = $column;
