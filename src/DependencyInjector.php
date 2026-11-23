@@ -275,7 +275,7 @@
 			if ($param->isOptional())
 				return $param->getDefaultValue();
 
-			if ($param->allowsNull())
+			if ($paramType->allowsNull())
 				return null;
 
 			throw new ClassInstantiationException(\sprintf('Injector cannot satisfy non-nullable param #%d (%s) for %s', $param->getPosition(), $paramType, $className));
