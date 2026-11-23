@@ -138,7 +138,7 @@
 			$src = "TouchTestFIle.tmp";
 			@unlink($src);
 
-			$this->assertFileNotExists($src, "File exists before touch?");
+			$this->assertFileDoesNotExist($src, "File exists before touch?");
 
 			$file = new File($src, false, true);
 			$this->assertFileExists($src, "File was not touched.");
@@ -155,7 +155,7 @@
 
 			$file = new File($src, false, true);
 			$file->delete();
-			$this->assertFileNotExists($src, "File exists after being deleted?");
+			$this->assertFileDoesNotExist($src, "File exists after being deleted?");
 
 			unset($src);
 		}

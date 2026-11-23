@@ -8,7 +8,7 @@
 	{
 		public function testResultsHasHash() {
 			$results = new ReportResults([]);
-			$this->assertAttributeNotEmpty('hash', $results);
+			$this->assertNotEmpty($results->hash);
 		}
 
 		public function testResultsHashUnique() {

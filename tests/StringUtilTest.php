@@ -33,7 +33,7 @@
 			$str = join($sep, $parts);
 
 			$cleaned = StringUtil::formatDirectorySlashes($str);
-			$this->assertNotContains($sep, $cleaned, "Cleaned path still contains invalid slashes.");
+			$this->assertStringNotContainsString($sep, $cleaned, "Cleaned path still contains invalid slashes.");
 		}
 
 		/**
