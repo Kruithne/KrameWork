@@ -15,12 +15,12 @@ ___
 ```php
 class MyTable extends MSSQLManagedTable
 {
-    public function getName()
+    public function getName(): string
     {
         return "mytable";
     }
 
-    public function versionLog()
+    public function versionLog(): array
     {
         return [
             new TableVersion(
@@ -30,7 +30,7 @@ class MyTable extends MSSQLManagedTable
         ];
     }
 
-    public function latestVersion()
+    public function latestVersion(): array
     {
         return ['CREATE TABLE [dbo].[MyTable] ([column] VARCHAR(50) NOT NULL)'];
     }

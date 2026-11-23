@@ -13,7 +13,7 @@ ___
 ### Examples
 The most common use case
 ```php
-new TableVersion(1, 'CREATE TABLE [MyTable] ([column] VARCHAR(50) NOT NULL)')
+new TableVersion(1, ['CREATE TABLE [MyTable] ([column] VARCHAR(50) NOT NULL)'])
 ```
 
 Adding custom code to be executed on upgrade
@@ -22,15 +22,15 @@ class MyTableV2 extends TableVersion
 {
   public function __construct()
   {
-    parent::__construct(2, 'ALTER TABLE ADD [text] varchar(50) NULL');
+    parent::__construct(2, ['ALTER TABLE [MyTable] ADD [text] varchar(50) NULL']);
   }
   
-  public function BeforeExecution(Generic $db) {
-    $db->execute('UPDATE [MyTable] SET foo=bar WHERE foo < 10');
+  public function BeforeExecution(Generic $db): void {
+    $db->execute('UPDATE [MyTable] SET foo=bar WHERE foo < 10', []);
   }
   
-  public function AfterExecution(Generic $db) {
-    $db->execute('UPDATE [MyTable] SET [text] = foo WHERE foo > 2');
+  public function AfterExecution(Generic $db): void {
+    $db->execute('UPDATE [MyTable] SET [text] = foo WHERE foo > 2', []);
   }
 }
 ```
