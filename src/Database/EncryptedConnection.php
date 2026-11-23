@@ -39,7 +39,7 @@
 		public static function decrypt(string $dsn): string {
 			$dsn = \base64_decode($dsn);
 			if (\preg_match('/^H(\\d)\\$([^$]*)\\$(.*)$/', $dsn, $matches)) {
-				$type = $matches[1];
+				$type = (int)$matches[1];
 				$salt = $matches[2];
 				$payload = $matches[3];
 				$key = self::getKey($type, $salt);
