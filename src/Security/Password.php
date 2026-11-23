@@ -45,10 +45,10 @@
 		 * Get a one-way hash for this password.
 		 *
 		 * @api asHash
-		 * @param int $algorithm Algorithm to hash with.
+		 * @param string $algorithm Algorithm to hash with.
 		 * @return string
 		 */
-		public function asHash(int $algorithm = \PASSWORD_DEFAULT):string {
+		public function asHash(string $algorithm = \PASSWORD_DEFAULT):string {
 			return \password_hash($this->value, $algorithm);
 		}
 
