@@ -4,10 +4,8 @@
 	require_once(__DIR__ . '/IManagedTable.php');
 	require_once(__DIR__ . '/IMetaTable.php');
 	require_once(__DIR__ . '/../Driver/Generic.php');
-	require_once(__DIR__ . '/../QueryBuilder.php');
 
 	use \KrameWork\Database\Driver\Generic;
-	use KrameWork\Database\QueryBuilder;
 
 	/**
 	 * Class to handle a managed table hosted by a Microsoft SQL Server
@@ -17,14 +15,6 @@
 	abstract class ManagedTable implements IManagedTable
 	{
 		public function __construct(protected Generic $db, protected IMetaTable $metaTable) {}
-
-		/**
-		 * @param string $column
-		 * @return IQueryColumn
-		 */
-		public function where(string $column): QueryBuilder {
-			return new QueryBuilder($this->db, $column, null, $this);
-		}
 
 		/**
 		 * @api update
