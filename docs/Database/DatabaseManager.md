@@ -35,6 +35,22 @@ $dbm->MyTable = new MyTable($db, $meta);
 $status = $dbm->updateSchema();
 var_dump($status);
 ```
+
+The meta table stores the current revision of each managed table, in a table named `_tables`. It creates `_tables` on first use. Use the meta table and the managed table base class that match your database:
+
+database | meta table | managed table base class | notes
+--- | --- | --- | ---
+Microsoft SQL Server | `MSSQLMetaTable` | `MSSQLManagedTable` | Schema `dbo`
+MySQL / MariaDB | `MySQLMetaTable` | `MySQLManagedTable` | Uses the current database
+PostgreSQL | `PostgreSQLMetaTable` | `PostgreSQLManagedTable` | Schema `public`, PostgreSQL 9.5 or later
+SQLite | `SQLiteMetaTable` | `SQLiteManagedTable` | Schema `main`, SQLite 3.24 or later
+
+For example, on SQLite:
+```php
+$db = new Database(new ConnectionString('sqlite:example.db'), Database::DB_DRIVER_PDO);
+$meta = new SQLiteMetaTable($db);
+$dbm->MyTable = new MyTable($db, $meta);
+```
 ___
 ### Functions
 ##### > __set() : `void`
