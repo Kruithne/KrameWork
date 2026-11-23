@@ -525,10 +525,9 @@
 		 */
 		public function testSelfInstance() {
 			$injector = new DependencyInjector();
-			$injector->_id = 400;
 
 			$component = $injector->getComponent("KrameWork\\DependencyInjector");
-			$this->assertEquals(400, $component->_id, "Injector did not return itself.");
+			$this->assertSame($injector, $component, "Injector did not return itself.");
 		}
 
 		/**
