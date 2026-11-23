@@ -157,7 +157,7 @@
 				}
 			} else if ($this->method == self::METHOD_POST) {
 				$params['content'] = $content;
-				$this->setHeader('Content-length', \strlen($content));
+				$this->setHeader('Content-length', (string) \strlen($content));
 			}
 
 			$params['header'] = $this->compileHeaders();
