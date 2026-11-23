@@ -59,7 +59,7 @@
 				throw new reCAPTCHAException('Could not contact reCAPTCHA server.');
 
 			$resp = $req->getResponse();
-			if ($resp === null)
+			if (!\is_object($resp) || !\is_bool($resp->success ?? null))
 				throw new reCAPTCHAException('Invalid/unexpected response from reCAPTCHA server.');
 
 			return $resp->success;
