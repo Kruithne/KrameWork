@@ -33,9 +33,9 @@
 		 */
 		public function compare(mixed $to): int|float {
 			// Dates should be compared without time
-			$a = $this->value == null ? null : date('Ymd', $this->value);
+			$a = !\is_numeric($this->value) ? null : \date('Ymd', $this->value);
 			if ($to instanceof DateValue)
-				$b = $to->real() == null ? null : \date('Ymd', $to->real());
+				$b = !\is_numeric($to->real()) ? null : \date('Ymd', $to->real());
 			else
 				$b = $to;
 
