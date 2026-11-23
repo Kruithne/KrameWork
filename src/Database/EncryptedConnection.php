@@ -34,6 +34,7 @@
 		 * Decrypt a connection string
 		 * @param string $dsn An encrypted connection string
 		 * @return string The decrypted connection string
+		 * @throws \Exception If decryption fails
 		 */
 		public static function decrypt(string $dsn): string {
 			$dsn = \base64_decode($dsn);
@@ -42,7 +43,11 @@
 				$salt = $matches[2];
 				$payload = $matches[3];
 				$key = self::getKey($type, $salt);
-				return \openssl_decrypt($payload, 'AES-256-ECB', $key);
+				$decrypted = \openssl_decrypt($payload, 'AES-256-ECB', $key);
+				if ($decrypted === false)
+					throw new \Exception('Unable to decrypt connection string');
+
+				return $decrypted;
 			}
 			return $dsn;
 		}
