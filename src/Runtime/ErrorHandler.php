@@ -125,7 +125,7 @@
 		 * @api suspend
 		 */
 		public static function suspend() {
-			self::$suspended = true;
+			self::$suspended++;
 		}
 
 		/**
@@ -134,7 +134,8 @@
 		 * @api resume
 		 */
 		public static function resume() {
-			self::$suspended = false;
+			if (self::$suspended > 0)
+				self::$suspended--;
 		}
 
 		/**
@@ -418,7 +419,7 @@
 		protected $coreErrorFormatter;
 
 		/**
-		 * var bool
+		 * @var int
 		 */
-		protected static $suspended;
+		protected static $suspended = 0;
 	}

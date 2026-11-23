@@ -4,6 +4,10 @@
 
 	class HTTPContextTest extends PHPUnit\Framework\TestCase
 	{
+		protected function setUp(): void {
+			HTTPContext::reset();
+		}
+
 		/**
 		 * Test HTTPContext->getContentLength().
 		 */
@@ -197,6 +201,14 @@
 			$this->assertEquals(2, count($test), "\$test is not expected size.");
 			$this->assertEquals("stuff", HTTPContext::getQueryDataValue("thing"));
 
+			// Cache holds until reset.
+			$_SERVER[$QUERY_STRING] = "thing=other";
+			$this->assertEquals("stuff", HTTPContext::getQueryDataValue("thing"));
+
+			HTTPContext::reset();
+			$this->assertEquals("other", HTTPContext::getQueryDataValue("thing"));
+			$this->assertNull(HTTPContext::getQueryDataValue("test"));
+
 			// Cleanup
 			$_SERVER[$QUERY_STRING] = $orig;
 		}
@@ -208,14 +220,14 @@
 			// Setup
 			$QUERY_STRING = "QUERY_STRING";
 			$orig = $_SERVER[$QUERY_STRING] ?? null;
-			$_SERVER[$QUERY_STRING] = "test[]=1&test[]=2&thing=stuff";
+			$_SERVER[$QUERY_STRING] = "items[]=a&items[]=b&items[]=c&name=value";
 
 			// Testing
-			list($test, $stuff) = HTTPContext::getQueryDataValues("test", "thing");
+			list($items, $name) = HTTPContext::getQueryDataValues("items", "name");
 
-			$this->assertTrue(is_array($test), "\$test is not an array.");
-			$this->assertEquals(2, count($test), "\$test is not expected size.");
-			$this->assertEquals("stuff", $stuff);
+			$this->assertTrue(is_array($items), "\$items is not an array.");
+			$this->assertEquals(3, count($items), "\$items is not expected size.");
+			$this->assertEquals("value", $name);
 
 			// Cleanup
 			$_SERVER[$QUERY_STRING] = $orig;

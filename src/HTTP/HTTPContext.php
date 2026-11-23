@@ -55,7 +55,7 @@
 				return self::$ip = \explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
 
 			else if (isset($_SERVER['REMOTE_ADDR']))
-				return self::$ip = &$_SERVER['REMOTE_ADDR'];
+				return self::$ip = $_SERVER['REMOTE_ADDR'];
 
 			return null;
 		}
@@ -418,6 +418,15 @@
 		 */
 		public static function getRequestHeader(string $key) {
 			return self::getRequestHeaders()[\strtolower($key)] ?? null;
+		}
+
+		public static function reset() {
+			self::$hasFormData = null;
+			self::$hasMultipartFormData = null;
+			self::$cacheFormData = null;
+			self::$cacheQueryData = null;
+			self::$cacheRequestHeaders = null;
+			self::$ip = null;
 		}
 
 		/**
