@@ -11,9 +11,9 @@
 		 * @api
 		 * @param StringBuilder $builder Compilation target.
 		 * @param IMailPart $parent Parent multipart block.
-		 * @return StringBuilder|null
+		 * @return StringBuilder
 		 */
-		public function compile(StringBuilder $builder, IMailPart $parent);
+		public function compile(StringBuilder $builder, IMailPart $parent): StringBuilder;
 	}
 
 	class InvalidParentException extends \Exception {}

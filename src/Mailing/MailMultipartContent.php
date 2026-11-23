@@ -92,10 +92,10 @@
 		 * @api
 		 * @param StringBuilder $builder Compilation target.
 		 * @param IMailPart $parent Parent of the block.
-		 * @return void
+		 * @return StringBuilder
 		 * @throws InvalidParentException
 		 */
-		public function compile(StringBuilder $builder, IMailPart $parent): void {
+		public function compile(StringBuilder $builder, IMailPart $parent): StringBuilder {
 			if (!($parent instanceof MailMultipart))
 				throw new InvalidParentException('MailMultipartContent parent needs to be MailMultipart');
 
@@ -103,7 +103,7 @@
 			foreach ($this->headers as $name => $value)
 				$builder->appendLine($name . ': ' . $value);
 
-			$builder->newLine()->appendLine($this->content);
+			return $builder->newLine()->appendLine($this->content);
 		}
 
 		/**
