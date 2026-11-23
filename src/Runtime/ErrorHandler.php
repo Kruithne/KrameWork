@@ -179,11 +179,14 @@
 		 * @param string $message Message describing the error.
 		 * @param string $file File which the error occurred in.
 		 * @param int $line Line of code the error occurred on.
+		 * @return bool
 		 */
-		public function catchRuntimeError(int $type, string $message, string $file, int $line): void {
+		public function catchRuntimeError(int $type, string $message, string $file, int $line): bool {
 			if (($type & $this->level)) {
 				$this->catch(new RuntimeError($type, $message, $file, $line), false);
 			}
+
+			return true;
 		}
 
 		/**
