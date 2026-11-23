@@ -258,4 +258,22 @@
 
 			unset($cache);
 		}
+
+		/**
+		 * Test that non-numeric values are reset to 0 before incrementing or decrementing.
+		 */
+		public function testNonNumericReset() {
+			@unlink('file_cache_test.dat'); // Delete from broken tests.
+			$cache = new FileCache('file_cache_test.dat', false);
+
+			$cache->foo = 'bar';
+			$cache->increment('foo');
+			$this->assertEquals(1, $cache->foo);
+
+			$cache->bar = [42];
+			$cache->decrement('bar');
+			$this->assertEquals(-1, $cache->bar);
+
+			unset($cache);
+		}
 	}

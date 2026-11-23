@@ -75,7 +75,7 @@ parameter | type | description
 Flush the cache, removing all stored data.
 
 ##### > increment() : `void`
-Increase a numeric value in the cache.
+Increase a numeric value in the cache. A missing or non-numeric value starts at 0.
 
 parameter | type | description
 --- | --- | ---
@@ -83,7 +83,7 @@ parameter | type | description
 `$weight` | `int` | How much to increment the value.
 
 ##### > decrement() : `void`
-Decrease a numeric value in the cache.
+Decrease a numeric value in the cache. A missing or non-numeric value starts at 0.
 
 parameter | type | description
 --- | --- | ---
