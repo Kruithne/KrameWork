@@ -3,3 +3,6 @@ parameters:
 	phpVersion: 80000
 	paths:
 		- src
+	universalObjectCratesClasses:
+		- KrameWork\HTTP\Request\WebRequest
+		- KrameWork\Reporting\HTMLReport\HTMLReportTemplate
