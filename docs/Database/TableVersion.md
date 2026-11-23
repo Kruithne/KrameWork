@@ -7,7 +7,8 @@
 
 ___
 ### Overview
-A representation of a version of a table
+A representation of a version of a table.
+The SQL statements and the `BeforeExecution()` and `AfterExecution()` methods run in one transaction. If one of them fails, the version rolls back.
 ___
 ### Examples
 The most common use case

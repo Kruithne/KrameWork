@@ -60,6 +60,7 @@ That is, during initial setup of the schema on a an empty database, or a new tab
 
 ##### > update() : `string`
 Called by the schema manager to perform an update.
+Each missing revision runs in its own transaction. If a revision fails, that revision rolls back and the earlier revisions stay applied.
 Returns a status message passed on to the caller.
 
 ##### > drop() : `void`
@@ -67,4 +68,9 @@ Delete the table from the database
 
 ##### > create() : `string`
 Creates the current version of the table in the database.
+All statements from `latestVersion()` run in one transaction. If a statement fails, all of them roll back and no version is stored.
 Returns a status message passed on to the caller.
+
+___
+### Rollback on MySQL
+MySQL and MariaDB commit each table change (for example `CREATE TABLE` or `ALTER TABLE`) immediately. A failed revision or table creation cannot roll back these changes. Put each table change in its own revision, so a failure leaves the table at a known revision.

@@ -72,9 +72,18 @@
 		 */
 		public function create(): string {
 			$v = \count($this->versionLog());
-			foreach ($this->latestVersion() as $sql)
-				$this->db->execute($sql, []);
-			$this->metaTable->setVersion($this->getName(), $v);
+			try {
+				$this->db->beginTransaction();
+				foreach ($this->latestVersion() as $sql)
+					$this->db->execute($sql, []);
+				$this->metaTable->setVersion($this->getName(), $v);
+				$this->db->commitTransaction();
+			}
+			catch (\Throwable $e)
+			{
+				$this->db->rollbackTransaction();
+				return 'Table creation failed with message "' . $e->getMessage() . '"';
+			}
 			return "Table created with revision $v";
 		}
 

@@ -159,18 +159,26 @@
 		}
 
 		/**
-		 * @api rollbackTransaction
 		 * Rolls back the current transaction
+		 * @api rollbackTransaction
+		 * @return bool False if no transaction is active
 		 */
 		public function rollbackTransaction(): bool {
+			if (!$this->pdo->inTransaction())
+				return false;
+
 			return $this->pdo->rollBack();
 		}
 
 		/**
-		 * @api commitTransaction
 		 * Commits the current transaction
+		 * @api commitTransaction
+		 * @return bool False if no transaction is active
 		 */
 		public function commitTransaction(): bool {
+			if (!$this->pdo->inTransaction())
+				return false;
+
 			return $this->pdo->commit();
 		}
 

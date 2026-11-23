@@ -54,4 +54,11 @@
 			$this->db->rollbackTransaction();
 			$this->assertSame(5, $this->db->getValue('SELECT COUNT(*) FROM test'));
 		}
+
+		/**
+		 * Checks that a rollback with no active transaction returns false and does not throw.
+		 */
+		public function testRollbackWithoutTransaction() {
+			$this->assertFalse($this->db->rollbackTransaction());
+		}
 	}

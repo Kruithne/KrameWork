@@ -89,11 +89,15 @@ For PDO, see [PDOStatement::errorInfo](https://www.php.net/manual/en/pdostatemen
 ##### > getLastInsertID() : `string`
 Returns the ID of the last inserted row.
 
-##### > beginTransaction : `void`
+##### > beginTransaction : `bool`
 Start a database transaction
 
-##### > commitTransaction : `void`
-Commit a database transaction
+##### > commitTransaction : `bool`
+Commit a database transaction.
+Returns `false` if no transaction is active.
 
-##### > rollbackTransaction : `void`
-Roll back a database transaction
+##### > rollbackTransaction : `bool`
+Roll back a database transaction.
+Returns `false` if no transaction is active.
+
+MySQL and MariaDB commit each table change (for example `CREATE TABLE` or `ALTER TABLE`) immediately. After such a statement, no transaction is active, and a rollback cannot undo the change.
