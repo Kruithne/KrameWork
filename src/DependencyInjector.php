@@ -142,7 +142,7 @@
 		 * @throws ClassResolutionException
 		 * @throws ClassInstantiationException
 		 */
-		public function getComponent(string $className, ?bool $add = false, ?bool $throw = true): ?object {
+		public function getComponent(string $className, bool $add = false, bool $throw = true): ?object {
 			$resolve = $this->resolveClassName($className);
 
 			// getComponent() should only ever return a single component.
