@@ -179,7 +179,7 @@
 
 			// Check if component is missing and react according to $add.
 			if (!\array_key_exists($resolve, $this->classList)) {
-				if ($add) {
+				if ($add && \class_exists($resolve) && (new \ReflectionClass($resolve))->isInstantiable()) {
 					$this->addComponent($resolve);
 				} else {
 					if (!$throw)

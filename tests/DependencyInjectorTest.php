@@ -551,7 +551,7 @@
 		 * Test that a union parameter receives one argument from the first available type.
 		 */
 		public function testUnionParameter() {
-			$injector = new DependencyInjector(DependencyInjector::DEFAULT_FLAGS & ~DependencyInjector::AUTO_ADD_DEPENDENCIES);
+			$injector = new DependencyInjector();
 			$injector->addComponent(["DITestClass", "DIUnionTestClass"]);
 
 			$component = $injector->getComponent("DIUnionTestClass"); /** @var DIUnionTestClass $component */
