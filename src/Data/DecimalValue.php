@@ -43,6 +43,9 @@
 		 * @return string The encapsulated value as presented by a string
 		 */
 		public function __toString(): string {
+			if ($this->value === null)
+				return '';
+
 			return \number_format($this->value, 2, ',', ' ');
 		}
 	}
