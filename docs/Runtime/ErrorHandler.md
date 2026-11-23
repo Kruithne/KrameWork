@@ -11,6 +11,8 @@ The `ErrorHandler` is a meaty class that intercepts all exceptions and errors th
 
 Upon creation, the error handler will take over the current **error handler**, **exception handler** and set the **error level** to `E_ALL`. Disabling the error handler using `deactivate()` will restore these three things back to **before** the error handler was constructed. While the error level is set to `E_ALL`, the handler reserve the level of reporting set before it took over and only dispatch errors of that level. If you wish to change the reporting level after the handler has been created, you can do so with a call to `setErrorLevel()`.
 
+Reports include `$_SERVER`, `$_POST`, `$_GET` and `$_FILES`. Values with keys that contain a redacted word (case-insensitive) are replaced with `[REDACTED]`. The default words are `pass`, `pwd`, `secret`, `token`, `auth`, `cookie`, `session` and `key`. Use `setRedactedKeys()` to change this list. `$_COOKIE` and the raw request body are not included unless you call `setReportSensitive(true)`.
+
 In the default configuration, the error handler will terminate script execution after `10` errors have occurred. This value can be changed using the `setMaxErrors()` function, however it is important to note that some dispatchers will halt the script after a single error is dispatched regardless of this value; check the 'Dispatchers' list below to see which ones do.
 ___
 ### Examples
@@ -126,6 +128,20 @@ Set the maximum amount of errors that can occur before the error handler will te
 parameter | type | description
 --- | --- | ---
 `$max` | `int` | Maximum error threshold.
+
+##### > setRedactedKeys(): `void`
+Set the words used to redact report values. A value is redacted if its key contains one of these words (case-insensitive). This replaces the default list.
+
+parameter | type | description
+--- | --- | ---
+`$keys` | `array` | Words to match against keys.
+
+##### > setReportSensitive(): `void`
+Include `$_COOKIE` (redacted) and the raw request body in reports. Disabled by default. The raw request body is not redacted.
+
+parameter | type | description
+--- | --- | ---
+`$enabled` | `bool` | Include sensitive request data.
 
 ##### > addHook(): `void`
 Register a debug provider with this error handler, that will be invoked to gather application specific data to add to any error report.

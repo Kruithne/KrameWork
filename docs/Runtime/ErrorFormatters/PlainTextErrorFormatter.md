@@ -71,7 +71,7 @@ RUNTIME ERROR : USER NOTICE
 		SCRIPT_FILENAME => (string) (43) "D:\KrameWork7\src\Runtime\handling.test.php"
 		DOCUMENT_ROOT => (string) (13) "D:\KrameWork7"
 		HTTP_CONTENT_LENGTH => (string) (1) "0"
-		HTTP_COOKIE => (string) (66) "lang=en-US"
+		HTTP_COOKIE => (string) (10) "[REDACTED]"
 		HTTP_ACCEPT_LANGUAGE => (string) (14) "en-US,en;q=0.8"
 		HTTP_ACCEPT_ENCODING => (string) (23) "gzip, deflate, sdch, br"
 		HTTP_ACCEPT => (string) (74) "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
@@ -113,13 +113,8 @@ RUNTIME ERROR : USER NOTICE
 	> $_GET [1 items]
 		sid => (string) (25) "k10ac6g9vskqfg9dj0k7ne67o"
 
-	> $_COOKIE [2 items]
-		lang => (string) (5) "en-US"
-
 	> $_FILES [empty]
 		No data to display
-
-	> Raw Request Content => (string) (0) ""
 
 
 Report generated automatically on Fri, 17 Feb 2017 02:17:07 +0000 (1487297827).

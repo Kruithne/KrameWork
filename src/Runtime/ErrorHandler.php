@@ -105,6 +105,14 @@
 			$this->maxErrors = $max;
 		}
 
+		public function setRedactedKeys(array $keys) {
+			$this->redactedKeys = $keys;
+		}
+
+		public function setReportSensitive(bool $enabled) {
+			$this->reportSensitive = $enabled;
+		}
+
 		/**
 		 * Disable this error handler, restoring handlers/levels to their
 		 * state when this error handler was created.
@@ -359,13 +367,35 @@
 				$report->reportArray('CLI Arguments', $argv);
 			}
 
-			// Add server/request data.
-			$report->reportArray('$_SERVER', $_SERVER); // Server data.
-			$report->reportArray('$_POST', $_POST); // POST data.
-			$report->reportArray('$_GET', $_GET); // GET data.
-			$report->reportArray('$_COOKIE', $_COOKIE); // Delicious cookies.
-			$report->reportArray('$_FILES', $_FILES); // Files
-			$report->reportString('Raw Request Content', \file_get_contents('php://input')); // Raw request content.
+			$report->reportArray('$_SERVER', $this->redact($_SERVER));
+			$report->reportArray('$_POST', $this->redact($_POST));
+			$report->reportArray('$_GET', $this->redact($_GET));
+			$report->reportArray('$_FILES', $_FILES);
+
+			if ($this->reportSensitive) {
+				$report->reportArray('$_COOKIE', $this->redact($_COOKIE));
+				$report->reportString('Raw Request Content', \file_get_contents('php://input'));
+			}
+		}
+
+		private function redact(array $data): array {
+			foreach ($data as $key => $value) {
+				if ($this->isRedactedKey((string) $key))
+					$data[$key] = '[REDACTED]';
+				elseif (\is_array($value))
+					$data[$key] = $this->redact($value);
+			}
+
+			return $data;
+		}
+
+		private function isRedactedKey(string $key): bool {
+			foreach ($this->redactedKeys as $redactedKey) {
+				if (\stripos($key, $redactedKey) !== false)
+					return true;
+			}
+
+			return false;
 		}
 
 		/**
@@ -412,6 +442,10 @@
 		 * @var IDebugHook[]
 		 */
 		protected $hooks = [];
+
+		protected $redactedKeys = ['pass', 'pwd', 'secret', 'token', 'auth', 'cookie', 'session', 'key'];
+
+		protected $reportSensitive = false;
 
 		/**
 		 * @var IErrorFormatter
