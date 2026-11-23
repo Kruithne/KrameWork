@@ -119,10 +119,7 @@
 			$query = $this->lastQuery = $this->connection->prepare($sql);
 			$this->bind($query, $param);
 			$query->execute();
-			$result = [];
-			while($row = $query->fetchColumn())
-				$result[] = $row;
-			return $result;
+			return $query->fetchAll(\PDO::FETCH_COLUMN, 0);
 		}
 
 		/**
