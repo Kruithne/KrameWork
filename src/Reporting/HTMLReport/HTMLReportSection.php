@@ -120,14 +120,14 @@
 		protected array $frames;
 
 		/**
-		 * @var int|null
+		 * @var int
 		 */
-		protected ?int $sectionStart = null;
+		protected int $sectionStart = 0;
 
 		/**
-		 * @var int|null
+		 * @var int
 		 */
-		protected ?int $sectionLength = null;
+		protected int $sectionLength = 0;
 
 		/**
 		 * @var string
