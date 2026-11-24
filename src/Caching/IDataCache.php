@@ -17,6 +17,7 @@
 		 * @api __get
 		 * @param string $key Key of the value.
 		 * @return mixed|null
+		 * @throws CacheOperationException
 		 */
 		public function __get(string $key): mixed;
 
@@ -27,6 +28,7 @@
 		 * @api __set
 		 * @param string $key Key to store the value under.
 		 * @param mixed $value Value to store in the cache.
+		 * @throws CacheOperationException
 		 */
 		public function __set(string $key, mixed $value): void;
 
@@ -37,6 +39,7 @@
 		 * @param string $key Key to store the value under.
 		 * @param mixed $value Value to store in the cache.
 		 * @param int $expire 60*60*24*30 >= Unix Timestamp, otherwise seconds. 0 = Never.
+		 * @throws CacheOperationException
 		 */
 		public function store(string $key, mixed $value, int $expire = 0): void;
 
@@ -45,6 +48,7 @@
 		 *
 		 * @param string $key Key used to store the value.
 		 * @return bool True if the key exists in the cache.
+		 * @throws CacheOperationException
 		 */
 		public function exists(string $key):bool;
 
@@ -53,6 +57,7 @@
 		 *
 		 * @api __unset
 		 * @param string $key Key of the item to remove.
+		 * @throws CacheOperationException
 		 */
 		public function __unset(string $key): void;
 
@@ -60,6 +65,7 @@
 		 * Flush the cache, removing all stored data.
 		 *
 		 * @api flush
+		 * @throws CacheOperationException
 		 */
 		public function flush(): void;
 
@@ -70,6 +76,7 @@
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to increment the value.
 		 * @return int|float The new value.
+		 * @throws CacheOperationException
 		 */
 		public function increment(string $key, int $weight = 1): int|float;
 
@@ -80,6 +87,7 @@
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to decrement the value.
 		 * @return int|float The new value.
+		 * @throws CacheOperationException
 		 */
 		public function decrement(string $key, int $weight = 1): int|float;
 	}

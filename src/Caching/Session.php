@@ -2,8 +2,9 @@
 	namespace KrameWork\Caching;
 
 	require_once(__DIR__ . '/IDataCache.php');
+	require_once(__DIR__ . '/CacheOperationException.php');
 
-	class SessionInitiationException extends \Exception {}
+	class SessionInitiationException extends CacheOperationException {}
 
 	/**
 	 * Class Session

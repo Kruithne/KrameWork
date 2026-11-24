@@ -2,8 +2,9 @@
 	namespace KrameWork\Caching;
 
 	require_once(__DIR__ . '/IDataCache.php');
+	require_once(__DIR__ . '/CacheOperationException.php');
 
-	class InvalidFileException extends \Exception {}
+	class InvalidFileException extends CacheOperationException {}
 
 	/**
 	 * Class FileCache
