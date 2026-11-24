@@ -103,15 +103,15 @@
 				return false;
 
 			$key = \md5($this->repository . "\0" . $title);
-			return $this->cache !== null ? $this->isCacheThrottled($key) : $this->isFileThrottled($key);
+			return $this->cache !== null ? $this->isCacheThrottled($this->cache, $key) : $this->isFileThrottled($key);
 		}
 
-		private function isCacheThrottled(string $key): bool {
+		private function isCacheThrottled(IDataCache $cache, string $key): bool {
 			$key = self::CACHE_PREFIX . $key;
-			if ($this->cache->exists($key))
+			if ($cache->exists($key))
 				return true;
 
-			$this->cache->store($key, \time(), $this->throttle);
+			$cache->store($key, \time(), $this->throttle);
 			return false;
 		}
 
