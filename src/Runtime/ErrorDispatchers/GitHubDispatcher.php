@@ -131,9 +131,10 @@
 			if (!$throttled)
 				$entries[$key] = $now;
 
+			$json = \json_encode($entries, \JSON_THROW_ON_ERROR);
 			\ftruncate($handle, 0);
 			\rewind($handle);
-			\fwrite($handle, \json_encode($entries));
+			\fwrite($handle, $json);
 			\fflush($handle);
 			\flock($handle, \LOCK_UN);
 			\fclose($handle);
