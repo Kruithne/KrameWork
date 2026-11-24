@@ -122,6 +122,15 @@
 		}
 
 		/**
+		 * Test that an empty array resolves to an empty array.
+		 */
+		public function testEmptyArrayClassResolution() {
+			$injector = new DependencyInjector();
+			$this->assertEquals([], $injector->resolveClassName([]), "Empty array did not resolve to an empty array.");
+			unset($injector);
+		}
+
+		/**
 		 * Test that an object resolves to its own class name.
 		 */
 		public function testObjectClassResolution() {

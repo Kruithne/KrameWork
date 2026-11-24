@@ -104,7 +104,8 @@
 		 * @throws ClassResolutionException
 		 */
 		public function resolveClassName(mixed $class, ?array &$output = null): string|array {
-			$classes = &$output ?? [];
+			$output ??= [];
+			$classes = &$output;
 
 			// Array given, loop elements and process.
 			if (\is_array($class)) {
