@@ -76,7 +76,7 @@
 			$replacements = [];
 
 			foreach ($this->replacements as $tag => $replacement) {
-				$patterns[] = '/<!--' . $tag . '-->/is';
+				$patterns[] = '/<!--' . \preg_quote($tag, '/') . '-->/is';
 				$replacements[] = $replacement;
 			}
 

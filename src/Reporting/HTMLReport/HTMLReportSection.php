@@ -20,6 +20,7 @@
 		 */
 		public function __construct(string $tag, string $content) {
 			$this->frames = [];
+			$tag = \preg_quote($tag, '/');
 			$this->pattern = '/<!--' . $tag . '-->(.*?)<!--\/' . $tag . '-->/si';
 
 			$this->content = '';
