@@ -26,6 +26,7 @@
 		 * @param object $object The data to encode as JSON and post to the server
 		 * @return bool
 		 * @throws InvalidMethodException
+		 * @throws \JsonException
 		 */
 		public function postJSON(object $object):bool {
 			if($this->method != WebRequest::METHOD_POST)
@@ -37,8 +38,7 @@
 			$url = $this->url . (\str_contains($this->url, '?') ? '&' : '?');
 			$url .= \http_build_query($this->data);
 
-			$this->sendRequest($url, \json_encode($object));
-			return $this->success;
+			return $this->sendRequest($url, \json_encode($object, \JSON_THROW_ON_ERROR));
 		}
 
 		/**

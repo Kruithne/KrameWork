@@ -123,8 +123,7 @@
 		 * @return bool
 		 */
 		public function send():bool {
-			$this->sendRequest($this->url, \http_build_query($this->data));
-			return $this->success;
+			return $this->sendRequest($this->url, \http_build_query($this->data));
 		}
 
 		/**
@@ -146,8 +145,9 @@
 		 *
 		 * @param string $url URL endpoint to request.
 		 * @param string $content Content to send with the request.
+		 * @return bool
 		 */
-		protected function sendRequest(string $url, string $content): void {
+		protected function sendRequest(string $url, string $content): bool {
 			$params = ['method' => $this->method];
 
 			if ($this->method == self::METHOD_GET) {
@@ -165,8 +165,10 @@
 			$result = \file_get_contents($url, false, \stream_context_create(['http' => $params]));
 			$this->success = $result !== false;
 
-			if ($this->success)
+			if ($result !== false)
 				$this->result = $result;
+
+			return $this->success;
 		}
 
 		/**
