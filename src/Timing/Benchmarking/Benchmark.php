@@ -41,11 +41,15 @@
 		 * Benchmark constructor.
 		 *
 		 * @api __construct
-		 * @param int $sets How many execution cycles?
+		 * @param int<2, max> $sets How many execution cycles? Must be at least 2.
 		 * @param int $executionsPerCycle How many executions per cycle?
 		 * @param string $name A name to identify this benchmark.
+		 * @throws \InvalidArgumentException
 		 */
-		public function __construct(private int $sets = 200, private int $executionsPerCycle = 1000, private ?string $name = null) {}
+		public function __construct(private int $sets = 200, private int $executionsPerCycle = 1000, private ?string $name = null) {
+			if ($sets < 2)
+				throw new \InvalidArgumentException('Set count must be at least 2.');
+		}
 
 		/**
 		 * Called just before the test is run.

@@ -74,7 +74,7 @@ Benchmark constructor.
 
 parameter | type | description
 --- | --- | ---
-`$sets` | `int` | How many execution cycles?
+`$sets` | `int` | How many execution cycles? Must be at least 2, else an `InvalidArgumentException` is thrown.
 `$executionsPerCycle` | `int` | How many executions per cycle?
 `$name` | `string` | A name to identify this benchmark.
 
