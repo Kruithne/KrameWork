@@ -47,6 +47,7 @@
 		 *
 		 * @api __toString
 		 * @return string
+		 * @throws InvalidTemplateException
 		 */
 		public function __toString():string {
 			\ob_start();
@@ -70,7 +71,11 @@
 				}
 			};
 
-			return \ob_get_clean();
+			$output = \ob_get_clean();
+			if ($output === false)
+				throw new InvalidTemplateException('Template closed the output buffer.');
+
+			return $output;
 		}
 
 		/**
