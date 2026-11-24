@@ -30,8 +30,12 @@
 				$decode = \base64_decode($input, true);
 				if ($decode !== false) {
 					$parsed = \json_decode($decode);
-					if (\is_array($parsed))
-						$this->compiled = $parsed;
+					if (\is_array($parsed)) {
+						foreach ($parsed as $header) {
+							if (\is_string($header))
+								$this->compiled[] = $header;
+						}
+					}
 				}
 			}
 		}
@@ -111,5 +115,5 @@
 		/**
 		 * @var string[]
 		 */
-		protected $compiled;
+		protected array $compiled;
 	}

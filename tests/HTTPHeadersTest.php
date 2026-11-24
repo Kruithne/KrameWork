@@ -23,4 +23,12 @@
 			$headers = new HTTPHeaders(\base64_encode('"abc"'));
 			$this->assertEquals(\base64_encode('[]'), (string) $headers);
 		}
+
+		/**
+		 * Test that non-string elements in a pre-compiled string are discarded.
+		 */
+		public function testNonStringElementsAreDiscarded() {
+			$headers = new HTTPHeaders(\base64_encode('["X-Test: 1",5,{"a":2},["b"]]'));
+			$this->assertEquals(\base64_encode('["X-Test: 1"]'), (string) $headers);
+		}
 	}
