@@ -83,3 +83,7 @@ parameter | type | description
 
 ##### > generate() : `IErrorReport`
 Generate the report.
+
+exception | reason
+--- | ---
+`LogicException` | `reportError()` was not called before `generate()`.

@@ -140,7 +140,7 @@ parameter | type | description
 `$name` | `string` | Name of the data string.
 `$str` | `string` | Data string.
 
-##### > formatArray() : `void`
+##### > reportArray() : `void`
 Format an array and add it to the report.
 
 parameter | type | description
@@ -148,7 +148,7 @@ parameter | type | description
 `$name` | `string` | Name for the array.
 `$arr` | `array` | Array of data.
 
-##### > handleError() : `void`
+##### > reportError() : `void`
 Format a report for a runtime error.
 
 parameter | type | description
@@ -160,8 +160,28 @@ Format application debug data and add it to the report.
 
 parameter | type | description
 --- | --- | ---
-`$debug` | array | Array of key/value pairs
+`$debug` | `array` | Array of key/value pairs
+
+##### > reportStacktrace() : `void`
+Format a stacktrace and add it to the report.
+
+parameter | type | description
+--- | --- | ---
+`$trace` | `array` | Stacktrace.
+
+##### > getContentType() : `string`
+Get the content-type of this error report.
+
+##### > getExtension() : `string`
+Get the extension to use when this report is stored to a file.
 
 ##### > __toString() : `string`
 Compile the report into a string.
+
+##### > generate() : `IErrorReport`
+Generate a report.
+
+exception | reason
+--- | ---
+`LogicException` | `reportError()` was not called before `generate()`.
 

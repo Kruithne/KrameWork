@@ -29,7 +29,7 @@
 		/**
 		 * Format an error and add it to the report.
 		 *
-		 * @api handleError
+		 * @api reportError
 		 * @param IError $error Error which occurred.
 		 */
 		public function reportError(IError $error): void {
@@ -60,7 +60,7 @@
 		/**
 		 * Format an array and add it to the report.
 		 *
-		 * @api formatArray
+		 * @api reportArray
 		 * @param string $name Name for the array.
 		 * @param array<int|string, mixed> $arr Array of data.
 		 */
@@ -96,7 +96,11 @@
 		 * @return IErrorReport
 		 */
 		public function generate(): IErrorReport {
-			return new ErrorReport($this->error, 'application/json', '.json', \json_encode($this->node));
+			$error = $this->error;
+			if ($error === null)
+				throw new \LogicException('reportError() must be called before generate()');
+
+			return new ErrorReport($error, 'application/json', '.json', \json_encode($this->node));
 		}
 
 		/**

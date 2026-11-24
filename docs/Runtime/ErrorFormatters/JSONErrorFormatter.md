@@ -12,7 +12,7 @@ ___
 ##### > beginReport() : `void`
 Called just before this report is used.
 
-##### > handleError() : `void`
+##### > reportError() : `void`
 Format an error and add it to the report.
 
 parameter | type | description
@@ -26,7 +26,7 @@ parameter | type | description
 --- | --- | ---
 `$debug` | array | Array of key/value pairs
 
-##### > formatArray() : `void`
+##### > reportArray() : `void`
 Format an array and add it to the report.
 
 parameter | type | description
@@ -44,4 +44,8 @@ parameter | type | description
 
 ##### > generate() : `IErrorReport`
 Generate a report.
+
+exception | reason
+--- | ---
+`LogicException` | `reportError()` was not called before `generate()`.
 

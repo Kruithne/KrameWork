@@ -61,7 +61,7 @@
 		/**
 		 * Format an array and add it to the report.
 		 *
-		 * @api formatArray
+		 * @api reportArray
 		 * @param string $name Name for the array.
 		 * @param array<int|string, mixed> $arr Array of data.
 		 */
@@ -81,7 +81,7 @@
 		/**
 		 * Format a report for a runtime error.
 		 *
-		 * @api handleError
+		 * @api reportError
 		 * @param IError $error Error which occurred.
 		 */
 		public function reportError(IError $error): void {
@@ -185,6 +185,10 @@
 		 * @return IErrorReport
 		 */
 		public function generate(): IErrorReport {
+			$error = $this->error;
+			if ($error === null)
+				throw new \LogicException('reportError() must be called before generate()');
+
 			$this->report->outdent()->newLine();
 			$this->report->appendf('Report generated automatically on %$2s (%$1s).', $t = \time(), \date(\DATE_RFC822, $t));
 
@@ -197,7 +201,7 @@
 			$this->timer->stop();
 			$report = $this->report . $this->timer->format($this->lineEnd . 'Generated in %.4fs.');
 
-			return new ErrorReport($this->error, $contentType, $extension, $report);
+			return new ErrorReport($error, $contentType, $extension, $report);
 		}
 
 		/**

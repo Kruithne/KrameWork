@@ -48,7 +48,7 @@
 		/**
 		 * Format an error and add it to the report.
 		 *
-		 * @api handleError
+		 * @api reportError
 		 * @param IError $error Error which occurred.
 		 */
 		public function reportError(IError $error): void {
@@ -82,7 +82,7 @@
 		/**
 		 * Format an array and add it to the report.
 		 *
-		 * @api formatArray
+		 * @api reportArray
 		 * @param string $name Name for the array.
 		 * @param array<int|string, mixed> $arr Array of data.
 		 */
@@ -118,6 +118,10 @@
 		 * @return IErrorReport
 		 */
 		public function generate(): IErrorReport {
+			$error = $this->error;
+			if ($error === null)
+				throw new \LogicException('reportError() must be called before generate()');
+
 			$report = new HTMLReportTemplate($this->getTemplate());
 
 			// Handle basic data.
@@ -196,7 +200,7 @@
 			$this->timer->stop();
 			$report .= $this->timer->format('<p>Report generated in %.4fs</p>');
 
-			return new ErrorReport($this->error, 'text/html; charset=utf-8', '.html', $report);
+			return new ErrorReport($error, 'text/html; charset=utf-8', '.html', $report);
 		}
 
 		/**

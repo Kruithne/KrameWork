@@ -97,8 +97,12 @@
 		}
 
 		public function generate(): IErrorReport {
+			$error = $this->error;
+			if ($error === null)
+				throw new \LogicException('reportError() must be called before generate()');
+
 			$this->lines[] = '_Report generated automatically on ' . \date(\DATE_RFC2822) . '._';
-			return new ErrorReport($this->error, 'text/markdown; charset=utf-8', '.md', \implode("\n", $this->lines));
+			return new ErrorReport($error, 'text/markdown; charset=utf-8', '.md', \implode("\n", $this->lines));
 		}
 
 		/**

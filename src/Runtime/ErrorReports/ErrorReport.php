@@ -20,7 +20,7 @@
 		/**
 		 * Get the underlying error this report is for.
 		 *
-		 * @apu getError
+		 * @api getError
 		 * @return IError
 		 */
 		public function getError(): IError {
