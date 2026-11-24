@@ -102,12 +102,13 @@
 		 * Accepts a variable amount of string arguments.
 		 *
 		 * @api getQueryDataValues
+		 * @param string ...$keys Keys contained in the query string.
 		 * @return mixed[]
 		 */
-		public static function getQueryDataValues():array {
+		public static function getQueryDataValues(string ...$keys):array {
 			$out = [];
-			foreach (\func_get_args() as $arg)
-				$out[] = self::getQueryDataValue($arg);
+			foreach ($keys as $key)
+				$out[] = self::getQueryDataValue($key);
 
 			return $out;
 		}
@@ -156,12 +157,13 @@
 		 * Accepts variable amount of string arguments.
 		 *
 		 * @api getFormDataValues
+		 * @param string ...$keys Keys to get values for.
 		 * @return mixed[]
 		 */
-		public static function getFormDataValues():array {
+		public static function getFormDataValues(string ...$keys):array {
 			$out = [];
-			foreach (\func_get_args() as $arg)
-				$out[] = self::getFormDataValue($arg);
+			foreach ($keys as $key)
+				$out[] = self::getFormDataValue($key);
 
 			return $out;
 		}

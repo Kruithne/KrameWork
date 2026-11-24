@@ -39,6 +39,10 @@ parameter | type | description
 `$key` | `string` | Key contained in the query string.
 ##### > HTTPContext::getQueryDataValues() : `array`
 Retrieve multiple values from the query string. Accepts a variable amount of string arguments.
+
+parameter | type | description
+--- | --- | ---
+`...$keys` | `string` | Keys contained in the query string.
 ##### > HTTPContext::hasFormData() : `bool`
 Check if this request contains form data. Occurs when content-type is multipart/form-data or application/x-www-form-urlencoded
 ##### > HTTPContext::hasMultipartFormData() : `bool`
@@ -51,6 +55,10 @@ parameter | type | description
 `$key` | `string` | Key to get value for.
 ##### > HTTPContext::getFormDataValues() : `array`
 Retrieve multiple values from submitted form data. Accepts variable amount of string arguments.
+
+parameter | type | description
+--- | --- | ---
+`...$keys` | `string` | Keys to get values for.
 ##### > HTTPContext::getFormData() : `array`
 Retrieve the content of the request as decoded form data. Result is stored in a key/value pair array. Array values (foo[]) are returned as arrays.
 ##### > HTTPContext::getJSON() : `mixed|string`
