@@ -174,6 +174,7 @@ parameter | type | description
 exception | reason
 --- | ---
 `DuplicateClassException` | Class with that name has already been added.
+`ClassResolutionException` | Class does not exist and `AUTO_BIND_INTERFACES` is enabled.
 ##### > getComponent() : `?object`
 Obtain the injectors instance of a specific component. Non-constructed object instances will be instantiated.
 
