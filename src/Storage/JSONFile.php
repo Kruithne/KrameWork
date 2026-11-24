@@ -122,7 +122,7 @@
 		 * @internal
 		 * @throws JSONException
 		 */
-		private function throwJSONError(): void {
+		private function throwJSONError(): never {
 			throw new JSONException('JSON error: ' . \json_last_error_msg());
 		}
 
