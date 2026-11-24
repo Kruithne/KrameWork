@@ -55,6 +55,7 @@
 		 *
 		 * @api __toString
 		 * @return string
+		 * @throws \RuntimeException
 		 * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
 		 */
 		function __toString():string {
@@ -81,6 +82,9 @@
 			}
 
 			$content = \preg_replace($patterns, $replacements, $content);
+			if ($content === null)
+				throw new \RuntimeException('Unable to compile template: ' . \preg_last_error_msg());
+
 			return $content;
 		}
 

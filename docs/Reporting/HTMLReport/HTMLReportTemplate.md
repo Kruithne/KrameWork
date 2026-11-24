@@ -57,5 +57,5 @@ parameter | type | description
 `$value` | `mixed` | Replacement value.
 
 ##### > __toString() : `string`
-Compile this template and return it as a string.
+Compile this template and return it as a string. Throws a `RuntimeException` if a replacement cannot be compiled.
 
