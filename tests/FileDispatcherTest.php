@@ -18,4 +18,22 @@
 			$this->assertFileExists($file);
 			@unlink($file); // Clean-up.
 		}
+
+		/**
+		 * Ensure a report does not overwrite an existing report with the same name in the target directory.
+		 */
+		public function testExistingReportIsNotOverwritten() {
+			$dir = \sys_get_temp_dir() . \DIRECTORY_SEPARATOR . \uniqid('kw_file_dispatcher_');
+			\mkdir($dir);
+
+			$dispatcher = new FileDispatcher($dir, 'report');
+			$dispatcher->dispatch('first');
+			$dispatcher->dispatch('second');
+
+			$this->assertStringEqualsFile($dir . \DIRECTORY_SEPARATOR . 'report.txt', 'first');
+			$this->assertStringEqualsFile($dir . \DIRECTORY_SEPARATOR . 'report_1.txt', 'second');
+
+			\array_map('unlink', \glob($dir . \DIRECTORY_SEPARATOR . '*'));
+			\rmdir($dir); // Clean-up.
+		}
 	}

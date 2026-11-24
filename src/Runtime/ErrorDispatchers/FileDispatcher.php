@@ -40,16 +40,14 @@
 		public function dispatch(IErrorReport|string $report): bool {
 			$file = $this->name instanceof \Closure ? ($this->name)($report) : $this->name;
 			$ext = ($report instanceof IErrorReport) ? $report->getExtension() : '.txt';
-			$full = $file . $ext;
+			$base = $this->path . \DIRECTORY_SEPARATOR . $file;
+			$full = $base . $ext;
 
-			// Obtain unique file name.
-			if (\is_file($full)) {
-				$attemptIndex = 1;
-				while (\is_file($full))
-					$full = $file . '_' . $attemptIndex++ . $ext;
-			}
+			$attemptIndex = 1;
+			while (\is_file($full))
+				$full = $base . '_' . $attemptIndex++ . $ext;
 
-			\file_put_contents($this->path . \DIRECTORY_SEPARATOR . $full, $report);
+			\file_put_contents($full, $report);
 			return false;
 		}
 
