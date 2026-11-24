@@ -43,7 +43,7 @@
 		 * @return int
 		 */
 		public function getSize(): int {
-			return \strlen($this->data);
+			return \strlen($this->data ?? '');
 		}
 
 		/**
