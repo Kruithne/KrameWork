@@ -100,4 +100,24 @@
 			$row = new \KrameWork\Reporting\ReportRow((object)['0' => 'zero']);
 			$this->assertEquals('zero', $row[0]);
 		}
+
+		/**
+		 * A field added after the keys are read is included in serialization.
+		 */
+		public function testAddedValueJsonSerialization() {
+			$row = new \KrameWork\Reporting\ReportRow((object)['a' => 1]);
+			$row->jsonSerialize();
+			$row['b'] = 2;
+			$this->assertEquals(['a' => 1, 'b' => 2], $row->jsonSerialize());
+		}
+
+		/**
+		 * A field removed after the keys are read is excluded from serialization.
+		 */
+		public function testRemovedValueJsonSerialization() {
+			$row = new \KrameWork\Reporting\ReportRow((object)['a' => 1, 'b' => 2]);
+			$row->jsonSerialize();
+			unset($row['b']);
+			$this->assertEquals(['a' => 1], $row->jsonSerialize());
+		}
 	}

@@ -96,6 +96,8 @@
 				$this->data[$k] = $value;
 			else if (\is_object($this->data))
 				$this->data->$k = $value;
+
+			$this->keys = null;
 		}
 
 		/**
@@ -107,6 +109,8 @@
 				unset($this->data[$k]);
 			else if (\is_object($this->data))
 				unset($this->data->$k);
+
+			$this->keys = null;
 		}
 
 		/**
