@@ -165,7 +165,7 @@ Attach a file to be sent with this mail.
 parameter | type | description
 --- | --- | ---
 `$attachment` | `string|File` | Attachment.
-`$inline` | `bool` | Is the attachment an inline embed?
+`$inline` | `bool|null` | Is the attachment an inline embed? Null keeps the current setting.
 
 exception | reason
 --- | ---

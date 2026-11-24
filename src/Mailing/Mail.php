@@ -106,12 +106,12 @@
 		 *
 		 * @api attachFile
 		 * @param string|File $attachment Attachment.
-		 * @param bool $inline Is the attachment an inline embed?
+		 * @param bool|null $inline Is the attachment an inline embed? Null keeps the current setting.
 		 * @return Mail
 		 * @throws AttachmentNotFoundException
 		 * @throws DuplicateAttachmentException
 		 */
-		public function attachFile(string|File $attachment, bool $inline = false):Mail {
+		public function attachFile(string|File $attachment, ?bool $inline = null):Mail {
 			if (!($attachment instanceof AttachmentFile)) {
 				$attachment = new AttachmentFile($attachment, false, false);
 				if (!$attachment->isValid())
@@ -121,7 +121,9 @@
 			if (\array_key_exists($attachment->getName(), $this->files))
 				throw new DuplicateAttachmentException('Attachment already exists: ' . $attachment->getName());
 
-			$attachment->setInline($inline);
+			if ($inline !== null)
+				$attachment->setInline($inline);
+
 			$this->files[$attachment->getName()] = $attachment;
 			return $this;
 		}
