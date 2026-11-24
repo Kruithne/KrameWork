@@ -64,7 +64,10 @@
 			$query = $this->lastQuery = $this->pdo->prepare($sql);
 			$this->bind($query, $param);
 			$query->execute();
-			return $query->fetchAll(\PDO::FETCH_OBJ);
+
+			/** @var \stdClass[] $rows */
+			$rows = $query->fetchAll(\PDO::FETCH_OBJ);
+			return $rows;
 		}
 
 		/**
@@ -131,7 +134,9 @@
 		 * @return array{0: string, 1: int|null, 2: string|null}
 		 */
 		function getLastError(): array {
-			return $this->pdo->errorInfo();
+			/** @var array{0: string, 1: int|null, 2: string|null} $error */
+			$error = $this->pdo->errorInfo();
+			return $error;
 		}
 
 		/**
@@ -139,15 +144,22 @@
 		 * @return array{0: string, 1: int|null, 2: string|null}|null
 		 */
 		function getLastQueryError(): ?array {
-			return $this->lastQuery?->errorInfo();
+			/** @var array{0: string, 1: int|null, 2: string|null}|null $error */
+			$error = $this->lastQuery?->errorInfo();
+			return $error;
 		}
 
 		/**
 		 * Returns the ID of the last inserted row.
 		 * @return string
+		 * @throws \Exception If the driver cannot return the ID
 		 */
 		function getLastInsertID(): string {
-			return $this->pdo->lastInsertId();
+			$id = $this->pdo->lastInsertId();
+			if ($id === false)
+				throw new \Exception('Unable to retrieve last insert ID');
+
+			return $id;
 		}
 
 		/**
