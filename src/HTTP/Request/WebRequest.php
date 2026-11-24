@@ -179,7 +179,7 @@
 		 * @throws ResponseNotAvailableException
 		 */
 		public function getResponse(): mixed {
-			if ($this->result == null)
+			if ($this->result === null)
 				throw new ResponseNotAvailableException('Response not available (request failed/not sent)');
 
 			return $this->result;
@@ -205,7 +205,7 @@
 		 * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
 		 */
 		function __toString():string {
-			if ($this->result == null)
+			if ($this->result === null)
 				throw new ResponseNotAvailableException('Response not available (request failed/not sent)');
 
 			return $this->result;

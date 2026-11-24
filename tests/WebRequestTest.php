@@ -228,4 +228,17 @@
 
 			unset($req, $resp);
 		}
+
+		/**
+		 * Test that an empty response body is available after a successful request.
+		 */
+		public function testEmptyResponse() {
+			$req = new WebRequest('data:text/plain,');
+
+			$this->assertTrue($req->send());
+			$this->assertSame('', $req->getResponse());
+			$this->assertSame('', (string) $req);
+
+			unset($req);
+		}
 	}
