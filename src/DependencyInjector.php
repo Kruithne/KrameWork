@@ -214,17 +214,11 @@
 
 			$inject = [];
 			$constructor = $class->getConstructor();
-			$object = $class->newInstanceWithoutConstructor();
-
-			// Handle construction.
-			if ($constructor) {
-				// Process all parameters for the constructor.
+			if ($constructor)
 				foreach ($constructor->getParameters() as $param)
 					$inject[] = $this->resolveParameter($param, $className);
 
-				\call_user_func_array([$object, '__construct'], $inject);
-			}
-
+			$object = $class->newInstanceArgs($inject);
 			$this->classList[$className] = $object;
 			return $object;
 		}
