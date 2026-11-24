@@ -53,6 +53,7 @@
 		 * @api addComponent
 		 * @param string|(string|object)[]|object|null $class
 		 * @throws DuplicateClassException
+		 * @throws ClassResolutionException
 		 */
 		public function addComponent(string|array|object|null $class): void {
 			// Null: Do nothing.
@@ -203,6 +204,9 @@
 		 * @throws ClassInstantiationException
 		 */
 		public function constructComponent(string $className): object {
+			if (!\class_exists($className))
+				throw new ClassInstantiationException('Unknown class: ' . $className);
+
 			$class = new \ReflectionClass($className);
 
 			if (!$class->isInstantiable())
@@ -273,8 +277,12 @@
 		 *
 		 * @internal
 		 * @param string $className Class to bind interfaces for.
+		 * @throws ClassResolutionException
 		 */
 		private function bindInterfaces(string $className): void {
+			if (!\class_exists($className))
+				throw new ClassResolutionException('Unknown class: ' . $className);
+
 			$class = new \ReflectionClass($className);
 			foreach ($class->getInterfaceNames() as $interface)
 				$this->bind($interface, $className);

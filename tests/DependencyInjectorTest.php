@@ -430,6 +430,27 @@
 		}
 
 		/**
+		 * Test for instantiation exception when constructing an unknown class.
+		 */
+		public function testUnknownClassInstantiation() {
+			$injector = new DependencyInjector(0);
+			$injector->addComponent("DIMissingTestClass");
+
+			$this->expectException(\KrameWork\ClassInstantiationException::class);
+			$injector->getComponent("DIMissingTestClass");
+		}
+
+		/**
+		 * Test for resolution exception when adding an unknown class with interface binding.
+		 */
+		public function testAddUnknownComponent() {
+			$injector = new DependencyInjector();
+
+			$this->expectException(\KrameWork\ClassResolutionException::class);
+			$injector->addComponent("DIMissingTestClass");
+		}
+
+		/**
 		 * Test duplicate component handling.
 		 */
 		public function testDuplicateComponent() {
