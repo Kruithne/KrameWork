@@ -20,6 +20,7 @@
 	 *
 	 * @package KrameWork\Runtime\ErrorReports
 	 * @author Kruithne <kruithne@gmail.com>
+	 * @phpstan-import-type StackFrame from IError
 	 */
 	class PlainTextErrorFormatter implements IErrorFormatter
 	{
@@ -118,7 +119,7 @@
 		 * Format a stacktrace and add it to the report.
 		 *
 		 * @api reportStacktrace
-		 * @param array<int, array<string, mixed>> $trace Stacktrace.
+		 * @param array<int, StackFrame> $trace Stacktrace.
 		 */
 		public function reportStacktrace(array $trace): void {
 			$this->report->newLine()->newLine();

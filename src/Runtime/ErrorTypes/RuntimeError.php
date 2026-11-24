@@ -9,6 +9,7 @@
 	 *
 	 * @package KrameWork\Runtime
 	 * @author Kruithne <kruithne@gmail.com>
+	 * @phpstan-import-type StackFrame from IError
 	 */
 	class RuntimeError implements IError
 	{
@@ -103,7 +104,7 @@
 		 * Get the stacktrace for this error.
 		 *
 		 * @api getTrace
-		 * @return array<int, array<string, mixed>>
+		 * @return array<int, StackFrame>
 		 */
 		public function getTrace(): array {
 			return \debug_backtrace();

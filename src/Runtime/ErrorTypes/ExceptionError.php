@@ -11,6 +11,7 @@
 	 *
 	 * @package KrameWork\Runtime
 	 * @author Kruithne <kruithne@gmail.com>
+	 * @phpstan-import-type StackFrame from IError
 	 */
 	class ExceptionError implements IError
 	{
@@ -85,7 +86,7 @@
 		 * Get the trace of this exception.
 		 *
 		 * @api getTrace
-		 * @return array<int, array<string, mixed>>
+		 * @return array<int, StackFrame>
 		 */
 		public function getTrace():array {
 			return $this->trace;
@@ -132,7 +133,7 @@
 		protected int $line;
 
 		/**
-		 * @var array<int, array<string, mixed>>
+		 * @var array<int, StackFrame>
 		 */
 		protected array $trace;
 

@@ -7,6 +7,7 @@
 	 *
 	 * @package KrameWork\Runtime\ErrorTypes
 	 * @author Kruithne <kruithne@gmail.com>
+	 * @phpstan-type StackFrame array{function: string, line?: int, file?: string, class?: string, type?: string, args?: array<mixed>, object?: object}
 	 */
 	interface IError
 	{
@@ -38,7 +39,7 @@
 		 * Get the stacktrace for this error.
 		 *
 		 * @api getTrace
-		 * @return array<int, array<string, mixed>>
+		 * @return array<int, StackFrame>
 		 */
 		public function getTrace():array;
 

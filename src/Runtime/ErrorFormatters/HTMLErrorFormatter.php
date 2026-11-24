@@ -12,6 +12,14 @@
 	require_once(__DIR__ . '/../../Utils/StringUtil.php');
 	require_once(__DIR__ . '/../../Timing/Timer.php');
 
+	/**
+	 * Class HTMLErrorFormatter
+	 * Error report implementation: HTML
+	 *
+	 * @package KrameWork\Runtime\ErrorFormatters
+	 * @author Kruithne <kruithne@gmail.com>
+	 * @phpstan-import-type StackFrame from IError
+	 */
 	class HTMLErrorFormatter implements IErrorFormatter
 	{
 		/**
@@ -97,7 +105,7 @@
 		 * Format a stacktrace and add it to the report.
 		 *
 		 * @api reportStacktrace
-		 * @param array<int, array<string, mixed>> $trace Stacktrace.
+		 * @param array<int, StackFrame> $trace Stacktrace.
 		 */
 		public function reportStacktrace(array $trace): void {
 			$this->trace = $trace;
@@ -143,7 +151,7 @@
 					$frame = $traceSection->createFrame();
 					$frame->index = (string)$index++;
 					$frame->file = $traceFrame['file'] ?? 'interpreter';
-					$frame->line = $traceFrame['line'] ?? '?';
+					$frame->line = (string)($traceFrame['line'] ?? '?');
 					$frame->class = $traceFrame['class'] ?? '';
 					$frame->type = $traceFrame['type'] ?? '';
 					$frame->function = $traceFrame['function'] ?? '';
@@ -267,9 +275,9 @@
 		protected ?array $basicData = null;
 
 		/**
-		 * @var array<int, array<string, mixed>>|null
+		 * @var array<int, StackFrame>
 		 */
-		protected ?array $trace = null;
+		protected array $trace = [];
 
 		/**
 		 * @var string|null

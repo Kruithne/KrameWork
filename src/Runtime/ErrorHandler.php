@@ -22,6 +22,7 @@
 	 *
 	 * @package KrameWork\Runtime
 	 * @author Kruithne <kruithne@gmail.com>
+	 * @phpstan-import-type StackFrame from IError
 	 */
 	class ErrorHandler
 	{
@@ -300,7 +301,7 @@
 		 *
 		 * @internal
 		 * @param IError $error
-		 * @param array<int, array<string, mixed>> $trace
+		 * @param array<int, StackFrame> $trace
 		 * @param array<string, mixed> $debug
 		 * @param IErrorFormatter $formatter
 		 * @return IErrorReport
@@ -323,8 +324,8 @@
 		 * Filter error handling out of a stacktrace.
 		 *
 		 * @internal
-		 * @param array<int, array<string, mixed>> $trace Trace to filter.
-		 * @return array<int, array<string, mixed>>
+		 * @param array<int, StackFrame> $trace Trace to filter.
+		 * @return array<int, StackFrame>
 		 */
 		private function filterStacktrace(array $trace): array {
 			$startIndex = 0;
