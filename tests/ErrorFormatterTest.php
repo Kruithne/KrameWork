@@ -66,4 +66,17 @@
 
 			$this->assertStringNotContainsString('staleKey', (string)$formatter->generate());
 		}
+
+		/**
+		 * Test that the JSON formatter still encodes the report when data contains invalid UTF-8.
+		 */
+		public function testJSONFormatterEncodesInvalidUTF8(): void {
+			$formatter = new JSONErrorFormatter();
+			$formatter->beginReport();
+			$formatter->reportError(new ExceptionError(new \Exception('test')));
+			$formatter->reportString('invalid', "\xB1");
+
+			$report = \json_decode((string)$formatter->generate(), true);
+			$this->assertSame('test', $report['message'] ?? null);
+		}
 	}

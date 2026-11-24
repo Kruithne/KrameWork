@@ -101,7 +101,8 @@
 			if ($error === null)
 				throw new \LogicException('reportError() must be called before generate()');
 
-			return new ErrorReport($error, 'application/json', '.json', \json_encode(['data' => $this->data] + $this->node));
+			$json = \json_encode(['data' => $this->data] + $this->node, \JSON_INVALID_UTF8_SUBSTITUTE | \JSON_PARTIAL_OUTPUT_ON_ERROR);
+			return new ErrorReport($error, 'application/json', '.json', $json ?: '{}');
 		}
 
 		/**
