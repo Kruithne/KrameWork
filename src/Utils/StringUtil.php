@@ -46,25 +46,24 @@
 		 * @return string
 		 */
 		static function variableAsString(mixed $var):string {
-			$type = \gettype($var);
-			if ($type == 'object') {
-				if ($var instanceof IMaskable) {
-					$type = 'masked';
-					$var = $var->asMask();
-				} else {
-					$type = \get_class($var);
-					if (!\method_exists($var, '__toString'))
-						$var = 'object';
-				}
-			} elseif ($type == 'string') {
-				$length = \strlen($var);
-				$var = "({$length}) \"{$var}\"";
-			} elseif ($type == 'array') {
-				$var = \count($var) . ' items';
-			} elseif (\is_bool($var)) {
-				$var = $var ? 'true' : 'false';
-			}
+			if ($var instanceof IMaskable)
+				return '(masked) ' . $var->asMask();
 
-			return "({$type}) {$var}";
+			if (\is_object($var))
+				return '(' . \get_class($var) . ') ' . ($var instanceof \Stringable ? (string) $var : 'object');
+
+			if (\is_string($var))
+				return '(string) (' . \strlen($var) . ') "' . $var . '"';
+
+			if (\is_array($var))
+				return '(array) ' . \count($var) . ' items';
+
+			if (\is_bool($var))
+				return '(boolean) ' . ($var ? 'true' : 'false');
+
+			if (\is_scalar($var))
+				return '(' . \gettype($var) . ') ' . $var;
+
+			return '(' . \gettype($var) . ') ' . \print_r($var, true);
 		}
 	}
