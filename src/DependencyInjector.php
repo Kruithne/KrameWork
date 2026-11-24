@@ -147,7 +147,7 @@
 			$resolve = $this->resolveClassName($className);
 
 			// getComponent() should only ever return a single component.
-			if (\is_array($resolve) || (\array_key_exists($resolve, $this->classList) && \is_array($this->classList[$resolve])))
+			if (\is_array($resolve))
 				throw new ClassResolutionException('Injector contains multiple resolutions for class: ' . $className);
 
 			// Check if component is missing and react according to $add.
@@ -189,12 +189,7 @@
 						continue;
 				}
 
-				$components = $this->classList[$resolve] ?? $this->constructComponent($resolve);
-				if (\is_array($components))
-					foreach ($components as $component)
-						$objects[] = $component;
-				else
-					$objects[] = $components;
+				$objects[] = $this->classList[$resolve] ?? $this->constructComponent($resolve);
 			}
 			return $objects;
 		}
@@ -316,7 +311,7 @@
 		}
 
 		/**
-		 * @var array<string, object|object[]|null>
+		 * @var array<string, object|null>
 		 */
 		private array $classList;
 
