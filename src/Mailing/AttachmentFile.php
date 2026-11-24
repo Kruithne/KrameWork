@@ -54,9 +54,9 @@
 		}
 
 		/**
-		 * @var bool|null
+		 * @var bool
 		 */
-		private ?bool $isInline = null;
+		private bool $isInline = false;
 
 		/**
 		 * @var string|null
