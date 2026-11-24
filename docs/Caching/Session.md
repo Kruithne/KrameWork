@@ -1,4 +1,4 @@
-## KrameWork\Storage\Session : IDataCache
+## KrameWork\Caching\Session : IDataCache
 
 ***Table of Contents***
 * **Overview** - Information about the class.
