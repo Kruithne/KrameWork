@@ -16,12 +16,24 @@ parameter | type | description
 --- | --- | ---
 `$autoStart` | `bool` | Start session on instantiation.
 
+
+exception | reason
+--- | ---
+`SessionInitiationException` | `$autoStart` is true and the session could not be started.
 ##### > start() : `void`
 Attempt to start a session.
 
+
+exception | reason
+--- | ---
+`SessionInitiationException` | Session could not be started, for example in a CLI environment or after headers are sent.
 ##### > flush() : `void`
 Delete all existing data in the session and start a newly generated one.
 
+
+exception | reason
+--- | ---
+`SessionInitiationException` | Session could not be cleared and started again.
 ##### > isActive() : `bool`
 Check if a session is currently active.
 

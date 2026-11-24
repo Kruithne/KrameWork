@@ -19,6 +19,7 @@
 		 *
 		 * @api __construct
 		 * @param bool $autoStart Start session on instantiation.
+		 * @throws SessionInitiationException
 		 */
 		public function __construct(bool $autoStart = true) {
 			if ($autoStart)
@@ -29,6 +30,7 @@
 		 * Attempt to start a session.
 		 *
 		 * @api start
+		 * @throws SessionInitiationException
 		 */
 		public function start(): void {
 			// Check if session is already started.
@@ -39,7 +41,8 @@
 			if (\PHP_SAPI == 'cli')
 				throw new SessionInitiationException('Session cannot be started in CLI environment.');
 
-			\session_start();
+			if (!\session_start())
+				throw new SessionInitiationException('Unable to start session.');
 		}
 
 		/**
@@ -47,12 +50,11 @@
 		 * newly generated one.
 		 *
 		 * @api flush
+		 * @throws SessionInitiationException
 		 */
 		public function flush(): void {
-			\session_unset();
-			\session_regenerate_id(false);
-			\session_destroy();
-			\session_start();
+			if (!\session_unset() || !\session_regenerate_id(false) || !\session_destroy() || !\session_start())
+				throw new SessionInitiationException('Unable to flush session.');
 		}
 
 		/**
