@@ -46,7 +46,7 @@
 					throw new InvalidRecipientException('Invalid e-mail address (RFC 822)');
 
 				// Encode name.
-				if ($encode)
+				if ($encode && $name !== null)
 					$name = '=?UTF-8?B?' . \base64_encode($name) . '?=';
 
 				// Add the recipient to the stack.
@@ -101,6 +101,7 @@
 
 		/**
 		 * Compile the recipients into a comma-separated string.
+		 * Recipients without a name are written as an address only.
 		 *
 		 * @api __toString
 		 * @return string
@@ -108,7 +109,7 @@
 		public function __toString(): string {
 			$result = [];
 			foreach ($this->recipients as $email => $name)
-				$result[] = '"' . $name . '" <' . $email . '>';
+				$result[] = $name === null ? '<' . $email . '>' : '"' . $name . '" <' . $email . '>';
 
 			return \implode(',', $result);
 		}

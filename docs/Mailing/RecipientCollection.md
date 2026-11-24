@@ -52,4 +52,4 @@ Clear all recipients from this collection.
 ##### > isEmpty() : `bool`
 Check if this collection contains no recipients.
 ##### > __toString() : `string`
-Compile the recipients into a comma-separated string.
+Compile the recipients into a comma-separated string. Recipients without a name are written as an address only (`<foo@bar.net>`).
