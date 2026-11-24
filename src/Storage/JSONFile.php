@@ -84,7 +84,7 @@
 		 * @throws JSONException
 		 */
 		public function read(): void {
-			if ($this->path != null)
+			if ($this->path !== '')
 				parent::read();
 
 			if ($this->data === null)

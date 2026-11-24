@@ -73,7 +73,7 @@ File constructor. If an instance of File is provided as $source, the state of th
 
 parameter | type | description
 --- | --- | ---
-`$source` | `string||File` | Path to the file, or another File instance to clone.
+`$source` | `string|File|null` | Path to the file, or another File instance to clone.
 `$autoLoad` | `bool` | Attempt to load the file contents on instantiation.
 `$touch` | `bool` | Touch the file, creating it if missing.
 

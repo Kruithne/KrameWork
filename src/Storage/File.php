@@ -118,7 +118,7 @@
 		 * @throws FileReadException
 		 */
 		public function read(): void {
-			if ($this->path === null)
+			if ($this->path === '')
 				throw new FileNotFoundException('Cannot resolve file: No path given.');
 
 			if (!\is_file($this->path))

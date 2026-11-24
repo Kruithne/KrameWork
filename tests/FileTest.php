@@ -241,4 +241,14 @@
 
 			unset($orig, $new);
 		}
+
+		/**
+		 * Test a file constructed without a source returns an empty path and name.
+		 */
+		public function testEmptyConstruct() {
+			$file = new File();
+
+			$this->assertSame('', $file->getPath());
+			$this->assertSame('', $file->getName());
+		}
 	}

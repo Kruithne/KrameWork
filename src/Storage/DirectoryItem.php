@@ -66,9 +66,9 @@
 		 * DirectoryItem constructor.
 		 *
 		 * @api __construct
-		 * @param string|null $source Path to the directory item.
+		 * @param string $source Path to the directory item.
 		 */
-		public function __construct(?string $source = null) {
+		public function __construct(string $source) {
 			$this->path = StringUtil::formatDirectorySlashes($source, true);
 			$this->name = \basename($source);
 		}
@@ -104,12 +104,12 @@
 		}
 
 		/**
-		 * @var string|null
+		 * @var string
 		 */
-		protected ?string $path = null;
+		protected string $path = '';
 
 		/**
-		 * @var string|null
+		 * @var string
 		 */
-		protected ?string $name = null;
+		protected string $name = '';
 	}
