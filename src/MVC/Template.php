@@ -52,26 +52,29 @@
 		public function __toString():string {
 			\ob_start();
 
-			// Sandbox template execution.
-			new class ($this->file, $this->data) {
-				/**
-				 * Template sandbox constructor.
-				 *
-				 * @api __construct
-				 * @param string $file Path to a template file.
-				 * @param array<string, mixed> $data Template data.
-				 */
-				public function __construct(private string $file, private array $data) {
-					$this->run();
-				}
+			try {
+				// Sandbox template execution.
+				new class ($this->file, $this->data) {
+					/**
+					 * Template sandbox constructor.
+					 *
+					 * @api __construct
+					 * @param string $file Path to a template file.
+					 * @param array<string, mixed> $data Template data.
+					 */
+					public function __construct(private string $file, private array $data) {
+						$this->run();
+					}
 
-				private function run(): void {
-					\extract($this->data);
-					require($this->file);
-				}
-			};
+					private function run(): void {
+						\extract($this->data);
+						require($this->file);
+					}
+				};
+			} finally {
+				$output = \ob_get_clean();
+			}
 
-			$output = \ob_get_clean();
 			if ($output === false)
 				throw new InvalidTemplateException('Template closed the output buffer.');
 

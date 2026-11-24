@@ -51,4 +51,19 @@
 			$this->assertEquals('<b>Hello, world!</b>', $template->__toString());
 			unset($template);
 		}
+
+		/**
+		 * Test output buffer is closed when the template throws an exception.
+		 */
+		public function testTemplateExceptionClosesBuffer() {
+			$template = new Template(__DIR__ . '/resources/TemplateTest/throws.php');
+			$level = \ob_get_level();
+
+			try {
+				$template->__toString();
+				$this->fail('Template exception was not propagated.');
+			} catch (RuntimeException $e) {
+				$this->assertEquals($level, \ob_get_level(), 'Template left the output buffer open.');
+			}
+		}
 	}
