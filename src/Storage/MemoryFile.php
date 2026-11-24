@@ -98,7 +98,7 @@
 		 * @return string
 		 */
 		public function getBase64Data(bool $forceRead = false): string {
-			return \base64_encode($this->data);
+			return \base64_encode($this->data ?? '');
 		}
 
 		/**

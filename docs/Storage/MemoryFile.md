@@ -49,7 +49,7 @@ parameter | type | description
 ##### > delete() : `bool`
 'Delete' the memory file, erasing the content from the container and marking the instance as invalid.
 ##### > getBase64Data() : `string`
-Retrieve the raw data of this file encoded as base64.
+Retrieve the raw data of this file encoded as base64. Returns an empty string if the file has no data.
 
 parameter | type | description
 --- | --- | ---

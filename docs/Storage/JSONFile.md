@@ -125,6 +125,16 @@ Get the JSON container inside this wrapper. Returns a string if not using contai
 parameter | type | description
 --- | --- | ---
 `$forceRead` | `bool` | Call read() if no data.
+##### > getBase64Data() : `string`
+Retrieve the JSON encoded data of this wrapper encoded as base64.
+
+parameter | type | description
+--- | --- | ---
+`$forceRead` | `bool` | Call read() if no data.
+
+exception | reason
+--- | ---
+`JSONException` | JSON error occured while encoding the container data.
 ##### > setData() : `void`
 Set the data contained by this wrapper. Not recommended unless not using containers (see constructor).
 

@@ -173,7 +173,10 @@
 		 * @return string
 		 */
 		public function getBase64Data(bool $forceRead = false):string {
-			return \base64_encode($this->getData($forceRead));
+			if ($forceRead && $this->data === null)
+				$this->read();
+
+			return \base64_encode($this->data ?? '');
 		}
 
 		/**

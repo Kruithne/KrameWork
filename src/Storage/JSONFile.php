@@ -162,6 +162,22 @@
 		}
 
 		/**
+		 * Retrieve the JSON encoded data of this wrapper encoded as base64.
+		 *
+		 * @api getBase64Data
+		 * @param bool $forceRead Call read() if no data.
+		 * @return string
+		 * @throws JSONException
+		 */
+		public function getBase64Data(bool $forceRead = false): string {
+			$encoded = \json_encode($this->getData($forceRead));
+			if ($encoded === false)
+				$this->throwJSONError();
+
+			return \base64_encode($encoded);
+		}
+
+		/**
 		 * Set the data contained by this wrapper.
 		 * Not recommended unless not using containers (see constructor).
 		 *

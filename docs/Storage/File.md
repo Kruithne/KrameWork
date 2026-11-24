@@ -117,7 +117,7 @@ parameter | type | description
 --- | --- | ---
 `$forceRead` | `bool` | Call read() if data is missing.
 ##### > getBase64Data() : `string`
-Retrieve the raw data of this file encoded as base64.
+Retrieve the raw data of this file encoded as base64. Returns an empty string if the wrapper has no data.
 
 parameter | type | description
 --- | --- | ---

@@ -179,4 +179,15 @@
 			$this->assertEquals("string", gettype($container->number), "Big number is not represented as a string.");
 			unset($container);
 		}
+
+		/**
+		 * Test that getBase64Data() returns the JSON encoded container data as base64.
+		 */
+		public function testGetBase64Data() {
+			$container = new JSONFile("someFile.json", true, false);
+			$container->test = "One fish, two fish.";
+
+			$this->assertEquals(base64_encode('{"test":"One fish, two fish."}'), $container->getBase64Data());
+			unset($container);
+		}
 	}
