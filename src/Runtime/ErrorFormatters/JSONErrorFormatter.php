@@ -23,7 +23,8 @@
 		 * @api beginReport
 		 */
 		public function beginReport(): void {
-			$this->node = ['data' => []];
+			$this->node = [];
+			$this->data = [];
 		}
 
 		/**
@@ -45,7 +46,7 @@
 
 			$debug = $error->getDebugData();
 			if ($debug !== null)
-				$this->node['data']['exceptionDebug'] = $debug;
+				$this->data['exceptionDebug'] = $debug;
 		}
 
 		/**
@@ -65,7 +66,7 @@
 		 * @param array<int|string, mixed> $arr Array of data.
 		 */
 		public function reportArray(string $name, array $arr): void {
-			$this->node['data'][$name] = $arr;
+			$this->data[$name] = $arr;
 		}
 
 		/**
@@ -76,7 +77,7 @@
 		 * @param string $str Data string.
 		 */
 		public function reportString(string $name, string $str): void {
-			$this->node['data'][$name] = $str;
+			$this->data[$name] = $str;
 		}
 
 		/**
@@ -100,13 +101,18 @@
 			if ($error === null)
 				throw new \LogicException('reportError() must be called before generate()');
 
-			return new ErrorReport($error, 'application/json', '.json', \json_encode($this->node));
+			return new ErrorReport($error, 'application/json', '.json', \json_encode(['data' => $this->data] + $this->node));
 		}
 
 		/**
-		 * @var array<string, mixed>|null
+		 * @var array<string, mixed>
 		 */
-		protected ?array $node = null;
+		protected array $node = [];
+
+		/**
+		 * @var array<string, mixed>
+		 */
+		protected array $data = [];
 
 		/**
 		 * @var IError|null
