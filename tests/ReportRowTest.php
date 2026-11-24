@@ -45,4 +45,51 @@
 			$actual = $row['test'];
 			$this->assertEquals($expect, $actual);
 		}
+
+		/**
+		 * Iterating a row built from an array yields the array values.
+		 */
+		public function testArrayForeachIteration() {
+			$data = ['a' => 'test a', 'b' => 'test b'];
+			$expect = join('', $data);
+			$row = new \KrameWork\Reporting\ReportRow($data);
+			$actual = '';
+			foreach ($row as $item)
+				$actual .= $item;
+			$this->assertEquals($expect, $actual);
+		}
+
+		/**
+		 * Reading a field from a row built from an array returns the array value.
+		 */
+		public function testArrayValueRead() {
+			$row = new \KrameWork\Reporting\ReportRow(['test' => 42]);
+			$this->assertEquals(42, $row['test']);
+		}
+
+		/**
+		 * Writing a field on a row built from an array updates the value.
+		 */
+		public function testArrayValueWrite() {
+			$row = new \KrameWork\Reporting\ReportRow(['test' => 42]);
+			$row['test'] = 0;
+			$this->assertEquals(0, $row['test']);
+		}
+
+		/**
+		 * A field on a row built from an array is reported as set.
+		 */
+		public function testArrayValueExists() {
+			$row = new \KrameWork\Reporting\ReportRow(['test' => 42]);
+			$this->assertTrue(isset($row['test']));
+		}
+
+		/**
+		 * Unsetting a field on a row built from an array removes the value.
+		 */
+		public function testArrayValueUnset() {
+			$row = new \KrameWork\Reporting\ReportRow(['test' => 42]);
+			unset($row['test']);
+			$this->assertFalse(isset($row['test']));
+		}
 	}

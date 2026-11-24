@@ -21,13 +21,7 @@
 		function jsonSerialize(): mixed {
 			$serialize = [];
 			foreach ($this->keys() as $field) {
-
-				$value = null;
-				if(is_array($this->data))
-					$value = $this->data[$field];
-				else if(is_object($this->data))
-					$value = $this->data->$field;
-
+				$value = $this->getValue($field);
 				if ($value instanceof Value)
 					$serialize[$field] = $value->json();
 				else
@@ -40,8 +34,7 @@
 		 * @link http://php.net/manual/en/iterator.current.php
 		 */
 		public function current(): mixed {
-			$k = $this->key();
-			return $this->data->$k;
+			return $this->getValue($this->key());
 		}
 
 		/**
@@ -77,7 +70,10 @@
 		 */
 		public function offsetExists(mixed $offset): bool {
 			$k = is_int($offset) ? $this->getKeyAt($offset) : $offset;
-			return $this->data && isset($this->data->$k);
+			if (\is_array($this->data))
+				return isset($this->data[$k]);
+
+			return isset($this->data->$k);
 		}
 
 		/**
@@ -85,7 +81,7 @@
 		 */
 		public function offsetGet(mixed $offset): mixed {
 			$k = is_int($offset) ? $this->getKeyAt($offset) : $offset;
-			return $k ? $this->data->$k : null;
+			return $k ? $this->getValue($k) : null;
 		}
 
 		/**
@@ -93,7 +89,12 @@
 		 */
 		public function offsetSet(mixed $offset, mixed $value): void {
 			$k = is_int($offset) ? $this->getKeyAt($offset) : $offset;
-			if($k)
+			if (!$k)
+				return;
+
+			if (\is_array($this->data))
+				$this->data[$k] = $value;
+			else if (\is_object($this->data))
 				$this->data->$k = $value;
 		}
 
@@ -102,7 +103,10 @@
 		 */
 		public function offsetUnset(mixed $offset): void {
 			$k = is_int($offset) ? $this->getKeyAt($offset) : $offset;
-			unset($this->data->$k);
+			if (\is_array($this->data))
+				unset($this->data[$k]);
+			else if (\is_object($this->data))
+				unset($this->data->$k);
 		}
 
 		/**
@@ -111,6 +115,18 @@
 		 */
 		private function getKeyAt(int $index): ?string {
 			return $this->keys()[$index] ?? null;
+		}
+
+		/**
+		 * Get the value of a field from the row data.
+		 * @param string $key Name of the field.
+		 * @return mixed
+		 */
+		private function getValue(string $key): mixed {
+			if (\is_array($this->data))
+				return $this->data[$key] ?? null;
+
+			return $this->data->$key ?? null;
 		}
 
 		/**
