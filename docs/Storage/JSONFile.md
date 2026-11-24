@@ -107,6 +107,7 @@ Attempt to read and decode JSON data from the file. Read data is not returned, b
 exception | reason
 --- | ---
 `JSONException` | JSON error occured while reading the file data.
+`JSONException` | No file path or raw data was given to decode.
 ##### > save() : `void`
 Save the contents of the JSON container to a file. Using an alternative path to save will not change the original path stored by the wrapper.
 
