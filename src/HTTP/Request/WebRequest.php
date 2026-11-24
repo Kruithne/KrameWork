@@ -175,7 +175,7 @@
 		 * Get the response from this request.
 		 *
 		 * @api getResponse
-		 * @return string
+		 * @return mixed
 		 * @throws ResponseNotAvailableException
 		 */
 		public function getResponse(): mixed {
