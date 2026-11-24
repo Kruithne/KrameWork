@@ -14,6 +14,17 @@
 	class APCu implements IDataCache
 	{
 		/**
+		 * APCu constructor.
+		 *
+		 * @api __construct
+		 * @throws CacheOperationException
+		 */
+		public function __construct() {
+			if (!\function_exists('apcu_enabled') || !\apcu_enabled())
+				throw new CacheOperationException('APCu is not installed or enabled.');
+		}
+
+		/**
 		 * Obtain a value from the cache.
 		 * Returns null if the item does not exist.
 		 *
@@ -33,6 +44,7 @@
 		 * @param string $key Key to store the value under.
 		 * @param mixed $value Value to store in the cache.
 		 * @param int $expire 60*60*24*30 >= Unix Timestamp, otherwise seconds. 0 = Never.
+		 * @throws CacheOperationException
 		 */
 		public function store(string $key, mixed $value, int $expire = 0): void {
 			if($value === null)
@@ -43,7 +55,8 @@
 			if ($expire > 60*60*24*30)
 				$expire = $expire - \time();
 
-			\apcu_store($key, $value, $expire);
+			if (!\apcu_store($key, $value, $expire))
+				throw new CacheOperationException('Unable to store value: ' . $key);
 		}
 
 		/**
@@ -63,6 +76,7 @@
 		 * @api __set
 		 * @param string $key Key to store the value under.
 		 * @param mixed $value Value to store in the cache.
+		 * @throws CacheOperationException
 		 */
 		public function __set(string $key, mixed $value): void {
 			$this->store($key, $value);

@@ -29,6 +29,12 @@ $cache->flush(); // Delete everything in the cache!
 ```
 ___
 ### Functions
+##### > __construct() : `void`
+APCu constructor.
+
+exception | reason
+--- | ---
+`CacheOperationException` | APCu is not installed or enabled.
 ##### > __get() : `mixed|null`
 Obtain a value from the cache. Returns null if the item does not exist.
 
@@ -43,6 +49,16 @@ parameter | type | description
 `$key` | `string` | Key to store the value under.
 `$value` | `mixed` | Value to store in the cache.
 `$expire` | `int` | 60*60*24*30 >= Unix Timestamp, otherwise seconds. 0 = Never.
+
+exception | reason
+--- | ---
+`CacheOperationException` | Value could not be stored, for example when the cache is full.
+##### > exists() : `bool`
+Check if a value exists in the cache.
+
+parameter | type | description
+--- | --- | ---
+`$key` | `string` | Key used to store the value.
 ##### > __set() : `void`
 Store a value in the cache. Value will not expire, use store() if needed.
 
@@ -50,6 +66,10 @@ parameter | type | description
 --- | --- | ---
 `$key` | `string` | Key to store the value under.
 `$value` | `mixed` | Value to store in the cache.
+
+exception | reason
+--- | ---
+`CacheOperationException` | Value could not be stored, for example when the cache is full.
 ##### > __unset() : `void`
 Remove an item stored in the cache.
 
