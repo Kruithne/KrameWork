@@ -33,6 +33,8 @@
 		 */
 		public function __construct(protected string $lineEnd = StringBuilder::LE_UNIX, protected bool $wrapPreTags = false) {
 			$this->timer = new Timer(Timer::FORMAT_MICROSECONDS, false);
+			$this->report = new StringBuilder();
+			$this->report->setLineEnd($this->lineEnd);
 		}
 
 		/**
@@ -175,7 +177,7 @@
 			if ($this->wrapPreTags)
 				$this->report->prepend('<pre>')->append('</pre>');
 
-			return $this->report;
+			return (string) $this->report;
 		}
 
 		/**
@@ -215,7 +217,7 @@
 		protected ?IError $error = null;
 
 		/**
-		 * @var StringBuilder|null
+		 * @var StringBuilder
 		 */
-		protected ?StringBuilder $report = null;
+		protected StringBuilder $report;
 	}
