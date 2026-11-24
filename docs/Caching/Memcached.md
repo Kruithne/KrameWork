@@ -36,6 +36,20 @@ Obtain a value from the cache. Returns null if the item does not exist.
 parameter | type | description
 --- | --- | ---
 `$key` | `string` | Key of the value.
+
+exception | reason
+--- | ---
+`CacheOperationException` | Value could not be read from the server.
+##### > exists() : `bool`
+Check if a value exists in the cache.
+
+parameter | type | description
+--- | --- | ---
+`$key` | `string` | Key used to store the value.
+
+exception | reason
+--- | ---
+`CacheOperationException` | Value could not be read from the server.
 ##### > store() : `void`
 Store a value in the cache.
 

@@ -32,11 +32,16 @@
 		 * @api __get
 		 * @param string $key Key of the value.
 		 * @return mixed|null
+		 * @throws CacheOperationException
 		 */
 		public function __get(string $key): mixed {
 			$value = $this->cache->get($key);
-			if ($this->cache->getResultCode() == \Memcached::RES_NOTFOUND)
+			$code = $this->cache->getResultCode();
+			if ($code === \Memcached::RES_NOTFOUND)
 				return null;
+
+			if ($code !== \Memcached::RES_SUCCESS)
+				throw new CacheOperationException('Unable to read value: ' . $key);
 
 			return $value;
 		}
@@ -64,10 +69,18 @@
 		 *
 		 * @param string $key Key used to store the value.
 		 * @return bool True if the key exists in the cache.
+		 * @throws CacheOperationException
 		 */
 		public function exists(string $key): bool {
 			$this->cache->get($key);
-			return $this->cache->getResultCode() != \Memcached::RES_NOTFOUND;
+			$code = $this->cache->getResultCode();
+			if ($code === \Memcached::RES_NOTFOUND)
+				return false;
+
+			if ($code !== \Memcached::RES_SUCCESS)
+				throw new CacheOperationException('Unable to read value: ' . $key);
+
+			return true;
 		}
 
 		/**
