@@ -78,10 +78,11 @@
 		 * Results may be incorrect if called before compile().
 		 *
 		 * @api __toString
+		 * @return string
 		 * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
 		 */
 		public function __toString():string {
-			return \base64_encode(\json_encode($this->compiled));
+			return \base64_encode(\json_encode($this->compiled, \JSON_THROW_ON_ERROR));
 		}
 
 		/**
