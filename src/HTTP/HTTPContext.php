@@ -121,10 +121,7 @@
 		 * @return bool
 		 */
 		public static function hasFormData():bool {
-			if (self::$hasFormData === null)
-				self::checkFormDataPresence();
-
-			return self::$hasFormData;
+			return self::hasMultipartFormData() || self::getContentType(false) == 'application/x-www-form-urlencoded';
 		}
 
 		/**
@@ -135,10 +132,7 @@
 		 * @return bool
 		 */
 		public static function hasMultipartFormData():bool {
-			if (self::$hasMultipartFormData === null)
-				self::checkFormDataPresence();
-
-			return self::$hasMultipartFormData;
+			return self::getContentType(false) == 'multipart/form-data';
 		}
 
 		/**
@@ -382,22 +376,9 @@
 		}
 
 		public static function reset(): void {
-			self::$hasFormData = null;
-			self::$hasMultipartFormData = null;
 			self::$cacheFormData = null;
 			self::$cacheQueryData = null;
 			self::$cacheRequestHeaders = null;
-		}
-
-		/**
-		 * Check the presence of form data in the request.
-		 *
-		 * @internal
-		 */
-		private static function checkFormDataPresence(): void {
-			$contentType = self::getContentType(false);
-			self::$hasMultipartFormData = $contentType == 'multipart/form-data';
-			self::$hasFormData = self::$hasMultipartFormData || $contentType == 'application/x-www-form-urlencoded';
 		}
 
 		/**
@@ -411,18 +392,6 @@
 			\mb_parse_str($input, $out);
 			return $out;
 		}
-
-		/**
-		 * True if the request has form data.
-		 * @var bool|null
-		 */
-		private static ?bool $hasFormData = null;
-
-		/**
-		 * True if the form data is multipart.
-		 * @var bool|null
-		 */
-		private static ?bool $hasMultipartFormData = null;
 
 		/**
 		 * Internal cache for parsed form data.
