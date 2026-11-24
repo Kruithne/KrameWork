@@ -38,7 +38,7 @@
 		}
 
 		/**
-		 * @var IManagedTable[]
+		 * @var array<string, IManagedTable>
 		 */
 		private array $tables = [];
 	}
