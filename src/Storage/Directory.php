@@ -73,7 +73,7 @@
 					$result = null;
 					if ($item instanceof Directory)
 						$result = $item->delete(true);
-					else
+					else if ($item instanceof DirectoryItem)
 						$result = $item->delete();
 
 					if (!$result)
