@@ -61,6 +61,19 @@
 		}
 
 		/**
+		 * Test that a value stored with a Unix timestamp expiry can be retrieved before it expires.
+		 */
+		public function testValueStoreTimestampExpiry() {
+			$cache = new APCu();
+
+			$cache->store('expire', 'value', \time() + 3600);
+			$this->assertEquals('value', $cache->expire);
+
+			$cache->flush();
+			unset($cache);
+		}
+
+		/**
 		 * Test cache value incrementing.
 		 */
 		public function testValueIncrement() {

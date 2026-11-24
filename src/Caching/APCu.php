@@ -40,7 +40,7 @@
 				return;
 			}
 			if ($expire > 60*60*24*30)
-				$expire = \time() - $expire;
+				$expire = $expire - \time();
 
 			\apcu_store($key, $value, $expire);
 		}
