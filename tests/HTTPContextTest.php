@@ -69,6 +69,22 @@
 		}
 
 		/**
+		 * Test HTTPContext->getUserAgent() returns the default when the $_SERVER value is not a string.
+		 */
+		public function testUserAgentNotString() {
+			// Setup
+			$HTTP_USER_AGENT = "HTTP_USER_AGENT";
+			$orig = $_SERVER[$HTTP_USER_AGENT] ?? null;
+			$_SERVER[$HTTP_USER_AGENT] = ['Mozilla/5.0'];
+
+			// Testing
+			$this->assertEquals("Unknown", HTTPContext::getUserAgent());
+
+			// Cleanup
+			$_SERVER[$HTTP_USER_AGENT] = $orig;
+		}
+
+		/**
 		 * Test HTTPContext->getContentType().
 		 */
 		public function testContentType() {

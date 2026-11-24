@@ -254,7 +254,8 @@
 		 * @return int
 		 */
 		public static function getContentLength():int {
-			return \intval($_SERVER['CONTENT_LENGTH'] ?? 0);
+			$length = $_SERVER['CONTENT_LENGTH'] ?? 0;
+			return \is_numeric($length) ? \intval($length) : 0;
 		}
 
 		/**
@@ -265,7 +266,7 @@
 		 * @return string
 		 */
 		public static function getUserAgent():string {
-			return $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
+			return self::getServerString('HTTP_USER_AGENT', 'Unknown');
 		}
 
 		/**
@@ -276,7 +277,7 @@
 		 * @return string
 		 */
 		public static function getReferrer():string {
-			return $_SERVER['HTTP_REFERER'] ?? '';
+			return self::getServerString('HTTP_REFERER');
 		}
 
 		/**
@@ -288,7 +289,7 @@
 		 * @return string
 		 */
 		public static function getContentType(bool $parameters = true):string {
-			$type = $_SERVER['CONTENT_TYPE'] ?? 'text/plain';
+			$type = self::getServerString('CONTENT_TYPE', 'text/plain');
 			if (!$parameters) {
 				$parting = \strpos($type, ';');
 				if ($parting !== false)
@@ -305,7 +306,7 @@
 		 * @return string
 		 */
 		public static function getRemoteAddress():string {
-			return $_SERVER['REMOTE_ADDR'] ?? '';
+			return self::getServerString('REMOTE_ADDR');
 		}
 
 		/**
@@ -316,7 +317,7 @@
 		 * @return string
 		 */
 		public static function getRequestURI():string {
-			return $_SERVER['REQUEST_URI'] ?? '';
+			return self::getServerString('REQUEST_URI');
 		}
 
 		/**
@@ -327,7 +328,7 @@
 		 * @return string
 		 */
 		public static function getQueryString():string {
-			return $_SERVER['QUERY_STRING'] ?? '';
+			return self::getServerString('QUERY_STRING');
 		}
 
 		/**
@@ -338,7 +339,7 @@
 		 * @return string
 		 */
 		public static function getRequestMethod():string {
-			return $_SERVER['REQUEST_METHOD'] ?? 'GET';
+			return self::getServerString('REQUEST_METHOD', 'GET');
 		}
 
 		/**
@@ -391,6 +392,19 @@
 		private static function extractURLEncodedData(string $input):array {
 			\mb_parse_str($input, $out);
 			return $out;
+		}
+
+		/**
+		 * Retrieve a $_SERVER value as a string.
+		 *
+		 * @internal
+		 * @param string $key Key to read from $_SERVER.
+		 * @param string $default Value to return if the key is missing or not a string.
+		 * @return string
+		 */
+		private static function getServerString(string $key, string $default = ''):string {
+			$value = $_SERVER[$key] ?? $default;
+			return \is_string($value) ? $value : $default;
 		}
 
 		/**
