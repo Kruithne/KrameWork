@@ -92,4 +92,12 @@
 			unset($row['test']);
 			$this->assertFalse(isset($row['test']));
 		}
+
+		/**
+		 * Reading a field by index returns the value when the field is named '0'.
+		 */
+		public function testValueReadByIndexWithZeroKey() {
+			$row = new \KrameWork\Reporting\ReportRow((object)['0' => 'zero']);
+			$this->assertEquals('zero', $row[0]);
+		}
 	}

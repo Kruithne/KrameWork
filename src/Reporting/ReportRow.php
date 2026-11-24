@@ -81,7 +81,7 @@
 		 */
 		public function offsetGet(mixed $offset): mixed {
 			$k = is_int($offset) ? $this->getKeyAt($offset) : $offset;
-			return $k ? $this->getValue($k) : null;
+			return $k !== null ? $this->getValue($k) : null;
 		}
 
 		/**
@@ -89,7 +89,7 @@
 		 */
 		public function offsetSet(mixed $offset, mixed $value): void {
 			$k = is_int($offset) ? $this->getKeyAt($offset) : $offset;
-			if (!$k)
+			if ($k === null)
 				return;
 
 			if (\is_array($this->data))
