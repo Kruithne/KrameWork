@@ -35,8 +35,7 @@
 		 * @return bool
 		 */
 		public function has(string $key):bool {
-			$this->verifyDataObject();
-			return isset($this->jsonData[$key]);
+			return isset($this->getContainer()[$key]);
 		}
 
 		/**
@@ -48,8 +47,7 @@
 		 * @throws JSONException
 		 */
 		public function __get(string $key): mixed {
-			$this->verifyDataObject();
-			return $this->jsonData[$key] ?? null;
+			return $this->getContainer()[$key] ?? null;
 		}
 
 		/**
@@ -61,8 +59,9 @@
 		 * @throws JSONException
 		 */
 		public function __set(string $key, mixed $value): void {
-			$this->verifyDataObject();
-			$this->jsonData[$key] = $value;
+			$container = $this->getContainer();
+			$container[$key] = $value;
+			$this->jsonData = $container;
 		}
 
 		/**
@@ -72,8 +71,9 @@
 		 * @param string $key Key to remove from the container.
 		 */
 		public function __unset(string $key): void {
-			$this->verifyDataObject();
-			unset($this->jsonData[$key]);
+			$container = $this->getContainer();
+			unset($container[$key]);
+			$this->jsonData = $container;
 		}
 
 		/**
@@ -127,14 +127,20 @@
 		}
 
 		/**
-		 * Throw an exception if the internal data object is not initiated.
+		 * Return the internal data object, or throw an exception if it does not support key access.
 		 *
 		 * @internal
+		 * @return \ArrayAccess<mixed, mixed>|array<mixed>
 		 * @throws JSONException
 		 */
-		private function verifyDataObject(): void {
+		private function getContainer(): \ArrayAccess|array {
 			if ($this->jsonData === null)
 				throw new JSONException('Attempt to invoke value on a non-initiated JSON file.');
+
+			if (!\is_array($this->jsonData) && !($this->jsonData instanceof \ArrayAccess))
+				throw new JSONException('Attempt to access a key on JSON data that is not an array or container.');
+
+			return $this->jsonData;
 		}
 
 		/**

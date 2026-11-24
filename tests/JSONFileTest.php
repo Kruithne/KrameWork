@@ -152,6 +152,22 @@
 		}
 
 		/**
+		 * Test exception is thrown when calling __get on decoded data that does not support key access.
+		 */
+		public function testGetOnNonAccessibleData() {
+			$container = new JSONFile(__DIR__ . "/resources/test_json_file.json", false, false);
+			$container->read();
+
+			try {
+				$test = $container->test;
+				$this->fail("JSONFile did not throw expected exception when invoking __get on non-accessible data.");
+			} catch (\KrameWork\Storage\JSONException $e) {
+				$this->assertEquals('Attempt to access a key on JSON data that is not an array or container.', $e->getMessage());
+				unset($container);
+			}
+		}
+
+		/**
 		 * Test JSON recursion depth.
 		 */
 		public function testOptionRecursion() {
