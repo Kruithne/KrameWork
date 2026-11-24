@@ -74,6 +74,11 @@ parameter | type | description
 --- | --- | ---
 `$key` | `string` | Key to lookup.
 
+exception | reason
+--- | ---
+`JSONException` | Data container not initiated.
+`JSONException` | Data does not support key access.
+
 ##### > __get() : `mixed|null`
 Obtain a value from the JSON container.
 
@@ -84,6 +89,7 @@ parameter | type | description
 exception | reason
 --- | ---
 `JSONException` | Data container not initiated.
+`JSONException` | Data does not support key access.
 ##### > __set() : `void`
 Set the value of a specific key in the JSON container.
 
@@ -95,12 +101,18 @@ parameter | type | description
 exception | reason
 --- | ---
 `JSONException` | Data container not initiated.
+`JSONException` | Data does not support key access.
 ##### > __unset() : `void`
 Remove a value from the JSON container with the given key.
 
 parameter | type | description
 --- | --- | ---
 `$key` | `string` | Key to remove from the container.
+
+exception | reason
+--- | ---
+`JSONException` | Data container not initiated.
+`JSONException` | Data does not support key access.
 ##### > read() : `void`
 Attempt to read and decode JSON data from the file. Read data is not returned, but made available through the wrapper.
 
@@ -157,6 +169,10 @@ Set the recursion depth for file reading. Defaults to 512 if not set.
 parameter | type | description
 --- | --- | ---
 `$depth` | `int` | Recursion depth.
+
+exception | reason
+--- | ---
+`InvalidArgumentException` | Depth is less than one.
 ##### > setAssociative() : `void`
 Set if this file should read objects as associative arrays. Defaults to false if not set.
 
