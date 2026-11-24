@@ -385,7 +385,7 @@
 
 			if ($this->reportSensitive) {
 				$report->reportArray('$_COOKIE', $this->redact($_COOKIE));
-				$report->reportString('Raw Request Content', \file_get_contents('php://input'));
+				$report->reportString('Raw Request Content', (string) \file_get_contents('php://input'));
 			}
 		}
 
