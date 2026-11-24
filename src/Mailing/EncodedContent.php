@@ -88,7 +88,7 @@
 		}
 
 		/**
-		 * @var string|null
+		 * @var string
 		 */
-		private ?string $content = null;
+		private string $content = '';
 	}
