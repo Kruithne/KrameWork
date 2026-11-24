@@ -25,8 +25,9 @@
 				$ttl = $this->defaultTtl;
 
 			$key = 'all_' . $this->getKey($sql, $param);
-			if ($this->cache->exists($key) && $ttl > 0)
-				return $this->cache->__get($key);
+			$cached = $ttl > 0 ? $this->cache->__get($key) : null;
+			if (\is_array($cached))
+				return $cached;
 
 			$data = $this->database->getAll($sql, $param);
 			$this->cache->store($key, $data, $ttl);
@@ -46,8 +47,9 @@
 				$ttl = $this->defaultTtl;
 
 			$key = 'row_' . $this->getKey($sql, $param);
-			if ($this->cache->exists($key) && $ttl > 0)
-				return $this->cache->__get($key);
+			$cached = $ttl > 0 ? $this->cache->__get($key) : null;
+			if ($cached instanceof \stdClass)
+				return $cached;
 
 			$data = $this->database->getRow($sql, $param);
 			$this->cache->store($key, $data, $ttl);
@@ -67,8 +69,9 @@
 				$ttl = $this->defaultTtl;
 
 			$key = 'col_' . $this->getKey($sql, $param);
-			if ($this->cache->exists($key) && $ttl > 0)
-				return $this->cache->__get($key);
+			$cached = $ttl > 0 ? $this->cache->__get($key) : null;
+			if (\is_array($cached))
+				return $cached;
 
 			$data = $this->database->getColumn($sql, $param);
 			$this->cache->store($key, $data, $ttl);
@@ -113,6 +116,6 @@
 		 * @return string The cache key
 		 */
 		private function getKey(string $sql, array $param): string {
-			return \sha1(\json_encode([$sql, $param]));
+			return \sha1(\json_encode([$sql, $param], \JSON_THROW_ON_ERROR));
 		}
 	}

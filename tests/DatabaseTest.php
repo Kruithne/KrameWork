@@ -52,4 +52,16 @@
 			$data = $cached->getAll('SELECT ? AS value', [1], 10);
 			$this->assertEquals(['testvalue'], $data);
 		}
+
+		/**
+		 * Ensure a cached value of the wrong type is ignored and the query runs again.
+		 */
+		public function testCachedQueryIgnoresInvalidEntry() {
+			$cache = new DummyCache();
+			$database = new Database(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO);
+			$cached = new \KrameWork\Database\DatabaseCache($cache, $database, 10);
+			$expected = $cached->getAll('SELECT ? AS value', [1], 10);
+			$cache->data[\key($cache->data)] = 'invalid';
+			$this->assertEquals($expected, $cached->getAll('SELECT ? AS value', [1], 10));
+		}
 	}
