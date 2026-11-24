@@ -1,6 +1,6 @@
 <p align=center><img src="./resources/kw-logo.svg" width=500></p>
 
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.0-8892BF.svg?style=flat-square)](https://php.net/)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.3-8892BF.svg?style=flat-square)](https://php.net/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/Kruithne/KrameWork/blob/master/LICENSE)
 [![Tests](https://img.shields.io/github/actions/workflow/status/Kruithne/KrameWork/tests.yml?branch=master&label=tests&style=flat-square)](https://github.com/Kruithne/KrameWork/actions/workflows/tests.yml)
 
