@@ -2,6 +2,7 @@
 	namespace KrameWork\Caching;
 
 	require_once(__DIR__ . "/IDataCache.php");
+	require_once(__DIR__ . '/CacheOperationException.php');
 
 	/**
 	 * Class APCu
@@ -87,24 +88,38 @@
 		}
 
 		/**
-		 * Increase a numeric value in the cache.
+		 * Increase an integer value in the cache.
+		 * A missing value starts at 0.
 		 *
 		 * @api increment
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to increment the value.
+		 * @return int The new value.
+		 * @throws CacheOperationException
 		 */
-		public function increment(string $key, int $weight = 1): void {
-			\apcu_inc($key, $weight);
+		public function increment(string $key, int $weight = 1): int {
+			$value = \apcu_inc($key, $weight);
+			if ($value === false)
+				throw new CacheOperationException('Unable to increment value: ' . $key);
+
+			return $value;
 		}
 
 		/**
-		 * Decrease a numeric value in the cache.
+		 * Decrease an integer value in the cache.
+		 * A missing value starts at 0.
 		 *
 		 * @api decrement
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to decrement the value.
+		 * @return int The new value.
+		 * @throws CacheOperationException
 		 */
-		public function decrement(string $key, int $weight = 1): void {
-			\apcu_dec($key, $weight);
+		public function decrement(string $key, int $weight = 1): int {
+			$value = \apcu_dec($key, $weight);
+			if ($value === false)
+				throw new CacheOperationException('Unable to decrement value: ' . $key);
+
+			return $value;
 		}
 	}

@@ -1,5 +1,6 @@
 <?php
 	use KrameWork\Caching\APCu;
+	use KrameWork\Caching\CacheOperationException;
 	require_once(__DIR__ . '/../src/Caching/APCu.php');
 
 	class APCuTest extends PHPUnit\Framework\TestCase
@@ -103,5 +104,29 @@
 
 			$cache->flush();
 			unset($cache);
+		}
+
+		/**
+		 * Test that incrementing and decrementing return the new value.
+		 */
+		public function testIncrementDecrementReturnValue() {
+			$cache = new APCu();
+
+			$this->assertEquals(5, $cache->increment('count', 5));
+			$this->assertEquals(3, $cache->decrement('count', 2));
+
+			$cache->flush();
+			unset($cache);
+		}
+
+		/**
+		 * Test that incrementing a non-numeric value throws an exception.
+		 */
+		public function testIncrementNonNumericThrows() {
+			$cache = new APCu();
+			$cache->foo = 'bar';
+
+			$this->expectException(CacheOperationException::class);
+			$cache->increment('foo');
 		}
 	}

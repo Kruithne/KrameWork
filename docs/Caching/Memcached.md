@@ -59,15 +59,15 @@ parameter | type | description
 `$key` | `string` | Key of the item to remove.
 ##### > flush() : `void`
 Flush the cache, removing all stored data.
-##### > increment() : `void`
-Increase a numeric value in the cache.
+##### > increment() : `int`
+Increase an integer value in the cache. A missing value starts at 0. Throws `CacheOperationException` on failure. Returns the new value.
 
 parameter | type | description
 --- | --- | ---
 `$key` | `string` | Key of the value.
 `$weight` | `int` | How much to increment the value.
-##### > decrement() : `void`
-Decrease a numeric value in the cache.
+##### > decrement() : `int`
+Decrease an integer value in the cache. A missing value starts at 0. The value does not go below 0. Throws `CacheOperationException` on failure. Returns the new value.
 
 parameter | type | description
 --- | --- | ---

@@ -28,12 +28,12 @@
 			$this->data = [];
 		}
 
-		public function increment(string $key, int $weight = 1): void {
-			$this->data[$key]++;
+		public function increment(string $key, int $weight = 1): int|float {
+			return $this->data[$key] = ($this->data[$key] ?? 0) + $weight;
 		}
 
-		public function decrement(string $key, int $weight = 1): void {
-			$this->data[$key]--;
+		public function decrement(string $key, int $weight = 1): int|float {
+			return $this->data[$key] = ($this->data[$key] ?? 0) - $weight;
 		}
 
 		public $data = [];

@@ -56,16 +56,16 @@ parameter | type | description
 `$value` | `mixed` | Value to store in the cache.
 `$expire` | `int` | No effect for this implementation.
 
-##### > increment() : `void`
-Increase a numeric value in the cache.
+##### > increment() : `int|float`
+Increase a numeric value in the cache. A missing or non-numeric value starts at 0. Returns the new value.
 
 parameter | type | description
 --- | --- | ---
 `$key` | `string` | Key of the value.
 `$weight` | `int` | How much to increment the value.
 
-##### > decrement() : `void`
-Decrease a numeric value in the cache.
+##### > decrement() : `int|float`
+Decrease a numeric value in the cache. A missing or non-numeric value starts at 0. Returns the new value.
 
 parameter | type | description
 --- | --- | ---

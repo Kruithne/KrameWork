@@ -276,4 +276,20 @@
 
 			unset($cache);
 		}
+
+		/**
+		 * Test that incrementing and decrementing return the new value.
+		 */
+		public function testIncrementDecrementReturnValue() {
+			@unlink('file_cache_test.dat'); // Delete from broken tests.
+			$cache = new FileCache('file_cache_test.dat', false);
+
+			$this->assertEquals(5, $cache->increment('foo', 5));
+			$this->assertEquals(3, $cache->decrement('foo', 2));
+
+			$cache->bar = 1.5;
+			$this->assertEquals(2.5, $cache->increment('bar'));
+
+			unset($cache);
+		}
 	}

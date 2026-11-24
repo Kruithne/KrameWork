@@ -2,6 +2,7 @@
 	namespace KrameWork\Caching;
 
 	require_once(__DIR__ . "/IDataCache.php");
+	require_once(__DIR__ . '/CacheOperationException.php');
 
 	/**
 	 * Class Memcached
@@ -100,25 +101,53 @@
 		}
 
 		/**
-		 * Increase a numeric value in the cache.
+		 * Increase an integer value in the cache.
+		 * A missing value starts at 0.
 		 *
-		 * @api
+		 * @api increment
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to increment the value.
+		 * @return int The new value.
+		 * @throws CacheOperationException
 		 */
-		public function increment(string $key, int $weight = 1): void {
-			$this->cache->increment($key, $weight);
+		public function increment(string $key, int $weight = 1): int {
+			$value = $this->cache->increment($key, $weight);
+			if ($value === false && $this->cache->getResultCode() === \Memcached::RES_NOTFOUND) {
+				if ($this->cache->add($key, $weight))
+					return $weight;
+
+				$value = $this->cache->increment($key, $weight);
+			}
+
+			if ($value === false)
+				throw new CacheOperationException('Unable to increment value: ' . $key);
+
+			return $value;
 		}
 
 		/**
-		 * Decrease a numeric value in the cache.
+		 * Decrease an integer value in the cache.
+		 * A missing value starts at 0. The value does not go below 0.
 		 *
-		 * @api
+		 * @api decrement
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to decrement the value.
+		 * @return int The new value.
+		 * @throws CacheOperationException
 		 */
-		public function decrement(string $key, int $weight = 1): void {
-			$this->cache->decrement($key, $weight);
+		public function decrement(string $key, int $weight = 1): int {
+			$value = $this->cache->decrement($key, $weight);
+			if ($value === false && $this->cache->getResultCode() === \Memcached::RES_NOTFOUND) {
+				if ($this->cache->add($key, 0))
+					return 0;
+
+				$value = $this->cache->decrement($key, $weight);
+			}
+
+			if ($value === false)
+				throw new CacheOperationException('Unable to decrement value: ' . $key);
+
+			return $value;
 		}
 
 		/**

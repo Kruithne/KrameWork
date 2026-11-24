@@ -19,4 +19,15 @@
 			$session->decrement('bar');
 			$this->assertEquals(-1, $session->bar);
 		}
+
+		/**
+		 * Test that incrementing and decrementing return the new value.
+		 */
+		public function testIncrementDecrementReturnValue() {
+			$_SESSION = [];
+			$session = new Session(false);
+
+			$this->assertEquals(5, $session->increment('foo', 5));
+			$this->assertEquals(3, $session->decrement('foo', 2));
+		}
 	}

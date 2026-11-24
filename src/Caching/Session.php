@@ -145,10 +145,14 @@
 		 * @api increment
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to increment the value.
+		 * @return int|float The new value.
 		 */
-		public function increment(string $key, int $weight = 1): void {
+		public function increment(string $key, int $weight = 1): int|float {
 			$value = $this->__get($key);
-			$this->store($key, (\is_numeric($value) ? $value : 0) + $weight);
+			$value = (\is_numeric($value) ? $value : 0) + $weight;
+			$this->store($key, $value);
+
+			return $value;
 		}
 
 		/**
@@ -158,9 +162,13 @@
 		 * @api decrement
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to decrement the value.
+		 * @return int|float The new value.
 		 */
-		public function decrement(string $key, int $weight = 1): void {
+		public function decrement(string $key, int $weight = 1): int|float {
 			$value = $this->__get($key);
-			$this->store($key, (\is_numeric($value) ? $value : 0) - $weight);
+			$value = (\is_numeric($value) ? $value : 0) - $weight;
+			$this->store($key, $value);
+
+			return $value;
 		}
 	}

@@ -69,8 +69,9 @@
 		 * @api increment
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to increment the value.
+		 * @return int|float The new value.
 		 */
-		public function increment(string $key, int $weight = 1): void;
+		public function increment(string $key, int $weight = 1): int|float;
 
 		/**
 		 * Decrease a numeric value in the cache.
@@ -78,6 +79,7 @@
 		 * @api decrement
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to decrement the value.
+		 * @return int|float The new value.
 		 */
-		public function decrement(string $key, int $weight = 1): void;
+		public function decrement(string $key, int $weight = 1): int|float;
 	}
