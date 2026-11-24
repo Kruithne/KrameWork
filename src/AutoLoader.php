@@ -39,8 +39,11 @@
 			if ($flags & self::INCLUDE_KRAMEWORK_DIRECTORY)
 				$this->sources[] = ['KrameWork', __DIR__];
 
-			if ($flags & self::INCLUDE_WORKING_DIRECTORY)
-				$this->sources[] = \getcwd();
+			if ($flags & self::INCLUDE_WORKING_DIRECTORY) {
+				$cwd = \getcwd();
+				if ($cwd !== false)
+					$this->sources[] = $cwd;
+			}
 
 			// Register this auto-loader instance with PHP.
 			spl_autoload_register([$this, 'loadClass']);
