@@ -244,7 +244,7 @@
 		 * @return string
 		 */
 		public static function getRequestContent():string {
-			return \file_get_contents('php://input');
+			return (string) \file_get_contents('php://input');
 		}
 
 		/**
