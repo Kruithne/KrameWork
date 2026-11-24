@@ -40,19 +40,19 @@ StringBuilder constructor.
 
 parameter | type | description
 --- | --- | ---
-`...$args` | `mixed` | Initial elements to append to the builder.
+`...$args` | `string|int|float|bool|Stringable|array|null` | Initial elements to append to the builder.
 ##### > append() : `StringBuilder`
 Append one or more elements to the builder. Arrays will be recursively iterated with all elements appended.
 
 parameter | type | description
 --- | --- | ---
-`...$args` | `mixed` | Elements to append to the builder.
+`...$args` | `string|int|float|bool|Stringable|array|null` | Elements to append to the builder.
 ##### > appendLine() : `StringBuilder`
 Append elements to the builder with a line-end prefix/suffix. Defaults to Unix line-end unless specified using setLineEnd(). Providing a null element is equivalent to calling newLine(true). Note: One line-end added per function call, not per element.
 
 parameter | type | description
 --- | --- | ---
-`$line` | `string|array|null` | Element(s) to append.
+`$line` | `string|int|float|bool|Stringable|array|null` | Element(s) to append.
 `$suffix` | `bool` | Line-end will be suffix, otherwise prefix.
 ##### > appendf() : `StringBuilder`
 Append a single formatted string to the builder.
@@ -66,13 +66,13 @@ Prepend one or more element to the builder. Arrays will be recursively iterated 
 
 parameter | type | description
 --- | --- | ---
-`...$args` | `mixed` | Elements to prepend to the builder.
+`...$args` | `string|int|float|bool|Stringable|array|null` | Elements to prepend to the builder.
 ##### > prependLine() : `StringBuilder`
 Prepend elements to the builder with a line-end prefix/suffix. Defaults to Unix line-end unless specified using setLineEnd(). Providing a null element is equivalent to calling newLine(false). Note: One line-end added per function call, not per element.
 
 parameter | type | description
 --- | --- | ---
-`$line` | `string|array|null` | Element to prepend.
+`$line` | `string|int|float|bool|Stringable|array|null` | Element to prepend.
 `$suffix` | `bool` | Line-end will be suffix, otherwise prefix.
 ##### > prependf() : `StringBuilder`
 Prepend a single formatted string to the builder.
@@ -86,7 +86,7 @@ Add an element $count amount of times to the builder. Arrays will be recursively
 
 parameter | type | description
 --- | --- | ---
-`$input` | `string|array` | Element to repeat.
+`$input` | `string|int|float|bool|Stringable|array|null` | Element to repeat.
 `$count` | `int` | How many times to append/prepend the element.
 `$append` | `bool` | Append the element, otherwise prepend.
 ##### > newLine() : `StringBuilder`

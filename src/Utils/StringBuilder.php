@@ -18,9 +18,9 @@
 		 * StringBuilder constructor.
 		 *
 		 * @api __construct
-		 * @param mixed ...$args Initial elements to append to the builder.
+		 * @param (string|int|float|bool|\Stringable|null|mixed[]) ...$args Initial elements to append to the builder.
 		 */
-		public function __construct(mixed ...$args) {
+		public function __construct(string|int|float|bool|\Stringable|array|null ...$args) {
 			$this->clear();
 			$this->append($args);
 		}
@@ -30,10 +30,10 @@
 		 * Arrays will be recursively iterated with all elements appended.
 		 *
 		 * @api append
-		 * @param mixed ...$args Elements to append to the builder.
+		 * @param (string|int|float|bool|\Stringable|null|mixed[]) ...$args Elements to append to the builder.
 		 * @return StringBuilder
 		 */
-		public function append(mixed ...$args):StringBuilder {
+		public function append(string|int|float|bool|\Stringable|array|null ...$args):StringBuilder {
 			foreach ($args as $arg) {
 				if (\is_array($arg)) {
 					foreach ($arg as $subArg)
@@ -65,11 +65,11 @@
 		 * Note: One line-end added per function call, not per element.
 		 *
 		 * @api appendLine
-		 * @param string|mixed[]|null $line Element(s) to append.
+		 * @param (string|int|float|bool|\Stringable|null|mixed[]) $line Element(s) to append.
 		 * @param bool $suffix Line-end will be suffix, otherwise prefix.
 		 * @return StringBuilder
 		 */
-		public function appendLine(mixed $line = null, bool $suffix = true):StringBuilder {
+		public function appendLine(string|int|float|bool|\Stringable|array|null $line = null, bool $suffix = true):StringBuilder {
 			if ($line === null)
 				return $this->newLine(true);
 
@@ -112,10 +112,10 @@
 		 * Arrays will be recursively iterated with all elements prepended.
 		 *
 		 * @api prepend
-		 * @param mixed ...$args Elements to prepend to the builder.
+		 * @param (string|int|float|bool|\Stringable|null|mixed[]) ...$args Elements to prepend to the builder.
 		 * @return StringBuilder
 		 */
-		public function prepend(mixed ...$args):StringBuilder {
+		public function prepend(string|int|float|bool|\Stringable|array|null ...$args):StringBuilder {
 			foreach ($args as $arg) {
 				if (\is_array($arg)) {
 					foreach ($arg as $subArg)
@@ -146,11 +146,11 @@
 		 * Note: One line-end added per function call, not per element.
 		 *
 		 * @api prependLine
-		 * @param string|mixed[]|null $line Element to prepend.
+		 * @param (string|int|float|bool|\Stringable|null|mixed[]) $line Element to prepend.
 		 * @param bool $suffix Line-end will be suffix, otherwise prefix.
 		 * @return StringBuilder
 		 */
-		public function prependLine(mixed $line = null, bool $suffix = true):StringBuilder {
+		public function prependLine(string|int|float|bool|\Stringable|array|null $line = null, bool $suffix = true):StringBuilder {
 			if ($line === null)
 				return $this->newLine(false);
 
@@ -193,12 +193,12 @@
 		 * Arrays will be recursively iterated with each element added.
 		 *
 		 * @api repeat
-		 * @param string|mixed[] $input Element to repeat.
+		 * @param (string|int|float|bool|\Stringable|null|mixed[]) $input Element to repeat.
 		 * @param int $count How many times to append/prepend the element.
 		 * @param bool $append Append the element, otherwise prepend.
 		 * @return StringBuilder
 		 */
-		public function repeat(mixed $input, int $count = 1, bool $append = true):StringBuilder {
+		public function repeat(string|int|float|bool|\Stringable|array|null $input, int $count = 1, bool $append = true):StringBuilder {
 			for ($i = 0; $i < $count; $i++)
 				$append ? $this->append($input) : $this->prepend($input);
 
