@@ -57,7 +57,7 @@
 		 */
 		private function addField(string|int $content): void
 		{
-			$this->builder->append(\str_pad($content, 10), "\t");
+			$this->builder->append(\str_pad((string) $content, 10), "\t");
 		}
 
 		/**
