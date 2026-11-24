@@ -36,7 +36,7 @@ $policy->apply(); // Set all HTTP headers with the policy set-up.
 ___
 ### Functions
 ##### > __construct() : `void`
-HTTPHeaders constructor.
+HTTPHeaders constructor. Non-string elements in a pre-compiled string are discarded.
 
 parameter | type | description
 --- | --- | ---
@@ -55,8 +55,8 @@ Apply this policy, compiling and setting all headers. Unless providing a pre-com
 ##### > compile() : `void`
 Compiled all headers in this policy, storing them internally. Call before applying a non pre-compiled policy.
 
-##### > __toString() : `void`
-Get a serialized representation of this policy. Results may be incorrect if called before compile().
+##### > __toString() : `string`
+Get a serialized representation of this policy. Results may be incorrect if called before compile(). Throws a `JsonException` if a compiled header cannot be encoded (for example, invalid UTF-8).
 
 ##### > generateApacheConfig() : `string`
 Generate Apache configuration using these headers. Will not work with pre-compiled headers. Call compile() first.
