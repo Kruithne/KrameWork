@@ -7,7 +7,7 @@
 	 * Class ResultRow
 	 * Encapsulates a result row of formatted data, with support for JSON serialization
 	 * @author docpify <morten@runsafe.no>
-	 * @implements \Iterator<int|string, mixed>
+	 * @implements \Iterator<string, mixed>
 	 * @implements \ArrayAccess<int|string, mixed>
 	 */
 	class ReportRow implements \JsonSerializable, \Iterator, \ArrayAccess
@@ -20,8 +20,7 @@
 
 		function jsonSerialize(): mixed {
 			$serialize = [];
-			$this->indexKeys();
-			foreach ($this->keys as $field) {
+			foreach ($this->keys() as $field) {
 
 				$value = null;
 				if(is_array($this->data))
@@ -56,15 +55,14 @@
 		 * @link http://php.net/manual/en/iterator.key.php
 		 */
 		public function key(): mixed {
-			return $this->getKeyAt($this->position);
+			return $this->keys()[$this->position];
 		}
 
 		/**
 		 * @link http://php.net/manual/en/iterator.valid.php
 		 */
 		public function valid(): bool {
-			$this->indexKeys();
-			return $this->data && \count($this->keys) > $this->position;
+			return \count($this->keys()) > $this->position;
 		}
 
 		/**
@@ -109,27 +107,32 @@
 
 		/**
 		 * @param int $index
-		 * @return int|string|null
+		 * @return string|null
 		 */
-		private function getKeyAt(int $index): int|string|null {
-			$this->indexKeys();
-			return isset($this->keys[$index]) ? $this->keys[$index] : null;
-		}
-
-		private function indexKeys(): void {
-			if ($this->keys == null)
-			{
-				if (is_array($this->data))
-					$this->keys = \array_keys($this->data);
-				else if (is_object($this->data))
-					$this->keys = \array_keys(\get_object_vars($this->data));
-				else
-					$this->keys = [];
-			}
+		private function getKeyAt(int $index): ?string {
+			return $this->keys()[$index] ?? null;
 		}
 
 		/**
-		 * @var (int|string)[]|null Numerically indexed keys for iteration purposes
+		 * Get the keys of the row data, indexed on first use.
+		 * @return list<string>
+		 */
+		private function keys(): array {
+			if ($this->keys !== null)
+				return $this->keys;
+
+			if (\is_array($this->data))
+				$this->keys = \array_keys($this->data);
+			else if (\is_object($this->data))
+				$this->keys = \array_keys(\get_object_vars($this->data));
+			else
+				$this->keys = [];
+
+			return $this->keys;
+		}
+
+		/**
+		 * @var list<string>|null Numerically indexed keys for iteration purposes
 		 */
 		private ?array $keys = null;
 
