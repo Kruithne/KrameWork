@@ -4,12 +4,14 @@
 	use KrameWork\Runtime\ErrorFormatters\JSONErrorFormatter;
 	use KrameWork\Runtime\ErrorFormatters\MarkdownErrorFormatter;
 	use KrameWork\Runtime\ErrorFormatters\PlainTextErrorFormatter;
+	use KrameWork\Runtime\ErrorTypes\ExceptionError;
 	use PHPUnit\Framework\Attributes\DataProvider;
 
 	require_once(__DIR__ . '/../src/Runtime/ErrorFormatters/HTMLErrorFormatter.php');
 	require_once(__DIR__ . '/../src/Runtime/ErrorFormatters/JSONErrorFormatter.php');
 	require_once(__DIR__ . '/../src/Runtime/ErrorFormatters/MarkdownErrorFormatter.php');
 	require_once(__DIR__ . '/../src/Runtime/ErrorFormatters/PlainTextErrorFormatter.php');
+	require_once(__DIR__ . '/../src/Runtime/ErrorTypes/ExceptionError.php');
 
 	class ErrorFormatterTest extends PHPUnit\Framework\TestCase
 	{
@@ -35,5 +37,17 @@
 			$this->expectException(\LogicException::class);
 			$formatter->beginReport();
 			$formatter->generate();
+		}
+
+		/**
+		 * Test that the HTML formatter converts non-string debug values to strings.
+		 */
+		public function testHTMLFormatterConvertsDebugValuesToString(): void {
+			$formatter = new HTMLErrorFormatter();
+			$formatter->beginReport();
+			$formatter->reportError(new ExceptionError(new \Exception('test')));
+			$formatter->reportDebug(['list' => [1, 2]]);
+
+			$this->assertStringContainsString('(array) 2 items', (string)$formatter->generate());
 		}
 	}

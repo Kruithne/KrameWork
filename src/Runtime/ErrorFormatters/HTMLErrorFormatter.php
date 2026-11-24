@@ -137,7 +137,7 @@
 					foreach ($this->debug as $key => $value) {
 						$frame = $debugLine->createFrame();
 						$frame->key = $key;
-						$frame->value = $value;
+						$frame->value = StringUtil::variableAsString($value);
 					}
 				}
 			}
