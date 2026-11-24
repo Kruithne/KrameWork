@@ -269,14 +269,14 @@
 		protected ?array $debug = null;
 
 		/**
-		 * @var array<string, mixed>|null
+		 * @var array<string, mixed>
 		 */
-		protected ?array $data = null;
+		protected array $data = [];
 
 		/**
-		 * @var array<string, string|int>|null
+		 * @var array<string, string|int>
 		 */
-		protected ?array $basicData = null;
+		protected array $basicData = [];
 
 		/**
 		 * @var array<int, StackFrame>
