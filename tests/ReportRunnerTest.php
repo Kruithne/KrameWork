@@ -55,6 +55,18 @@
 			$this->assertEquals([new ReportRow($data)], $runner->data()->data, 'Calling data() did not return cached data');
 		}
 
+		/**
+		 * Checks that data() runs the report when the cache holds a value that is not a ReportResults.
+		 */
+		public function testReportInvalidCacheValue() {
+			$data = ['value' => 1];
+			$cache = new DummyCache();
+			$cache->store('test', 'stale', 300);
+			$runner = new TestReportRunner($cache, 'test', 300);
+			$runner->data = [$data];
+			$this->assertEquals([new ReportRow($data)], $runner->data()->data, 'Calling data() did not run the report for an invalid cache value');
+		}
+
 		public function testReportCacheTTL() {
 			$data = ['value' => 1];
 			$cache = new DummyCache();
@@ -99,5 +111,15 @@
 				])
 			];
 			$this->assertEquals($expected, $actual);
+		}
+
+		/**
+		 * Checks that a currency field value that is not a string uses the column fallback currency.
+		 */
+		public function testCurrencyFieldNotString() {
+			$report = new TestReportRunner(new DummyCache(), 'test', 0);
+			$report->data = [(object)['money' => 4.20, 'code' => 840]];
+			$report->columns = ['money' => new ReportColumn('test', ReportColumn::COL_CURRENCY, 'EUR', 'code')];
+			$this->assertEquals(new CurrencyValue(4.2, 'EUR'), $report->data()->data[0]['money']);
 		}
 	}

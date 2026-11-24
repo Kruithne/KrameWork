@@ -40,7 +40,7 @@ parameter | type | description
 `$cacheTTL` | `int` | Number of seconds to keep the report results in the cache.
 
 ##### > data() : `ReportResults`
-Returns the result set of the report, running the report if necessary, or reading the contents from cache.
+Returns the result set of the report, running the report if necessary, or reading the contents from cache. If the cache holds a value that is not a `ReportResults`, the report runs again and replaces the cached value.
 ##### > clear() : `void`
 Forces the report to rerun by clearing the cache. A subsequent call to `data()` will execute the report.
 ##### > columns() : `ReportColumn[]`

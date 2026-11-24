@@ -29,7 +29,7 @@ new ReportColumn('Price', ReportColumn::COL_CURRENCY, 'EUR');
 new ReportColumn('Price', ReportColumn::COL_CURRENCY, currencyField: 'price_currency');
 ```
 The currency code for each value is taken from the first of these that is set:
-1. The field named by `$currencyField` in the row.
+1. The field named by `$currencyField` in the row, if its value is a non-empty string.
 2. The `$currency` of the column.
 3. The `currency()` of the `ReportRunner`.
 4. `USD`.

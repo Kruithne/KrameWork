@@ -41,16 +41,12 @@
 		 * @return ReportResults The data set returned by the SQL
 		 */
 		public function data(): ReportResults {
-			if ($this->cache->exists($this->key))
-				$data = $this->cache->__get($this->key);
-			else
-				$data = null;
+			$data = $this->cache->__get($this->key);
+			if ($data instanceof ReportResults)
+				return $data;
 
-			if($data == null)
-			{
-				$data = new ReportResults($this->postProcess($this->run()));
-				$this->cache->store($this->key, $data, $this->cacheTTL);
-			}
+			$data = new ReportResults($this->postProcess($this->run()));
+			$this->cache->store($this->key, $data, $this->cacheTTL);
 			return $data;
 		}
 
@@ -112,7 +108,10 @@
 					return;
 
 				$code = $field === null ? null : ($row->$field ?? null);
-				$row->{$key} = new CurrencyValue($row->{$key}, $code ?: $fallback);
+				if (!\is_string($code) || $code === '')
+					$code = $fallback;
+
+				$row->{$key} = new CurrencyValue($row->{$key}, $code);
 			};
 		}
 
