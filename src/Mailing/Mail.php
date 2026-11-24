@@ -244,7 +244,7 @@
 					$bFile = new MailMultipartContent($file->getFileType() . '; name="' . $file->getName() . '"', $container);
 					$bFile->setContentDisposition(($file->isInline() ? 'inline' : 'attachment') . '; filename="' . $file->getName() . '"');
 					$bFile->setTransferEncoding('base64');
-					$bFile->setContent($file->getData(true), true);
+					$bFile->setContent($file->getData(true) ?? '', true);
 
 					if ($file->isInline())
 						$bFile->setAttachmentID($file->getContentID());
