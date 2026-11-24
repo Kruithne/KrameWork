@@ -104,7 +104,7 @@ of how they were sent.
 
 On Apache, this makes use of the `apache_request_headers` function. If that function
 cannot be found, the `$_SERVER` super-global is iterated for `HTTP_` prefixed keys instead.
-##### > HTTPContext::getRequestHeader() : `mixed|null`
+##### > HTTPContext::getRequestHeader() : `string|null`
 Retrieves a specific request header or returns NULL if the header was not sent.
 
 parameter | type | description

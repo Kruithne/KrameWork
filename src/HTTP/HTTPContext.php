@@ -353,13 +353,13 @@
 			$headers = [];
 			if (\function_exists('apache_request_headers')) {
 				// Apache
-				$headers = \array_change_key_case(\apache_request_headers(), \CASE_LOWER);
+				foreach (\apache_request_headers() as $name => $value)
+					$headers[\strtolower($name)] = (string) $value;
 			} else {
 				// NGINX
 				foreach ($_SERVER as $name => $value) {
-					if (\str_starts_with($name, 'HTTP_')) {
-						$headers[\str_replace('_', '-', \strtolower(\substr($name, 5)))] = $value;
-					}
+					if (\str_starts_with($name, 'HTTP_'))
+						$headers[\str_replace('_', '-', \strtolower(\substr($name, 5)))] = (string) $value;
 				}
 			}
 
@@ -369,9 +369,9 @@
 
 		/**
 		 * Retrieves a specific request header or NULL if it was not sent.
-		 * @return mixed|null
+		 * @return string|null
 		 */
-		public static function getRequestHeader(string $key): mixed {
+		public static function getRequestHeader(string $key): ?string {
 			return self::getRequestHeaders()[\strtolower($key)] ?? null;
 		}
 
