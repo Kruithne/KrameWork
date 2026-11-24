@@ -19,11 +19,11 @@ $benchmark = new class extends Benchmark {
   }
 };
 ```
-Your anonymous class must implement the `execute()` function, which is called by default **2000** times once the benchmark test is run, which we'll do now!
+Your anonymous class must implement the `execute()` function, which is called by default **200,000** times (200 sets of 1000 executions) once the benchmark test is run, which we'll do now!
 ```php
 $result = $benchmark->runTest();
 ```
-With the call to `runTest()`, our benchmark will run **2000** times, and the results will be stored in `$result`, a `BenchmarkResult`, detailed below.
+With the call to `runTest()`, our benchmark will run **200,000** times, and the results will be stored in `$result`, a `BenchmarkResult`, detailed below.
 
 Method | Type | Description
 --- | --- |---
@@ -35,16 +35,16 @@ Method | Type | Description
 `getCount()` | `int` | Cycle count (as provided in the `Benchmark` constructor).
 
 ##### Controlling Cycle Count
-As stated above, a benchmark will run **2000** times by default; it's likely that you'll want to customize this value, which can be done by passing a new value into the constructor. The following example will execute **1,000,000** times.
+As stated above, a benchmark will run 200 sets of 1000 executions by default; it's likely that you'll want to customize these values, which can be done by passing the set count and the executions per set into the constructor. The following example will execute 100 sets of 10,000 executions, which is **1,000,000** executions in total.
 ```php
-$benchmark = new class (1000000) extends Benchmark {
+$benchmark = new class (100, 10000) extends Benchmark {
 	//...
 }
 ```
 ##### Naming Benchmarks
-All good benchmarks deserve a name, they're real people too. The second parameter to the constructor can be used to provide a name for the benchmark, otherwise a boring generic one will be assigned.
+All good benchmarks deserve a name, they're real people too. The third parameter to the constructor can be used to provide a name for the benchmark, otherwise a boring generic one will be assigned.
 ```php
-$benchmark = new class(100, 'Carl') extends Benchmark {
+$benchmark = new class(100, 1000, 'Carl') extends Benchmark {
     //...
 }
 ```
