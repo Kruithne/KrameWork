@@ -58,6 +58,10 @@ parameter | type | description
 `$key` | `string` | Key to store the value under.
 `$value` | `mixed` | Value to store in the cache.
 `$expire` | `int` | 60*60*24*30 >= Unix Timestamp, otherwise seconds. 0 = Never.
+
+exception | reason
+--- | ---
+`CacheOperationException` | Value could not be stored on the server.
 ##### > __set() : `void`
 Store a value in the cache. Value will not expire, use store() if needed.
 
@@ -65,14 +69,26 @@ parameter | type | description
 --- | --- | ---
 `$key` | `string` | Key to store the value under.
 `$value` | `mixed` | Value to store in the cache.
+
+exception | reason
+--- | ---
+`CacheOperationException` | Value could not be stored on the server.
 ##### > __unset() : `void`
 Remove an item stored in the cache.
 
 parameter | type | description
 --- | --- | ---
 `$key` | `string` | Key of the item to remove.
+
+exception | reason
+--- | ---
+`CacheOperationException` | Value could not be removed from the server.
 ##### > flush() : `void`
 Flush the cache, removing all stored data.
+
+exception | reason
+--- | ---
+`CacheOperationException` | Cache could not be flushed on the server.
 ##### > increment() : `int`
 Increase an integer value in the cache. A missing value starts at 0. Throws `CacheOperationException` on failure. Returns the new value.
 

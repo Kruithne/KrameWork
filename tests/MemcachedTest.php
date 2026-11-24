@@ -24,4 +24,24 @@
 			$this->expectException(CacheOperationException::class);
 			$cache->exists('foo');
 		}
+
+		/**
+		 * Test that storing a value throws an exception when the server cannot be reached.
+		 */
+		public function testStoreUnreachableServerThrows() {
+			$cache = new Memcached('127.0.0.1', 1);
+
+			$this->expectException(CacheOperationException::class);
+			$cache->store('foo', 'bar');
+		}
+
+		/**
+		 * Test that removing a value throws an exception when the server cannot be reached.
+		 */
+		public function testUnsetUnreachableServerThrows() {
+			$cache = new Memcached('127.0.0.1', 1);
+
+			$this->expectException(CacheOperationException::class);
+			unset($cache->foo);
+		}
 	}

@@ -54,6 +54,7 @@
 		 * @param string $key Key to store the value under.
 		 * @param mixed $value Value to store in the cache.
 		 * @param int $expire 60*60*24*30 >= Unix Timestamp, otherwise seconds. 0 = Never.
+		 * @throws CacheOperationException
 		 */
 		public function store(string $key, mixed $value, int $expire = 0): void {
 			if($value === null)
@@ -61,7 +62,8 @@
 				$this->__unset($key);
 				return;
 			}
-			$this->cache->set($key, $value, $expire);
+			if (!$this->cache->set($key, $value, $expire))
+				throw new CacheOperationException('Unable to store value: ' . $key);
 		}
 
 		/**
@@ -89,6 +91,7 @@
 		 * @api __set
 		 * @param string $key Key to store the value under.
 		 * @param mixed $value Value to store in the cache.
+		 * @throws CacheOperationException
 		 */
 		public function __set(string $key, mixed $value): void {
 			$this->store($key, $value);
@@ -99,18 +102,22 @@
 		 *
 		 * @api __unset
 		 * @param string $key Key of the item to remove.
+		 * @throws CacheOperationException
 		 */
 		public function __unset(string $key): void {
-			$this->cache->delete($key);
+			if (!$this->cache->delete($key) && $this->cache->getResultCode() !== \Memcached::RES_NOTFOUND)
+				throw new CacheOperationException('Unable to remove value: ' . $key);
 		}
 
 		/**
 		 * Flush the cache, removing all stored data.
 		 *
 		 * @api flush
+		 * @throws CacheOperationException
 		 */
 		public function flush(): void {
-			$this->cache->flush();
+			if (!$this->cache->flush())
+				throw new CacheOperationException('Unable to flush cache.');
 		}
 
 		/**
