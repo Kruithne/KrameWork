@@ -27,10 +27,10 @@
 		 * @param string[] $labels Labels to add to raised issues.
 		 * @param int $throttle Seconds before a report with the same title can be raised again.
 		 * @param IDataCache|null $cache Cache to store throttle data in.
-		 * @param callable|null $title Title generator, called with the report.
+		 * @param (callable(IErrorReport|string): string)|null $title Title generator, called with the report.
 		 */
 		public function __construct(protected string $token, protected string $repository, protected array $labels = [], protected int $throttle = 86400, protected ?IDataCache $cache = null, ?callable $title = null) {
-			$this->title = $title;
+			$this->title = $title === null ? null : \Closure::fromCallable($title);
 		}
 
 		public function dispatch(IErrorReport|string $report): bool {
@@ -141,5 +141,8 @@
 			return $throttled;
 		}
 
-		protected mixed $title = null;
+		/**
+		 * @var (\Closure(IErrorReport|string): string)|null
+		 */
+		protected ?\Closure $title = null;
 	}

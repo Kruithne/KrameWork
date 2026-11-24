@@ -33,7 +33,7 @@ FileDispatcher constructor.
 parameter | type | description
 --- | --- |---
 `$directory` | `string` | Directory which report files will be stored in.
-`$name` | `string|array|callable` | File-name or callable naming function.
+`$name` | `string|Closure` | File-name or naming closure.
 
 ##### > dispatch() : `bool`
 Dispatch an error report.

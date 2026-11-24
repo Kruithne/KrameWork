@@ -23,14 +23,14 @@
 		 * @param array<string, string|null> $recipients Recipients to receive this report.
 		 * @param string $sender Sender e-mail address.
 		 * @param string $senderName Name of the e-mail sender.
-		 * @param string|callable(IErrorReport|string): string|array{callable(IErrorReport|string): string} $subject Subject string or callable generator.
+		 * @param string|(\Closure(IErrorReport|string): string) $subject Subject string or subject generator.
 		 */
-		public function __construct(array $recipients, string $sender, ?string $senderName = null, string|array|callable $subject = 'Error Report') {
+		public function __construct(array $recipients, string $sender, ?string $senderName = null, string|\Closure $subject = 'Error Report') {
 			$this->mail = new Mail();
 			$this->mail->to->add($recipients);
 			$this->mail->setSender($sender, $senderName, true);
 
-			if (\is_array($subject) || \is_callable($subject))
+			if ($subject instanceof \Closure)
 				$this->subjectGen = $subject;
 			else
 				$this->mail->setSubject($subject);
@@ -44,15 +44,8 @@
 		 * @return bool
 		 */
 		public function dispatch(IErrorReport|string $report): bool {
-			if ($this->subjectGen) {
-				$subject = $this->subjectGen;
-				if (\is_array($subject))
-					$subject = \call_user_func(\count($this->subjectGen) == 1 ? $this->subjectGen[0] : $this->subjectGen, $report);
-				elseif (\is_callable($subject))
-					$subject = $subject($report);
-
-				$this->mail->setSubject($subject);
-			}
+			if ($this->subjectGen !== null)
+				$this->mail->setSubject(($this->subjectGen)($report));
 
 			$this->mail->htmlContent->setContent($report);
 			$this->mail->send();
@@ -65,7 +58,7 @@
 		protected Mail $mail;
 
 		/**
-		 * @var callable(IErrorReport|string): string|array{callable(IErrorReport|string): string}|null
+		 * @var (\Closure(IErrorReport|string): string)|null
 		 */
-		protected mixed $subjectGen = null;
+		protected ?\Closure $subjectGen = null;
 	}

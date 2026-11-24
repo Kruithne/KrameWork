@@ -19,9 +19,9 @@
 		 *
 		 * @api __construct
 		 * @param string $directory Directory to store files in.
-		 * @param string|callable(IErrorReport|string): string|array{callable(IErrorReport|string): string} $name File name. Arrays are treated as callbacks.
+		 * @param string|(\Closure(IErrorReport|string): string) $name File name or name generator.
 		 */
-		public function __construct(string $directory, string|array|callable $name = 'error') {
+		public function __construct(string $directory, string|\Closure $name = 'error') {
 			$check = \realpath($directory);
 			if ($check === false || !\is_dir($check))
 				$check = __DIR__;
@@ -38,12 +38,7 @@
 		 * @return bool
 		 */
 		public function dispatch(IErrorReport|string $report): bool {
-			$file = $this->name;
-			if (\is_array($file)) // Execute callback.
-				$file = \call_user_func(\count($file) == 1 ? $file[0] : $file, $report);
-			elseif (is_callable($file))
-				$file = $file($report);
-
+			$file = $this->name instanceof \Closure ? ($this->name)($report) : $this->name;
 			$ext = ($report instanceof IErrorReport) ? $report->getExtension() : '.txt';
 			$full = $file . $ext;
 
@@ -59,9 +54,9 @@
 		}
 
 		/**
-		 * @var string|callable(IErrorReport|string): string|array{callable(IErrorReport|string): string}
+		 * @var string|(\Closure(IErrorReport|string): string)
 		 */
-		protected mixed $name;
+		protected string|\Closure $name;
 
 		/**
 		 * @var string
