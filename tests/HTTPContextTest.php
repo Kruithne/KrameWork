@@ -299,4 +299,26 @@
 			// Cleanup
 			$_FILES = $orig;
 		}
+
+		/**
+		 * Test that HTTPContext->getFiles() returns a single-file upload (non-array input) as one file.
+		 */
+		public function testSingleFileAccess() {
+			$orig = $_FILES;
+			$_FILES = [
+				"test" => [
+					"name" => "2015-11-01_21-15-13.png",
+					"type" => "image/png",
+					"tmp_name" => __DIR__ . "/resources/HTTPContextTest/tmp/phpbF6s1h",
+					"error" => 0,
+					"size" => 117552
+				]
+			];
+
+			$testFiles = HTTPContext::getFiles("test", true);
+			$this->assertCount(1, $testFiles, "Context did not return the single uploaded file.");
+			$this->assertTrue($testFiles[0]->isValid(), "Single uploaded file was expected to be valid.");
+
+			$_FILES = $orig;
+		}
 	}

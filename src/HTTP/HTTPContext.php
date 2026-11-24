@@ -28,26 +28,32 @@
 			$node = $_FILES[$key] ?? null;
 
 			// No files to return, lame.
-			if ($node === null)
+			if (!\is_array($node))
 				return $files;
 
-			$size = \count($node['name']);
-			if ($size == 0) // Bork.
+			$names = (array) ($node['name'] ?? []);
+			$types = (array) ($node['type'] ?? []);
+			$paths = (array) ($node['tmp_name'] ?? []);
+			$errors = (array) ($node['error'] ?? []);
+			$sizes = (array) ($node['size'] ?? []);
+
+			$count = \count($names);
+			if ($count == 0) // Bork.
 				return $files;
 
 			if ($useWrappers)
 				require_once(__DIR__ . '/../Storage/UploadedFile.php');
 
-			for ($i = 0; $i < $size; $i++) {
+			for ($i = 0; $i < $count; $i++) {
 				if ($useWrappers) {
-					$files[] = new UploadedFile($node['tmp_name'][$i], $node['name'][$i], $node['error'][$i]);
+					$files[] = new UploadedFile((string) $paths[$i], (string) $names[$i], (int) $errors[$i]);
 				} else {
 					$files[] = new \ArrayObject([
-						'name' => $node['name'][$i],
-						'type' => $node['type'][$i],
-						'path' => $node['tmp_name'][$i],
-						'error' => $node['error'][$i],
-						'size' => $node['size'][$i]
+						'name' => $names[$i],
+						'type' => $types[$i],
+						'path' => $paths[$i],
+						'error' => $errors[$i],
+						'size' => $sizes[$i]
 					], \ArrayObject::ARRAY_AS_PROPS);
 				}
 			}
