@@ -14,9 +14,9 @@ This class does not provide any special functions, other than those required by 
 ___
 ### Functions
 ##### > __construct() : `void`
-ReportRunner constructor.
+ReportRow constructor.
 
 parameter | type | description
 --- | --- | ---
-`$data` | `array|Value[]` | Data values to hold in the row.
+`$data` | `array|object|null` | Data values to hold in the row, as an associative array or an object.
 
