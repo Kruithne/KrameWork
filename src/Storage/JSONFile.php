@@ -87,6 +87,9 @@
 			if ($this->path != null)
 				parent::read();
 
+			if ($this->data === null)
+				throw new JSONException('Cannot decode JSON: No data given.');
+
 			$decoded = \json_decode($this->data, $this->assoc, $this->depth, $this->options);
 			if (\json_last_error() !== JSON_ERROR_NONE)
 				$this->throwJSONError();

@@ -190,4 +190,19 @@
 			$this->assertEquals(base64_encode('{"test":"One fish, two fish."}'), $container->getBase64Data());
 			unset($container);
 		}
+
+		/**
+		 * Test exception is thrown when calling read() without a path or raw data.
+		 */
+		public function testReadWithoutData() {
+			$container = new JSONFile(null, true, false);
+
+			try {
+				$container->read();
+				$this->fail("JSONFile did not throw expected exception when reading without data.");
+			} catch (\KrameWork\Storage\JSONException $e) {
+				$this->assertEquals('Cannot decode JSON: No data given.', $e->getMessage());
+				unset($container);
+			}
+		}
 	}
