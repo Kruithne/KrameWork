@@ -50,4 +50,20 @@
 
 			$this->assertStringContainsString('(array) 2 items', (string)$formatter->generate());
 		}
+
+		/**
+		 * Test that the HTML formatter does not keep debug data from a previous report.
+		 */
+		public function testHTMLFormatterClearsDebugDataBetweenReports(): void {
+			$formatter = new HTMLErrorFormatter();
+			$formatter->beginReport();
+			$formatter->reportError(new ExceptionError(new \Exception('first')));
+			$formatter->reportDebug(['staleKey' => 'staleValue']);
+			$formatter->generate();
+
+			$formatter->beginReport();
+			$formatter->reportError(new ExceptionError(new \Exception('second')));
+
+			$this->assertStringNotContainsString('staleKey', (string)$formatter->generate());
+		}
 	}

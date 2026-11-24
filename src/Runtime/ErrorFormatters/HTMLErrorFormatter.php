@@ -42,6 +42,7 @@
 			$this->timer->start();
 			$this->data = [];
 			$this->basicData = [];
+			$this->debug = [];
 			$this->trace = [];
 		}
 
@@ -264,9 +265,9 @@
 		protected ?IError $error = null;
 
 		/**
-		 * @var array<string, mixed>|null
+		 * @var array<string, mixed>
 		 */
-		protected ?array $debug = null;
+		protected array $debug = [];
 
 		/**
 		 * @var array<string, mixed>
