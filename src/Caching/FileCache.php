@@ -64,12 +64,14 @@
 		 * Persist the cache state to disk.
 		 *
 		 * @api persist
+		 * @throws InvalidFileException
 		 */
 		public function persist(): void {
 			$data = \base64_encode(\serialize($this->data));
 			$index = \base64_encode(\serialize($this->index));
 
-			\file_put_contents($this->file, $data . "\0" . $index);
+			if (@\file_put_contents($this->file, $data . "\0" . $index) === false)
+				throw new InvalidFileException('Unable to write data to cache source.');
 		}
 
 		/**
@@ -96,6 +98,7 @@
 		 * @api __set
 		 * @param string $key Key to store the value under.
 		 * @param mixed $value Value to store in the cache.
+		 * @throws InvalidFileException
 		 */
 		public function __set(string $key, mixed $value): void {
 			if($value === null)
@@ -117,6 +120,7 @@
 		 * @param string $key Key to store the value under.
 		 * @param mixed $value Value to store in the cache.
 		 * @param int $expire 60*60*24*30 >= Unix Timestamp, otherwise seconds. 0 = Never.
+		 * @throws InvalidFileException
 		 */
 		public function store(string $key, mixed $value, int $expire = 0): void {
 			if($value === null)
@@ -157,6 +161,7 @@
 		 *
 		 * @api __unset
 		 * @param string $key Key of the item to remove.
+		 * @throws InvalidFileException
 		 */
 		public function __unset(string $key): void {
 			unset($this->data[$key], $this->index[$key]);
@@ -169,6 +174,7 @@
 		 * Flush the cache, removing all stored data.
 		 *
 		 * @api flush
+		 * @throws InvalidFileException
 		 */
 		public function flush(): void {
 			$this->data = [];
@@ -186,6 +192,7 @@
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to increment the value.
 		 * @return int|float The new value.
+		 * @throws InvalidFileException
 		 */
 		public function increment(string $key, int $weight = 1): int|float {
 			$value = $this->__get($key);
@@ -206,6 +213,7 @@
 		 * @param string $key Key of the value.
 		 * @param int $weight How much to decrement the value.
 		 * @return int|float The new value.
+		 * @throws InvalidFileException
 		 */
 		public function decrement(string $key, int $weight = 1): int|float {
 			$value = $this->__get($key);

@@ -292,4 +292,15 @@
 
 			unset($cache);
 		}
+
+		/**
+		 * Test that persisting throws an exception when the cache file cannot be written.
+		 */
+		public function testPersistUnwritableThrows() {
+			$cache = new FileCache('missing_directory/file_cache_test.dat', false);
+			$cache->foo = 'bar';
+
+			$this->expectException(InvalidFileException::class);
+			$cache->persist();
+		}
 	}

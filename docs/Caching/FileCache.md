@@ -40,6 +40,10 @@ exception | reason
 ##### > persist() : `void`
 Persist the cache state to disk.
 
+exception | reason
+--- | ---
+`InvalidFileException` | Cache file could not be written.
+
 ##### > __get() : `mixed|null`
 Obtain a value from the cache. Returns null if the item does not exist.
 
@@ -55,6 +59,10 @@ parameter | type | description
 `$key` | `string` | Key to store the value under.
 `$value` | `mixed` | Value to store in the cache.
 
+exception | reason
+--- | ---
+`InvalidFileException` | Auto-persist is enabled and the cache file could not be written.
+
 ##### > store() : `void`
 Store a value in the cache.
 
@@ -64,6 +72,10 @@ parameter | type | description
 `$value` | `mixed` | Value to store in the cache.
 `$expire` | `int` | 60 *60 * 24 * 30 >= Unix Timestamp, otherwise seconds. 0 = Never.
 
+exception | reason
+--- | ---
+`InvalidFileException` | Auto-persist is enabled and the cache file could not be written.
+
 ##### > __unset() : `void`
 Remove an item stored in the cache.
 
@@ -71,8 +83,16 @@ parameter | type | description
 --- | --- | ---
 `$key` | `string` | Key of the item to remove.
 
+exception | reason
+--- | ---
+`InvalidFileException` | Auto-persist is enabled and the cache file could not be written.
+
 ##### > flush() : `void`
 Flush the cache, removing all stored data.
+
+exception | reason
+--- | ---
+`InvalidFileException` | Auto-persist is enabled and the cache file could not be written.
 
 ##### > increment() : `int|float`
 Increase a numeric value in the cache. A missing or non-numeric value starts at 0. Returns the new value.
@@ -82,6 +102,10 @@ parameter | type | description
 `$key` | `string` | Key of the value.
 `$weight` | `int` | How much to increment the value.
 
+exception | reason
+--- | ---
+`InvalidFileException` | Auto-persist is enabled and the cache file could not be written.
+
 ##### > decrement() : `int|float`
 Decrease a numeric value in the cache. A missing or non-numeric value starts at 0. Returns the new value.
 
@@ -89,4 +113,8 @@ parameter | type | description
 --- | --- | ---
 `$key` | `string` | Key of the value.
 `$weight` | `int` | How much to decrement the value.
+
+exception | reason
+--- | ---
+`InvalidFileException` | Auto-persist is enabled and the cache file could not be written.
 
