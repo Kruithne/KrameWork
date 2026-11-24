@@ -185,6 +185,21 @@
 		}
 
 		/**
+		 * Test exception is thrown when setting a recursion depth below one.
+		 */
+		public function testOptionRecursionBelowOne() {
+			$container = new JSONFile("someFile.json", true, false);
+
+			try {
+				$container->setRecursionDepth(0);
+				$this->fail("JSONFile did not throw expected exception when setting recursion depth below one.");
+			} catch (\InvalidArgumentException $e) {
+				$this->assertEquals('Recursion depth must be greater than zero.', $e->getMessage());
+				unset($container);
+			}
+		}
+
+		/**
 		 * Test bit-mask option value for JSON decoding.
 		 */
 		public function testOptionMask() {

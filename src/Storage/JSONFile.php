@@ -223,8 +223,12 @@
 		 *
 		 * @api setRecursionDepth
 		 * @param int $depth Recursion depth.
+		 * @throws \InvalidArgumentException
 		 */
 		public function setRecursionDepth(int $depth): void {
+			if ($depth < 1)
+				throw new \InvalidArgumentException('Recursion depth must be greater than zero.');
+
 			$this->depth = $depth;
 		}
 
@@ -274,7 +278,7 @@
 		protected mixed $jsonData = null;
 
 		/**
-		 * @var int Recursion depth.
+		 * @var int<1, max> Recursion depth.
 		 */
 		protected int $depth = 512;
 
