@@ -28,12 +28,12 @@ if ($req->send())
 // > object(stdClass)#1 (2) {
 //     ["text"]=>string(2502) "<p>Banh mi chicharrones cred aute...
 ```
-The raw response of the request can be obtained by invoking the `__toString()` magic method on the object. Trying to obtain the response before calling `send()`, or if `send()` returns `false`, will result in a `null` (or empty string if using `__toString`).
+The raw response of the request can be obtained by invoking the `__toString()` magic method on the object. Trying to obtain the response before calling `send()`, or if `send()` returns `false`, will throw a `ResponseNotAvailableException`.
 
 Posting some object to the API;
 ```php
 $req = new JsonRequst('https://supersecret.example.com/api/magical', WebRequest::METHOD_POST);
-if ($req->postJSON(['something' => 'else']))
+if ($req->postJSON((object) ['something' => 'else']))
     var_dump($req->getResponse());
 ```
 ___
@@ -65,11 +65,12 @@ Post an object encoded as json with the request. Return boolean indicates succes
 
 parameter | type | description
 --- | --- | ---
-`$object` | `mixed` | Data to json encode and post to the server API.
+`$object` | `object` | Data to json encode and post to the server API.
 
 exception | reason
 --- | ---
 `InvalidMethodException` | Not using METHOD_POST for a JSON-body request.
+`JsonException` | Object could not be encoded as JSON.
 
 ##### > getResponse() : `mixed`
 Get the JSON decoded response from this request. Returns null if unable to decode response.

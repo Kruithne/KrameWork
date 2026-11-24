@@ -35,7 +35,7 @@ if ($req->send())
 
 // > {"text":"<p>Tousled crucifix humblebrag nulla, distillery delectus...
 ```
-The response of the request can also be obtained by invoking the `__toString()` magic method on the object, as will be shown in the next example. Trying to obtain the response before calling `send()`, or if `send()` returns `false`, will result in a `null` (or empty string if using `__toString`).
+The response of the request can also be obtained by invoking the `__toString()` magic method on the object, as will be shown in the next example. Trying to obtain the response before calling `send()`, or if `send()` returns `false`, will throw a `ResponseNotAvailableException`.
 
 By default, the class uses the `GET` method, however we can change that using the second parameter of the constructor. It's recommended to use the `METHOD_` constants provided by the `WebRequest` class for this.
 ```php
@@ -122,12 +122,12 @@ parameter | type | description
 ##### > send() : `bool`
 Send the request. Return boolean indicates success.
 
-##### > getResponse() : `string`
+##### > getResponse() : `mixed`
 Get the response from this request.
 
 exception | reason
 --- | ---
-`ResponseNotAvailableException` | ???
+`ResponseNotAvailableException` | Request not sent (or failed).
 
 ##### > success() : `bool|null`
 True/false depending on success of request. Returns null if request has not yet been sent.
