@@ -100,20 +100,17 @@
 		 *
 		 * @internal
 		 * @param mixed $class
-		 * @param string[]|null $output
+		 * @param string[] $output
 		 * @return string|string[]
 		 * @throws ClassResolutionException
 		 */
-		public function resolveClassName(mixed $class, ?array &$output = null): string|array {
-			$output ??= [];
-			$classes = &$output;
-
+		public function resolveClassName(mixed $class, array &$output = []): string|array {
 			// Array given, loop elements and process.
 			if (\is_array($class)) {
 				foreach ($class as $node)
-					$this->resolveClassName($node, $classes);
+					$this->resolveClassName($node, $output);
 
-				return $classes;
+				return $output;
 			}
 
 			// Resolve class name from object.
@@ -126,9 +123,9 @@
 
 			// Check interface bindings for the class.
 			if (\array_key_exists($class, $this->bindingList))
-				return $this->resolveClassName($this->bindingList[$class], $classes);
+				return $this->resolveClassName($this->bindingList[$class], $output);
 
-			$classes[] = $class;
+			$output[] = $class;
 			return $class;
 		}
 
