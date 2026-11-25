@@ -26,7 +26,7 @@
 
 			$key = 'all_' . $this->getKey($sql, $param);
 			$cached = $ttl > 0 ? $this->cache->__get($key) : null;
-			if (\is_array($cached))
+			if (\is_array($cached) && $this->isRowList($cached))
 				return $cached;
 
 			$data = $this->database->getAll($sql, $param);
@@ -117,5 +117,20 @@
 		 */
 		private function getKey(string $sql, array $param): string {
 			return \sha1(\json_encode([$sql, $param], \JSON_THROW_ON_ERROR));
+		}
+
+		/**
+		 * Check that each element of an array is a row object.
+		 * @param mixed[] $rows The array to check
+		 * @return bool True if each element is a row object
+		 * @phpstan-assert-if-true \stdClass[] $rows
+		 */
+		private function isRowList(array $rows): bool {
+			foreach ($rows as $row) {
+				if (!($row instanceof \stdClass))
+					return false;
+			}
+
+			return true;
 		}
 	}

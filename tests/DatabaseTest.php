@@ -48,9 +48,9 @@
 			$data = $cached->getAll('SELECT ? AS value', [1], 10);
 			$key = key($cache->data);
 			$this->assertEquals($cache->data[$key], $data);
-			$cache->data[$key] = ['testvalue'];
+			$cache->data[$key] = [(object)['value' => 'testvalue']];
 			$data = $cached->getAll('SELECT ? AS value', [1], 10);
-			$this->assertEquals(['testvalue'], $data);
+			$this->assertEquals([(object)['value' => 'testvalue']], $data);
 		}
 
 		/**
@@ -62,6 +62,18 @@
 			$cached = new \KrameWork\Database\DatabaseCache($cache, $database, 10);
 			$expected = $cached->getAll('SELECT ? AS value', [1], 10);
 			$cache->data[\key($cache->data)] = 'invalid';
+			$this->assertEquals($expected, $cached->getAll('SELECT ? AS value', [1], 10));
+		}
+
+		/**
+		 * Ensure a cached array with elements that are not row objects is ignored and the query runs again.
+		 */
+		public function testCachedQueryIgnoresInvalidRows() {
+			$cache = new DummyCache();
+			$database = new Database(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO);
+			$cached = new \KrameWork\Database\DatabaseCache($cache, $database, 10);
+			$expected = $cached->getAll('SELECT ? AS value', [1], 10);
+			$cache->data[\key($cache->data)] = ['invalid'];
 			$this->assertEquals($expected, $cached->getAll('SELECT ? AS value', [1], 10));
 		}
 	}
