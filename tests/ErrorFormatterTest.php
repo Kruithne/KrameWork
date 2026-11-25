@@ -52,6 +52,17 @@
 		}
 
 		/**
+		 * Test that the plain text formatter writes the time of the error in the report.
+		 */
+		public function testPlainTextFormatterReportsOccurredTime(): void {
+			$formatter = new PlainTextErrorFormatter();
+			$formatter->beginReport();
+			$formatter->reportError(new ExceptionError(new \Exception('test')));
+
+			$this->assertStringContainsString('> Occurred: ' . \date('D, d M Y'), (string)$formatter->generate());
+		}
+
+		/**
 		 * Test that the HTML formatter does not keep debug data from a previous report.
 		 */
 		public function testHTMLFormatterClearsDebugDataBetweenReports(): void {
