@@ -78,6 +78,8 @@
 		 */
 		function __toString(): string {
 			$content = $this->content;
+			if ($content === '')
+				return '';
 
 			if ($this->encoding == self::E_BASE64)
 				$content = \chunk_split(\base64_encode($content), 70, "\r\n");
