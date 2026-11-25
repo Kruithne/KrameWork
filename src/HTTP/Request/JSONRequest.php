@@ -50,6 +50,6 @@
 		 * @throws ResponseNotAvailableException
 		 */
 		public function getResponse(): mixed {
-			return \json_decode(parent::getResponse());
+			return \json_decode($this->getRawResponse());
 		}
 	}

@@ -179,6 +179,17 @@
 		 * @throws ResponseNotAvailableException
 		 */
 		public function getResponse(): mixed {
+			return $this->getRawResponse();
+		}
+
+		/**
+		 * Get the raw response body from this request.
+		 *
+		 * @internal
+		 * @return string
+		 * @throws ResponseNotAvailableException
+		 */
+		protected function getRawResponse(): string {
 			if ($this->result === null)
 				throw new ResponseNotAvailableException('Response not available (request failed/not sent)');
 
