@@ -10,7 +10,7 @@ ___
 The `APCu` class provided by KrameWork is a basic interface for APCu which conforms to the `IDataCache` interface, providing compatibility with other caching solutions provided in the same namespace.
 > **Note**: Usage of this class requires your PHP environment has APCu installed, configured and enabled; failure to do so will result in explosions and interdimensional rifts into the abyss.
 
-> **Note**: APCu works with shared memory, meaning data stored within will be accesible to every request and is not restricted to a specific user like sessions are. **Don't let sensitive data leak!**
+> **Note**: APCu works with shared memory, meaning data stored within will be accessible to every request and is not restricted to a specific user like sessions are. **Don't let sensitive data leak!**
 
 > **Note**: Every app in the same PHP process pool shares one APCu cache. Give each app its own prefix to prevent key collisions, and to make `flush()` remove only that app's keys.
 

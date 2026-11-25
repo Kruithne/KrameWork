@@ -150,6 +150,7 @@
 		/**
 		 * Check if a value exists in the cache.
 		 *
+		 * @api exists
 		 * @param string $key Key used to store the value.
 		 * @return bool True if the key exists in the cache.
 		 */
