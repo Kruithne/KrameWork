@@ -112,7 +112,7 @@
 			$this->report->newLine()->newLine();
 			$this->report->appendf('> Application debug data:')->indent()->newLine();
 			foreach ($debug as $key => $value) {
-				$this->report->appendf('%s = %s', $key, $value)->newLine();
+				$this->report->appendf('%s = %s', $key, StringUtil::variableAsString($value))->newLine();
 			}
 			$this->report->outdent()->newLine();
 		}

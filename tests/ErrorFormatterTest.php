@@ -63,6 +63,18 @@
 		}
 
 		/**
+		 * Test that the plain text formatter converts non-string debug values to strings.
+		 */
+		public function testPlainTextFormatterConvertsDebugValuesToString(): void {
+			$formatter = new PlainTextErrorFormatter();
+			$formatter->beginReport();
+			$formatter->reportError(new ExceptionError(new \Exception('test')));
+			$formatter->reportDebug(['list' => [1, 2]]);
+
+			$this->assertStringContainsString('list = (array) 2 items', (string)$formatter->generate());
+		}
+
+		/**
 		 * Test that the HTML formatter does not keep debug data from a previous report.
 		 */
 		public function testHTMLFormatterClearsDebugDataBetweenReports(): void {
