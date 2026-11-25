@@ -122,4 +122,14 @@
 			$report->columns = ['money' => new ReportColumn('test', ReportColumn::COL_CURRENCY, 'EUR', 'code')];
 			$this->assertEquals(new CurrencyValue(4.2, 'EUR'), $report->data()->data[0]['money']);
 		}
+
+		/**
+		 * Checks that a currency column value that is not a scalar stays unchanged.
+		 */
+		public function testCurrencyValueNotScalar() {
+			$report = new TestReportRunner(new DummyCache(), 'test', 0);
+			$report->data = [(object)['money' => [4.20]]];
+			$report->columns = ['money' => new ReportColumn('test', ReportColumn::COL_CURRENCY)];
+			$this->assertSame([4.20], $report->data()->data[0]['money']);
+		}
 	}

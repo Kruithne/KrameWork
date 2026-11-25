@@ -104,14 +104,15 @@
 			$fallback = $col->currency ?? $this->currency();
 			$field = $col->currencyField;
 			return function (&$row) use ($key, $field, $fallback) {
-				if (!isset($row->$key) || $row->$key === '' || $row->$key instanceof Value)
+				$value = $row->$key ?? null;
+				if ($value === '' || !(\is_int($value) || \is_float($value) || \is_string($value)))
 					return;
 
 				$code = $field === null ? null : ($row->$field ?? null);
 				if (!\is_string($code) || $code === '')
 					$code = $fallback;
 
-				$row->{$key} = new CurrencyValue($row->{$key}, $code);
+				$row->{$key} = new CurrencyValue($value, $code);
 			};
 		}
 
