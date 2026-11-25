@@ -18,7 +18,7 @@
 		 * StringBuilder constructor.
 		 *
 		 * @api __construct
-		 * @param (string|int|float|bool|\Stringable|null|mixed[]) ...$args Initial elements to append to the builder.
+		 * @param (string|int|float|bool|\Stringable|null|array<string|int|float|bool|\Stringable|null|mixed[]>) ...$args Initial elements to append to the builder.
 		 */
 		public function __construct(string|int|float|bool|\Stringable|array|null ...$args) {
 			$this->clear();
@@ -30,7 +30,7 @@
 		 * Arrays will be recursively iterated with all elements appended.
 		 *
 		 * @api append
-		 * @param (string|int|float|bool|\Stringable|null|mixed[]) ...$args Elements to append to the builder.
+		 * @param (string|int|float|bool|\Stringable|null|array<string|int|float|bool|\Stringable|null|mixed[]>) ...$args Elements to append to the builder.
 		 * @return StringBuilder
 		 */
 		public function append(string|int|float|bool|\Stringable|array|null ...$args):StringBuilder {
@@ -65,7 +65,7 @@
 		 * Note: One line-end added per function call, not per element.
 		 *
 		 * @api appendLine
-		 * @param (string|int|float|bool|\Stringable|null|mixed[]) $line Element(s) to append.
+		 * @param (string|int|float|bool|\Stringable|null|array<string|int|float|bool|\Stringable|null|mixed[]>) $line Element(s) to append.
 		 * @param bool $suffix Line-end will be suffix, otherwise prefix.
 		 * @return StringBuilder
 		 */
@@ -112,7 +112,7 @@
 		 * Arrays will be recursively iterated with all elements prepended.
 		 *
 		 * @api prepend
-		 * @param (string|int|float|bool|\Stringable|null|mixed[]) ...$args Elements to prepend to the builder.
+		 * @param (string|int|float|bool|\Stringable|null|array<string|int|float|bool|\Stringable|null|mixed[]>) ...$args Elements to prepend to the builder.
 		 * @return StringBuilder
 		 */
 		public function prepend(string|int|float|bool|\Stringable|array|null ...$args):StringBuilder {
@@ -146,7 +146,7 @@
 		 * Note: One line-end added per function call, not per element.
 		 *
 		 * @api prependLine
-		 * @param (string|int|float|bool|\Stringable|null|mixed[]) $line Element to prepend.
+		 * @param (string|int|float|bool|\Stringable|null|array<string|int|float|bool|\Stringable|null|mixed[]>) $line Element to prepend.
 		 * @param bool $suffix Line-end will be suffix, otherwise prefix.
 		 * @return StringBuilder
 		 */
@@ -193,7 +193,7 @@
 		 * Arrays will be recursively iterated with each element added.
 		 *
 		 * @api repeat
-		 * @param (string|int|float|bool|\Stringable|null|mixed[]) $input Element to repeat.
+		 * @param (string|int|float|bool|\Stringable|null|array<string|int|float|bool|\Stringable|null|mixed[]>) $input Element to repeat.
 		 * @param int $count How many times to append/prepend the element.
 		 * @param bool $append Append the element, otherwise prepend.
 		 * @return StringBuilder
