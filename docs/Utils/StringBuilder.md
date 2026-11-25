@@ -60,7 +60,7 @@ Append a single formatted string to the builder.
 parameter | type | description
 --- | --- | ---
 `$format` | `string` | String format pattern.
-`...$args` | `mixed` | Components for the format pattern.
+`...$args` | `string|int|float|bool|null` | Components for the format pattern.
 ##### > prepend() : `StringBuilder`
 Prepend one or more element to the builder. Arrays will be recursively iterated with all elements prepended.
 
@@ -80,7 +80,7 @@ Prepend a single formatted string to the builder.
 parameter | type | description
 --- | --- | ---
 `$format` | `string` | String format pattern.
-`...$args` | `mixed` | Components for the format pattern.
+`...$args` | `string|int|float|bool|null` | Components for the format pattern.
 ##### > repeat() : `StringBuilder`
 Add an element $count amount of times to the builder. Arrays will be recursively iterated with each element added.
 
