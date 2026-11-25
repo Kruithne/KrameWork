@@ -34,26 +34,21 @@
 		 * @return StringBuilder
 		 */
 		public function append(string|int|float|bool|\Stringable|array|null ...$args):StringBuilder {
-			foreach ($args as $arg) {
-				if (\is_array($arg)) {
-					foreach ($arg as $subArg)
-						$this->append($subArg);
-				} else {
-					$index = $this->getLineIndex(); // Bottom-most line index.
-					$line = $this->data[$index]; // Line data itself.
-					$lineSize = \strlen($line);
+			foreach ($this->flatten($args) as $arg) {
+				$index = $this->getLineIndex(); // Bottom-most line index.
+				$line = $this->data[$index]; // Line data itself.
+				$lineSize = \strlen($line);
 
-					// Append a separator first if needed.
-					if ($this->separator !== null && $lineSize > 0)
-						$line .= $this->separator;
+				// Append a separator first if needed.
+				if ($this->separator !== null && $lineSize > 0)
+					$line .= $this->separator;
 
-					// Indent if needed.
-					if ($this->indent > 0 && $lineSize == 0)
-						$line .= \str_repeat("\t", $this->indent);
+				// Indent if needed.
+				if ($this->indent > 0 && $lineSize == 0)
+					$line .= \str_repeat("\t", $this->indent);
 
-					// Append new data to the line and update in the stack.
-					$this->data[$index] = $line . $arg;
-				}
+				// Append new data to the line and update in the stack.
+				$this->data[$index] = $line . $arg;
 			}
 			return $this;
 		}
@@ -86,10 +81,10 @@
 		 *
 		 * @api appendf
 		 * @param string $format String format pattern.
-		 * @param mixed ...$args Components for the format pattern.
+		 * @param string|int|float|bool|null ...$args Components for the format pattern.
 		 * @return StringBuilder
 		 */
-		public function appendf(string $format, mixed ...$args):StringBuilder {
+		public function appendf(string $format, string|int|float|bool|null ...$args):StringBuilder {
 			return $this->append(\sprintf($format, ...$args));
 		}
 
@@ -115,25 +110,20 @@
 		 * @return StringBuilder
 		 */
 		public function prepend(string|int|float|bool|\Stringable|array|null ...$args):StringBuilder {
-			foreach ($args as $arg) {
-				if (\is_array($arg)) {
-					foreach ($arg as $subArg)
-						$this->prepend($subArg);
-				} else {
-					$line = $this->data[0]; // Top-most line.
-					$lineSize = \strlen($line);
+			foreach ($this->flatten($args) as $arg) {
+				$line = $this->data[0]; // Top-most line.
+				$lineSize = \strlen($line);
 
-					// Append separator to the new data.
-					if ($this->separator !== null && $lineSize > 0)
-						$arg .= $this->separator;
+				// Append separator to the new data.
+				if ($this->separator !== null && $lineSize > 0)
+					$arg .= $this->separator;
 
-					// Indent if needed.
-					if ($this->indent > 0 && $lineSize == 0)
-						$arg .= \str_repeat("\t", $this->indent);
+				// Indent if needed.
+				if ($this->indent > 0 && $lineSize == 0)
+					$arg .= \str_repeat("\t", $this->indent);
 
-					// Prepend new data to the line and update in the stack.
-					$this->data[0] = $arg . $line;
-				}
+				// Prepend new data to the line and update in the stack.
+				$this->data[0] = $arg . $line;
 			}
 			return $this;
 		}
@@ -166,10 +156,10 @@
 		 *
 		 * @api prependf
 		 * @param string $format String format pattern.
-		 * @param mixed ...$args Components for the format pattern.
+		 * @param string|int|float|bool|null ...$args Components for the format pattern.
 		 * @return StringBuilder
 		 */
-		public function prependf(string $format, mixed ...$args):StringBuilder {
+		public function prependf(string $format, string|int|float|bool|null ...$args):StringBuilder {
 			return $this->prepend(\sprintf($format, ...$args));
 		}
 
@@ -307,6 +297,25 @@
 		 */
 		private function getLineIndex(): int {
 			return \count($this->data) - 1;
+		}
+
+		/**
+		 * Flatten nested elements into a sequence of strings.
+		 *
+		 * @internal
+		 * @param mixed[] $args Elements to flatten.
+		 * @return \Generator<string>
+		 * @throws \TypeError
+		 */
+		private function flatten(array $args): \Generator {
+			foreach ($args as $arg) {
+				if (\is_array($arg))
+					yield from $this->flatten($arg);
+				else if (\is_scalar($arg) || $arg === null || $arg instanceof \Stringable)
+					yield (string) $arg;
+				else
+					throw new \TypeError('Unsupported element type: ' . \get_debug_type($arg));
+			}
 		}
 
 		/**
