@@ -358,4 +358,20 @@
 
 			$_FILES = $orig;
 		}
+
+		/**
+		 * Test that HTTPContext->getRequestHeader() returns null when the $_SERVER value is not a string.
+		 */
+		public function testRequestHeaderNotString() {
+			// Setup
+			$HTTP_X_TEST = "HTTP_X_TEST";
+			$orig = $_SERVER[$HTTP_X_TEST] ?? null;
+			$_SERVER[$HTTP_X_TEST] = ['value'];
+
+			// Testing
+			$this->assertNull(HTTPContext::getRequestHeader('X-Test'));
+
+			// Cleanup
+			$_SERVER[$HTTP_X_TEST] = $orig;
+		}
 }

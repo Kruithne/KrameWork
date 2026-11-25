@@ -361,13 +361,15 @@
 			$headers = [];
 			if (\function_exists('apache_request_headers')) {
 				// Apache
-				foreach (\apache_request_headers() as $name => $value)
-					$headers[\strtolower($name)] = (string) $value;
+				foreach (\apache_request_headers() as $name => $value) {
+					if (\is_string($value))
+						$headers[\strtolower($name)] = $value;
+				}
 			} else {
 				// NGINX
 				foreach ($_SERVER as $name => $value) {
-					if (\str_starts_with($name, 'HTTP_'))
-						$headers[\str_replace('_', '-', \strtolower(\substr($name, 5)))] = (string) $value;
+					if (\is_string($name) && \is_string($value) && \str_starts_with($name, 'HTTP_'))
+						$headers[\str_replace('_', '-', \strtolower(\substr($name, 5)))] = $value;
 				}
 			}
 
