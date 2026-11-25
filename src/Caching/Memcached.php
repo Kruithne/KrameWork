@@ -12,6 +12,8 @@
 	 */
 	class Memcached implements IDataCache
 	{
+		private const MAX_PREFIX_LENGTH = 127;
+
 		/**
 		 * Memcached constructor.
 		 *
@@ -24,6 +26,9 @@
 		public function __construct(string $server = "127.0.0.1", int $port = 11211, string $prefix = '') {
 			$this->cache = new \Memcached;
 			$this->cache->addServer($server, $port);
+
+			if (\strlen($prefix) > self::MAX_PREFIX_LENGTH)
+				throw new CacheOperationException('Invalid key prefix: ' . $prefix);
 
 			if ($prefix !== '' && !@$this->cache->setOption(\Memcached::OPT_PREFIX_KEY, $prefix))
 				throw new CacheOperationException('Invalid key prefix: ' . $prefix);

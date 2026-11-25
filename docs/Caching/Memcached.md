@@ -44,7 +44,7 @@ parameter | type | description
 
 exception | reason
 --- | ---
-`CacheOperationException` | Prefix is not valid, for example longer than 128 characters.
+`CacheOperationException` | Prefix is not valid, for example longer than 127 characters.
 ##### > __get() : `mixed|null`
 Obtain a value from the cache. Returns null if the item does not exist. Null is never stored, so it cannot be confused with a stored value.
 
