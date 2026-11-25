@@ -37,6 +37,9 @@
 	 */
 	abstract class Benchmark implements IBenchmark
 	{
+		/** @var int<2, max> */
+		private int $sets;
+
 		/**
 		 * Benchmark constructor.
 		 *
@@ -46,9 +49,11 @@
 		 * @param string $name A name to identify this benchmark.
 		 * @throws \InvalidArgumentException
 		 */
-		public function __construct(private int $sets = 200, private int $executionsPerCycle = 1000, private ?string $name = null) {
+		public function __construct(int $sets = 200, private int $executionsPerCycle = 1000, private ?string $name = null) {
 			if ($sets < 2)
 				throw new \InvalidArgumentException('Set count must be at least 2.');
+
+			$this->sets = $sets;
 		}
 
 		/**
