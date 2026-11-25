@@ -1,2 +1,7 @@
 <phpunit failOnWarning="true" failOnNotice="true">
+	<testsuites>
+		<testsuite name="KrameWork">
+			<directory>tests</directory>
+		</testsuite>
+	</testsuites>
 </phpunit>
