@@ -38,14 +38,14 @@ exception | reason
 Check if a session is currently active.
 
 ##### > __get() : `mixed`
-Retrieve a session value.
+Retrieve a session value. Null is never stored, so it cannot be confused with a stored value.
 
 parameter | type | description
 --- | --- | ---
 `string` | `$name` | Key to retrieve from the session.
 
 ##### > __set() : `void`
-Set a session value.
+Set a session value. Storing `null` removes the key.
 
 parameter | type | description
 --- | --- | ---
@@ -60,7 +60,7 @@ parameter | type | description
 `string` | `$name` | Key to remove from the session.
 
 ##### > store() : `void`
-Store a value in the cache.
+Store a value in the cache. Storing `null` removes the key.
 
 parameter | type | description
 --- | --- | ---

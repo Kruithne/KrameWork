@@ -43,13 +43,13 @@ exception | reason
 --- | ---
 `CacheOperationException` | APCu is not installed or enabled.
 ##### > __get() : `mixed|null`
-Obtain a value from the cache. Returns null if the item does not exist.
+Obtain a value from the cache. Returns null if the item does not exist. Null is never stored, so it cannot be confused with a stored value.
 
 parameter | type | description
 --- | --- | ---
 `$key` | `string` | Key of the value.
 ##### > store() : `void`
-Store a value in the cache.
+Store a value in the cache. Storing `null` removes the key.
 
 parameter | type | description
 --- | --- | ---
@@ -67,7 +67,7 @@ parameter | type | description
 --- | --- | ---
 `$key` | `string` | Key used to store the value.
 ##### > __set() : `void`
-Store a value in the cache. Value will not expire, use store() if needed.
+Store a value in the cache. Value will not expire, use store() if needed. Storing `null` removes the key.
 
 parameter | type | description
 --- | --- | ---

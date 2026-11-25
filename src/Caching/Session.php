@@ -74,6 +74,7 @@
 
 		/**
 		 * Retrieve a session value.
+		 * Null is never stored, so it cannot be confused with a stored value.
 		 *
 		 * @api __get
 		 * @param string $name Key to retrieve from the session.
@@ -86,6 +87,7 @@
 
 		/**
 		 * Set a session value.
+		 * Storing null removes the key.
 		 *
 		 * @api __set
 		 * @param string $name Key to set the value with.
@@ -116,6 +118,7 @@
 
 		/**
 		 * Store a value in the cache.
+		 * Storing null removes the key.
 		 *
 		 * @api store
 		 * @param string $key Key to store the value under.

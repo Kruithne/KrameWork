@@ -33,6 +33,7 @@
 		/**
 		 * Obtain a value from the cache.
 		 * Returns null if the item does not exist.
+		 * Null is never stored, so it cannot be confused with a stored value.
 		 *
 		 * @api __get
 		 * @param string $key Key of the value.
@@ -54,6 +55,7 @@
 		/**
 		 * Store a value in the cache.
 		 * Value will not expire. Use store() if needed.
+		 * Storing null removes the key.
 		 *
 		 * @api store
 		 * @param string $key Key to store the value under.
@@ -93,6 +95,7 @@
 
 		/**
 		 * Store a value in the cache.
+		 * Storing null removes the key.
 		 *
 		 * @api __set
 		 * @param string $key Key to store the value under.
