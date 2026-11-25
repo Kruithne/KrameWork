@@ -19,10 +19,15 @@
 		 * @api __construct
 		 * @param string $server Memcached server address.
 		 * @param int $port Memcached server port.
+		 * @param string $prefix Prefix added to every key. Empty for no prefix.
+		 * @throws CacheOperationException
 		 */
-		public function __construct(string $server = "127.0.0.1", int $port = 11211) {
+		public function __construct(string $server = "127.0.0.1", int $port = 11211, string $prefix = '') {
 			$this->cache = new \Memcached;
 			$this->cache->addServer($server, $port);
+
+			if ($prefix !== '' && !@$this->cache->setOption(\Memcached::OPT_PREFIX_KEY, $prefix))
+				throw new CacheOperationException('Invalid key prefix: ' . $prefix);
 		}
 
 		/**
@@ -111,6 +116,7 @@
 
 		/**
 		 * Flush the cache, removing all stored data.
+		 * This removes all keys on the server, including keys without the prefix.
 		 *
 		 * @api flush
 		 * @throws CacheOperationException

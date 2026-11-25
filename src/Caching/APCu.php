@@ -17,9 +17,10 @@
 		 * APCu constructor.
 		 *
 		 * @api __construct
+		 * @param string $prefix Prefix added to every key. Empty for no prefix.
 		 * @throws CacheOperationException
 		 */
-		public function __construct() {
+		public function __construct(private string $prefix = '') {
 			if (!\function_exists('apcu_enabled') || !\apcu_enabled())
 				throw new CacheOperationException('APCu is not installed or enabled.');
 		}
@@ -33,7 +34,7 @@
 		 * @return mixed|null
 		 */
 		public function __get(string $key): mixed {
-			$value = \apcu_fetch($key, $success);
+			$value = \apcu_fetch($this->prefix . $key, $success);
 			return $success ? $value : null;
 		}
 
@@ -55,7 +56,7 @@
 			if ($expire > 60*60*24*30)
 				$expire = $expire - \time();
 
-			if (!\apcu_store($key, $value, $expire))
+			if (!\apcu_store($this->prefix . $key, $value, $expire))
 				throw new CacheOperationException('Unable to store value: ' . $key);
 		}
 
@@ -66,7 +67,7 @@
 		 * @return bool True if the key exists in the cache.
 		 */
 		public function exists(string $key): bool {
-			return \apcu_exists($key);
+			return \apcu_exists($this->prefix . $key);
 		}
 
 		/**
@@ -89,16 +90,22 @@
 		 * @param string $key Key of the item to remove.
 		 */
 		public function __unset(string $key): void {
-			\apcu_delete($key);
+			\apcu_delete($this->prefix . $key);
 		}
 
 		/**
 		 * Flush the cache, removing all stored data.
+		 * With a prefix, only keys with that prefix are removed.
 		 *
 		 * @api flush
 		 */
 		public function flush(): void {
-			\apcu_clear_cache();
+			if ($this->prefix === '') {
+				\apcu_clear_cache();
+				return;
+			}
+
+			\apcu_delete(new \APCUIterator('/^' . \preg_quote($this->prefix, '/') . '/', \APC_ITER_KEY));
 		}
 
 		/**
@@ -112,7 +119,7 @@
 		 * @throws CacheOperationException
 		 */
 		public function increment(string $key, int $weight = 1): int {
-			$value = \apcu_inc($key, $weight);
+			$value = \apcu_inc($this->prefix . $key, $weight);
 			if ($value === false)
 				throw new CacheOperationException('Unable to increment value: ' . $key);
 
@@ -130,7 +137,7 @@
 		 * @throws CacheOperationException
 		 */
 		public function decrement(string $key, int $weight = 1): int {
-			$value = \apcu_dec($key, $weight);
+			$value = \apcu_dec($this->prefix . $key, $weight);
 			if ($value === false)
 				throw new CacheOperationException('Unable to decrement value: ' . $key);
 

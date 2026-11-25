@@ -120,6 +120,39 @@
 		}
 
 		/**
+		 * Test that instances with different prefixes do not share keys.
+		 */
+		public function testPrefixIsolatesKeys() {
+			$first = new APCu('first:');
+			$second = new APCu('second:');
+
+			$first->foo = 'one';
+			$second->foo = 'two';
+
+			$this->assertEquals('one', $first->foo);
+			$this->assertEquals('two', $second->foo);
+
+			(new APCu())->flush();
+		}
+
+		/**
+		 * Test that flushing a prefixed instance only removes keys with that prefix.
+		 */
+		public function testPrefixedFlushKeepsOtherKeys() {
+			$first = new APCu('first:');
+			$second = new APCu('second:');
+
+			$first->foo = 'one';
+			$second->foo = 'two';
+			$first->flush();
+
+			$this->assertNull($first->foo);
+			$this->assertEquals('two', $second->foo);
+
+			(new APCu())->flush();
+		}
+
+		/**
 		 * Test that incrementing a non-numeric value throws an exception.
 		 */
 		public function testIncrementNonNumericThrows() {

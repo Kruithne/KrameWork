@@ -44,4 +44,12 @@
 			$this->expectException(CacheOperationException::class);
 			unset($cache->foo);
 		}
+
+		/**
+		 * Test that a key prefix longer than Memcached allows throws an exception.
+		 */
+		public function testInvalidPrefixThrows() {
+			$this->expectException(CacheOperationException::class);
+			new Memcached('127.0.0.1', 1, \str_repeat('a', 129));
+		}
 	}

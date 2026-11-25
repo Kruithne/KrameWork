@@ -12,11 +12,14 @@ The `APCu` class provided by KrameWork is a basic interface for APCu which confo
 
 > **Note**: APCu works with shared memory, meaning data stored within will be accesible to every request and is not restricted to a specific user like sessions are. **Don't let sensitive data leak!**
 
+> **Note**: Every app in the same PHP process pool shares one APCu cache. Give each app its own prefix to prevent key collisions, and to make `flush()` remove only that app's keys.
+
 ___
 ### Examples
 Below is a basic example of how to use the class. For a full overview of provided methods, check the function list at the bottom of the document.
 ```php
 $cache = new APCu(); // Instance needs no configuration, hoorah.
+$cache = new APCu('myapp:'); // Add 'myapp:' to every key, to keep keys apart from other apps.
 
 $cache->foo = 'bar'; // Store string 'bar' under key 'foo' using magic setter.
 print($cache->foo); // Retrieve the same value using magic getter. Prints 'bar'.
@@ -25,12 +28,16 @@ $cache->store('foo', 'bar'); // Equivalent to the previous store operation above
 $cache->store('foo', 'bar', 60); // Same again, but value is only stored for 60 seconds.
 
 unset($cache->foo); // Manually unset the 'foo' key.
-$cache->flush(); // Delete everything in the cache!
+$cache->flush(); // Delete everything in the cache! With a prefix, only keys with that prefix.
 ```
 ___
 ### Functions
 ##### > __construct() : `void`
 APCu constructor.
+
+parameter | type | description
+--- | --- | ---
+`$prefix` | `string` | Prefix added to every key. Empty for no prefix.
 
 exception | reason
 --- | ---
@@ -77,7 +84,7 @@ parameter | type | description
 --- | --- | ---
 `$key` | `string` | Key of the item to remove.
 ##### > flush() : `void`
-Flush the cache, removing all stored data.
+Flush the cache, removing all stored data. With a prefix, only keys with that prefix are removed.
 ##### > increment() : `int`
 Increase an integer value in the cache. A missing value starts at 0. Throws `CacheOperationException` on failure. Returns the new value.
 
