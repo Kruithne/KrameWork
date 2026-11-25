@@ -35,7 +35,8 @@
 		 * @return int Stored version, or 0 if the table is unknown
 		 */
 		public function getVersion(string $table): int {
-			return (int) $this->db->getValue("SELECT \"version\" FROM {$this->getFullName()} WHERE \"table\" = ?", [$table]);
+			$version = $this->db->getValue("SELECT \"version\" FROM {$this->getFullName()} WHERE \"table\" = ?", [$table]);
+			return \is_numeric($version) ? (int) $version : 0;
 		}
 
 		/**

@@ -30,7 +30,8 @@ WHERE schemas.name = ? AND tables.name = ?',
 
 		public function getVersion(string $table): int
 		{
-			return (int) $this->db->getValue("SELECT [version] FROM {$this->getFullName()} WHERE [table] = ?", [$table]);
+			$version = $this->db->getValue("SELECT [version] FROM {$this->getFullName()} WHERE [table] = ?", [$table]);
+			return \is_numeric($version) ? (int) $version : 0;
 		}
 
 		public function setVersion(string $table, int $version): void
