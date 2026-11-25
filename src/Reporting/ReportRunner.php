@@ -12,7 +12,6 @@
 
 	use KrameWork\Caching\IDataCache;
 	use KrameWork\Data\CurrencyValue;
-	use KrameWork\Data\Value;
 
 	/**
 	 * Class SQLReportRunner
@@ -94,9 +93,10 @@
 		 */
 		protected function makeFilter(string $key, string $class): \Closure {
 			return function (&$row) use ($key, $class) {
-				if (!isset($row->$key) || $row->$key === '' || $row->$key instanceof Value)
+				$value = $row->$key ?? null;
+				if ($value === '' || !(\is_int($value) || \is_float($value) || \is_string($value)))
 					return;
-				$row->{$key} = new $class($row->{$key});
+				$row->{$key} = new $class($value);
 			};
 		}
 

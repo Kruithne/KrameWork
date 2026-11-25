@@ -132,4 +132,14 @@
 			$report->columns = ['money' => new ReportColumn('test', ReportColumn::COL_CURRENCY)];
 			$this->assertSame([4.20], $report->data()->data[0]['money']);
 		}
+
+		/**
+		 * Checks that a date column value that is not a scalar stays unchanged.
+		 */
+		public function testDateValueNotScalar() {
+			$report = new TestReportRunner(new DummyCache(), 'test', 0);
+			$report->data = [(object)['date' => ['1980-01-01']]];
+			$report->columns = ['date' => new ReportColumn('test', ReportColumn::COL_DATE)];
+			$this->assertSame(['1980-01-01'], $report->data()->data[0]['date']);
+		}
 	}
