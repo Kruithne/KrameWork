@@ -90,8 +90,7 @@
 		 * @return StringBuilder
 		 */
 		public function appendf(string $format, mixed ...$args):StringBuilder {
-			\array_unshift($args, $format); // Push the format string onto the args.
-			return $this->append(\call_user_func_array('\sprintf', $args));
+			return $this->append(\sprintf($format, ...$args));
 		}
 
 		/**
@@ -171,8 +170,7 @@
 		 * @return StringBuilder
 		 */
 		public function prependf(string $format, mixed ...$args):StringBuilder {
-			\array_unshift($args, $format); // Push the format string onto the args.
-			return $this->prepend(\call_user_func_array('\sprintf', $args));
+			return $this->prepend(\sprintf($format, ...$args));
 		}
 
 		/**
