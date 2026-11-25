@@ -159,7 +159,7 @@
 					$frame->line = (string)($traceFrame['line'] ?? '?');
 					$frame->class = $traceFrame['class'] ?? '';
 					$frame->type = $traceFrame['type'] ?? '';
-					$frame->function = $traceFrame['function'] ?? '';
+					$frame->function = $traceFrame['function'];
 					$frame->args = \implode(', ', $args);
 				}
 			}

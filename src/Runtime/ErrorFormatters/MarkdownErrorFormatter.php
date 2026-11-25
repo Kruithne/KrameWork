@@ -73,7 +73,7 @@
 					$node['line'] ?? '?',
 					$node['class'] ?? '',
 					$node['type'] ?? '',
-					$node['function'] ?? '',
+					$node['function'],
 					\implode(', ', $args)
 				);
 			}
