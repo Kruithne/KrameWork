@@ -10,7 +10,6 @@
 	 * Dispatches errors into flat-files.
 	 *
 	 * @package KrameWork\Runtime\ErrorDispatchers
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class FileDispatcher implements IErrorDispatcher
 	{

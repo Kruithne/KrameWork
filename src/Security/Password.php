@@ -7,7 +7,6 @@
 	 * Represents a password.
 	 *
 	 * @package KrameWork\Security
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class Password implements IMaskable
 	{

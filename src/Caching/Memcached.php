@@ -9,7 +9,6 @@
 	 * Interface layer for Memcached.
 	 *
 	 * @package KrameWork\Caching
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class Memcached implements IDataCache
 	{

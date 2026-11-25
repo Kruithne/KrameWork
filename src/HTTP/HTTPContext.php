@@ -11,7 +11,6 @@
 	/**
 	 * Class HTTPContext
 	 * @package KrameWork
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class HTTPContext
 	{

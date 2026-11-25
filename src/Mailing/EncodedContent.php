@@ -6,7 +6,6 @@
 	 * Encoded content container.
 	 *
 	 * @package KrameWork\Mailing
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class EncodedContent
 	{

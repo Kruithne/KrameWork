@@ -5,7 +5,6 @@
 
 	/**
 	 * Wrapper class to automatically cache query results
-	 * @author docpify <morten@runsafe.no>
 	 * @package KrameWork\Database
 	 */
 	class DatabaseCache

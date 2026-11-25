@@ -8,7 +8,6 @@
 
 	/**
 	 * Database connection with build in performance monitoring
-	 * @author docpify <morten@runsafe.no>
 	 * @package KrameWork\Database
 	 */
 	class MonitoredDatabase extends Database

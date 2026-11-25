@@ -17,7 +17,6 @@
 	 * Error report implementation: HTML
 	 *
 	 * @package KrameWork\Runtime\ErrorFormatters
-	 * @author Kruithne <kruithne@gmail.com>
 	 * @phpstan-import-type StackFrame from IError
 	 */
 	class HTMLErrorFormatter implements IErrorFormatter

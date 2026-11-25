@@ -6,7 +6,6 @@
 	 * Contains results from a benchmark.
 	 *
 	 * @package KrameWork\Timing\Benchmarking
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class BenchmarkResult
 	{

@@ -6,7 +6,6 @@
 	 * HTTP Referrer Policy Header.
 	 *
 	 * @package KrameWork\HTTP
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class ReferrerPolicyHeader extends HTTPHeader
 	{

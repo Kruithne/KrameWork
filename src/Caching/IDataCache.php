@@ -6,7 +6,6 @@
 	 * Template for user-cache classes.
 	 *
 	 * @package KrameWork\Caching
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	interface IDataCache
 	{

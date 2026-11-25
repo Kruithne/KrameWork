@@ -6,7 +6,6 @@
 	/**
 	 * Class CurrencyValue
 	 * A currency value
-	 * @author docpify <morten@runsafe.no>
 	 */
 	class CurrencyValue extends DecimalValue
 	{

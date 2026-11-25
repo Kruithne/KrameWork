@@ -19,7 +19,6 @@
 	 * Fluent API instance-based mail object.
 	 *
 	 * @package KrameWork\Mailing
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class Mail
 	{

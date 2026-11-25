@@ -11,7 +11,6 @@
 	 * Session handling instance.
 	 *
 	 * @package KrameWork
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class Session implements IDataCache
 	{

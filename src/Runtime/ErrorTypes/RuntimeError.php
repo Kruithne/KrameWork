@@ -8,7 +8,6 @@
 	 * Represents a runtime error that occurred.
 	 *
 	 * @package KrameWork\Runtime
-	 * @author Kruithne <kruithne@gmail.com>
 	 * @phpstan-import-type StackFrame from IError
 	 */
 	class RuntimeError implements IError

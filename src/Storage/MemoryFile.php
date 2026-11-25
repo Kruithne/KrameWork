@@ -6,7 +6,6 @@
 	 * In-memory file implementation.
 	 *
 	 * @package KrameWork\Storage
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class MemoryFile extends File
 	{

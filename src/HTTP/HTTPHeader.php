@@ -7,7 +7,6 @@
 	 * Base class for HTTP headers.
 	 *
 	 * @package KrameWork\Security\HTTP
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	abstract class HTTPHeader implements IHTTPHeader
 	{

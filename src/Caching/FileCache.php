@@ -11,7 +11,6 @@
 	 * Proof-of-concept cache implementation via hard file.
 	 *
 	 * @package KrameWork\Caching
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class FileCache implements IDataCache
 	{

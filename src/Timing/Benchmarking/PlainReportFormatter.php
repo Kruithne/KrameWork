@@ -11,7 +11,6 @@
 	 * Plain-text formatter for benchmark reports.
 	 *
 	 * @package KrameWork\Timing\Benchmarking
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class PlainReportFormatter implements IBenchmarkReportFormatter
 	{

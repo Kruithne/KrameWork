@@ -5,7 +5,6 @@
 	/**
 	 * Class IntegerValue
 	 * An integer value
-	 * @author docpify <morten@runsafe.no>
 	 * @extends Value<int|null>
 	 */
 	class IntegerValue extends Value

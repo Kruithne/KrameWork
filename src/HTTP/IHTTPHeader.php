@@ -6,7 +6,6 @@
 	 * Represents a HTTP header.
 	 *
 	 * @package KrameWork\Security
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	interface IHTTPHeader
 	{

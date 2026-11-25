@@ -12,7 +12,6 @@
 	 * Intended for use during debugging only.
 	 *
 	 * @package KrameWork\Runtime\ErrorDispatchers
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class BufferDispatcher implements IErrorDispatcher, IBufferDispatcher
 	{

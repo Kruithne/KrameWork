@@ -6,7 +6,6 @@
 	/**
 	 * Class ResultRow
 	 * Encapsulates a result row of formatted data, with support for JSON serialization
-	 * @author docpify <morten@runsafe.no>
 	 * @implements \Iterator<string, mixed>
 	 * @implements \ArrayAccess<int|string, mixed>
 	 */

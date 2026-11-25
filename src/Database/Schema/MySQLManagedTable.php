@@ -6,7 +6,6 @@
 
 	/**
 	 * Class to handle a managed table hosted by a MySQL Server
-	 * @author docpify <morten@runsafe.no>
 	 * @package KrameWork\Database
 	 */
 	abstract class MySQLManagedTable extends ManagedTable

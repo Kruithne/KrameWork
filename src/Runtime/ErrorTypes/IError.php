@@ -6,7 +6,6 @@
 	 * Represents classes that contain error data.
 	 *
 	 * @package KrameWork\Runtime\ErrorTypes
-	 * @author Kruithne <kruithne@gmail.com>
 	 * @phpstan-type StackFrame array{function: string, line?: int, file?: string, class?: string, type?: string, args?: array<mixed>, object?: object}
 	 */
 	interface IError

@@ -6,7 +6,6 @@
 	 * Fluent API String Builder.
 	 *
 	 * @package KrameWork\Utils
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class StringBuilder
 	{

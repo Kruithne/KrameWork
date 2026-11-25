@@ -8,7 +8,6 @@
 	 * Content Security Policy generator.
 	 *
 	 * @package KrameWork\Security
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class CSPHeader extends HTTPHeader
 	{

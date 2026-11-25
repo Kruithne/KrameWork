@@ -6,7 +6,6 @@
 	 * Static constants of time.
 	 *
 	 * @package KrameWork\Timing
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class Time
 	{

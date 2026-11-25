@@ -10,7 +10,6 @@
 	 * Wrapper class for easily managing JSON files.
 	 *
 	 * @package KrameWork\Storage
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class JSONFile extends File
 	{

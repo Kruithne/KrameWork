@@ -7,7 +7,6 @@
 	 * X-Framing-Option header, for use with CSP frame-ancestors directive.
 	 *
 	 * @package KrameWork\Security\HTTP
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class XFrameHeader extends HTTPHeader
 	{

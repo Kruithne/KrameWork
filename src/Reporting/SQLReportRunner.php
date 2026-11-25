@@ -7,7 +7,6 @@
 	/**
 	 * Class SQLReportRunner
 	 * Encapsulates executing and caching data from SQL
-	 * @author docpify <morten@runsafe.no>
 	 * @package KrameWork\Reporting
 	 */
 	abstract class SQLReport extends ReportRunner

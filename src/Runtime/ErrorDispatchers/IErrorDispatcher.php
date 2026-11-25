@@ -7,7 +7,6 @@
 	 * Represents classes in charge of dispatching error reports.
 	 *
 	 * @package KrameWork\Runtime\ErrorDispatchers
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	interface IErrorDispatcher
 	{

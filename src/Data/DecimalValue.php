@@ -5,7 +5,6 @@
 	/**
 	 * Class DecimalValue
 	 * A decimal value
-	 * @author docpify <morten@runsafe.no>
 	 * @extends Value<float|null>
 	 */
 	class DecimalValue extends Value

@@ -8,7 +8,6 @@
 	 * Wrapper class for easily managing uploaded files.
 	 *
 	 * @package KrameWork\Storage
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class UploadedFile extends File
 	{

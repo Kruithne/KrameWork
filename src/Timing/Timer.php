@@ -6,7 +6,6 @@
 	 * Cute little tiny timer tool named Tim.
 	 *
 	 * @package KrameWork\Timing
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class Timer
 	{

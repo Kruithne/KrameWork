@@ -5,7 +5,6 @@
 	 * Class FileNotFoundException
 	 *
 	 * @package KrameWork\Mailing
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class FileNotFoundException extends \Exception {}
 
@@ -14,7 +13,6 @@
 	 * Used to load an e-mail body from a templated file.
 	 *
 	 * @package KrameWork\Mailing
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class MailTemplate
 	{

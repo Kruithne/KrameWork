@@ -7,7 +7,6 @@
 	 * HTTP Strict Transport Security.
 	 *
 	 * @package KrameWork\Security
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class HSTSHeader extends HTTPHeader {
 		/**

@@ -9,7 +9,6 @@
 	 * HTTP Header Generator/Container.
 	 *
 	 * @package KrameWork\Security
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class HTTPHeaders
 	{

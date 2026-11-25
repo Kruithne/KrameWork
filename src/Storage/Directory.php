@@ -11,7 +11,6 @@
 	 * Wrapper class to easily manage a file-system directory.
 	 *
 	 * @package KrameWork\Storage
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class Directory extends DirectoryItem
 	{

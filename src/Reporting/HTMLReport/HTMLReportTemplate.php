@@ -8,7 +8,6 @@
 	 * Represents a chunk of HTML for templating.
 	 *
 	 * @package KrameWork\Reporting\HTMLReport
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class HTMLReportTemplate
 	{

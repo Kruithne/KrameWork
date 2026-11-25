@@ -8,7 +8,6 @@
 	 * Fluent API mail recipient container.
 	 *
 	 * @package KrameWork\Mailing
-	 * @author Kruithne (kruitne@gmail.com)
 	 */
 	class RecipientCollection
 	{

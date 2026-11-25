@@ -12,7 +12,6 @@
 	 * Dispatches error reports via e-mail.
 	 *
 	 * @package KrameWork\Runtime\ErrorDispatchers
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class MailDispatcher implements IErrorDispatcher
 	{

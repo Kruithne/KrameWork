@@ -3,7 +3,6 @@
 
 	/**
 	 * Base class for a database table driver
-	 * @author docpify <morten@runsafe.no>
 	 * @package KrameWork\Database
 	 */
 	interface IManagedTable

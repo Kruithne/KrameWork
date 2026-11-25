@@ -9,7 +9,6 @@
 	 * MIME Multipart Content Block
 	 *
 	 * @package KrameWork\Mailing
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class MailMultipartContent implements IMailPart
 	{

@@ -11,7 +11,6 @@
 	 * Handles the automatic loading of files based on class initiation.
 	 *
 	 * @package KrameWork
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class AutoLoader
 	{

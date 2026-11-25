@@ -19,7 +19,6 @@
 	 * Error report implementation: Plain Text
 	 *
 	 * @package KrameWork\Runtime\ErrorReports
-	 * @author Kruithne <kruithne@gmail.com>
 	 * @phpstan-import-type StackFrame from IError
 	 */
 	class PlainTextErrorFormatter implements IErrorFormatter

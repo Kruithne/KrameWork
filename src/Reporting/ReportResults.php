@@ -5,7 +5,6 @@
 	 * Class SQLReportResults
 	 * @property string $hash
 	 * @property array|ReportRow[] $data
-	 * @author docpify <morten@runsafe.no>
 	 */
 	class ReportResults
 	{

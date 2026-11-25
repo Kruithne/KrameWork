@@ -12,7 +12,6 @@
 	 * Error report implementation: JSON
 	 *
 	 * @package KrameWork\Runtime\ErrorReports
-	 * @author Kruithne <kruithne@gmail.com>
 	 * @phpstan-import-type StackFrame from IError
 	 */
 	class JSONErrorFormatter implements IErrorFormatter

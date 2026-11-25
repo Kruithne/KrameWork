@@ -9,7 +9,6 @@
 	 * Represents classes that create error reports.
 	 *
 	 * @package KrameWork\Runtime\ErrorFormatters
-	 * @author Kruithne <kruithne@gmail.com>
 	 * @phpstan-import-type StackFrame from IError
 	 */
 	interface IErrorFormatter

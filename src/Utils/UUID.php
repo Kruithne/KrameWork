@@ -6,7 +6,6 @@
 	 * UUID generation functions.
 	 *
 	 * @package KrameWork\Utils
-	 * @author Kruithne <kruithne@gmail.com> (KrameWork implementation)
 	 * @author Andrew Moore (v3, v4, v5 base)
 	 * @author Ben Ramsey <ben@benramsey.com> (class constants)
 	 */

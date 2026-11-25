@@ -23,7 +23,6 @@
 	 * MIME Multipart Boundary Block
 	 *
 	 * @package KrameWork\Mailing
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class MailMultipart implements IMailPart
 	{

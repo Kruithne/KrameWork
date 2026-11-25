@@ -10,7 +10,6 @@
 	 * Create and invoke a HTTP(s) request.
 	 *
 	 * @package KrameWork\HTTP
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class WebRequest
 	{

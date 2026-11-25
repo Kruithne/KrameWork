@@ -9,7 +9,6 @@
 	 * Create an invoke a HTTP(s) request with a JSON response.
 	 *
 	 * @package KrameWork\HTTP
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class JSONRequest extends WebRequest
 	{

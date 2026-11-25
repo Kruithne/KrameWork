@@ -11,7 +11,6 @@
 	 * Constructs instantiable classes and their dependencies.
 	 *
 	 * @package KrameWork\DI
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class DependencyInjector
 	{

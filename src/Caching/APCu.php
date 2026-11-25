@@ -9,7 +9,6 @@
 	 * Interface for APCu.
 	 *
 	 * @package KrameWork\Caching
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class APCu implements IDataCache
 	{

@@ -9,7 +9,6 @@
 	 * Wrapper for attachable files.
 	 *
 	 * @package KrameWork\Mailing
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class AttachmentFile extends File
 	{

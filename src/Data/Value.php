@@ -4,7 +4,6 @@
 	/**
 	 * Class Value
 	 * A generic value
-	 * @author docpify <morten@runsafe.no>
 	 * @template T of scalar|null
 	 */
 	class Value

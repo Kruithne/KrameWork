@@ -5,7 +5,8 @@
 	use KrameWork\Data\Currency;
 
 	/**
-	 * @author docpify <morten@runsafe.no>
+	 * Class ReportColumn
+	 * Describes a column in a report, with a label and a data type
 	 */
 	final class ReportColumn implements \JsonSerializable
 	{

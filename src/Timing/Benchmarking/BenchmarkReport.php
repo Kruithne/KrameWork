@@ -11,7 +11,6 @@
 	 * Reporting tool to combine results of benchmarks.
 	 *
 	 * @package KrameWork\Timing\Benchmarking
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class BenchmarkReport
 	{

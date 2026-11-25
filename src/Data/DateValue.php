@@ -5,7 +5,6 @@
 	/**
 	 * Class DateValue
 	 * A date value
-	 * @author docpify <morten@runsafe.no>
 	 * @extends Value<int|null>
 	 */
 	class DateValue extends Value

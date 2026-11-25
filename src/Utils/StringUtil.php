@@ -9,7 +9,6 @@
 	 * String manipulation utilities.
 	 *
 	 * @package KrameWork\Utils
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	class StringUtil
 	{

@@ -9,8 +9,6 @@
 
 	/**
 	 * Base class for a database connection
-	 * @author docpify <morten@runsafe.no>
-	 * @author Kruithne <kruithne@gmail.com>
 	 * @package KrameWork\Database
 	 */
 	class Database implements Driver\Generic

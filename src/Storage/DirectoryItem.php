@@ -8,7 +8,6 @@
 	 * Interface IDirectoryItem
 	 *
 	 * @package KrameWork\Storage
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	interface IDirectoryItem
 	{
@@ -58,7 +57,6 @@
 	 * Base class for file-system wrapper classes.
 	 *
 	 * @package KrameWork\Storage
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	abstract class DirectoryItem implements IDirectoryItem
 	{

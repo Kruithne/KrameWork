@@ -8,7 +8,6 @@
 	 * Basic XSS prevention header for Chrome, Firefox and IE.
 	 *
 	 * @package KrameWork\Security\HTTP
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class MIMEValidationHeader extends HTTPHeader
 	{

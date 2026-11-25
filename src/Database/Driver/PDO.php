@@ -5,8 +5,6 @@
 
 	/**
 	 * This driver wraps a PDO connection, supporting a wide range of database engines.
-	 * @author docpify <morten@runsafe.no>
-	 * @author Kruithne <kruithne@gmail.com>
 	 * @package KrameWork\Database\Driver
 	 */
 	class PDO implements Generic

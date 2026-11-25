@@ -15,7 +15,6 @@
 	 * Error report implementation: Markdown
 	 *
 	 * @package KrameWork\Runtime\ErrorFormatters
-	 * @author Kruithne <kruithne@gmail.com>
 	 * @phpstan-import-type StackFrame from IError
 	 */
 	class MarkdownErrorFormatter implements IErrorFormatter

@@ -15,7 +15,6 @@
 	 * API module for third-party service: reCAPTCHA
 	 *
 	 * @package KrameWork\API
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class reCAPTCHA
 	{

@@ -6,7 +6,6 @@
 
 	/**
 	 * Class to handle a managed table hosted by an SQLite database
-	 * @author docpify <morten@runsafe.no>
 	 * @package KrameWork\Database
 	 */
 	abstract class SQLiteManagedTable extends ManagedTable

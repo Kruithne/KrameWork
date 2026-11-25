@@ -6,7 +6,6 @@
 	 * Object that can be represented as a masked string.
 	 *
 	 * @package KrameWork\Security
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	interface IMaskable
 	{

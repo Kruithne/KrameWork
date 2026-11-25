@@ -3,8 +3,6 @@
 
 	/**
 	 * This interface defined the methods a database driver need to support the KrameWork database stack.
-	 * @author docpify <morten@runsafe.no>
-	 * @author Kruithne <kruithne@gmail.com>
 	 * @package KrameWork\Database\Driver
 	 */
 	interface Generic

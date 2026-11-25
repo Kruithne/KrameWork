@@ -7,7 +7,6 @@
 	 * Header to enable legacy X-XSS detection/prevention.
 	 *
 	 * @package KrameWork\Security\HTTP
-	 * @author Kruithne <kruithne@gmail.com>
 	 */
 	class XSSProtectionHeader extends HTTPHeader
 	{

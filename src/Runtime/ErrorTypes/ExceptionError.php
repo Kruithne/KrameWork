@@ -10,7 +10,6 @@
 	 * Represents an exception that occurred.
 	 *
 	 * @package KrameWork\Runtime
-	 * @author Kruithne <kruithne@gmail.com>
 	 * @phpstan-import-type StackFrame from IError
 	 */
 	class ExceptionError implements IError

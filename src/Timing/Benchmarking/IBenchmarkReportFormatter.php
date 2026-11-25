@@ -5,7 +5,6 @@
 	 * Interface IBenchmarkReportFormatter
 	 *
 	 * @package KrameWork\Timing\Benchmarking
-	 * @author Kruithne (kruithne@gmail.com)
 	 */
 	interface IBenchmarkReportFormatter
 	{

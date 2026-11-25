@@ -21,7 +21,6 @@
 	 * Module in charge of intercepting, formatting and dispatching errors.
 	 *
 	 * @package KrameWork\Runtime
-	 * @author Kruithne <kruithne@gmail.com>
 	 * @phpstan-import-type StackFrame from IError
 	 */
 	class ErrorHandler
