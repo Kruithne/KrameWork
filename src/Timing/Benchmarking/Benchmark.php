@@ -41,7 +41,7 @@
 		 * Benchmark constructor.
 		 *
 		 * @api __construct
-		 * @param int<2, max> $sets How many execution cycles? Must be at least 2.
+		 * @param int $sets How many execution cycles? Must be at least 2.
 		 * @param int $executionsPerCycle How many executions per cycle?
 		 * @param string $name A name to identify this benchmark.
 		 * @throws \InvalidArgumentException
