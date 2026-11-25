@@ -23,6 +23,8 @@ parameter | type | description
 --- | --- | ---
 `$key` | `string` | Key to lookup files for.
 `$useWrappers` | `bool` | Use KrameWork file wrappers.
+
+When `$useWrappers` is true, entries without a string path, a string name and an integer error code are skipped.
 ##### > HTTPContext::hasFile() : `bool`
 Check if this request contains an uploaded file with the given key.
 

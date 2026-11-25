@@ -46,7 +46,14 @@
 
 			for ($i = 0; $i < $count; $i++) {
 				if ($useWrappers) {
-					$files[] = new UploadedFile((string) $paths[$i], (string) $names[$i], (int) $errors[$i]);
+					$path = $paths[$i] ?? null;
+					$name = $names[$i] ?? null;
+					$error = $errors[$i] ?? null;
+
+					if (!\is_string($path) || !\is_string($name) || !\is_int($error))
+						continue;
+
+					$files[] = new UploadedFile($path, $name, $error);
 				} else {
 					$files[] = new \ArrayObject([
 						'name' => $names[$i],

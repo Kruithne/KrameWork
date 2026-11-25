@@ -337,4 +337,25 @@
 
 			$_FILES = $orig;
 		}
-	}
+
+		/**
+		 * Test that HTTPContext->getFiles() skips wrapped entries that have a malformed value.
+		 */
+		public function testMalformedFileSkipped() {
+			$orig = $_FILES;
+			$_FILES = [
+				"test" => [
+					"name" => ["valid.png", "malformed.png"],
+					"type" => ["image/png", "image/png"],
+					"tmp_name" => [__DIR__ . "/resources/HTTPContextTest/tmp/phpbF6s1h", ["nested"]],
+					"error" => [0, 0],
+					"size" => [117552, 117552]
+				]
+			];
+
+			$testFiles = HTTPContext::getFiles("test", true);
+			$this->assertCount(1, $testFiles, "Context did not skip the malformed file.");
+
+			$_FILES = $orig;
+		}
+}
