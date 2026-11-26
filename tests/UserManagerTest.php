@@ -1,0 +1,216 @@
+<?php
+	use KrameWork\Database\ConnectionString;
+	use KrameWork\Database\Database;
+	use KrameWork\Database\Schema\SQLiteMetaTable;
+	use KrameWork\Security\Password;
+	use KrameWork\Users\IUserMailer;
+	use KrameWork\Users\LoginStatus;
+	use KrameWork\Users\PasswordResetStatus;
+	use KrameWork\Users\Schema\DatabaseType;
+	use KrameWork\Users\Schema\UserAccountsTable;
+	use KrameWork\Users\Schema\UserPermissionsTable;
+	use KrameWork\Users\Schema\UserResetTokensTable;
+	use KrameWork\Users\Schema\UserVerificationCodesTable;
+	use KrameWork\Users\SendCodeStatus;
+	use KrameWork\Users\UserAccountFlags;
+	use KrameWork\Users\UserManager;
+	use KrameWork\Users\VerificationStatus;
+
+	require_once(__DIR__ . '/../src/Database/Database.php');
+	require_once(__DIR__ . '/../src/Database/Schema/SQLiteMetaTable.php');
+	require_once(__DIR__ . '/../src/Users/UserManager.php');
+	require_once(__DIR__ . '/../src/Users/Schema/UserAccountsTable.php');
+	require_once(__DIR__ . '/../src/Users/Schema/UserPermissionsTable.php');
+	require_once(__DIR__ . '/../src/Users/Schema/UserResetTokensTable.php');
+	require_once(__DIR__ . '/../src/Users/Schema/UserVerificationCodesTable.php');
+
+	class UserManagerTest extends PHPUnit\Framework\TestCase
+	{
+		/**
+		 * Test that a new account cannot log in until it is verified.
+		 */
+		public function testNewAccountRequiresVerification() {
+			$users = $this->createManager();
+			$userID = $users->register('foo@bar.net', new Password('hunter2'));
+
+			$result = $users->verifyLogin('foo@bar.net', new Password('hunter2'));
+			$this->assertSame(LoginStatus::REQUIRES_VERIFICATION, $result->status);
+			$this->assertSame($userID, $result->userID);
+		}
+
+		/**
+		 * Test that the mailed verification code verifies the account, so the account can log in.
+		 */
+		public function testVerificationCodeVerifiesAccount() {
+			$users = $this->createManager();
+			$userID = $users->register('foo@bar.net', new Password('hunter2'));
+
+			$result = $users->checkVerificationCode($this->mailer->token, $this->mailer->code);
+			$this->assertSame(VerificationStatus::SUCCESS, $result->status);
+			$this->assertSame($userID, $result->userID);
+			$this->assertSame(LoginStatus::SUCCESS, $users->verifyLogin('foo@bar.net', new Password('hunter2'))->status);
+		}
+
+		/**
+		 * Test that the e-mail address is matched without case and surrounding spaces.
+		 */
+		public function testEmailIsNormalized() {
+			$users = $this->createManager();
+			$users->register(' Foo@Bar.net ', new Password('hunter2'));
+
+			$this->assertTrue($users->emailInUse('foo@bar.net'));
+			$this->assertSame(LoginStatus::REQUIRES_VERIFICATION, $users->verifyLogin('FOO@BAR.NET', new Password('hunter2'))->status);
+		}
+
+		/**
+		 * Test that an incorrect password is rejected and gives no user ID.
+		 */
+		public function testIncorrectPasswordIsRejected() {
+			$users = $this->createManager();
+			$users->register('foo@bar.net', new Password('hunter2'));
+
+			$result = $users->verifyLogin('foo@bar.net', new Password('wrong'));
+			$this->assertSame(LoginStatus::INVALID_PASSWORD, $result->status);
+			$this->assertNull($result->userID);
+		}
+
+		/**
+		 * Test that the verification token is deleted after the maximum number of incorrect codes, so the correct code no longer works.
+		 */
+		public function testVerificationTokenIsDeletedAfterMaxAttempts() {
+			$users = $this->createManager();
+			$users->register('foo@bar.net', new Password('hunter2'));
+			$wrong = $this->mailer->code === '10000' ? '10001' : '10000';
+
+			for ($i = 1; $i < UserManager::VERIFY_MAX_ATTEMPTS; $i++)
+				$this->assertSame(VerificationStatus::INVALID_CODE, $users->checkVerificationCode($this->mailer->token, $wrong)->status);
+
+			$this->assertSame(VerificationStatus::TOO_MANY_ATTEMPTS, $users->checkVerificationCode($this->mailer->token, $wrong)->status);
+			$this->assertSame(VerificationStatus::INVALID_CODE, $users->checkVerificationCode($this->mailer->token, $this->mailer->code)->status);
+		}
+
+		/**
+		 * Test that a new verification replaces the old token and sends a new code.
+		 */
+		public function testCreateVerificationReplacesToken() {
+			$users = $this->createManager();
+			$userID = $users->register('foo@bar.net', new Password('hunter2'));
+			$oldToken = $this->mailer->token;
+
+			$token = $users->createVerification($userID);
+			$this->assertSame($token, $this->mailer->token);
+			$this->assertSame($token, $users->getVerificationToken($userID));
+			$this->assertSame(VerificationStatus::INVALID_CODE, $users->checkVerificationCode($oldToken, $this->mailer->code)->status);
+		}
+
+		/**
+		 * Test that a verification code is not sent again within the send interval.
+		 */
+		public function testVerificationCodeResendIsThrottled() {
+			$users = $this->createManager();
+			$users->register('foo@bar.net', new Password('hunter2'));
+
+			$this->assertSame(SendCodeStatus::THROTTLED, $users->sendVerificationCode($this->mailer->token));
+			$this->assertSame(SendCodeStatus::SUCCESS, $users->sendVerificationCode($this->mailer->token, true));
+		}
+
+		/**
+		 * Test that a password reset sets the new password and removes the forced reset flag.
+		 */
+		public function testPasswordResetSetsNewPassword() {
+			$users = $this->createManager();
+			$userID = $this->createVerifiedAccount($users);
+			$users->setFlag($userID, UserAccountFlags::FORCE_PASSWORD_RESET, true);
+
+			$this->assertSame(PasswordResetStatus::SUCCESS, $users->requestPasswordReset('foo@bar.net'));
+			$this->assertSame(PasswordResetStatus::SUCCESS, $users->applyPasswordReset($this->mailer->resetToken, new Password('newpass')));
+
+			$this->assertSame(LoginStatus::SUCCESS, $users->verifyLogin('foo@bar.net', new Password('newpass'))->status);
+			$this->assertSame(LoginStatus::INVALID_PASSWORD, $users->verifyLogin('foo@bar.net', new Password('hunter2'))->status);
+		}
+
+		/**
+		 * Test that a password reset token can be used one time only.
+		 */
+		public function testPasswordResetTokenIsSingleUse() {
+			$users = $this->createManager();
+			$this->createVerifiedAccount($users);
+			$users->requestPasswordReset('foo@bar.net');
+
+			$users->applyPasswordReset($this->mailer->resetToken, new Password('newpass'));
+			$this->assertSame(PasswordResetStatus::INVALID_TOKEN, $users->applyPasswordReset($this->mailer->resetToken, new Password('other')));
+		}
+
+		/**
+		 * Test that a second password reset request within the send interval is throttled.
+		 */
+		public function testPasswordResetRequestIsThrottled() {
+			$users = $this->createManager();
+			$this->createVerifiedAccount($users);
+
+			$this->assertSame(PasswordResetStatus::SUCCESS, $users->requestPasswordReset('foo@bar.net'));
+			$this->assertSame(PasswordResetStatus::THROTTLED, $users->requestPasswordReset('foo@bar.net'));
+		}
+
+		/**
+		 * Test that a permission is given only to the account it is set on, and that ALL_PERMISSIONS gives every permission.
+		 */
+		public function testPermissions() {
+			$users = $this->createManager();
+			$userID = $users->register('foo@bar.net', new Password('hunter2'));
+			$adminID = $users->register('admin@bar.net', new Password('hunter2'));
+
+			$users->setPermission($userID, 1, true);
+			$users->setFlag($adminID, UserAccountFlags::ALL_PERMISSIONS, true);
+
+			$this->assertTrue($users->hasPermission($userID, 1));
+			$this->assertFalse($users->hasPermission($userID, 2));
+			$this->assertTrue($users->hasPermission($adminID, 2));
+
+			$users->setPermission($userID, 1, false);
+			$this->assertFalse($users->hasPermission($userID, 1));
+		}
+
+		/**
+		 * Register an account with the address foo@bar.net and verify it.
+		 * @param UserManager $users User manager.
+		 * @return int ID of the account.
+		 */
+		private function createVerifiedAccount(UserManager $users): int {
+			$userID = $users->register('foo@bar.net', new Password('hunter2'));
+			$users->checkVerificationCode($this->mailer->token, $this->mailer->code);
+			return $userID;
+		}
+
+		/**
+		 * Create a user manager on a new in-memory database.
+		 * @return UserManager
+		 */
+		private function createManager(): UserManager {
+			$db = new Database(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO);
+			$meta = new SQLiteMetaTable($db);
+			(new UserAccountsTable($db, $meta, DatabaseType::SQLITE))->create();
+			(new UserVerificationCodesTable($db, $meta))->create();
+			(new UserResetTokensTable($db, $meta))->create();
+			(new UserPermissionsTable($db, $meta))->create();
+
+			$this->mailer = new class implements IUserMailer {
+				public string $token = '';
+				public string $code = '';
+				public string $resetToken = '';
+
+				public function sendVerificationCode(int $userID, string $email, string $token, string $code): void {
+					$this->token = $token;
+					$this->code = $code;
+				}
+
+				public function sendPasswordReset(int $userID, string $email, string $token): void {
+					$this->resetToken = $token;
+				}
+			};
+
+			return new UserManager($db, $this->mailer);
+		}
+
+		private IUserMailer $mailer;
+	}

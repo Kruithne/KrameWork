@@ -87,6 +87,16 @@ KrameWork is an OOP PHP toolkit for building websites and scripts. It provides i
 	- [Timer](docs/Timing/Timer.md)
 	- [Benchmark](docs/Timing/Benchmarking/Benchmark.md)
 	- [BenchmarkReport](docs/Timing/Benchmarking/BenchmarkReport.md)
+- **Users**
+	- [Getting Started](docs/Users/GettingStarted.md)
+	- [UserManager](docs/Users/UserManager.md)
+	- [UserSessionManager](docs/Users/UserSessionManager.md)
+	- [UserSession](docs/Users/UserSession.md)
+	- [UserAccountFlags](docs/Users/UserAccountFlags.md)
+	- [IUserMailer](docs/Users/IUserMailer.md)
+	- [OAuthManager](docs/Users/OAuthManager.md)
+	- [OAuthProvider](docs/Users/OAuthProvider.md)
+	- [UserTables](docs/Users/UserTables.md)
 - **Utilities**
 	- [StringBuilder](docs/Utils/StringBuilder.md)
 	- [StringUtil](docs/Utils/StringUtil.md)

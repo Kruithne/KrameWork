@@ -1,0 +1,91 @@
+## KrameWork\Users\OAuth\OAuthManager
+
+***Table of Contents***
+* **Overview** - Information about the class.
+* **Examples** - Usage examples.
+* **Functions** - Comprehensive list of all functions in the class.
+
+___
+### Overview
+`OAuthManager` logs users in with OpenID Connect providers, such as Google and Microsoft. It uses the authorization code flow.
+
+The first login with an identity creates a user account with the `OAUTH_ACCOUNT` flag. This account has no password. If a different account already uses the e-mail address, the login fails with `EMAIL_IN_USE`. `OAuthManager` does not link an identity to an existing account.
+
+`OAuthManager` does not start sessions. Use [UserSessionManager](UserSessionManager.md) to start a session after a successful login.
+
+A state token protects each login against cross-site request forgery. A state token can be used one time, and is valid for `STATE_LIFETIME` (600) seconds.
+
+`OAuthManager` checks the signature, issuer, audience and expiry of the ID token. The token must be signed with RS256 by a key in the JWKS of the provider.
+
+`OAuthManager` keeps the signing keys for `KEYS_LIFETIME` (3600) seconds. Give an `IDataCache` (for example `APCu`) to keep the keys between requests. Without a cache, each request gets the keys again. If a token has an unknown key ID, `OAuthManager` gets the keys again, at most one time in `KEYS_REFETCH_COOLDOWN` (300) seconds. This handles key rotation by the provider.
+
+If the ID token has no e-mail address, `OAuthManager` requests it from the UserInfo endpoint. If the provider marks the e-mail address as not verified, the login fails.
+___
+### Examples
+Start a login:
+```php
+$providers = [OAuthProvider::google($id, $secret), OAuthProvider::microsoft($id, $secret)];
+$oauth = new OAuthManager($db, 'https://bar.net/auth/callback', $providers, new APCu());
+
+$url = $oauth->getAuthorizationURL('google');
+if ($url !== null)
+	header('Location: ' . $url);
+```
+
+Complete the login on the callback URL:
+```php
+$state = HTTPContext::getQueryDataValue('state');
+$code = HTTPContext::getQueryDataValue('code');
+
+if (!\is_string($state) || !\is_string($code))
+	return redirect('/login?error=oauth');
+
+$result = $oauth->callback($state, $code);
+if ($result->status !== OAuthStatus::SUCCESS)
+	return redirect('/login?error=oauth');
+
+if ($result->registered)
+	saveProfile($result->userID, $result->claims->given_name ?? '', $result->claims->family_name ?? '');
+
+$sessions->start($result->userID);
+```
+
+### Login status
+status | description
+--- | ---
+`SUCCESS` | The login is complete. `userID` and `claims` are set. `registered` is true for a new account.
+`INVALID_STATE` | The state token does not exist, was used or expired.
+`UNKNOWN_PROVIDER` | The provider of the state token is not configured.
+`TOKEN_EXCHANGE_FAILED` | The token endpoint did not return an ID token.
+`INVALID_ID_TOKEN` | The ID token is malformed, or the signature, issuer, audience or expiry is not valid.
+`MISSING_EMAIL` | The provider did not give an e-mail address.
+`EMAIL_NOT_VERIFIED` | The provider marks the e-mail address as not verified.
+`EMAIL_IN_USE` | A different account uses the e-mail address.
+`ACCOUNT_NOT_FOUND` | The identity is linked to an account that does not exist.
+`ACCOUNT_DISABLED` | The account has the `ACCOUNT_DISABLED` flag.
+___
+### Functions
+##### > __construct() : `void`
+OAuthManager constructor.
+
+parameter | type | description
+--- | --- | ---
+`$db` | `Generic` | Database that contains the user tables.
+`$callbackURL` | `string` | URL that the provider sends the user back to. It must match the URL registered with the provider.
+`$providers` | `OAuthProvider[]` | Providers that users can log in with.
+`$cache` | `IDataCache|null` | Cache for the signing keys of the providers. **Default: null**.
+##### > getProviders() : `string[]`
+Get the names of the providers.
+##### > getAuthorizationURL() : `string|null`
+Start a login. Send the user to the returned URL. Returns null if the provider is unknown. This also deletes expired state tokens.
+
+parameter | type | description
+--- | --- | ---
+`$provider` | `string` | Name of the provider.
+##### > callback() : `OAuthResult`
+Complete a login with the `state` and `code` that the provider sent to the callback URL. This does not start a session. The result has a `status` (`OAuthStatus`), a `userID`, the `claims` of the ID token and `registered`.
+
+parameter | type | description
+--- | --- | ---
+`$state` | `string` | State parameter of the callback.
+`$code` | `string` | Code parameter of the callback.
