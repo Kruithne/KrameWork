@@ -27,6 +27,7 @@
 		const KEYS_LIFETIME = 3600;
 		const KEYS_REFETCH_COOLDOWN = 300;
 		const REQUEST_TIMEOUT = 10;
+		const GUID_PATTERN = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
 
 		/**
 		 * OAuthManager constructor.
@@ -436,6 +437,7 @@
 
 		/**
 		 * Check the issuer, audience and expiry claims of an ID token.
+		 * An issuer with "{tenantid}" only matches if the tid claim is a GUID.
 		 *
 		 * @param OAuthProvider $provider Provider of the login.
 		 * @param \stdClass $claims Claims of the ID token.
@@ -457,13 +459,23 @@
 				return false;
 
 			$issuer = $claims->iss ?? null;
-			$tenant = $claims->tid ?? '';
-			if (!\is_string($issuer) || !\is_string($tenant))
+			if (!\is_string($issuer))
 				return false;
 
-			foreach ($provider->issuers as $accepted)
-				if (\str_replace('{tenantid}', $tenant, $accepted) === $issuer)
+			$tenant = $claims->tid ?? null;
+			$isTenantID = \is_string($tenant) && \preg_match(self::GUID_PATTERN, $tenant) === 1;
+
+			foreach ($provider->issuers as $accepted) {
+				if (\str_contains($accepted, '{tenantid}')) {
+					if (!$isTenantID)
+						continue;
+
+					$accepted = \str_replace('{tenantid}', $tenant, $accepted);
+				}
+
+				if ($accepted === $issuer)
 					return true;
+			}
 
 			return false;
 		}

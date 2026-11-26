@@ -19,7 +19,7 @@
 		 * @param string $authEndpoint Authorization endpoint URL.
 		 * @param string $tokenEndpoint Token endpoint URL.
 		 * @param string $jwksURI URL of the JWKS that contains the signing keys of ID tokens.
-		 * @param string[] $issuers Accepted issuers of ID tokens. "{tenantid}" matches the tid claim of the token.
+		 * @param string[] $issuers Accepted issuers of ID tokens. "{tenantid}" matches the tid claim of the token if it is a GUID.
 		 * @param string[] $scopes Scopes to request.
 		 * @param string|null $userInfoEndpoint UserInfo endpoint URL. Used when the ID token has no e-mail address.
 		 */

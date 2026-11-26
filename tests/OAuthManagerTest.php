@@ -96,6 +96,16 @@
 		}
 
 		/**
+		 * Test that a Microsoft ID token is rejected when its tenant ID is not a GUID.
+		 */
+		public function testMicrosoftNonGUIDTenantIsRejected() {
+			$oauth = $this->createManager();
+			$claims = $this->createClaims(['iss' => 'https://login.microsoftonline.com/other/v2.0', 'tid' => 'other']);
+
+			$this->assertSame(OAuthStatus::INVALID_ID_TOKEN, $this->login($oauth, 'microsoft', $claims)->status);
+		}
+
+		/**
 		 * Test that an identity with the e-mail address of a password account does not log in to that account.
 		 */
 		public function testEmailOfPasswordAccountIsRejected() {
