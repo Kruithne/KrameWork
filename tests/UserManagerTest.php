@@ -235,6 +235,20 @@
 		}
 
 		/**
+		 * Test that a disabled account has no permissions, also with ALL_PERMISSIONS.
+		 */
+		public function testDisabledAccountHasNoPermissions() {
+			$users = $this->createManager();
+			$userID = $users->register('foo@bar.net', new Password('hunter2'));
+
+			$users->setPermission($userID, 1, true);
+			$users->setFlag($userID, UserAccountFlags::ALL_PERMISSIONS, true);
+			$users->setFlag($userID, UserAccountFlags::ACCOUNT_DISABLED, true);
+
+			$this->assertFalse($users->hasPermission($userID, 1));
+		}
+
+		/**
 		 * Test that deleting an account removes its rows from all user tables, and keeps the rows of other accounts.
 		 */
 		public function testDeleteAccountRemovesUserData() {

@@ -307,16 +307,14 @@ The provider sends the user back to the callback URL. For a new account, `regist
 ```
 
 #### Require a session
-`UserSessionManager` does not check the flags. Check `ACCOUNT_DISABLED` in the application.
+`getCurrent()` returns null for a disabled account.
 ```php
 <?php
 	// me.php
-	use KrameWork\Users\UserAccountFlags;
-
 	require_once(__DIR__ . '/bootstrap.php');
 
 	$session = $sessions->getCurrent();
-	if ($session === null || $session->hasFlag(UserAccountFlags::ACCOUNT_DISABLED)) {
+	if ($session === null) {
 		\http_response_code(401);
 		respond(['error' => 'Not logged in']);
 	}
@@ -325,7 +323,7 @@ The provider sends the user back to the callback URL. For a new account, `regist
 ```
 
 #### Require a permission
-The application defines the permission values.
+The application defines the permission values. A disabled account has no permissions.
 ```php
 <?php
 	// edit-post.php

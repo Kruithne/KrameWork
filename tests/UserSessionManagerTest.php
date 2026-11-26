@@ -48,6 +48,17 @@
 		}
 
 		/**
+		 * Test that a session of a disabled account is not found, so it does not keep access.
+		 */
+		public function testDisabledAccountSessionIsNotFound() {
+			$sessions = $this->createManager();
+			$session = $sessions->create($this->userID);
+
+			$this->users->setFlag($this->userID, UserAccountFlags::ACCOUNT_DISABLED, true);
+			$this->assertNull($sessions->get($session->sessionID));
+		}
+
+		/**
 		 * Test that ending all sessions of an account ends each session of that account.
 		 */
 		public function testEndAllEndsEverySession() {
@@ -111,10 +122,12 @@
 				public function sendPasswordReset(int $userID, string $email, string $token): void {}
 			};
 
-			$this->userID = (new UserManager($db, $mailer))->register('foo@bar.net', new Password('hunter2'));
+			$this->users = new UserManager($db, $mailer);
+			$this->userID = $this->users->register('foo@bar.net', new Password('hunter2'));
 			return new UserSessionManager($db);
 		}
 
 		private int $userID;
+		private UserManager $users;
 		private Database $db;
 	}

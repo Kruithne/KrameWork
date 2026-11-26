@@ -10,7 +10,7 @@ ___
 constant | value | description
 --- | --- | ---
 `NONE` | 0 | No flags.
-`ACCOUNT_DISABLED` | 1 | The account cannot log in.
+`ACCOUNT_DISABLED` | 1 | The account cannot log in, has no valid sessions and has no permissions.
 `REQUIRES_VERIFICATION` | 2 | The account must be verified with a code before it can log in.
 `FORCE_PASSWORD_RESET` | 4 | The account must reset its password before it can log in.
 `ALL_PERMISSIONS` | 8 | The account has all permissions.

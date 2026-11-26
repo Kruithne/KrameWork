@@ -322,6 +322,7 @@
 
 		/**
 		 * Check if a user account has a permission. The ALL_PERMISSIONS flag gives all permissions.
+		 * A disabled account has no permissions.
 		 *
 		 * @api hasPermission
 		 * @param int $userID ID of the user account.
@@ -330,7 +331,7 @@
 		 */
 		public function hasPermission(int $userID, int $permission): bool {
 			$flags = $this->db->getValue('SELECT flags FROM user_accounts WHERE id = ?', [$userID]);
-			if (!\is_numeric($flags))
+			if (!\is_numeric($flags) || ((int) $flags & UserAccountFlags::ACCOUNT_DISABLED) !== 0)
 				return false;
 
 			if (((int) $flags & UserAccountFlags::ALL_PERMISSIONS) !== 0)

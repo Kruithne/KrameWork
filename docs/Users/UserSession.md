@@ -15,7 +15,7 @@ property | type | description
 `flags` | `int` | `UserAccountFlags` of the account when the session was read.
 `updated` | `int` | Unix time of the last refresh of the session.
 
-> **Note**: `UserSessionManager` does not check the flags. For example, check `ACCOUNT_DISABLED` in the application, or call `UserSessionManager::endAll()` when you disable an account.
+> **Note**: `UserSessionManager` does not return a session of an account with the `ACCOUNT_DISABLED` flag. It does not check the other flags.
 ___
 ### Functions
 ##### > __construct() : `void`

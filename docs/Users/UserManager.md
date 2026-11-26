@@ -190,7 +190,7 @@ parameter | type | description
 `$flag` | `int` | One of the `UserAccountFlags` constants.
 `$state` | `bool` | True to set the flag, false to clear it.
 ##### > hasPermission() : `bool`
-Check if an account has a permission. The `ALL_PERMISSIONS` flag gives all permissions.
+Check if an account has a permission. The `ALL_PERMISSIONS` flag gives all permissions. An account with the `ACCOUNT_DISABLED` flag has no permissions.
 
 parameter | type | description
 --- | --- | ---

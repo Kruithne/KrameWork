@@ -69,13 +69,13 @@ exception | reason
 --- | ---
 `UnknownUserException` | No account has the ID.
 ##### > get() : `UserSession|null`
-Get a session by ID. Returns null if the session does not exist.
+Get a session by ID. Returns null if the session does not exist or the account has the `ACCOUNT_DISABLED` flag.
 
 parameter | type | description
 --- | --- | ---
 `$sessionID` | `string` | ID of the session.
 ##### > getCurrent() : `UserSession|null`
-Get the session of the current request from the session cookie. Returns null if the request has no valid session.
+Get the session of the current request from the session cookie. Returns null if the request has no valid session or the account has the `ACCOUNT_DISABLED` flag.
 ##### > end() : `void`
 End a session. This does not remove a cookie.
 

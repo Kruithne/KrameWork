@@ -6,6 +6,7 @@
 
 	require_once(__DIR__ . '/../Database/Driver/Generic.php');
 	require_once(__DIR__ . '/../HTTP/HTTPContext.php');
+	require_once(__DIR__ . '/UserAccountFlags.php');
 	require_once(__DIR__ . '/UserSession.php');
 	require_once(__DIR__ . '/UnknownUserException.php');
 
@@ -68,11 +69,11 @@
 		}
 
 		/**
-		 * Get a session by ID.
+		 * Get a session by ID. A session of a disabled account is not returned.
 		 *
 		 * @api get
 		 * @param string $sessionID ID of the session.
-		 * @return UserSession|null Null if the session does not exist.
+		 * @return UserSession|null Null if the session does not exist or the account is disabled.
 		 */
 		public function get(string $sessionID): ?UserSession {
 			$row = $this->db->getRow(
@@ -81,6 +82,9 @@
 			);
 
 			if ($row === null || !\is_numeric($row->user_id) || !\is_numeric($row->updated) || !\is_numeric($row->flags))
+				return null;
+
+			if (((int) $row->flags & UserAccountFlags::ACCOUNT_DISABLED) !== 0)
 				return null;
 
 			return new UserSession($sessionID, (int) $row->user_id, (int) $row->flags, (int) $row->updated);
