@@ -24,10 +24,10 @@ Register an account:
 ```php
 $users = new UserManager($db, new MyMailer());
 
-if ($users->emailInUse($email))
+$userID = $users->register($email, new Password($password));
+if ($userID === null)
 	return ['error' => 'E-mail address in use'];
 
-$userID = $users->register($email, new Password($password));
 $token = $users->getVerificationToken($userID);
 ```
 
@@ -104,8 +104,8 @@ parameter | type | description
 --- | --- | ---
 `$db` | `Generic` | Database that contains the user tables.
 `$mailer` | `IUserMailer` | Sends verification codes and password reset tokens.
-##### > register() : `int`
-Register a user account that requires verification, and send the verification code. Returns the ID of the new account.
+##### > register() : `int|null`
+Register a user account that requires verification, and send the verification code. Returns the ID of the new account, or `null` if an account uses the e-mail address.
 
 parameter | type | description
 --- | --- | ---

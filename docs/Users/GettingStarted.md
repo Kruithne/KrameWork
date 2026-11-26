@@ -148,10 +148,10 @@ ___
 	if (!\is_string($email) || !\filter_var($email, \FILTER_VALIDATE_EMAIL) || !\is_string($password) || \strlen($password) < 12)
 		respond(['error' => 'Invalid e-mail address or password']);
 
-	if ($users->emailInUse($email))
+	$userID = $users->register($email, new Password($password));
+	if ($userID === null)
 		respond(['error' => 'E-mail address in use']);
 
-	$userID = $users->register($email, new Password($password));
 	$db->execute('INSERT INTO profiles (user_id, first_name, last_name) VALUES (?, ?, ?)', [$userID, (string) $firstName, (string) $lastName]);
 
 	respond(['verify' => $users->getVerificationToken($userID)]);
