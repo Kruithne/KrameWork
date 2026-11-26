@@ -1,6 +1,7 @@
 <?php
 	namespace KrameWork\Runtime\ErrorDispatchers;
 
+	use KrameWork\Mailing\IMailTransport;
 	use KrameWork\Mailing\Mail;
 	use KrameWork\Runtime\ErrorReports\IErrorReport;
 
@@ -23,8 +24,9 @@
 		 * @param string $sender Sender e-mail address.
 		 * @param string $senderName Name of the e-mail sender.
 		 * @param string|(\Closure(IErrorReport|string): string) $subject Subject string or subject generator.
+		 * @param IMailTransport|null $transport Transport that delivers the reports. Null to use the PHP mail() function.
 		 */
-		public function __construct(array $recipients, string $sender, ?string $senderName = null, string|\Closure $subject = 'Error Report') {
+		public function __construct(array $recipients, string $sender, ?string $senderName = null, string|\Closure $subject = 'Error Report', protected ?IMailTransport $transport = null) {
 			$this->mail = new Mail();
 			$this->mail->to->add($recipients);
 			$this->mail->setSender($sender, $senderName, true);
@@ -47,7 +49,7 @@
 				$this->mail->setSubject(($this->subjectGen)($report));
 
 			$this->mail->htmlContent->setContent($report);
-			$this->mail->send();
+			$this->mail->send($this->transport);
 			return false;
 		}
 

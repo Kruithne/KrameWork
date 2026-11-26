@@ -36,6 +36,7 @@ parameter | type | description
 `$sender` | `string` | E-mail address the error reports are sent from.
 `$senderName` | `string` | Name of the e-mail sender, defaults to `$sender`.
 `$subject` | `string|Closure` | Subject/report name string or closure generator.
+`$transport` | `IMailTransport|null` | Transport that delivers the reports, such as `SMTPTransport`. Null to use the PHP `mail()` function.
 
 ##### > dispatch() : `bool`
 Dispatch an error report.

@@ -8,7 +8,7 @@
 
 ___
 ### Overview
-> **Note**: Usage of this class requires your PHP has a working mail agent set-up and configured, such as sendmail, in order to function properly (or at all, really).
+> **Note**: By default, `send()` uses the PHP `mail()` function, which needs a local mail agent such as sendmail. To send through an SMTP server without a local mail agent, give an `SMTPTransport` to `send()`.
 
 `Mail` is a [fluent API] class that allows object-orientated e-mail construction and sending. When using this class, knowledge of these other classes that are used will be useful:
 * `EncodedContent` - Both `$plainContent` and `$htmlContent` are an instance of this.
@@ -129,6 +129,11 @@ $mail->attachFile($file, true);
 ### Sending
 When everything is configured as you like, make a call to `send()` and, providing your server/environment mailing is set up correctly, your e-mail will be flying off through the internets for honor and glory.
 
+To send through an SMTP server, give an `SMTPTransport` to `send()`. See the `SMTPTransport` documentation for more information.
+```php
+$mail->send(new SMTPTransport('smtp.bar.net', 465, 'user@bar.net', 'password'));
+```
+
 E-mails are sent as `multipart/mixed` with a sub-boundary of `multipart/alternative` for the content, which can contain both plain-text and HTML versions of the same message based on your input. Mail subjects, attachments, recipient names (by default) and HTML content are encoded in `base64`, while everything else uses `7bit` encoding. The `UTF-8` charset is used for everything in the mail instance.
 ___
 ### Functions
@@ -180,7 +185,11 @@ parameter | type | description
 ##### > clearFiles() : `Mail`
 Remove all files attached to this mail object.
 ##### > send() : `void`
-Send this mail!
+Send this mail! Uses the PHP `mail()` function when no transport is given.
+
+parameter | type | description
+--- | --- | ---
+`$transport` | `IMailTransport|null` | Transport that delivers the mail.
 
 exception | reason
 --- | ---

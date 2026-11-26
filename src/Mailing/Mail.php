@@ -4,10 +4,12 @@
 	use KrameWork\Storage\File;
 
 	require_once(__DIR__ . '/AttachmentFile.php');
+	require_once(__DIR__ . '/IMailTransport.php');
 	require_once(__DIR__ . '/MailMultipart.php');
 	require_once(__DIR__ . '/MailMultipartContent.php');
 	require_once(__DIR__ . '/RecipientCollection.php');
 	require_once(__DIR__ . '/EncodedContent.php');
+	require_once(__DIR__ . '/NativeMailTransport.php');
 
 	class ExcessiveSubjectLengthException extends \Exception {}
 	class MissingSenderException extends \Exception {}
@@ -159,12 +161,14 @@
 
 		/**
 		 * Send this mail!
+		 * Uses the PHP mail() function when no transport is given.
 		 *
 		 * @api send
+		 * @param IMailTransport|null $transport Transport that delivers the mail.
 		 * @throws InvalidRecipientException
 		 * @throws MissingSenderException
 		 */
-		public function send(): void {
+		public function send(?IMailTransport $transport = null): void {
 			if ($this->to->isEmpty())
 				throw new InvalidRecipientException('Cannot send mail without recipients.');
 
@@ -183,22 +187,11 @@
 
 			$this->compileAttachments($bParent);
 
-			// Compile headers.
-			$cHeaders = ['Content-Type: ' . $bParent->getContentType()];
-			foreach ($this->headers as $name => $value)
-				$cHeaders[] = $name . ': ' . $value;
+			$headers = ['Content-Type' => $bParent->getContentType()] + $this->headers;
+			$subject = '=?UTF-8?B?' . \base64_encode($this->subject ?? 'No Subject') . '?=';
 
-			// Compile recipients.
-			if (!$this->bcc->isEmpty())
-				$cHeaders[] = 'Bcc: ' . $this->bcc;
-
-			if (!$this->cc->isEmpty())
-				$cHeaders[] = 'Cc: ' . $this->cc;
-
-			// Compile subject.
-			$cSubject = '=?UTF-8?B?' . \base64_encode($this->subject ?? 'No Subject') . '?=';
-
-			mail($this->to, $cSubject, $bParent->compile(),  \implode("\n", $cHeaders), '-f ' . $this->sender);
+			$transport = $transport ?? new NativeMailTransport();
+			$transport->send($this->sender ?? '', $this->to, $this->cc, $this->bcc, $subject, $headers, (string) $bParent->compile());
 		}
 
 		/**

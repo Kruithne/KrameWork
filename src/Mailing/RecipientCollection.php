@@ -99,6 +99,16 @@
 		}
 
 		/**
+		 * Get the e-mail addresses in this collection.
+		 *
+		 * @api getAddresses
+		 * @return string[]
+		 */
+		public function getAddresses():array {
+			return \array_map('strval', \array_keys($this->recipients));
+		}
+
+		/**
 		 * Compile the recipients into a comma-separated string.
 		 * Recipients without a name are written as an address only.
 		 *
