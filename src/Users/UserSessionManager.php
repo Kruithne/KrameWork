@@ -28,8 +28,9 @@
 		 * @param Generic $db Database that contains the user tables.
 		 * @param string $cookieName Name of the session cookie.
 		 * @param int $lifetime Lifetime of the session cookie in seconds.
+		 * @param bool|null $secureCookie Set the Secure flag on the session cookie. Null uses HTTPContext::isSecure().
 		 */
-		public function __construct(private Generic $db, private string $cookieName = self::DEFAULT_COOKIE_NAME, private int $lifetime = self::DEFAULT_LIFETIME) {}
+		public function __construct(private Generic $db, private string $cookieName = self::DEFAULT_COOKIE_NAME, private int $lifetime = self::DEFAULT_LIFETIME, private ?bool $secureCookie = null) {}
 
 		/**
 		 * Create a session for a user account. This does not set a cookie.
@@ -174,7 +175,7 @@
 			return [
 				'expires' => $expires,
 				'path' => '/',
-				'secure' => HTTPContext::isSecure(),
+				'secure' => $this->secureCookie ?? HTTPContext::isSecure(),
 				'httponly' => true,
 				'samesite' => 'Lax'
 			];

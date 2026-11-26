@@ -9,7 +9,7 @@ ___
 ### Overview
 `UserSessionManager` creates, finds and ends user sessions. It keeps sessions in the `user_sessions` table. See [UserTables](UserTables.md).
 
-A cookie identifies the session of the current request. The cookie is `HttpOnly` and `SameSite=Lax`. It is `Secure` when the request uses HTTPS.
+A cookie identifies the session of the current request. The cookie is `HttpOnly` and `SameSite=Lax`. It is `Secure` when the request uses HTTPS. Behind a reverse proxy that handles TLS, PHP can see the request as HTTP. In that case, set `$secureCookie` to `true`.
 
 `create()`, `get()`, `end()` and `endAll()` do not use cookies. `start()`, `getCurrent()` and `endCurrent()` use the session cookie.
 
@@ -27,6 +27,11 @@ Get the session of the current request:
 $session = $sessions->getCurrent();
 if ($session === null)
 	return 401;
+```
+
+Always set the `Secure` flag, for example behind a reverse proxy:
+```php
+$sessions = new UserSessionManager($db, secureCookie: true);
 ```
 
 Log out:
@@ -48,6 +53,7 @@ parameter | type | description
 `$db` | `Generic` | Database that contains the user tables.
 `$cookieName` | `string` | Name of the session cookie. **Default: `session_id`**.
 `$lifetime` | `int` | Lifetime of the session cookie in seconds. **Default: 31536000 (one year)**.
+`$secureCookie` | `bool\|null` | Set the `Secure` flag on the session cookie. Null uses `HTTPContext::isSecure()`. **Default: null**.
 ##### > create() : `UserSession`
 Create a session for an account. This does not set a cookie.
 
