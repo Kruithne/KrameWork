@@ -55,7 +55,10 @@ Reset a password:
 $users->requestPasswordReset($email);
 
 // later, with the token from the mail
-$status = $users->applyPasswordReset($token, new Password($newPassword));
+$result = $users->applyPasswordReset($token, new Password($newPassword));
+
+if ($result->status === PasswordResetStatus::SUCCESS)
+	$sessions->endAll($result->userID);
 ```
 
 Check a permission:
@@ -78,7 +81,7 @@ The user tables hold only the columns that the user system uses. Keep applicatio
 `deleteAccount()` deletes the rows of the account in all user tables, including `user_sessions` and `oauth_accounts`. Create all the user tables to use it. It does not delete application data. Delete that data first.
 
 ### Verification
-A new account has the `REQUIRES_VERIFICATION` flag. `register()` sends a five-digit code and a verification token to the mailer. A correct code removes the flag.
+A new account has the `REQUIRES_VERIFICATION` flag. `register()` sends a five-digit code and a verification token to the mailer. A correct code removes the flag. A successful password reset also removes the flag, because the reset token was sent to the e-mail address.
 
 After `VERIFY_MAX_ATTEMPTS` (5) incorrect codes, the token is deleted. Call `createVerification()` to send a new code. Only call it for a user that gave the correct password, for example after `verifyLogin()` returns `REQUIRES_VERIFICATION`.
 
@@ -174,8 +177,8 @@ Send a password reset token to the account with an ID.
 parameter | type | description
 --- | --- | ---
 `$userID` | `int` | ID of the user account.
-##### > applyPasswordReset() : `PasswordResetStatus`
-Set a new password with a password reset token. This removes the `FORCE_PASSWORD_RESET` flag. A token can be used one time.
+##### > applyPasswordReset() : `PasswordResetResult`
+Set a new password with a password reset token. This removes the `FORCE_PASSWORD_RESET` and `REQUIRES_VERIFICATION` flags, and deletes the open verification of the account. A token can be used one time. The result has a `status` (`PasswordResetStatus`: `SUCCESS`, `INVALID_TOKEN` or `TOKEN_EXPIRED`) and a `userID`. `userID` is set only for `SUCCESS`.
 
 parameter | type | description
 --- | --- | ---

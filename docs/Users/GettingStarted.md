@@ -253,11 +253,11 @@ A password reset does not end the sessions of the account. The apply endpoint en
 	if (!\is_string($password) || \strlen($password) < 12)
 		respond(['error' => 'Password must be at least 12 characters']);
 
-	$userID = $db->getValue('SELECT user_id FROM user_reset_tokens WHERE reset_token = ?', [(string) $token]);
-	if ($users->applyPasswordReset((string) $token, new Password($password)) !== PasswordResetStatus::SUCCESS)
+	$result = $users->applyPasswordReset((string) $token, new Password($password));
+	if ($result->status !== PasswordResetStatus::SUCCESS)
 		respond(['error' => 'Invalid or expired link']);
 
-	$sessions->endAll((int) $userID);
+	$sessions->endAll($result->userID);
 	respond(['success' => true]);
 ```
 

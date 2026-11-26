@@ -12,6 +12,7 @@
 	require_once(__DIR__ . '/VerificationResult.php');
 	require_once(__DIR__ . '/SendCodeStatus.php');
 	require_once(__DIR__ . '/PasswordResetStatus.php');
+	require_once(__DIR__ . '/PasswordResetResult.php');
 	require_once(__DIR__ . '/UnknownUserException.php');
 
 	/**
@@ -263,25 +264,26 @@
 		}
 
 		/**
-		 * Set a new password with a password reset token. This removes the FORCE_PASSWORD_RESET flag.
+		 * Set a new password with a password reset token. This removes the FORCE_PASSWORD_RESET and REQUIRES_VERIFICATION flags.
 		 * A token is valid for RESET_LIFETIME seconds and can be used one time.
 		 *
 		 * @api applyPasswordReset
 		 * @param string $token Password reset token.
 		 * @param Password $password New password.
-		 * @return PasswordResetStatus
+		 * @return PasswordResetResult
 		 * @throws \Throwable
 		 */
-		public function applyPasswordReset(string $token, Password $password): PasswordResetStatus {
+		public function applyPasswordReset(string $token, Password $password): PasswordResetResult {
 			$tokenHash = self::hashSecret($token);
 			$row = $this->db->getRow('SELECT user_id, reset_sent FROM user_reset_tokens WHERE reset_token = ?', [$tokenHash]);
 			if ($row === null)
-				return PasswordResetStatus::INVALID_TOKEN;
+				return new PasswordResetResult(PasswordResetStatus::INVALID_TOKEN);
 
 			$cutoff = \time() - self::RESET_LIFETIME;
 			if (self::toInt($row->reset_sent) < $cutoff)
-				return PasswordResetStatus::TOKEN_EXPIRED;
+				return new PasswordResetResult(PasswordResetStatus::TOKEN_EXPIRED);
 
+			$userID = self::toInt($row->user_id);
 			$hash = $password->asHash();
 
 			$this->db->beginTransaction();
@@ -289,20 +291,21 @@
 				$deleted = $this->db->execute('DELETE FROM user_reset_tokens WHERE reset_token = ? AND reset_sent >= ?', [$tokenHash, $cutoff]);
 				if ($deleted === 0) {
 					$this->db->rollbackTransaction();
-					return PasswordResetStatus::INVALID_TOKEN;
+					return new PasswordResetResult(PasswordResetStatus::INVALID_TOKEN);
 				}
 
 				$this->db->execute(
 					'UPDATE user_accounts SET password = ?, flags = flags & ? WHERE id = ?',
-					[$hash, ~UserAccountFlags::FORCE_PASSWORD_RESET, self::toInt($row->user_id)]
+					[$hash, ~(UserAccountFlags::FORCE_PASSWORD_RESET | UserAccountFlags::REQUIRES_VERIFICATION), $userID]
 				);
+				$this->db->execute('DELETE FROM user_verification_codes WHERE user_id = ?', [$userID]);
 				$this->db->commitTransaction();
 			} catch (\Throwable $e) {
 				$this->db->rollbackTransaction();
 				throw $e;
 			}
 
-			return PasswordResetStatus::SUCCESS;
+			return new PasswordResetResult(PasswordResetStatus::SUCCESS, $userID);
 		}
 
 		/**

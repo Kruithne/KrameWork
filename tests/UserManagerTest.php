@@ -186,10 +186,33 @@
 			$users->setFlag($userID, UserAccountFlags::FORCE_PASSWORD_RESET, true);
 
 			$this->assertSame(PasswordResetStatus::SUCCESS, $users->requestPasswordReset('foo@bar.net'));
-			$this->assertSame(PasswordResetStatus::SUCCESS, $users->applyPasswordReset($this->mailer->resetToken, new Password('newpass')));
+			$this->assertSame(PasswordResetStatus::SUCCESS, $users->applyPasswordReset($this->mailer->resetToken, new Password('newpass'))->status);
 
 			$this->assertSame(LoginStatus::SUCCESS, $users->verifyLogin('foo@bar.net', new Password('newpass'))->status);
 			$this->assertSame(LoginStatus::INVALID_PASSWORD, $users->verifyLogin('foo@bar.net', new Password('hunter2'))->status);
+		}
+
+		/**
+		 * Test that a successful password reset returns the ID of the account.
+		 */
+		public function testPasswordResetReturnsUserID() {
+			$users = $this->createManager();
+			$userID = $this->createVerifiedAccount($users);
+			$users->requestPasswordReset('foo@bar.net');
+
+			$this->assertSame($userID, $users->applyPasswordReset($this->mailer->resetToken, new Password('newpass'))->userID);
+		}
+
+		/**
+		 * Test that a password reset verifies an account that is not verified, so the account can log in.
+		 */
+		public function testPasswordResetVerifiesAccount() {
+			$users = $this->createManager();
+			$users->register('foo@bar.net', new Password('hunter2'));
+			$users->requestPasswordReset('foo@bar.net');
+
+			$users->applyPasswordReset($this->mailer->resetToken, new Password('newpass'));
+			$this->assertSame(LoginStatus::SUCCESS, $users->verifyLogin('foo@bar.net', new Password('newpass'))->status);
 		}
 
 		/**
@@ -201,7 +224,7 @@
 			$users->requestPasswordReset('foo@bar.net');
 
 			$users->applyPasswordReset($this->mailer->resetToken, new Password('newpass'));
-			$this->assertSame(PasswordResetStatus::INVALID_TOKEN, $users->applyPasswordReset($this->mailer->resetToken, new Password('other')));
+			$this->assertSame(PasswordResetStatus::INVALID_TOKEN, $users->applyPasswordReset($this->mailer->resetToken, new Password('other'))->status);
 		}
 
 		/**
