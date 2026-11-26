@@ -51,6 +51,7 @@ KrameWork is an OOP PHP toolkit for building websites and scripts. It provides i
 	- [EncodedContent](docs/Mailing/EncodedContent.md)
 	- [RecipientCollection](docs/Mailing/RecipientCollection.md)
 - **MVC**
+	- [Module](docs/MVC/Module.md)
 	- [Template](docs/MVC/Template.md)
 - **Reporting**
 	- [ReportRunner](docs/Reporting/ReportRunner.md)
