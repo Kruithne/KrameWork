@@ -26,7 +26,7 @@ class | table | used by
 
 All times are Unix times in seconds.
 
-The tables store a SHA-256 hash of each session ID, verification token, verification code and password reset token. A leaked table does not give these values. Revision 3 of `user_sessions` deletes all sessions, so all users must log in again. Revision 2 of `user_verification_codes` and `user_reset_tokens` recreates the table, so open verifications and password resets are lost.
+The tables store a SHA-256 hash of each session ID, verification token, verification code and password reset token. A leaked table does not give these values. Revision 3 of `user_sessions` deletes all sessions, so all users must log in again. Revision 2 of `user_verification_codes` and `user_reset_tokens` recreates the table, so open verifications and password resets are lost. Revision 3 of `user_verification_codes` also recreates the table.
 
 > **Note**: Do not add revisions to these tables. A later KrameWork version can add revisions, and the version numbers would conflict. Keep application data in application tables with a `user_id` column.
 ___

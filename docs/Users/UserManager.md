@@ -39,7 +39,7 @@ if ($result->status === LoginStatus::SUCCESS)
 	$sessions->start($result->userID);
 
 if ($result->status === LoginStatus::REQUIRES_VERIFICATION)
-	$token = $users->getVerificationToken($result->userID) ?? $users->createVerification($result->userID);
+	$token = $users->createVerification($result->userID);
 ```
 
 Verify an account and log in:
@@ -81,9 +81,11 @@ The user tables hold only the columns that the user system uses. Keep applicatio
 `deleteAccount()` deletes the rows of the account in all user tables, including `user_sessions` and `oauth_accounts`. Create all the user tables to use it. It does not delete application data. Delete that data first.
 
 ### Verification
-A new account has the `REQUIRES_VERIFICATION` flag. `register()` sends a five-digit code and a verification token to the mailer. A correct code removes the flag. A successful password reset also removes the flag, because the reset token was sent to the e-mail address.
+A new account has the `REQUIRES_VERIFICATION` flag. `register()` sends an eight-digit code and a verification token to the mailer. A correct code removes the flag. A successful password reset also removes the flag, because the reset token was sent to the e-mail address.
 
-After `VERIFY_MAX_ATTEMPTS` (5) incorrect codes, the token is deleted. Call `createVerification()` to send a new code. Only call it for a user that gave the correct password, for example after `verifyLogin()` returns `REQUIRES_VERIFICATION`.
+A verification expires `VERIFY_LIFETIME` (3600) seconds after it is created. After `VERIFY_MAX_ATTEMPTS` (5) incorrect codes, the verification is locked until it expires. A new code does not reset the attempt count.
+
+Call `createVerification()` to get a token for the verification. It sends a new code only if the account has no open verification, or the verification has expired. Only call it for a user that gave the correct password, for example after `verifyLogin()` returns `REQUIRES_VERIFICATION`.
 
 ### Login status
 status | description
@@ -123,7 +125,7 @@ parameter | type | description
 `$email` | `string` | E-mail address of the account.
 `$password` | `Password` | Password of the account.
 ##### > createVerification() : `string`
-Create a new verification token and code for an account, and send the code. This replaces the open verification of the account. Returns the verification token.
+Get a verification token for an account. If the account has an open verification, this gives a new token for it and sends no code. Otherwise, this creates a new verification and sends the code. Returns the verification token.
 
 parameter | type | description
 --- | --- | ---
@@ -146,20 +148,20 @@ parameter | type | description
 `$email` | `string` | E-mail address of the account.
 `$password` | `Password` | Password given for the account.
 ##### > getVerificationToken() : `string|null`
-Get a new verification token for the open verification of an account. The old token stops working. The code and the attempt count do not change. Returns null if the account has no open verification.
+Get a new verification token for the open verification of an account. The old token stops working. The code and the attempt count do not change. Returns null if the account has no open verification, or if the verification has expired.
 
 parameter | type | description
 --- | --- | ---
 `$userID` | `int` | ID of the user account.
 ##### > checkVerificationCode() : `VerificationResult`
-Check a verification code. The result has a `status` (`VerificationStatus`: `SUCCESS`, `INVALID_CODE` or `TOO_MANY_ATTEMPTS`) and a `userID`.
+Check a verification code. The result has a `status` (`VerificationStatus`: `SUCCESS`, `INVALID_CODE`, `TOO_MANY_ATTEMPTS` or `CODE_EXPIRED`) and a `userID`.
 
 parameter | type | description
 --- | --- | ---
 `$token` | `string` | Verification token.
 `$code` | `string` | Verification code given by the user.
 ##### > sendVerificationCode() : `SendCodeStatus`
-Send a new verification code. The old code stops working. The code is sent at most one time in `VERIFY_SEND_INTERVAL` (300) seconds, unless forced. Returns `SUCCESS`, `INVALID_TOKEN` or `THROTTLED`.
+Send a new verification code. The old code stops working. The code is sent at most one time in `VERIFY_SEND_INTERVAL` (300) seconds, unless forced. Returns `SUCCESS`, `INVALID_TOKEN` or `THROTTLED`. Returns `INVALID_TOKEN` if the verification has expired or is locked.
 
 parameter | type | description
 --- | --- | ---

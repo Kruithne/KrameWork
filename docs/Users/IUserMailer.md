@@ -39,7 +39,7 @@ parameter | type | description
 `$userID` | `int` | ID of the user account.
 `$email` | `string` | E-mail address of the user account.
 `$token` | `string` | Verification token that identifies the verification.
-`$code` | `string` | Five-digit verification code.
+`$code` | `string` | Eight-digit verification code.
 ##### > sendPasswordReset() : `void`
 Send a password reset token to a user.
 

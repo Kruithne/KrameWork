@@ -25,6 +25,7 @@
 	{
 		const VERIFY_MAX_ATTEMPTS = 5;
 		const VERIFY_SEND_INTERVAL = 300;
+		const VERIFY_LIFETIME = 3600;
 		const RESET_SEND_INTERVAL = 300;
 		const RESET_LIFETIME = 86400;
 		const USER_TABLES = ['user_sessions', 'user_permissions', 'user_verification_codes', 'user_reset_tokens', 'oauth_accounts'];
@@ -67,8 +68,8 @@
 		}
 
 		/**
-		 * Create a new verification token and code for a user account, and send the code.
-		 * This replaces the open verification of the account, if there is one.
+		 * Get a verification token for a user account. If the account has an open verification, this gives a new token for it and sends no code.
+		 * Otherwise, this creates a new verification and sends the code. A verification expires VERIFY_LIFETIME seconds after it is created.
 		 *
 		 * @api createVerification
 		 * @param int $userID ID of the user account.
@@ -80,20 +81,27 @@
 			if (!\is_string($email))
 				throw new UnknownUserException('No user account with ID ' . $userID);
 
+			$time = \time();
+			$this->db->execute('DELETE FROM user_verification_codes WHERE user_id = ? AND created <= ?', [$userID, $time - self::VERIFY_LIFETIME]);
+
+			$token = $this->getVerificationToken($userID);
+			if ($token !== null)
+				return $token;
+
 			$token = self::generateToken();
 			$code = self::generateCode();
 
-			$this->db->beginTransaction();
 			try {
-				$this->db->execute('DELETE FROM user_verification_codes WHERE user_id = ?', [$userID]);
 				$this->db->execute(
-					'INSERT INTO user_verification_codes (token, user_id, code, attempts, last_sent) VALUES (?, ?, ?, ?, ?)',
-					[self::hashSecret($token), $userID, self::hashSecret($code), 0, \time()]
+					'INSERT INTO user_verification_codes (token, user_id, code, attempts, last_sent, created) VALUES (?, ?, ?, ?, ?, ?)',
+					[self::hashSecret($token), $userID, self::hashSecret($code), 0, $time, $time]
 				);
-				$this->db->commitTransaction();
-			} catch (\Throwable $e) {
-				$this->db->rollbackTransaction();
-				throw $e;
+			} catch (\PDOException $e) {
+				$token = \str_starts_with((string) $e->getCode(), '23') ? $this->getVerificationToken($userID) : null;
+				if ($token === null)
+					throw $e;
+
+				return $token;
 			}
 
 			$this->mailer->sendVerificationCode($userID, $email, $token, $code);
@@ -147,11 +155,11 @@
 		 *
 		 * @api getVerificationToken
 		 * @param int $userID ID of the user account.
-		 * @return string|null Null if the account has no open verification.
+		 * @return string|null Null if the account has no open verification, or if the verification has expired.
 		 */
 		public function getVerificationToken(int $userID): ?string {
 			$token = self::generateToken();
-			if ($this->db->execute('UPDATE user_verification_codes SET token = ? WHERE user_id = ?', [self::hashSecret($token), $userID]) === 0)
+			if ($this->db->execute('UPDATE user_verification_codes SET token = ? WHERE user_id = ? AND created > ?', [self::hashSecret($token), $userID, \time() - self::VERIFY_LIFETIME]) === 0)
 				return null;
 
 			return $token;
@@ -159,7 +167,7 @@
 
 		/**
 		 * Check a verification code. A correct code removes the REQUIRES_VERIFICATION flag.
-		 * After VERIFY_MAX_ATTEMPTS incorrect codes, the verification token is deleted.
+		 * After VERIFY_MAX_ATTEMPTS incorrect codes, the verification is locked until it expires.
 		 *
 		 * @api checkVerificationCode
 		 * @param string $token Verification token.
@@ -169,23 +177,26 @@
 		 */
 		public function checkVerificationCode(string $token, string $code): VerificationResult {
 			$tokenHash = self::hashSecret($token);
+			$cutoff = \time() - self::VERIFY_LIFETIME;
 			$counted = $this->db->execute(
-				'UPDATE user_verification_codes SET attempts = attempts + 1 WHERE token = ? AND attempts < ?',
-				[$tokenHash, self::VERIFY_MAX_ATTEMPTS]
+				'UPDATE user_verification_codes SET attempts = attempts + 1 WHERE token = ? AND attempts < ? AND created > ?',
+				[$tokenHash, self::VERIFY_MAX_ATTEMPTS, $cutoff]
 			);
 
-			if ($counted === 0)
-				return new VerificationResult(VerificationStatus::INVALID_CODE);
-
-			$row = $this->db->getRow('SELECT user_id, code, attempts FROM user_verification_codes WHERE token = ?', [$tokenHash]);
+			$row = $this->db->getRow('SELECT user_id, code, attempts, created FROM user_verification_codes WHERE token = ?', [$tokenHash]);
 			if ($row === null)
 				return new VerificationResult(VerificationStatus::INVALID_CODE);
+
+			if (self::toInt($row->created) <= $cutoff)
+				return new VerificationResult(VerificationStatus::CODE_EXPIRED);
+
+			if ($counted === 0)
+				return new VerificationResult(VerificationStatus::TOO_MANY_ATTEMPTS);
 
 			if (!\hash_equals(self::toString($row->code), self::hashSecret($code))) {
 				if (self::toInt($row->attempts) < self::VERIFY_MAX_ATTEMPTS)
 					return new VerificationResult(VerificationStatus::INVALID_CODE);
 
-				$this->db->execute('DELETE FROM user_verification_codes WHERE token = ?', [$tokenHash]);
 				return new VerificationResult(VerificationStatus::TOO_MANY_ATTEMPTS);
 			}
 
@@ -206,6 +217,7 @@
 		/**
 		 * Send a new verification code for a verification token. The old code stops working.
 		 * The code is sent at most one time in VERIFY_SEND_INTERVAL seconds, unless forced.
+		 * A verification that has expired or is locked gets no code.
 		 *
 		 * @api sendVerificationCode
 		 * @param string $token Verification token.
@@ -215,8 +227,8 @@
 		public function sendVerificationCode(string $token, bool $force = false): SendCodeStatus {
 			$tokenHash = self::hashSecret($token);
 			$row = $this->db->getRow(
-				'SELECT v.user_id, a.email FROM user_verification_codes v INNER JOIN user_accounts a ON a.id = v.user_id WHERE v.token = ?',
-				[$tokenHash]
+				'SELECT v.user_id, a.email FROM user_verification_codes v INNER JOIN user_accounts a ON a.id = v.user_id WHERE v.token = ? AND v.attempts < ? AND v.created > ?',
+				[$tokenHash, self::VERIFY_MAX_ATTEMPTS, \time() - self::VERIFY_LIFETIME]
 			);
 
 			if ($row === null)
@@ -441,12 +453,12 @@
 		}
 
 		/**
-		 * Generate a random verification code of 5 digits.
+		 * Generate a random verification code of 8 digits.
 		 *
 		 * @return string
 		 */
 		private static function generateCode(): string {
-			return (string) \random_int(10000, 99999);
+			return \sprintf('%08d', \random_int(0, 99999999));
 		}
 
 		/**

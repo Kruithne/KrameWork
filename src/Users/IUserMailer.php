@@ -16,7 +16,7 @@
 		 * @param int $userID ID of the user account.
 		 * @param string $email E-mail address of the user account.
 		 * @param string $token Verification token that identifies the verification.
-		 * @param string $code Five-digit verification code.
+		 * @param string $code Eight-digit verification code.
 		 */
 		public function sendVerificationCode(int $userID, string $email, string $token, string $code): void;
 

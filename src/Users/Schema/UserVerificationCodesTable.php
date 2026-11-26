@@ -33,7 +33,8 @@
 		public function versionLog(): array {
 			return [
 				new TableVersion(1, ['CREATE TABLE user_verification_codes (token VARCHAR(32) NOT NULL PRIMARY KEY, user_id BIGINT NOT NULL UNIQUE, code VARCHAR(5) NOT NULL, attempts INTEGER NOT NULL, last_sent BIGINT NOT NULL)']),
-				new TableVersion(2, ['DROP TABLE user_verification_codes', 'CREATE TABLE user_verification_codes (token VARCHAR(64) NOT NULL PRIMARY KEY, user_id BIGINT NOT NULL UNIQUE, code VARCHAR(64) NOT NULL, attempts INTEGER NOT NULL, last_sent BIGINT NOT NULL)'])
+				new TableVersion(2, ['DROP TABLE user_verification_codes', 'CREATE TABLE user_verification_codes (token VARCHAR(64) NOT NULL PRIMARY KEY, user_id BIGINT NOT NULL UNIQUE, code VARCHAR(64) NOT NULL, attempts INTEGER NOT NULL, last_sent BIGINT NOT NULL)']),
+				new TableVersion(3, ['DROP TABLE user_verification_codes', 'CREATE TABLE user_verification_codes (token VARCHAR(64) NOT NULL PRIMARY KEY, user_id BIGINT NOT NULL UNIQUE, code VARCHAR(64) NOT NULL, attempts INTEGER NOT NULL, last_sent BIGINT NOT NULL, created BIGINT NOT NULL)'])
 			];
 		}
 	}

@@ -170,7 +170,10 @@ A correct code verifies the account and logs the user in.
 	$result = $users->checkVerificationCode((string) $token, (string) $code);
 
 	if ($result->status === VerificationStatus::TOO_MANY_ATTEMPTS)
-		respond(['error' => 'Too many attempts. Log in to get a new code.']);
+		respond(['error' => 'Too many attempts. Try again later.']);
+
+	if ($result->status === VerificationStatus::CODE_EXPIRED)
+		respond(['error' => 'The code has expired. Log in to get a new code.']);
 
 	if ($result->status !== VerificationStatus::SUCCESS)
 		respond(['error' => 'Invalid code']);
@@ -180,7 +183,7 @@ A correct code verifies the account and logs the user in.
 ```
 
 #### Log in
-`verifyLogin()` does not start a session. Start the session for `SUCCESS` only. An account that is not verified gets a new code if it has no open verification.
+`verifyLogin()` does not start a session. Start the session for `SUCCESS` only. An account that is not verified gets a new code if it has no open verification, or if the verification has expired.
 ```php
 <?php
 	use KrameWork\HTTP\HTTPContext;
@@ -198,7 +201,7 @@ A correct code verifies the account and logs the user in.
 			respond(['success' => true]);
 
 		case LoginStatus::REQUIRES_VERIFICATION:
-			$token = $users->getVerificationToken($result->userID) ?? $users->createVerification($result->userID);
+			$token = $users->createVerification($result->userID);
 			respond(['verify' => $token]);
 
 		case LoginStatus::REQUIRES_PASSWORD_RESET:

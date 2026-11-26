@@ -91,31 +91,78 @@
 		}
 
 		/**
-		 * Test that the verification token is deleted after the maximum number of incorrect codes, so the correct code no longer works.
+		 * Test that the verification is locked after the maximum number of incorrect codes, so the correct code no longer works.
 		 */
-		public function testVerificationTokenIsDeletedAfterMaxAttempts() {
+		public function testVerificationIsLockedAfterMaxAttempts() {
 			$users = $this->createManager();
 			$users->register('foo@bar.net', new Password('hunter2'));
-			$wrong = $this->mailer->code === '10000' ? '10001' : '10000';
+			$this->useAllAttempts($users);
 
-			for ($i = 1; $i < UserManager::VERIFY_MAX_ATTEMPTS; $i++)
-				$this->assertSame(VerificationStatus::INVALID_CODE, $users->checkVerificationCode($this->mailer->token, $wrong)->status);
-
-			$this->assertSame(VerificationStatus::TOO_MANY_ATTEMPTS, $users->checkVerificationCode($this->mailer->token, $wrong)->status);
-			$this->assertSame(VerificationStatus::INVALID_CODE, $users->checkVerificationCode($this->mailer->token, $this->mailer->code)->status);
+			$this->assertSame(VerificationStatus::TOO_MANY_ATTEMPTS, $users->checkVerificationCode($this->mailer->token, $this->mailer->code)->status);
 		}
 
 		/**
-		 * Test that a new verification replaces the old token and sends a new code.
+		 * Test that a login after the maximum number of incorrect codes gives no new code, so the attempt count does not reset.
 		 */
-		public function testCreateVerificationReplacesToken() {
+		public function testCreateVerificationAfterMaxAttemptsSendsNoCode() {
+			$users = $this->createManager();
+			$userID = $users->register('foo@bar.net', new Password('hunter2'));
+			$this->useAllAttempts($users);
+			$code = $this->mailer->code;
+
+			$token = $users->createVerification($userID);
+			$this->assertSame($code, $this->mailer->code);
+			$this->assertSame(VerificationStatus::TOO_MANY_ATTEMPTS, $users->checkVerificationCode($token, $code)->status);
+		}
+
+		/**
+		 * Test that createVerification() for an open verification gives a new token for the same code, and sends no code.
+		 */
+		public function testCreateVerificationKeepsOpenVerification() {
 			$users = $this->createManager();
 			$userID = $users->register('foo@bar.net', new Password('hunter2'));
 			$oldToken = $this->mailer->token;
 
 			$token = $users->createVerification($userID);
-			$this->assertSame($token, $this->mailer->token);
+			$this->assertSame($oldToken, $this->mailer->token);
 			$this->assertSame(VerificationStatus::INVALID_CODE, $users->checkVerificationCode($oldToken, $this->mailer->code)->status);
+			$this->assertSame(VerificationStatus::SUCCESS, $users->checkVerificationCode($token, $this->mailer->code)->status);
+		}
+
+		/**
+		 * Test that a verification code older than the verification lifetime is rejected.
+		 */
+		public function testExpiredVerificationCodeIsRejected() {
+			$users = $this->createManager();
+			$users->register('foo@bar.net', new Password('hunter2'));
+			$this->expireVerifications();
+
+			$this->assertSame(VerificationStatus::CODE_EXPIRED, $users->checkVerificationCode($this->mailer->token, $this->mailer->code)->status);
+		}
+
+		/**
+		 * Test that createVerification() for an expired verification sends a new code that verifies the account.
+		 */
+		public function testCreateVerificationReplacesExpiredVerification() {
+			$users = $this->createManager();
+			$userID = $users->register('foo@bar.net', new Password('hunter2'));
+			$oldToken = $this->mailer->token;
+			$this->expireVerifications();
+
+			$token = $users->createVerification($userID);
+			$this->assertSame($token, $this->mailer->token);
+			$this->assertNotSame($oldToken, $token);
+			$this->assertSame(VerificationStatus::SUCCESS, $users->checkVerificationCode($token, $this->mailer->code)->status);
+		}
+
+		/**
+		 * Test that a verification code has 8 digits.
+		 */
+		public function testVerificationCodeHasEightDigits() {
+			$users = $this->createManager();
+			$users->register('foo@bar.net', new Password('hunter2'));
+
+			$this->assertMatchesRegularExpression('/^\d{8}$/', $this->mailer->code);
 		}
 
 		/**
@@ -293,6 +340,24 @@
 				$this->assertNull($this->db->getValue('SELECT 1 FROM ' . $table . ' WHERE ' . $column . ' = ?', [$userID]), $table);
 				$this->assertNotNull($this->db->getValue('SELECT 1 FROM ' . $table . ' WHERE ' . $column . ' = ?', [$otherID]), $table);
 			}
+		}
+
+		/**
+		 * Give incorrect codes for the mailed verification token until the verification is locked.
+		 * @param UserManager $users User manager.
+		 */
+		private function useAllAttempts(UserManager $users): void {
+			for ($i = 1; $i < UserManager::VERIFY_MAX_ATTEMPTS; $i++)
+				$this->assertSame(VerificationStatus::INVALID_CODE, $users->checkVerificationCode($this->mailer->token, '10000')->status);
+
+			$this->assertSame(VerificationStatus::TOO_MANY_ATTEMPTS, $users->checkVerificationCode($this->mailer->token, '10000')->status);
+		}
+
+		/**
+		 * Move the creation time of all verifications back by the verification lifetime.
+		 */
+		private function expireVerifications(): void {
+			$this->db->execute('UPDATE user_verification_codes SET created = created - ?', [UserManager::VERIFY_LIFETIME]);
 		}
 
 		/**
