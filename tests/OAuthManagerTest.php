@@ -13,6 +13,7 @@
 	use KrameWork\Users\Schema\DatabaseType;
 	use KrameWork\Users\Schema\UserAccountsTable;
 	use KrameWork\Users\Schema\UserVerificationCodesTable;
+	use KrameWork\Users\UserAccountFlags;
 	use KrameWork\Users\UserManager;
 
 	require_once(__DIR__ . '/../src/Database/Database.php');
@@ -183,6 +184,34 @@
 		}
 
 		/**
+		 * Test that a login logs in to the account that a parallel login made for the same new identity.
+		 */
+		public function testParallelNewIdentityLogsInToSameAccount() {
+			$userID = null;
+			$oauth = $this->createManager(function (Database $db) use (&$userID) {
+				$db->execute('INSERT INTO user_accounts (email, password, flags, registered) VALUES (?, ?, ?, ?)', ['foo@bar.net', '', UserAccountFlags::OAUTH_ACCOUNT, \time()]);
+				$userID = (int) $db->getLastInsertID();
+				$db->execute('INSERT INTO oauth_accounts (provider, provider_user_id, user_id, linked) VALUES (?, ?, ?, ?)', ['google', 'subject', $userID, \time()]);
+			});
+
+			$result = $this->login($oauth, 'google', $this->createClaims());
+			$this->assertSame(OAuthStatus::SUCCESS, $result->status);
+			$this->assertSame($userID, $result->userID);
+			$this->assertFalse($result->registered);
+		}
+
+		/**
+		 * Test that a login is rejected if a parallel request takes the e-mail address after the check.
+		 */
+		public function testParallelEmailUseIsRejected() {
+			$oauth = $this->createManager(function () {
+				$this->users->register('foo@bar.net', new Password('hunter2'));
+			});
+
+			$this->assertSame(OAuthStatus::EMAIL_IN_USE, $this->login($oauth, 'google', $this->createClaims())->status);
+		}
+
+		/**
 		 * Test that the signing keys are requested one time for many logins.
 		 */
 		public function testKeysAreCached() {
@@ -277,10 +306,20 @@
 		/**
 		 * Create an OAuth manager on a new in-memory database. The manager returns set responses instead of network requests.
 		 * The JWKS response contains the public test key with the key ID "test".
+		 * @param \Closure|null $race Runs one time before the first transaction, to simulate a parallel request.
 		 * @return OAuthManager
 		 */
-		private function createManager(): OAuthManager {
-			$db = new Database(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO);
+		private function createManager(?\Closure $race = null): OAuthManager {
+			$db = new class(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO) extends Database {
+				public ?\Closure $race = null;
+
+				function beginTransaction(): bool {
+					$race = $this->race;
+					$this->race = null;
+					$race?->__invoke($this);
+					return parent::beginTransaction();
+				}
+			};
 			$meta = new SQLiteMetaTable($db);
 			(new UserAccountsTable($db, $meta, DatabaseType::SQLITE))->create();
 			(new UserVerificationCodesTable($db, $meta))->create();
@@ -318,6 +357,7 @@
 			};
 
 			$oauth->jwks = $jwks;
+			$db->race = $race;
 			return $oauth;
 		}
 

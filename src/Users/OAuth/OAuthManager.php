@@ -207,20 +207,9 @@
 		 * @throws \Throwable
 		 */
 		private function login(string $provider, string $subject, string $email, \stdClass $claims): OAuthResult {
-			$account = $this->db->getRow(
-				'SELECT a.id, a.flags FROM oauth_accounts o LEFT JOIN user_accounts a ON a.id = o.user_id WHERE o.provider = ? AND o.provider_user_id = ?',
-				[$provider, $subject]
-			);
-
-			if ($account !== null) {
-				if (!\is_numeric($account->id) || !\is_numeric($account->flags))
-					return new OAuthResult(OAuthStatus::ACCOUNT_NOT_FOUND);
-
-				if (((int) $account->flags & UserAccountFlags::ACCOUNT_DISABLED) !== 0)
-					return new OAuthResult(OAuthStatus::ACCOUNT_DISABLED);
-
-				return new OAuthResult(OAuthStatus::SUCCESS, (int) $account->id, $claims);
-			}
+			$result = $this->findAccount($provider, $subject, $claims);
+			if ($result !== null)
+				return $result;
 
 			if ($this->db->getValue('SELECT 1 FROM user_accounts WHERE email = ?', [$email]) !== null)
 				return new OAuthResult(OAuthStatus::EMAIL_IN_USE);
@@ -242,10 +231,39 @@
 				$this->db->commitTransaction();
 			} catch (\Throwable $e) {
 				$this->db->rollbackTransaction();
-				throw $e;
+				if (!$e instanceof \PDOException || !\str_starts_with((string) $e->getCode(), '23'))
+					throw $e;
+
+				return $this->findAccount($provider, $subject, $claims) ?? new OAuthResult(OAuthStatus::EMAIL_IN_USE);
 			}
 
 			return new OAuthResult(OAuthStatus::SUCCESS, $userID, $claims, true);
+		}
+
+		/**
+		 * Get the login result for the user account of an OAuth identity.
+		 *
+		 * @param string $provider Name of the provider.
+		 * @param string $subject Subject claim of the ID token.
+		 * @param \stdClass $claims Claims of the ID token.
+		 * @return OAuthResult|null Null if the identity has no account.
+		 */
+		private function findAccount(string $provider, string $subject, \stdClass $claims): ?OAuthResult {
+			$account = $this->db->getRow(
+				'SELECT a.id, a.flags FROM oauth_accounts o LEFT JOIN user_accounts a ON a.id = o.user_id WHERE o.provider = ? AND o.provider_user_id = ?',
+				[$provider, $subject]
+			);
+
+			if ($account === null)
+				return null;
+
+			if (!\is_numeric($account->id) || !\is_numeric($account->flags))
+				return new OAuthResult(OAuthStatus::ACCOUNT_NOT_FOUND);
+
+			if (((int) $account->flags & UserAccountFlags::ACCOUNT_DISABLED) !== 0)
+				return new OAuthResult(OAuthStatus::ACCOUNT_DISABLED);
+
+			return new OAuthResult(OAuthStatus::SUCCESS, (int) $account->id, $claims);
 		}
 
 		/**
