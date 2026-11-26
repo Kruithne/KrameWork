@@ -63,6 +63,18 @@
 		}
 
 		/**
+		 * Test that registering an e-mail address that an account uses returns null and sends no code.
+		 */
+		public function testRegisterEmailInUseReturnsNull() {
+			$users = $this->createManager();
+			$users->register('foo@bar.net', new Password('hunter2'));
+			$token = $this->mailer->token;
+
+			$this->assertNull($users->register('Foo@Bar.net', new Password('hunter3')));
+			$this->assertSame($token, $this->mailer->token);
+		}
+
+		/**
 		 * Test that an incorrect password is rejected and gives no user ID.
 		 */
 		public function testIncorrectPasswordIsRejected() {

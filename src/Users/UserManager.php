@@ -43,14 +43,21 @@
 		 * @api register
 		 * @param string $email E-mail address of the account.
 		 * @param Password $password Password of the account.
-		 * @return int ID of the new user account.
+		 * @return int|null ID of the new user account. Null if a user account uses the e-mail address.
 		 * @throws \Throwable
 		 */
-		public function register(string $email, Password $password): int {
-			$this->db->execute(
-				'INSERT INTO user_accounts (email, password, flags, registered) VALUES (?, ?, ?, ?)',
-				[self::normalizeEmail($email), $password->asHash(), UserAccountFlags::REQUIRES_VERIFICATION, \time()]
-			);
+		public function register(string $email, Password $password): ?int {
+			try {
+				$this->db->execute(
+					'INSERT INTO user_accounts (email, password, flags, registered) VALUES (?, ?, ?, ?)',
+					[self::normalizeEmail($email), $password->asHash(), UserAccountFlags::REQUIRES_VERIFICATION, \time()]
+				);
+			} catch (\PDOException $e) {
+				if (\str_starts_with((string) $e->getCode(), '23'))
+					return null;
+
+				throw $e;
+			}
 
 			$userID = (int) $this->db->getLastInsertID();
 			$this->createVerification($userID);
