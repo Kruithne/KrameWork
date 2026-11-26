@@ -17,11 +17,11 @@ User IDs are `BIGINT` values (`INTEGER` on SQLite). The managers read the ID of 
 class | table | used by
 --- | --- | ---
 `UserAccountsTable` | `user_accounts` | `UserManager`, `UserSessionManager`, `OAuthManager`
-`UserSessionsTable` | `user_sessions` | `UserSessionManager`
+`UserSessionsTable` | `user_sessions` | `UserSessionManager`, `UserManager::deleteAccount()`
 `UserVerificationCodesTable` | `user_verification_codes` | `UserManager`
 `UserResetTokensTable` | `user_reset_tokens` | `UserManager`
 `UserPermissionsTable` | `user_permissions` | `UserManager`
-`OAuthAccountsTable` | `oauth_accounts` | `OAuthManager`
+`OAuthAccountsTable` | `oauth_accounts` | `OAuthManager`, `UserManager::deleteAccount()`
 `OAuthStatesTable` | `oauth_states` | `OAuthManager`
 
 All times are Unix times in seconds.

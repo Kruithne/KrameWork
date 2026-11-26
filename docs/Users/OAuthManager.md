@@ -9,7 +9,13 @@ ___
 ### Overview
 `OAuthManager` logs users in with OpenID Connect providers, such as Google and Microsoft. It uses the authorization code flow.
 
-The first login with an identity creates a user account with the `OAUTH_ACCOUNT` flag. This account has no password. If a different account already uses the e-mail address, the login fails with `EMAIL_IN_USE`. `OAuthManager` does not link an identity to an existing account.
+The first login with an identity creates a user account with the `OAUTH_ACCOUNT` flag. This account has no password. If a different account already uses the e-mail address, the login fails with `EMAIL_IN_USE`. `OAuthManager` does not link an identity to an existing account by e-mail address.
+
+A logged in user can link an identity to their account with `getLinkURL()`. After the link, the identity logs in to that account. An identity can be linked to one account only. Give the user ID of the session to `callback()`. A link completes only if this user ID is the user ID given to `getLinkURL()`. This stops a different user from completing the link.
+
+`unlink()` removes the identities of a provider from an account. An account with the `OAUTH_ACCOUNT` flag has no password, so `unlink()` does not remove its last identity.
+
+If the account of an identity does not exist, the next login deletes the link and creates a new account. To delete an account, use `UserManager::deleteAccount()`. See [UserManager](UserManager.md).
 
 `OAuthManager` does not start sessions. Use [UserSessionManager](UserSessionManager.md) to start a session after a successful login.
 
@@ -52,19 +58,38 @@ if ($result->registered)
 $sessions->start($result->userID);
 ```
 
+Link an identity to the account of the logged in user:
+```php
+$url = $oauth->getLinkURL('google', $session->userID);
+if ($url !== null)
+	header('Location: ' . $url);
+
+// on the callback URL
+$result = $oauth->callback($state, $code, $sessions->getCurrent()?->userID);
+if ($result->status === OAuthStatus::SUCCESS && $result->linked)
+	return redirect('/account');
+```
+
+Remove an identity:
+```php
+if (!$oauth->unlink($session->userID, 'google'))
+	return ['error' => 'Cannot remove the last login method'];
+```
+
 ### Login status
 status | description
 --- | ---
-`SUCCESS` | The login is complete. `userID` and `claims` are set. `registered` is true for a new account.
-`INVALID_STATE` | The state token does not exist, was used or expired.
+`SUCCESS` | The login or link is complete. `userID` and `claims` are set. `registered` is true for a new account. `linked` is true for a link.
+`INVALID_STATE` | The state token does not exist, was used or expired, or the user ID of a link does not match.
 `UNKNOWN_PROVIDER` | The provider of the state token is not configured.
 `TOKEN_EXCHANGE_FAILED` | The token endpoint did not return an ID token.
 `INVALID_ID_TOKEN` | The ID token is malformed, or the signature, nonce, issuer, audience or time claims are not valid.
 `MISSING_EMAIL` | The provider did not give an e-mail address.
 `EMAIL_NOT_VERIFIED` | The provider marks the e-mail address as not verified.
 `EMAIL_IN_USE` | A different account uses the e-mail address.
-`ACCOUNT_NOT_FOUND` | The identity is linked to an account that does not exist.
+`ACCOUNT_NOT_FOUND` | The account of a link does not exist.
 `ACCOUNT_DISABLED` | The account has the `ACCOUNT_DISABLED` flag.
+`IDENTITY_IN_USE` | The identity of a link is linked to a different account.
 ___
 ### Functions
 ##### > __construct() : `void`
@@ -84,10 +109,31 @@ Start a login. Send the user to the returned URL. Returns null if the provider i
 parameter | type | description
 --- | --- | ---
 `$provider` | `string` | Name of the provider.
+##### > getLinkURL() : `string|null`
+Start a link of an identity to an account. Send the user to the returned URL. Returns null if the provider is unknown.
+
+parameter | type | description
+--- | --- | ---
+`$provider` | `string` | Name of the provider.
+`$userID` | `int` | ID of the logged in user account.
+##### > getLinkedProviders() : `string[]`
+Get the names of the providers that have an identity linked to an account.
+
+parameter | type | description
+--- | --- | ---
+`$userID` | `int` | ID of the user account.
+##### > unlink() : `bool`
+Remove the identities of a provider from an account. Returns false if no identity was removed, or if the identity is the last identity of an `OAUTH_ACCOUNT` account.
+
+parameter | type | description
+--- | --- | ---
+`$userID` | `int` | ID of the user account.
+`$provider` | `string` | Name of the provider.
 ##### > callback() : `OAuthResult`
-Complete a login with the `state` and `code` that the provider sent to the callback URL. This does not start a session. The result has a `status` (`OAuthStatus`), a `userID`, the `claims` of the ID token and `registered`.
+Complete a login or link with the `state` and `code` that the provider sent to the callback URL. This does not start a session. The result has a `status` (`OAuthStatus`), a `userID`, the `claims` of the ID token, `registered` and `linked`.
 
 parameter | type | description
 --- | --- | ---
 `$state` | `string` | State parameter of the callback.
 `$code` | `string` | Code parameter of the callback.
+`$userID` | `int|null` | ID of the logged in user account. A link completes only if this is the user ID given to `getLinkURL()`. **Default: null**.

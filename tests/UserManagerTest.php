@@ -7,9 +7,11 @@
 	use KrameWork\Users\LoginStatus;
 	use KrameWork\Users\PasswordResetStatus;
 	use KrameWork\Users\Schema\DatabaseType;
+	use KrameWork\Users\Schema\OAuthAccountsTable;
 	use KrameWork\Users\Schema\UserAccountsTable;
 	use KrameWork\Users\Schema\UserPermissionsTable;
 	use KrameWork\Users\Schema\UserResetTokensTable;
+	use KrameWork\Users\Schema\UserSessionsTable;
 	use KrameWork\Users\Schema\UserVerificationCodesTable;
 	use KrameWork\Users\SendCodeStatus;
 	use KrameWork\Users\UserAccountFlags;
@@ -19,9 +21,11 @@
 	require_once(__DIR__ . '/../src/Database/Database.php');
 	require_once(__DIR__ . '/../src/Database/Schema/SQLiteMetaTable.php');
 	require_once(__DIR__ . '/../src/Users/UserManager.php');
+	require_once(__DIR__ . '/../src/Users/Schema/OAuthAccountsTable.php');
 	require_once(__DIR__ . '/../src/Users/Schema/UserAccountsTable.php');
 	require_once(__DIR__ . '/../src/Users/Schema/UserPermissionsTable.php');
 	require_once(__DIR__ . '/../src/Users/Schema/UserResetTokensTable.php');
+	require_once(__DIR__ . '/../src/Users/Schema/UserSessionsTable.php');
 	require_once(__DIR__ . '/../src/Users/Schema/UserVerificationCodesTable.php');
 
 	class UserManagerTest extends PHPUnit\Framework\TestCase
@@ -231,6 +235,30 @@
 		}
 
 		/**
+		 * Test that deleting an account removes its rows from all user tables, and keeps the rows of other accounts.
+		 */
+		public function testDeleteAccountRemovesUserData() {
+			$users = $this->createManager();
+			$userID = $users->register('foo@bar.net', new Password('hunter2'));
+			$otherID = $users->register('other@bar.net', new Password('hunter2'));
+
+			foreach ([$userID, $otherID] as $id) {
+				$users->setPermission($id, 1, true);
+				$users->requestPasswordResetByID($id);
+				$this->db->execute('INSERT INTO user_sessions (session_id, user_id, created, updated) VALUES (?, ?, ?, ?)', ['session' . $id, $id, \time(), \time()]);
+				$this->db->execute('INSERT INTO oauth_accounts (provider, provider_user_id, user_id, linked) VALUES (?, ?, ?, ?)', ['google', 'subject' . $id, $id, \time()]);
+			}
+
+			$this->assertTrue($users->deleteAccount($userID));
+
+			$tables = ['user_accounts' => 'id', 'user_sessions' => 'user_id', 'user_permissions' => 'user_id', 'user_verification_codes' => 'user_id', 'user_reset_tokens' => 'user_id', 'oauth_accounts' => 'user_id'];
+			foreach ($tables as $table => $column) {
+				$this->assertNull($this->db->getValue('SELECT 1 FROM ' . $table . ' WHERE ' . $column . ' = ?', [$userID]), $table);
+				$this->assertNotNull($this->db->getValue('SELECT 1 FROM ' . $table . ' WHERE ' . $column . ' = ?', [$otherID]), $table);
+			}
+		}
+
+		/**
 		 * Register an account with the address foo@bar.net and verify it.
 		 * @param UserManager $users User manager.
 		 * @return int ID of the account.
@@ -252,6 +280,8 @@
 			(new UserVerificationCodesTable($db, $meta))->create();
 			(new UserResetTokensTable($db, $meta))->create();
 			(new UserPermissionsTable($db, $meta))->create();
+			(new UserSessionsTable($db, $meta))->create();
+			(new OAuthAccountsTable($db, $meta))->create();
 
 			$this->mailer = new class implements IUserMailer {
 				public string $token = '';

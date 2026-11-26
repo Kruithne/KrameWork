@@ -16,7 +16,7 @@
 
 	/**
 	 * Class UserManager
-	 * Registers user accounts, checks logins, verifies accounts, resets passwords and checks permissions.
+	 * Registers and deletes user accounts, checks logins, verifies accounts, resets passwords and checks permissions.
 	 *
 	 * @package KrameWork\Users
 	 */
@@ -26,6 +26,7 @@
 		const VERIFY_SEND_INTERVAL = 300;
 		const RESET_SEND_INTERVAL = 300;
 		const RESET_LIFETIME = 86400;
+		const USER_TABLES = ['user_sessions', 'user_permissions', 'user_verification_codes', 'user_reset_tokens', 'oauth_accounts'];
 
 		/**
 		 * UserManager constructor.
@@ -350,6 +351,31 @@
 			$this->db->execute('DELETE FROM user_permissions WHERE user_id = ? AND permission = ?', [$userID, $permission]);
 			if ($state)
 				$this->db->execute('INSERT INTO user_permissions (user_id, permission) VALUES (?, ?)', [$userID, $permission]);
+		}
+
+		/**
+		 * Delete a user account with its sessions, permissions, OAuth identities, verification and password reset.
+		 * Delete the application data of the account first.
+		 *
+		 * @api deleteAccount
+		 * @param int $userID ID of the user account.
+		 * @return bool False if no account has the ID.
+		 * @throws \Throwable
+		 */
+		public function deleteAccount(int $userID): bool {
+			$this->db->beginTransaction();
+			try {
+				foreach (self::USER_TABLES as $table)
+					$this->db->execute('DELETE FROM ' . $table . ' WHERE user_id = ?', [$userID]);
+
+				$deleted = $this->db->execute('DELETE FROM user_accounts WHERE id = ?', [$userID]);
+				$this->db->commitTransaction();
+			} catch (\Throwable $e) {
+				$this->db->rollbackTransaction();
+				throw $e;
+			}
+
+			return $deleted > 0;
 		}
 
 		/**

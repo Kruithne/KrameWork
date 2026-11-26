@@ -7,7 +7,7 @@
 
 ___
 ### Overview
-`UserManager` registers user accounts, checks logins, verifies accounts, resets passwords and checks permissions.
+`UserManager` registers and deletes user accounts, checks logins, verifies accounts, resets passwords and checks permissions.
 
 `UserManager` uses a `Database` connection that contains the user tables. See [UserTables](UserTables.md). The SQL works on MySQL, PostgreSQL, SQLite and SQL Server.
 
@@ -66,8 +66,16 @@ $users->setPermission($userID, PERMISSION_EDIT_POSTS, true);
 $users->hasPermission($userID, PERMISSION_EDIT_POSTS); // true
 ```
 
+Delete an account:
+```php
+deleteProfile($userID);
+$users->deleteAccount($userID);
+```
+
 ### Application data
 The user tables hold only the columns that the user system uses. Keep application data, such as names, in an application table with a `user_id` column. Make a `ManagedTable` for that table.
+
+`deleteAccount()` deletes the rows of the account in all user tables, including `user_sessions` and `oauth_accounts`. Create all the user tables to use it. It does not delete application data. Delete that data first.
 
 ### Verification
 A new account has the `REQUIRES_VERIFICATION` flag. `register()` sends a five-digit code and a verification token to the mailer. A correct code removes the flag.
@@ -196,3 +204,9 @@ parameter | type | description
 `$userID` | `int` | ID of the user account.
 `$permission` | `int` | Permission defined by the application.
 `$state` | `bool` | True to give the permission, false to take it away.
+##### > deleteAccount() : `bool`
+Delete an account with its sessions, permissions, OAuth identities, verification and password reset. Returns false if no account has the ID.
+
+parameter | type | description
+--- | --- | ---
+`$userID` | `int` | ID of the user account.

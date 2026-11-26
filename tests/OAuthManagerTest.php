@@ -193,6 +193,82 @@
 		}
 
 		/**
+		 * Test that an identity linked to a password account logs in to that account.
+		 */
+		public function testLinkedIdentityLogsInToAccount() {
+			$oauth = $this->createManager();
+			$userID = $this->users->register('foo@bar.net', new Password('hunter2'));
+
+			$link = $this->link($oauth, $userID, $userID);
+			$this->assertSame(OAuthStatus::SUCCESS, $link->status);
+			$this->assertTrue($link->linked);
+			$this->assertSame($userID, $link->userID);
+
+			$login = $this->login($oauth, 'google', $this->createClaims());
+			$this->assertSame(OAuthStatus::SUCCESS, $login->status);
+			$this->assertSame($userID, $login->userID);
+		}
+
+		/**
+		 * Test that a link is rejected when the callback has a different user ID than the link URL.
+		 */
+		public function testLinkForOtherUserIsRejected() {
+			$oauth = $this->createManager();
+			$userID = $this->users->register('foo@bar.net', new Password('hunter2'));
+			$otherID = $this->users->register('other@bar.net', new Password('hunter2'));
+
+			$this->assertSame(OAuthStatus::INVALID_STATE, $this->link($oauth, $userID, $otherID)->status);
+			$this->assertSame([], $oauth->getLinkedProviders($userID));
+		}
+
+		/**
+		 * Test that an identity linked to an account cannot be linked to a different account.
+		 */
+		public function testLinkOfIdentityInUseIsRejected() {
+			$oauth = $this->createManager();
+			$this->login($oauth, 'google', $this->createClaims());
+			$userID = $this->users->register('other@bar.net', new Password('hunter2'));
+
+			$this->assertSame(OAuthStatus::IDENTITY_IN_USE, $this->link($oauth, $userID, $userID)->status);
+		}
+
+		/**
+		 * Test that an unlinked identity does not log in to the password account.
+		 */
+		public function testUnlinkRemovesIdentity() {
+			$oauth = $this->createManager();
+			$userID = $this->users->register('foo@bar.net', new Password('hunter2'));
+			$this->link($oauth, $userID, $userID);
+
+			$this->assertTrue($oauth->unlink($userID, 'google'));
+			$this->assertSame(OAuthStatus::EMAIL_IN_USE, $this->login($oauth, 'google', $this->createClaims())->status);
+		}
+
+		/**
+		 * Test that the last identity of an OAuth account is not removed, because the account has no password.
+		 */
+		public function testUnlinkKeepsLastIdentityOfOAuthAccount() {
+			$oauth = $this->createManager();
+			$userID = $this->login($oauth, 'google', $this->createClaims())->userID;
+
+			$this->assertFalse($oauth->unlink($userID, 'google'));
+			$this->assertSame(['google'], $oauth->getLinkedProviders($userID));
+		}
+
+		/**
+		 * Test that an identity whose account was deleted without its link creates a new account.
+		 */
+		public function testIdentityOfDeletedAccountCreatesNewAccount() {
+			$oauth = $this->createManager();
+			$userID = $this->login($oauth, 'google', $this->createClaims())->userID;
+			$this->db->execute('DELETE FROM user_accounts WHERE id = ?', [$userID]);
+
+			$result = $this->login($oauth, 'google', $this->createClaims());
+			$this->assertSame(OAuthStatus::SUCCESS, $result->status);
+			$this->assertTrue($result->registered);
+		}
+
+		/**
 		 * Test that an identity with an unverified e-mail address is rejected.
 		 */
 		public function testUnverifiedEmailIsRejected() {
@@ -328,6 +404,19 @@
 		}
 
 		/**
+		 * Start a link of a Google identity, then complete it with valid claims and the nonce of the link.
+		 * @param OAuthManager $oauth OAuth manager.
+		 * @param int $userID ID of the account given to getLinkURL().
+		 * @param int $sessionUserID ID of the account given to callback().
+		 * @return OAuthResult
+		 */
+		private function link(OAuthManager $oauth, int $userID, int $sessionUserID): OAuthResult {
+			\parse_str((string) \parse_url($oauth->getLinkURL('google', $userID), \PHP_URL_QUERY), $query);
+			$oauth->tokens = (object) ['id_token' => $this->createToken($this->createClaims(['nonce' => $query['nonce']]))];
+			return $oauth->callback($query['state'], 'code', $sessionUserID);
+		}
+
+		/**
 		 * Start a login and return the query parameters of the authorization URL.
 		 * @param OAuthManager $oauth OAuth manager.
 		 * @param string $provider Name of the provider.
@@ -391,7 +480,7 @@
 		 * @return OAuthManager
 		 */
 		private function createManager(?\Closure $race = null): OAuthManager {
-			$db = new class(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO) extends Database {
+			$db = $this->db = new class(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO) extends Database {
 				public ?\Closure $race = null;
 
 				function beginTransaction(): bool {
@@ -445,4 +534,5 @@
 		}
 
 		private UserManager $users;
+		private Database $db;
 	}

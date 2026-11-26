@@ -3,7 +3,7 @@
 
 	/**
 	 * Enum OAuthStatus
-	 * Status of an OAuth login.
+	 * Status of an OAuth login or link.
 	 *
 	 * @package KrameWork\Users\OAuth
 	 */
@@ -19,4 +19,5 @@
 		case EMAIL_IN_USE;
 		case ACCOUNT_NOT_FOUND;
 		case ACCOUNT_DISABLED;
+		case IDENTITY_IN_USE;
 	}

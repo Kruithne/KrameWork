@@ -18,6 +18,7 @@
 	 * Class OAuthManager
 	 * Logs users in with OpenID Connect providers, such as Google and Microsoft.
 	 * A new OAuth identity creates a new user account with the OAUTH_ACCOUNT flag.
+	 * A logged in user can link more OAuth identities to their account.
 	 *
 	 * @package KrameWork\Users\OAuth
 	 */
@@ -62,48 +63,78 @@
 		 * @return string|null Null if the provider is unknown.
 		 */
 		public function getAuthorizationURL(string $provider): ?string {
-			$config = $this->providers[$provider] ?? null;
-			if ($config === null)
-				return null;
-
-			$time = \time();
-			$state = \bin2hex(\random_bytes(32));
-			$codeVerifier = \bin2hex(\random_bytes(32));
-
-			$this->db->execute('DELETE FROM oauth_states WHERE created < ?', [$time - self::STATE_LIFETIME]);
-			$this->db->execute(
-				'INSERT INTO oauth_states (state, provider, redirect_uri, code_verifier, created) VALUES (?, ?, ?, ?, ?)',
-				[$state, $config->name, $this->callbackURL, $codeVerifier, $time]
-			);
-
-			return $config->authEndpoint . '?' . \http_build_query([
-				'client_id' => $config->clientID,
-				'redirect_uri' => $this->callbackURL,
-				'response_type' => 'code',
-				'scope' => \implode(' ', $config->scopes),
-				'state' => $state,
-				'nonce' => self::createNonce($state),
-				'code_challenge' => self::encodeBase64URL(\hash('sha256', $codeVerifier, true)),
-				'code_challenge_method' => 'S256'
-			], '', '&', \PHP_QUERY_RFC3986);
+			return $this->createAuthorizationURL($provider, null);
 		}
 
 		/**
-		 * Complete an OAuth login with the state and code that the provider sent to the callback URL.
+		 * Start a link of an OAuth identity to a user account. Send the user to the returned URL.
+		 * Give the same user ID to callback() to complete the link.
+		 *
+		 * @api getLinkURL
+		 * @param string $provider Name of the provider.
+		 * @param int $userID ID of the logged in user account.
+		 * @return string|null Null if the provider is unknown.
+		 */
+		public function getLinkURL(string $provider, int $userID): ?string {
+			return $this->createAuthorizationURL($provider, $userID);
+		}
+
+		/**
+		 * Get the names of the providers that have an identity linked to a user account.
+		 *
+		 * @api getLinkedProviders
+		 * @param int $userID ID of the user account.
+		 * @return string[]
+		 */
+		public function getLinkedProviders(int $userID): array {
+			$providers = $this->db->getColumn('SELECT DISTINCT provider FROM oauth_accounts WHERE user_id = ? ORDER BY provider', [$userID]);
+			return \array_values(\array_filter($providers, 'is_string'));
+		}
+
+		/**
+		 * Remove the identities of a provider from a user account.
+		 * An account with the OAUTH_ACCOUNT flag has no password, so its last identity is not removed.
+		 *
+		 * @api unlink
+		 * @param int $userID ID of the user account.
+		 * @param string $provider Name of the provider.
+		 * @return bool False if no identity was removed.
+		 */
+		public function unlink(int $userID, string $provider): bool {
+			$flags = $this->db->getValue('SELECT flags FROM user_accounts WHERE id = ?', [$userID]);
+			if (!\is_numeric($flags))
+				return false;
+
+			if (((int) $flags & UserAccountFlags::OAUTH_ACCOUNT) !== 0) {
+				$others = $this->db->getValue('SELECT COUNT(*) FROM oauth_accounts WHERE user_id = ? AND provider <> ?', [$userID, $provider]);
+				if (!\is_numeric($others) || (int) $others === 0)
+					return false;
+			}
+
+			return $this->db->execute('DELETE FROM oauth_accounts WHERE user_id = ? AND provider = ?', [$userID, $provider]) > 0;
+		}
+
+		/**
+		 * Complete an OAuth login or link with the state and code that the provider sent to the callback URL.
 		 * This does not start a session.
 		 *
 		 * @api callback
 		 * @param string $state State parameter of the callback.
 		 * @param string $code Code parameter of the callback.
+		 * @param int|null $userID ID of the logged in user account. A link completes only if this is the user ID given to getLinkURL().
 		 * @return OAuthResult
 		 * @throws \Throwable
 		 */
-		public function callback(string $state, string $code): OAuthResult {
-			$row = $this->db->getRow('SELECT provider, redirect_uri, code_verifier, created FROM oauth_states WHERE state = ?', [$state]);
+		public function callback(string $state, string $code, ?int $userID = null): OAuthResult {
+			$row = $this->db->getRow('SELECT provider, redirect_uri, code_verifier, user_id, created FROM oauth_states WHERE state = ?', [$state]);
 			if ($row === null || $this->db->execute('DELETE FROM oauth_states WHERE state = ?', [$state]) !== 1)
 				return new OAuthResult(OAuthStatus::INVALID_STATE);
 
 			if (!\is_numeric($row->created) || (int) $row->created < \time() - self::STATE_LIFETIME || !\is_string($row->code_verifier))
+				return new OAuthResult(OAuthStatus::INVALID_STATE);
+
+			$linkUserID = \is_numeric($row->user_id) ? (int) $row->user_id : null;
+			if ($linkUserID !== null && $linkUserID !== $userID)
 				return new OAuthResult(OAuthStatus::INVALID_STATE);
 
 			$provider = $this->providers[\is_string($row->provider) ? $row->provider : ''] ?? null;
@@ -119,6 +150,9 @@
 			$subject = $claims->sub ?? null;
 			if ($claims === null || !self::isValidClaims($provider, $claims, self::createNonce($state)) || !\is_string($subject) || $subject === '')
 				return new OAuthResult(OAuthStatus::INVALID_ID_TOKEN);
+
+			if ($linkUserID !== null)
+				return $this->link($provider->name, $subject, $linkUserID, $claims);
 
 			$email = $claims->email ?? null;
 			$verified = $claims->email_verified ?? null;
@@ -204,6 +238,81 @@
 		}
 
 		/**
+		 * Store a new state token and return the authorization URL of a provider.
+		 *
+		 * @param string $provider Name of the provider.
+		 * @param int|null $userID ID of the user account to link the identity to. Null for a login.
+		 * @return string|null Null if the provider is unknown.
+		 */
+		private function createAuthorizationURL(string $provider, ?int $userID): ?string {
+			$config = $this->providers[$provider] ?? null;
+			if ($config === null)
+				return null;
+
+			$time = \time();
+			$state = \bin2hex(\random_bytes(32));
+			$codeVerifier = \bin2hex(\random_bytes(32));
+
+			$this->db->execute('DELETE FROM oauth_states WHERE created < ?', [$time - self::STATE_LIFETIME]);
+			$this->db->execute(
+				'INSERT INTO oauth_states (state, provider, redirect_uri, code_verifier, user_id, created) VALUES (?, ?, ?, ?, ?, ?)',
+				[$state, $config->name, $this->callbackURL, $codeVerifier, $userID, $time]
+			);
+
+			return $config->authEndpoint . '?' . \http_build_query([
+				'client_id' => $config->clientID,
+				'redirect_uri' => $this->callbackURL,
+				'response_type' => 'code',
+				'scope' => \implode(' ', $config->scopes),
+				'state' => $state,
+				'nonce' => self::createNonce($state),
+				'code_challenge' => self::encodeBase64URL(\hash('sha256', $codeVerifier, true)),
+				'code_challenge_method' => 'S256'
+			], '', '&', \PHP_QUERY_RFC3986);
+		}
+
+		/**
+		 * Link an OAuth identity to a user account.
+		 *
+		 * @param string $provider Name of the provider.
+		 * @param string $subject Subject claim of the ID token.
+		 * @param int $userID ID of the user account.
+		 * @param \stdClass $claims Claims of the ID token.
+		 * @return OAuthResult
+		 * @throws \PDOException
+		 */
+		private function link(string $provider, string $subject, int $userID, \stdClass $claims): OAuthResult {
+			$flags = $this->db->getValue('SELECT flags FROM user_accounts WHERE id = ?', [$userID]);
+			if (!\is_numeric($flags))
+				return new OAuthResult(OAuthStatus::ACCOUNT_NOT_FOUND);
+
+			if (((int) $flags & UserAccountFlags::ACCOUNT_DISABLED) !== 0)
+				return new OAuthResult(OAuthStatus::ACCOUNT_DISABLED);
+
+			$owner = $this->getIdentityAccount($provider, $subject);
+			if ($owner === null) {
+				try {
+					$this->db->execute(
+						'INSERT INTO oauth_accounts (provider, provider_user_id, user_id, linked) VALUES (?, ?, ?, ?)',
+						[$provider, $subject, $userID, \time()]
+					);
+				} catch (\PDOException $e) {
+					if (!\str_starts_with((string) $e->getCode(), '23'))
+						throw $e;
+
+					$owner = $this->getIdentityAccount($provider, $subject);
+					if ($owner === null)
+						return new OAuthResult(OAuthStatus::IDENTITY_IN_USE);
+				}
+			}
+
+			if ($owner !== null && (int) $owner->id !== $userID)
+				return new OAuthResult(OAuthStatus::IDENTITY_IN_USE);
+
+			return new OAuthResult(OAuthStatus::SUCCESS, $userID, $claims, false, true);
+		}
+
+		/**
 		 * Log in with an OAuth identity. Create a user account if the identity has no account.
 		 *
 		 * @param string $provider Name of the provider.
@@ -256,6 +365,25 @@
 		 * @return OAuthResult|null Null if the identity has no account.
 		 */
 		private function findAccount(string $provider, string $subject, \stdClass $claims): ?OAuthResult {
+			$account = $this->getIdentityAccount($provider, $subject);
+			if ($account === null)
+				return null;
+
+			if (((int) $account->flags & UserAccountFlags::ACCOUNT_DISABLED) !== 0)
+				return new OAuthResult(OAuthStatus::ACCOUNT_DISABLED);
+
+			return new OAuthResult(OAuthStatus::SUCCESS, (int) $account->id, $claims);
+		}
+
+		/**
+		 * Get the ID and flags of the user account that an OAuth identity is linked to.
+		 * If the account does not exist, delete the link.
+		 *
+		 * @param string $provider Name of the provider.
+		 * @param string $subject Subject claim of the ID token.
+		 * @return \stdClass|null Null if the identity has no account.
+		 */
+		private function getIdentityAccount(string $provider, string $subject): ?\stdClass {
 			$account = $this->db->getRow(
 				'SELECT a.id, a.flags FROM oauth_accounts o LEFT JOIN user_accounts a ON a.id = o.user_id WHERE o.provider = ? AND o.provider_user_id = ?',
 				[$provider, $subject]
@@ -264,13 +392,12 @@
 			if ($account === null)
 				return null;
 
-			if (!\is_numeric($account->id) || !\is_numeric($account->flags))
-				return new OAuthResult(OAuthStatus::ACCOUNT_NOT_FOUND);
+			if (!\is_numeric($account->id) || !\is_numeric($account->flags)) {
+				$this->db->execute('DELETE FROM oauth_accounts WHERE provider = ? AND provider_user_id = ?', [$provider, $subject]);
+				return null;
+			}
 
-			if (((int) $account->flags & UserAccountFlags::ACCOUNT_DISABLED) !== 0)
-				return new OAuthResult(OAuthStatus::ACCOUNT_DISABLED);
-
-			return new OAuthResult(OAuthStatus::SUCCESS, (int) $account->id, $claims);
+			return $account;
 		}
 
 		/**
