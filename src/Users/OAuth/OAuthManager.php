@@ -27,6 +27,7 @@
 		const KEYS_LIFETIME = 3600;
 		const KEYS_REFETCH_COOLDOWN = 300;
 		const REQUEST_TIMEOUT = 10;
+		const CLOCK_SKEW = 60;
 		const GUID_PATTERN = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
 
 		/**
@@ -67,11 +68,12 @@
 
 			$time = \time();
 			$state = \bin2hex(\random_bytes(32));
+			$codeVerifier = \bin2hex(\random_bytes(32));
 
 			$this->db->execute('DELETE FROM oauth_states WHERE created < ?', [$time - self::STATE_LIFETIME]);
 			$this->db->execute(
-				'INSERT INTO oauth_states (state, provider, redirect_uri, created) VALUES (?, ?, ?, ?)',
-				[$state, $config->name, $this->callbackURL, $time]
+				'INSERT INTO oauth_states (state, provider, redirect_uri, code_verifier, created) VALUES (?, ?, ?, ?, ?)',
+				[$state, $config->name, $this->callbackURL, $codeVerifier, $time]
 			);
 
 			return $config->authEndpoint . '?' . \http_build_query([
@@ -79,7 +81,10 @@
 				'redirect_uri' => $this->callbackURL,
 				'response_type' => 'code',
 				'scope' => \implode(' ', $config->scopes),
-				'state' => $state
+				'state' => $state,
+				'nonce' => self::createNonce($state),
+				'code_challenge' => self::encodeBase64URL(\hash('sha256', $codeVerifier, true)),
+				'code_challenge_method' => 'S256'
 			], '', '&', \PHP_QUERY_RFC3986);
 		}
 
@@ -94,25 +99,25 @@
 		 * @throws \Throwable
 		 */
 		public function callback(string $state, string $code): OAuthResult {
-			$row = $this->db->getRow('SELECT provider, redirect_uri, created FROM oauth_states WHERE state = ?', [$state]);
+			$row = $this->db->getRow('SELECT provider, redirect_uri, code_verifier, created FROM oauth_states WHERE state = ?', [$state]);
 			if ($row === null || $this->db->execute('DELETE FROM oauth_states WHERE state = ?', [$state]) !== 1)
 				return new OAuthResult(OAuthStatus::INVALID_STATE);
 
-			if (!\is_numeric($row->created) || (int) $row->created < \time() - self::STATE_LIFETIME)
+			if (!\is_numeric($row->created) || (int) $row->created < \time() - self::STATE_LIFETIME || !\is_string($row->code_verifier))
 				return new OAuthResult(OAuthStatus::INVALID_STATE);
 
 			$provider = $this->providers[\is_string($row->provider) ? $row->provider : ''] ?? null;
 			if ($provider === null)
 				return new OAuthResult(OAuthStatus::UNKNOWN_PROVIDER);
 
-			$tokens = $this->requestTokens($provider, $code, \is_string($row->redirect_uri) ? $row->redirect_uri : '');
+			$tokens = $this->requestTokens($provider, $code, \is_string($row->redirect_uri) ? $row->redirect_uri : '', $row->code_verifier);
 			$idToken = $tokens?->id_token ?? null;
 			if ($tokens === null || !\is_string($idToken))
 				return new OAuthResult(OAuthStatus::TOKEN_EXCHANGE_FAILED);
 
 			$claims = $this->decodeIDToken($provider, $idToken);
 			$subject = $claims->sub ?? null;
-			if ($claims === null || !self::isValidClaims($provider, $claims) || !\is_string($subject) || $subject === '')
+			if ($claims === null || !self::isValidClaims($provider, $claims, self::createNonce($state)) || !\is_string($subject) || $subject === '')
 				return new OAuthResult(OAuthStatus::INVALID_ID_TOKEN);
 
 			$email = $claims->email ?? null;
@@ -142,15 +147,17 @@
 		 * @param OAuthProvider $provider Provider of the login.
 		 * @param string $code Authorization code.
 		 * @param string $redirectURI Redirect URI used in the authorization request.
+		 * @param string $codeVerifier PKCE code verifier of the authorization request.
 		 * @return \stdClass|null Null if the request failed.
 		 */
-		protected function requestTokens(OAuthProvider $provider, string $code, string $redirectURI): ?\stdClass {
+		protected function requestTokens(OAuthProvider $provider, string $code, string $redirectURI, string $codeVerifier): ?\stdClass {
 			$request = new JSONRequest($provider->tokenEndpoint, WebRequest::METHOD_POST);
 			$request->client_id = $provider->clientID;
 			$request->client_secret = $provider->clientSecret;
 			$request->code = $code;
 			$request->redirect_uri = $redirectURI;
 			$request->grant_type = 'authorization_code';
+			$request->code_verifier = $codeVerifier;
 			$request->setTimeout(self::REQUEST_TIMEOUT);
 
 			if (!$request->send())
@@ -427,6 +434,26 @@
 		}
 
 		/**
+		 * Encode a string as base64url without padding.
+		 *
+		 * @param string $value Value to encode.
+		 * @return string
+		 */
+		private static function encodeBase64URL(string $value): string {
+			return \rtrim(\strtr(\base64_encode($value), '+/', '-_'), '=');
+		}
+
+		/**
+		 * Create the nonce of a login from its state token.
+		 *
+		 * @param string $state State token of the login.
+		 * @return string
+		 */
+		private static function createNonce(string $state): string {
+			return \hash('sha256', $state);
+		}
+
+		/**
 		 * Decode a base64url encoded JSON object.
 		 *
 		 * @param string $segment Base64url encoded JSON.
@@ -454,16 +481,31 @@
 		}
 
 		/**
-		 * Check the issuer, audience and expiry claims of an ID token.
+		 * Check the nonce, time, issuer and audience claims of an ID token.
+		 * The time claims (exp, iat and nbf) can differ from the server clock by CLOCK_SKEW seconds.
 		 * An issuer with "{tenantid}" only matches if the tid claim is a GUID.
 		 *
 		 * @param OAuthProvider $provider Provider of the login.
 		 * @param \stdClass $claims Claims of the ID token.
+		 * @param string $nonce Nonce of the login.
 		 * @return bool
 		 */
-		private static function isValidClaims(OAuthProvider $provider, \stdClass $claims): bool {
+		private static function isValidClaims(OAuthProvider $provider, \stdClass $claims, string $nonce): bool {
+			$tokenNonce = $claims->nonce ?? null;
+			if (!\is_string($tokenNonce) || !\hash_equals($nonce, $tokenNonce))
+				return false;
+
+			$time = \time();
 			$expires = $claims->exp ?? null;
-			if (!\is_numeric($expires) || (int) $expires <= \time())
+			if (!\is_numeric($expires) || (int) $expires + self::CLOCK_SKEW <= $time)
+				return false;
+
+			$issued = $claims->iat ?? null;
+			if (!\is_numeric($issued) || (int) $issued - self::CLOCK_SKEW > $time)
+				return false;
+
+			$notBefore = $claims->nbf ?? null;
+			if ($notBefore !== null && (!\is_numeric($notBefore) || (int) $notBefore - self::CLOCK_SKEW > $time))
 				return false;
 
 			$audience = $claims->aud ?? null;

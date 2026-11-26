@@ -48,11 +48,46 @@
 		 */
 		public function testStateIsSingleUse() {
 			$oauth = $this->createManager();
-			$state = $this->getState($oauth, 'google');
-			$oauth->tokens = (object) ['id_token' => $this->createToken($this->createClaims())];
+			$query = $this->start($oauth, 'google');
+			$oauth->tokens = (object) ['id_token' => $this->createToken($this->createClaims(['nonce' => $query['nonce']]))];
 
-			$this->assertSame(OAuthStatus::SUCCESS, $oauth->callback($state, 'code')->status);
-			$this->assertSame(OAuthStatus::INVALID_STATE, $oauth->callback($state, 'code')->status);
+			$this->assertSame(OAuthStatus::SUCCESS, $oauth->callback($query['state'], 'code')->status);
+			$this->assertSame(OAuthStatus::INVALID_STATE, $oauth->callback($query['state'], 'code')->status);
+		}
+
+		/**
+		 * Test that an ID token with the nonce of a different login is rejected.
+		 */
+		public function testNonceOfOtherLoginIsRejected() {
+			$oauth = $this->createManager();
+			$other = $this->start($oauth, 'google');
+			$query = $this->start($oauth, 'google');
+			$token = $this->createToken($this->createClaims(['nonce' => $other['nonce']]));
+
+			$this->assertSame(OAuthStatus::INVALID_ID_TOKEN, $this->callbackWithToken($oauth, $query['state'], $token)->status);
+		}
+
+		/**
+		 * Test that an ID token without a nonce is rejected.
+		 */
+		public function testMissingNonceIsRejected() {
+			$oauth = $this->createManager();
+			$query = $this->start($oauth, 'google');
+			$token = $this->createToken($this->createClaims());
+
+			$this->assertSame(OAuthStatus::INVALID_ID_TOKEN, $this->callbackWithToken($oauth, $query['state'], $token)->status);
+		}
+
+		/**
+		 * Test that the token request sends the code verifier that matches the code challenge of the authorization URL.
+		 */
+		public function testCodeVerifierMatchesChallenge() {
+			$oauth = $this->createManager();
+			$query = $this->start($oauth, 'google');
+			$oauth->callback($query['state'], 'code');
+
+			$this->assertSame('S256', $query['code_challenge_method']);
+			$this->assertSame($query['code_challenge'], self::encode(\hash('sha256', (string) $oauth->codeVerifier, true)));
 		}
 
 		/**
@@ -70,7 +105,48 @@
 		 */
 		public function testExpiredTokenIsRejected() {
 			$oauth = $this->createManager();
-			$claims = $this->createClaims(['exp' => \time() - 1]);
+			$claims = $this->createClaims(['exp' => \time() - OAuthManager::CLOCK_SKEW - 1]);
+
+			$this->assertSame(OAuthStatus::INVALID_ID_TOKEN, $this->login($oauth, 'google', $claims)->status);
+		}
+
+		/**
+		 * Test that an ID token is accepted when it expired less than CLOCK_SKEW seconds ago.
+		 */
+		public function testExpiryAllowsClockSkew() {
+			$oauth = $this->createManager();
+			$claims = $this->createClaims(['exp' => \time() - OAuthManager::CLOCK_SKEW + 10]);
+
+			$this->assertSame(OAuthStatus::SUCCESS, $this->login($oauth, 'google', $claims)->status);
+		}
+
+		/**
+		 * Test that an ID token issued in the future is rejected.
+		 */
+		public function testFutureIssueTimeIsRejected() {
+			$oauth = $this->createManager();
+			$claims = $this->createClaims(['iat' => \time() + OAuthManager::CLOCK_SKEW + 10]);
+
+			$this->assertSame(OAuthStatus::INVALID_ID_TOKEN, $this->login($oauth, 'google', $claims)->status);
+		}
+
+		/**
+		 * Test that an ID token without an issue time is rejected.
+		 */
+		public function testMissingIssueTimeIsRejected() {
+			$oauth = $this->createManager();
+			$claims = $this->createClaims();
+			unset($claims['iat']);
+
+			$this->assertSame(OAuthStatus::INVALID_ID_TOKEN, $this->login($oauth, 'google', $claims)->status);
+		}
+
+		/**
+		 * Test that an ID token that is not valid yet is rejected.
+		 */
+		public function testFutureNotBeforeIsRejected() {
+			$oauth = $this->createManager();
+			$claims = $this->createClaims(['nbf' => \time() + OAuthManager::CLOCK_SKEW + 10]);
 
 			$this->assertSame(OAuthStatus::INVALID_ID_TOKEN, $this->login($oauth, 'google', $claims)->status);
 		}
@@ -157,10 +233,12 @@
 		 */
 		public function testChangedClaimsAreRejected() {
 			$oauth = $this->createManager();
-			$parts = \explode('.', $this->createToken($this->createClaims()));
-			$parts[1] = self::encode(\json_encode($this->createClaims(['sub' => 'other'])));
+			$query = $this->start($oauth, 'google');
+			$claims = $this->createClaims(['nonce' => $query['nonce']]);
+			$parts = \explode('.', $this->createToken($claims));
+			$parts[1] = self::encode(\json_encode(\array_merge($claims, ['sub' => 'other'])));
 
-			$this->assertSame(OAuthStatus::INVALID_ID_TOKEN, $this->callbackWithToken($oauth, \implode('.', $parts))->status);
+			$this->assertSame(OAuthStatus::INVALID_ID_TOKEN, $this->callbackWithToken($oauth, $query['state'], \implode('.', $parts))->status);
 		}
 
 		/**
@@ -168,9 +246,10 @@
 		 */
 		public function testUnsignedTokenIsRejected() {
 			$oauth = $this->createManager();
-			$token = self::encode(\json_encode(['alg' => 'none'])) . '.' . self::encode(\json_encode($this->createClaims())) . '.';
+			$query = $this->start($oauth, 'google');
+			$token = self::encode(\json_encode(['alg' => 'none'])) . '.' . self::encode(\json_encode($this->createClaims(['nonce' => $query['nonce']]))) . '.';
 
-			$this->assertSame(OAuthStatus::INVALID_ID_TOKEN, $this->callbackWithToken($oauth, $token)->status);
+			$this->assertSame(OAuthStatus::INVALID_ID_TOKEN, $this->callbackWithToken($oauth, $query['state'], $token)->status);
 		}
 
 		/**
@@ -178,9 +257,10 @@
 		 */
 		public function testUnknownKeyIsRejected() {
 			$oauth = $this->createManager();
-			$token = $this->createToken($this->createClaims(), ['alg' => 'RS256', 'kid' => 'other']);
+			$query = $this->start($oauth, 'google');
+			$token = $this->createToken($this->createClaims(['nonce' => $query['nonce']]), ['alg' => 'RS256', 'kid' => 'other']);
 
-			$this->assertSame(OAuthStatus::INVALID_ID_TOKEN, $this->callbackWithToken($oauth, $token)->status);
+			$this->assertSame(OAuthStatus::INVALID_ID_TOKEN, $this->callbackWithToken($oauth, $query['state'], $token)->status);
 		}
 
 		/**
@@ -223,39 +303,39 @@
 		}
 
 		/**
-		 * Start a Google login, then complete it with the given ID token.
+		 * Complete a login with the given ID token.
 		 * @param OAuthManager $oauth OAuth manager.
+		 * @param string $state State parameter of the login.
 		 * @param string $token ID token.
 		 * @return OAuthResult
 		 */
-		private function callbackWithToken(OAuthManager $oauth, string $token): OAuthResult {
-			$state = $this->getState($oauth, 'google');
+		private function callbackWithToken(OAuthManager $oauth, string $state, string $token): OAuthResult {
 			$oauth->tokens = (object) ['id_token' => $token];
 			return $oauth->callback($state, 'code');
 		}
 
 		/**
-		 * Start a login, then complete it with an ID token that has the given claims.
+		 * Start a login, then complete it with an ID token that has the given claims and the nonce of the login.
 		 * @param OAuthManager $oauth OAuth manager.
 		 * @param string $provider Name of the provider.
 		 * @param array<string, mixed> $claims Claims of the ID token.
 		 * @return OAuthResult
 		 */
 		private function login(OAuthManager $oauth, string $provider, array $claims): OAuthResult {
-			$state = $this->getState($oauth, $provider);
-			$oauth->tokens = (object) ['id_token' => $this->createToken($claims), 'access_token' => 'access'];
-			return $oauth->callback($state, 'code');
+			$query = $this->start($oauth, $provider);
+			$oauth->tokens = (object) ['id_token' => $this->createToken($claims + ['nonce' => $query['nonce']]), 'access_token' => 'access'];
+			return $oauth->callback($query['state'], 'code');
 		}
 
 		/**
-		 * Start a login and return the state parameter of the authorization URL.
+		 * Start a login and return the query parameters of the authorization URL.
 		 * @param OAuthManager $oauth OAuth manager.
 		 * @param string $provider Name of the provider.
-		 * @return string
+		 * @return array<string, string>
 		 */
-		private function getState(OAuthManager $oauth, string $provider): string {
+		private function start(OAuthManager $oauth, string $provider): array {
 			\parse_str((string) \parse_url($oauth->getAuthorizationURL($provider), \PHP_URL_QUERY), $query);
-			return $query['state'];
+			return $query;
 		}
 
 		/**
@@ -269,6 +349,7 @@
 				'aud' => 'client',
 				'sub' => 'subject',
 				'exp' => \time() + 3600,
+				'iat' => \time(),
 				'email' => 'Foo@Bar.net',
 				'email_verified' => true
 			], $replace);
@@ -341,8 +422,10 @@
 				public ?\stdClass $userInfo = null;
 				public ?\stdClass $jwks = null;
 				public int $keyRequests = 0;
+				public ?string $codeVerifier = null;
 
-				protected function requestTokens(OAuthProvider $provider, string $code, string $redirectURI): ?\stdClass {
+				protected function requestTokens(OAuthProvider $provider, string $code, string $redirectURI, string $codeVerifier): ?\stdClass {
+					$this->codeVerifier = $codeVerifier;
 					return $this->tokens;
 				}
 

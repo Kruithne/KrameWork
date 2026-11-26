@@ -15,7 +15,9 @@ The first login with an identity creates a user account with the `OAUTH_ACCOUNT`
 
 A state token protects each login against cross-site request forgery. A state token can be used one time, and is valid for `STATE_LIFETIME` (600) seconds.
 
-`OAuthManager` checks the signature, issuer, audience and expiry of the ID token. The token must be signed with RS256 by a key in the JWKS of the provider.
+Each login uses PKCE (`S256`) and a nonce. The token request sends the code verifier of the login. The ID token must contain the nonce of the login. This stops a stolen authorization code from being used in a different login.
+
+`OAuthManager` checks the signature, nonce, issuer, audience, expiry (`exp`), issue time (`iat`) and, if present, the `nbf` claim of the ID token. The token must be signed with RS256 by a key in the JWKS of the provider. The time claims can differ from the server clock by `CLOCK_SKEW` (60) seconds.
 
 `OAuthManager` keeps the signing keys for `KEYS_LIFETIME` (3600) seconds. Give an `IDataCache` (for example `APCu`) to keep the keys between requests. Without a cache, each request gets the keys again. If a token has an unknown key ID, `OAuthManager` gets the keys again, at most one time in `KEYS_REFETCH_COOLDOWN` (300) seconds. This handles key rotation by the provider.
 
@@ -57,7 +59,7 @@ status | description
 `INVALID_STATE` | The state token does not exist, was used or expired.
 `UNKNOWN_PROVIDER` | The provider of the state token is not configured.
 `TOKEN_EXCHANGE_FAILED` | The token endpoint did not return an ID token.
-`INVALID_ID_TOKEN` | The ID token is malformed, or the signature, issuer, audience or expiry is not valid.
+`INVALID_ID_TOKEN` | The ID token is malformed, or the signature, nonce, issuer, audience or time claims are not valid.
 `MISSING_EMAIL` | The provider did not give an e-mail address.
 `EMAIL_NOT_VERIFIED` | The provider marks the e-mail address as not verified.
 `EMAIL_IN_USE` | A different account uses the e-mail address.
