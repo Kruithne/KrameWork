@@ -54,6 +54,7 @@
 
 		/**
 		 * Create a session for a user account and set the session cookie.
+		 * This ends the session of the current request, if one exists.
 		 *
 		 * @api start
 		 * @param int $userID ID of the user account.
@@ -61,7 +62,11 @@
 		 * @throws UnknownUserException
 		 */
 		public function start(int $userID): UserSession {
+			$previousID = $_COOKIE[$this->cookieName] ?? null;
 			$session = $this->create($userID);
+
+			if (\is_string($previousID))
+				$this->end($previousID);
 
 			\setcookie($this->cookieName, $session->sessionID, $this->getCookieOptions(\time() + $this->lifetime));
 			$_COOKIE[$this->cookieName] = $session->sessionID;

@@ -12,6 +12,7 @@
 	use KrameWork\Users\UserAccountFlags;
 	use KrameWork\Users\UserManager;
 	use KrameWork\Users\UserSessionManager;
+	use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 	require_once(__DIR__ . '/../src/Database/Database.php');
 	require_once(__DIR__ . '/../src/Database/Schema/SQLiteMetaTable.php');
@@ -94,6 +95,19 @@
 			$session = $sessions->create($this->userID);
 
 			$this->assertNull($this->db->getValue('SELECT 1 FROM user_sessions WHERE session_id = ?', [$session->sessionID]));
+		}
+
+		/**
+		 * Test that starting a session ends the session of the current request.
+		 */
+		#[RunInSeparateProcess]
+		public function testStartEndsPreviousSession() {
+			$sessions = $this->createManager();
+			$first = $sessions->start($this->userID);
+			$second = $sessions->start($this->userID);
+
+			$this->assertNull($sessions->get($first->sessionID));
+			$this->assertNotNull($sessions->get($second->sessionID));
 		}
 
 		/**

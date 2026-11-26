@@ -65,7 +65,7 @@ exception | reason
 --- | ---
 `UnknownUserException` | No account has the ID.
 ##### > start() : `UserSession`
-Create a session for an account and set the session cookie. Call it before output starts.
+Create a session for an account and set the session cookie. If the request already has a session cookie, this ends that session. Call it before output starts.
 
 parameter | type | description
 --- | --- | ---
