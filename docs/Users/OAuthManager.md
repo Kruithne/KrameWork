@@ -27,7 +27,7 @@ Each login uses PKCE (`S256`) and a nonce. The token request sends the code veri
 
 `OAuthManager` keeps the signing keys for `KEYS_LIFETIME` (3600) seconds. Give an `IDataCache` (for example `APCu`) to keep the keys between requests. Without a cache, each request gets the keys again. If a token has an unknown key ID, `OAuthManager` gets the keys again, at most one time in `KEYS_REFETCH_COOLDOWN` (300) seconds. This handles key rotation by the provider.
 
-If the ID token has no e-mail address, `OAuthManager` requests it from the UserInfo endpoint. If the provider marks the e-mail address as not verified, the login fails.
+If the ID token has no e-mail address, `OAuthManager` requests it from the UserInfo endpoint. The login fails if the provider does not mark the e-mail address as verified. See `emailVerifiedClaim` in [OAuthProvider](OAuthProvider.md).
 ___
 ### Examples
 Start a login:
@@ -85,7 +85,7 @@ status | description
 `TOKEN_EXCHANGE_FAILED` | The token endpoint did not return an ID token.
 `INVALID_ID_TOKEN` | The ID token is malformed, or the signature, nonce, issuer, audience or time claims are not valid.
 `MISSING_EMAIL` | The provider did not give an e-mail address.
-`EMAIL_NOT_VERIFIED` | The provider marks the e-mail address as not verified.
+`EMAIL_NOT_VERIFIED` | The provider does not mark the e-mail address as verified.
 `EMAIL_IN_USE` | A different account uses the e-mail address.
 `ACCOUNT_NOT_FOUND` | The account of a link does not exist.
 `ACCOUNT_DISABLED` | The account has the `ACCOUNT_DISABLED` flag.

@@ -154,22 +154,19 @@
 			if ($linkUserID !== null)
 				return $this->link($provider->name, $subject, $linkUserID, $claims);
 
-			$email = $claims->email ?? null;
-			$verified = $claims->email_verified ?? null;
-
+			$source = $claims;
 			$accessToken = $tokens->access_token ?? null;
-			if (!\is_string($email) && $provider->userInfoEndpoint !== null && \is_string($accessToken)) {
+			if (!\is_string($claims->email ?? null) && $provider->userInfoEndpoint !== null && \is_string($accessToken)) {
 				$info = $this->requestUserInfo($provider->userInfoEndpoint, $accessToken);
-				if ($info !== null && ($info->sub ?? null) === $subject) {
-					$email = $info->email ?? null;
-					$verified = $info->email_verified ?? null;
-				}
+				if ($info !== null && ($info->sub ?? null) === $subject)
+					$source = $info;
 			}
 
+			$email = $source->email ?? null;
 			if (!\is_string($email) || $email === '')
 				return new OAuthResult(OAuthStatus::MISSING_EMAIL);
 
-			if ($verified === false)
+			if (!self::isEmailVerified($provider, $source))
 				return new OAuthResult(OAuthStatus::EMAIL_NOT_VERIFIED);
 
 			return $this->login($provider->name, $subject, \strtolower(\trim($email)), $claims);
@@ -578,6 +575,23 @@
 		 */
 		private static function createNonce(string $state): string {
 			return \hash('sha256', $state);
+		}
+
+		/**
+		 * Check that the provider marks the e-mail address as verified.
+		 * The verification claim must be true. If the provider has no verification claim, the e-mail address is trusted.
+		 *
+		 * @param OAuthProvider $provider Provider of the login.
+		 * @param \stdClass $claims Claims that contain the e-mail address.
+		 * @return bool
+		 */
+		private static function isEmailVerified(OAuthProvider $provider, \stdClass $claims): bool {
+			$claim = $provider->emailVerifiedClaim;
+			if ($claim === null)
+				return true;
+
+			$verified = $claims->$claim ?? null;
+			return $verified === true || $verified === 'true';
 		}
 
 		/**

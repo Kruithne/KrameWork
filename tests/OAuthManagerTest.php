@@ -157,9 +157,20 @@
 		public function testMicrosoftTenantIssuerIsAccepted() {
 			$oauth = $this->createManager();
 			$tenant = '9188040d-6c67-4c5b-b112-36a304b66dad';
-			$claims = $this->createClaims(['iss' => 'https://login.microsoftonline.com/' . $tenant . '/v2.0', 'tid' => $tenant]);
+			$claims = $this->createClaims(['iss' => 'https://login.microsoftonline.com/' . $tenant . '/v2.0', 'tid' => $tenant, 'xms_edov' => true]);
 
 			$this->assertSame(OAuthStatus::SUCCESS, $this->login($oauth, 'microsoft', $claims)->status);
+		}
+
+		/**
+		 * Test that a Microsoft ID token without the xms_edov claim is rejected, because Microsoft does not verify the email claim.
+		 */
+		public function testMicrosoftEmailWithoutDomainVerificationIsRejected() {
+			$oauth = $this->createManager();
+			$tenant = '9188040d-6c67-4c5b-b112-36a304b66dad';
+			$claims = $this->createClaims(['iss' => 'https://login.microsoftonline.com/' . $tenant . '/v2.0', 'tid' => $tenant]);
+
+			$this->assertSame(OAuthStatus::EMAIL_NOT_VERIFIED, $this->login($oauth, 'microsoft', $claims)->status);
 		}
 
 		/**
@@ -279,13 +290,57 @@
 		}
 
 		/**
+		 * Test that an identity without an email_verified claim is rejected.
+		 */
+		public function testMissingEmailVerifiedIsRejected() {
+			$oauth = $this->createManager();
+			$claims = $this->createClaims();
+			unset($claims['email_verified']);
+
+			$this->assertSame(OAuthStatus::EMAIL_NOT_VERIFIED, $this->login($oauth, 'google', $claims)->status);
+		}
+
+		/**
+		 * Test that an email_verified claim with the string "false" is rejected.
+		 */
+		public function testStringFalseEmailVerifiedIsRejected() {
+			$oauth = $this->createManager();
+			$claims = $this->createClaims(['email_verified' => 'false']);
+
+			$this->assertSame(OAuthStatus::EMAIL_NOT_VERIFIED, $this->login($oauth, 'google', $claims)->status);
+		}
+
+		/**
+		 * Test that a provider without a verification claim accepts the e-mail address without a check.
+		 */
+		public function testProviderWithoutVerificationClaimTrustsEmail() {
+			$oauth = $this->createManager();
+			$claims = $this->createClaims();
+			unset($claims['email_verified']);
+
+			$this->assertSame(OAuthStatus::SUCCESS, $this->login($oauth, 'trusted', $claims)->status);
+		}
+
+		/**
+		 * Test that an unverified e-mail address from the UserInfo endpoint is rejected.
+		 */
+		public function testUnverifiedUserInfoEmailIsRejected() {
+			$oauth = $this->createManager();
+			$claims = $this->createClaims();
+			unset($claims['email'], $claims['email_verified']);
+			$oauth->userInfo = (object) ['sub' => 'subject', 'email' => 'foo@bar.net'];
+
+			$this->assertSame(OAuthStatus::EMAIL_NOT_VERIFIED, $this->login($oauth, 'google', $claims)->status);
+		}
+
+		/**
 		 * Test that the e-mail address is read from the UserInfo endpoint when the ID token has no e-mail address.
 		 */
 		public function testEmailIsReadFromUserInfo() {
 			$oauth = $this->createManager();
 			$claims = $this->createClaims();
 			unset($claims['email'], $claims['email_verified']);
-			$oauth->userInfo = (object) ['sub' => 'subject', 'email' => 'foo@bar.net'];
+			$oauth->userInfo = (object) ['sub' => 'subject', 'email' => 'foo@bar.net', 'email_verified' => true];
 
 			$result = $this->login($oauth, 'google', $claims);
 			$this->assertSame(OAuthStatus::SUCCESS, $result->status);
@@ -505,7 +560,9 @@
 			$rsa = \openssl_pkey_get_details(self::getKey())['rsa'];
 			$jwks = (object) ['keys' => [(object) ['kty' => 'RSA', 'use' => 'sig', 'kid' => 'test', 'n' => self::encode($rsa['n']), 'e' => self::encode($rsa['e'])]]];
 
-			$providers = [OAuthProvider::google('client', 'secret'), OAuthProvider::microsoft('client', 'secret')];
+			$google = OAuthProvider::google('client', 'secret');
+			$trusted = new OAuthProvider('trusted', 'client', 'secret', $google->authEndpoint, $google->tokenEndpoint, $google->jwksURI, $google->issuers, emailVerifiedClaim: null);
+			$providers = [$google, OAuthProvider::microsoft('client', 'secret'), $trusted];
 			$oauth = new class($db, 'https://bar.net/callback', $providers) extends OAuthManager {
 				public ?\stdClass $tokens = null;
 				public ?\stdClass $userInfo = null;

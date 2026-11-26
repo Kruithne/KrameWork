@@ -22,6 +22,7 @@
 		 * @param string[] $issuers Accepted issuers of ID tokens. "{tenantid}" matches the tid claim of the token if it is a GUID.
 		 * @param string[] $scopes Scopes to request.
 		 * @param string|null $userInfoEndpoint UserInfo endpoint URL. Used when the ID token has no e-mail address.
+		 * @param string|null $emailVerifiedClaim Claim that must be true to accept the e-mail address. Null to trust the e-mail address without a check.
 		 */
 		public function __construct(
 			public readonly string $name,
@@ -32,7 +33,8 @@
 			public readonly string $jwksURI,
 			public readonly array $issuers,
 			public readonly array $scopes = ['openid', 'email', 'profile'],
-			public readonly ?string $userInfoEndpoint = null
+			public readonly ?string $userInfoEndpoint = null,
+			public readonly ?string $emailVerifiedClaim = 'email_verified'
 		) {}
 
 		/**
@@ -59,6 +61,7 @@
 		/**
 		 * Create the configuration for Microsoft.
 		 * For a single tenant, give the tenant ID, not the domain name.
+		 * Add the optional xms_edov claim to the ID token in the app registration. Logins without this claim fail.
 		 *
 		 * @api microsoft
 		 * @param string $clientID Application (client) ID given by Microsoft.
@@ -77,7 +80,8 @@
 				'https://login.microsoftonline.com/' . $tenant . '/oauth2/v2.0/token',
 				'https://login.microsoftonline.com/' . $tenant . '/discovery/v2.0/keys',
 				['https://login.microsoftonline.com/' . $issuerTenant . '/v2.0'],
-				userInfoEndpoint: 'https://graph.microsoft.com/oidc/userinfo'
+				userInfoEndpoint: 'https://graph.microsoft.com/oidc/userinfo',
+				emailVerifiedClaim: 'xms_edov'
 			);
 		}
 	}
