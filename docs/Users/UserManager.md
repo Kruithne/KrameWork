@@ -135,7 +135,7 @@ parameter | type | description
 `$email` | `string` | E-mail address of the account.
 `$password` | `Password` | Password given for the account.
 ##### > getVerificationToken() : `string|null`
-Get the verification token of an account. Returns null if the account has no open verification.
+Get a new verification token for the open verification of an account. The old token stops working. The code and the attempt count do not change. Returns null if the account has no open verification.
 
 parameter | type | description
 --- | --- | ---
@@ -148,7 +148,7 @@ parameter | type | description
 `$token` | `string` | Verification token.
 `$code` | `string` | Verification code given by the user.
 ##### > sendVerificationCode() : `SendCodeStatus`
-Send the verification code again. The code is sent at most one time in `VERIFY_SEND_INTERVAL` (300) seconds, unless forced. Returns `SUCCESS`, `INVALID_TOKEN` or `THROTTLED`.
+Send a new verification code. The old code stops working. The code is sent at most one time in `VERIFY_SEND_INTERVAL` (300) seconds, unless forced. Returns `SUCCESS`, `INVALID_TOKEN` or `THROTTLED`.
 
 parameter | type | description
 --- | --- | ---

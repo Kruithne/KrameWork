@@ -33,7 +33,8 @@
 		public function versionLog(): array {
 			return [
 				new TableVersion(1, ['CREATE TABLE user_sessions (session_id VARCHAR(64) NOT NULL PRIMARY KEY, user_id BIGINT NOT NULL, created BIGINT NOT NULL, updated BIGINT NOT NULL)']),
-				new TableVersion(2, ['CREATE INDEX user_sessions_user_id ON user_sessions (user_id)'])
+				new TableVersion(2, ['CREATE INDEX user_sessions_user_id ON user_sessions (user_id)']),
+				new TableVersion(3, ['DELETE FROM user_sessions'])
 			];
 		}
 	}

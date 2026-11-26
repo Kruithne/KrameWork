@@ -46,7 +46,7 @@
 			$sessionID = \bin2hex(\random_bytes(32));
 			$time = \time();
 
-			$this->db->execute('INSERT INTO user_sessions (session_id, user_id, created, updated) VALUES (?, ?, ?, ?)', [$sessionID, $userID, $time, $time]);
+			$this->db->execute('INSERT INTO user_sessions (session_id, user_id, created, updated) VALUES (?, ?, ?, ?)', [self::hashSessionID($sessionID), $userID, $time, $time]);
 			return new UserSession($sessionID, $userID, (int) $flags, $time);
 		}
 
@@ -77,7 +77,7 @@
 		public function get(string $sessionID): ?UserSession {
 			$row = $this->db->getRow(
 				'SELECT s.user_id, s.updated, a.flags FROM user_sessions s INNER JOIN user_accounts a ON a.id = s.user_id WHERE s.session_id = ?',
-				[$sessionID]
+				[self::hashSessionID($sessionID)]
 			);
 
 			if ($row === null || !\is_numeric($row->user_id) || !\is_numeric($row->updated) || !\is_numeric($row->flags))
@@ -107,7 +107,7 @@
 		 * @param string $sessionID ID of the session.
 		 */
 		public function end(string $sessionID): void {
-			$this->db->execute('DELETE FROM user_sessions WHERE session_id = ?', [$sessionID]);
+			$this->db->execute('DELETE FROM user_sessions WHERE session_id = ?', [self::hashSessionID($sessionID)]);
 		}
 
 		/**
@@ -148,6 +148,16 @@
 
 			$placeholders = \implode(', ', \array_fill(0, \count($userIDs), '?'));
 			$this->db->execute('UPDATE user_sessions SET updated = ? WHERE user_id IN (' . $placeholders . ')', [\time(), ...$userIDs]);
+		}
+
+		/**
+		 * Get the SHA-256 hash of a session ID. The database stores only the hash.
+		 *
+		 * @param string $sessionID ID of the session.
+		 * @return string
+		 */
+		private static function hashSessionID(string $sessionID): string {
+			return \hash('sha256', $sessionID);
 		}
 
 		/**

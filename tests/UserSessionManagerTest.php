@@ -76,6 +76,16 @@
 		}
 
 		/**
+		 * Test that the database does not contain the session ID that is given to the client.
+		 */
+		public function testSessionIDIsNotStored() {
+			$sessions = $this->createManager();
+			$session = $sessions->create($this->userID);
+
+			$this->assertNull($this->db->getValue('SELECT 1 FROM user_sessions WHERE session_id = ?', [$session->sessionID]));
+		}
+
+		/**
 		 * Test that a session cannot be created for an account that does not exist.
 		 */
 		public function testCreateRejectsUnknownUser() {
@@ -90,7 +100,7 @@
 		 * @return UserSessionManager
 		 */
 		private function createManager(): UserSessionManager {
-			$db = new Database(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO);
+			$db = $this->db = new Database(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO);
 			$meta = new SQLiteMetaTable($db);
 			(new UserAccountsTable($db, $meta, DatabaseType::SQLITE))->create();
 			(new UserVerificationCodesTable($db, $meta))->create();
@@ -106,4 +116,5 @@
 		}
 
 		private int $userID;
+		private Database $db;
 	}

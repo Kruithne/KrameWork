@@ -32,7 +32,8 @@
 		 */
 		public function versionLog(): array {
 			return [
-				new TableVersion(1, ['CREATE TABLE user_reset_tokens (user_id BIGINT NOT NULL PRIMARY KEY, reset_token VARCHAR(32) NOT NULL UNIQUE, reset_sent BIGINT NOT NULL)'])
+				new TableVersion(1, ['CREATE TABLE user_reset_tokens (user_id BIGINT NOT NULL PRIMARY KEY, reset_token VARCHAR(32) NOT NULL UNIQUE, reset_sent BIGINT NOT NULL)']),
+				new TableVersion(2, ['DROP TABLE user_reset_tokens', 'CREATE TABLE user_reset_tokens (user_id BIGINT NOT NULL PRIMARY KEY, reset_token VARCHAR(64) NOT NULL UNIQUE, reset_sent BIGINT NOT NULL)'])
 			];
 		}
 	}

@@ -79,14 +79,14 @@
 				throw new UnknownUserException('No user account with ID ' . $userID);
 
 			$token = self::generateToken();
-			$code = (string) \random_int(10000, 99999);
+			$code = self::generateCode();
 
 			$this->db->beginTransaction();
 			try {
 				$this->db->execute('DELETE FROM user_verification_codes WHERE user_id = ?', [$userID]);
 				$this->db->execute(
 					'INSERT INTO user_verification_codes (token, user_id, code, attempts, last_sent) VALUES (?, ?, ?, ?, ?)',
-					[$token, $userID, $code, 0, \time()]
+					[self::hashSecret($token), $userID, self::hashSecret($code), 0, \time()]
 				);
 				$this->db->commitTransaction();
 			} catch (\Throwable $e) {
@@ -140,15 +140,19 @@
 		}
 
 		/**
-		 * Get the verification token of a user account.
+		 * Get a new verification token for the open verification of a user account.
+		 * The old token stops working. The code and the attempt count do not change.
 		 *
 		 * @api getVerificationToken
 		 * @param int $userID ID of the user account.
 		 * @return string|null Null if the account has no open verification.
 		 */
 		public function getVerificationToken(int $userID): ?string {
-			$token = $this->db->getValue('SELECT token FROM user_verification_codes WHERE user_id = ?', [$userID]);
-			return \is_string($token) ? $token : null;
+			$token = self::generateToken();
+			if ($this->db->execute('UPDATE user_verification_codes SET token = ? WHERE user_id = ?', [self::hashSecret($token), $userID]) === 0)
+				return null;
+
+			return $token;
 		}
 
 		/**
@@ -162,30 +166,31 @@
 		 * @throws \Throwable
 		 */
 		public function checkVerificationCode(string $token, string $code): VerificationResult {
+			$tokenHash = self::hashSecret($token);
 			$counted = $this->db->execute(
 				'UPDATE user_verification_codes SET attempts = attempts + 1 WHERE token = ? AND attempts < ?',
-				[$token, self::VERIFY_MAX_ATTEMPTS]
+				[$tokenHash, self::VERIFY_MAX_ATTEMPTS]
 			);
 
 			if ($counted === 0)
 				return new VerificationResult(VerificationStatus::INVALID_CODE);
 
-			$row = $this->db->getRow('SELECT user_id, code, attempts FROM user_verification_codes WHERE token = ?', [$token]);
+			$row = $this->db->getRow('SELECT user_id, code, attempts FROM user_verification_codes WHERE token = ?', [$tokenHash]);
 			if ($row === null)
 				return new VerificationResult(VerificationStatus::INVALID_CODE);
 
-			if (!\hash_equals(self::toString($row->code), $code)) {
+			if (!\hash_equals(self::toString($row->code), self::hashSecret($code))) {
 				if (self::toInt($row->attempts) < self::VERIFY_MAX_ATTEMPTS)
 					return new VerificationResult(VerificationStatus::INVALID_CODE);
 
-				$this->db->execute('DELETE FROM user_verification_codes WHERE token = ?', [$token]);
+				$this->db->execute('DELETE FROM user_verification_codes WHERE token = ?', [$tokenHash]);
 				return new VerificationResult(VerificationStatus::TOO_MANY_ATTEMPTS);
 			}
 
 			$userID = self::toInt($row->user_id);
 			$this->db->beginTransaction();
 			try {
-				$this->db->execute('DELETE FROM user_verification_codes WHERE token = ?', [$token]);
+				$this->db->execute('DELETE FROM user_verification_codes WHERE token = ?', [$tokenHash]);
 				$this->db->execute('UPDATE user_accounts SET flags = flags & ? WHERE id = ?', [~UserAccountFlags::REQUIRES_VERIFICATION, $userID]);
 				$this->db->commitTransaction();
 			} catch (\Throwable $e) {
@@ -197,7 +202,7 @@
 		}
 
 		/**
-		 * Send the verification code of a verification token again.
+		 * Send a new verification code for a verification token. The old code stops working.
 		 * The code is sent at most one time in VERIFY_SEND_INTERVAL seconds, unless forced.
 		 *
 		 * @api sendVerificationCode
@@ -206,21 +211,25 @@
 		 * @return SendCodeStatus
 		 */
 		public function sendVerificationCode(string $token, bool $force = false): SendCodeStatus {
+			$tokenHash = self::hashSecret($token);
 			$row = $this->db->getRow(
-				'SELECT v.user_id, v.code, a.email FROM user_verification_codes v INNER JOIN user_accounts a ON a.id = v.user_id WHERE v.token = ?',
-				[$token]
+				'SELECT v.user_id, a.email FROM user_verification_codes v INNER JOIN user_accounts a ON a.id = v.user_id WHERE v.token = ?',
+				[$tokenHash]
 			);
 
 			if ($row === null)
 				return SendCodeStatus::INVALID_TOKEN;
 
+			$code = self::generateCode();
+			$codeHash = self::hashSecret($code);
 			$time = \time();
+
 			if ($force)
-				$this->db->execute('UPDATE user_verification_codes SET last_sent = ? WHERE token = ?', [$time, $token]);
-			else if ($this->db->execute('UPDATE user_verification_codes SET last_sent = ? WHERE token = ? AND last_sent <= ?', [$time, $token, $time - self::VERIFY_SEND_INTERVAL]) === 0)
+				$this->db->execute('UPDATE user_verification_codes SET code = ?, last_sent = ? WHERE token = ?', [$codeHash, $time, $tokenHash]);
+			else if ($this->db->execute('UPDATE user_verification_codes SET code = ?, last_sent = ? WHERE token = ? AND last_sent <= ?', [$codeHash, $time, $tokenHash, $time - self::VERIFY_SEND_INTERVAL]) === 0)
 				return SendCodeStatus::THROTTLED;
 
-			$this->mailer->sendVerificationCode(self::toInt($row->user_id), self::toString($row->email), $token, self::toString($row->code));
+			$this->mailer->sendVerificationCode(self::toInt($row->user_id), self::toString($row->email), $token, $code);
 			return SendCodeStatus::SUCCESS;
 		}
 
@@ -263,7 +272,8 @@
 		 * @throws \Throwable
 		 */
 		public function applyPasswordReset(string $token, Password $password): PasswordResetStatus {
-			$row = $this->db->getRow('SELECT user_id, reset_sent FROM user_reset_tokens WHERE reset_token = ?', [$token]);
+			$tokenHash = self::hashSecret($token);
+			$row = $this->db->getRow('SELECT user_id, reset_sent FROM user_reset_tokens WHERE reset_token = ?', [$tokenHash]);
 			if ($row === null)
 				return PasswordResetStatus::INVALID_TOKEN;
 
@@ -275,7 +285,7 @@
 
 			$this->db->beginTransaction();
 			try {
-				$deleted = $this->db->execute('DELETE FROM user_reset_tokens WHERE reset_token = ? AND reset_sent >= ?', [$token, $cutoff]);
+				$deleted = $this->db->execute('DELETE FROM user_reset_tokens WHERE reset_token = ? AND reset_sent >= ?', [$tokenHash, $cutoff]);
 				if ($deleted === 0) {
 					$this->db->rollbackTransaction();
 					return PasswordResetStatus::INVALID_TOKEN;
@@ -358,16 +368,17 @@
 
 			$userID = self::toInt($row->id);
 			$token = self::generateToken();
+			$tokenHash = self::hashSecret($token);
 			$time = \time();
 
 			$updated = $this->db->execute(
 				'UPDATE user_reset_tokens SET reset_token = ?, reset_sent = ? WHERE user_id = ? AND reset_sent <= ?',
-				[$token, $time, $userID, $time - self::RESET_SEND_INTERVAL]
+				[$tokenHash, $time, $userID, $time - self::RESET_SEND_INTERVAL]
 			);
 
 			if ($updated === 0) {
 				try {
-					$this->db->execute('INSERT INTO user_reset_tokens (user_id, reset_token, reset_sent) VALUES (?, ?, ?)', [$userID, $token, $time]);
+					$this->db->execute('INSERT INTO user_reset_tokens (user_id, reset_token, reset_sent) VALUES (?, ?, ?)', [$userID, $tokenHash, $time]);
 				} catch (\PDOException $e) {
 					if (\str_starts_with((string) $e->getCode(), '23'))
 						return PasswordResetStatus::THROTTLED;
@@ -397,6 +408,25 @@
 		 */
 		private static function generateToken(): string {
 			return \bin2hex(\random_bytes(16));
+		}
+
+		/**
+		 * Generate a random verification code of 5 digits.
+		 *
+		 * @return string
+		 */
+		private static function generateCode(): string {
+			return (string) \random_int(10000, 99999);
+		}
+
+		/**
+		 * Get the SHA-256 hash of a token or code. The database stores only the hash.
+		 *
+		 * @param string $secret Token or code.
+		 * @return string
+		 */
+		private static function hashSecret(string $secret): string {
+			return \hash('sha256', $secret);
 		}
 
 		/**

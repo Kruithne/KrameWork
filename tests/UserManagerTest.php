@@ -111,8 +111,20 @@
 
 			$token = $users->createVerification($userID);
 			$this->assertSame($token, $this->mailer->token);
-			$this->assertSame($token, $users->getVerificationToken($userID));
 			$this->assertSame(VerificationStatus::INVALID_CODE, $users->checkVerificationCode($oldToken, $this->mailer->code)->status);
+		}
+
+		/**
+		 * Test that a new token for an open verification works with the same code, and the old token does not.
+		 */
+		public function testGetVerificationTokenReplacesToken() {
+			$users = $this->createManager();
+			$userID = $users->register('foo@bar.net', new Password('hunter2'));
+			$oldToken = $this->mailer->token;
+
+			$token = $users->getVerificationToken($userID);
+			$this->assertSame(VerificationStatus::INVALID_CODE, $users->checkVerificationCode($oldToken, $this->mailer->code)->status);
+			$this->assertSame(VerificationStatus::SUCCESS, $users->checkVerificationCode((string) $token, $this->mailer->code)->status);
 		}
 
 		/**
@@ -124,6 +136,41 @@
 
 			$this->assertSame(SendCodeStatus::THROTTLED, $users->sendVerificationCode($this->mailer->token));
 			$this->assertSame(SendCodeStatus::SUCCESS, $users->sendVerificationCode($this->mailer->token, true));
+		}
+
+		/**
+		 * Test that a resent verification code verifies the account and the old code does not.
+		 */
+		public function testResentVerificationCodeReplacesCode() {
+			$users = $this->createManager();
+			$users->register('foo@bar.net', new Password('hunter2'));
+			$oldCode = $this->mailer->code;
+
+			$users->sendVerificationCode($this->mailer->token, true);
+			$wrong = $oldCode === $this->mailer->code ? '00000' : $oldCode;
+			$this->assertSame(VerificationStatus::INVALID_CODE, $users->checkVerificationCode($this->mailer->token, $wrong)->status);
+			$this->assertSame(VerificationStatus::SUCCESS, $users->checkVerificationCode($this->mailer->token, $this->mailer->code)->status);
+		}
+
+		/**
+		 * Test that the database does not contain the verification token or code that is sent to the user.
+		 */
+		public function testVerificationSecretsAreNotStored() {
+			$users = $this->createManager();
+			$users->register('foo@bar.net', new Password('hunter2'));
+
+			$this->assertNull($this->db->getValue('SELECT 1 FROM user_verification_codes WHERE token = ? OR code = ?', [$this->mailer->token, $this->mailer->code]));
+		}
+
+		/**
+		 * Test that the database does not contain the password reset token that is sent to the user.
+		 */
+		public function testPasswordResetTokenIsNotStored() {
+			$users = $this->createManager();
+			$this->createVerifiedAccount($users);
+			$users->requestPasswordReset('foo@bar.net');
+
+			$this->assertNull($this->db->getValue('SELECT 1 FROM user_reset_tokens WHERE reset_token = ?', [$this->mailer->resetToken]));
 		}
 
 		/**
@@ -199,7 +246,7 @@
 		 * @return UserManager
 		 */
 		private function createManager(): UserManager {
-			$db = new Database(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO);
+			$db = $this->db = new Database(new ConnectionString('sqlite::memory:'), Database::DB_DRIVER_PDO);
 			$meta = new SQLiteMetaTable($db);
 			(new UserAccountsTable($db, $meta, DatabaseType::SQLITE))->create();
 			(new UserVerificationCodesTable($db, $meta))->create();
@@ -225,4 +272,5 @@
 		}
 
 		private IUserMailer $mailer;
+		private Database $db;
 	}
