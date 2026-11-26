@@ -26,6 +26,7 @@
 		const STATE_LIFETIME = 600;
 		const KEYS_LIFETIME = 3600;
 		const KEYS_REFETCH_COOLDOWN = 300;
+		const REQUEST_TIMEOUT = 10;
 
 		/**
 		 * OAuthManager constructor.
@@ -149,6 +150,7 @@
 			$request->code = $code;
 			$request->redirect_uri = $redirectURI;
 			$request->grant_type = 'authorization_code';
+			$request->setTimeout(self::REQUEST_TIMEOUT);
 
 			if (!$request->send())
 				return null;
@@ -167,6 +169,7 @@
 		protected function requestUserInfo(string $endpoint, string $accessToken): ?\stdClass {
 			$request = new JSONRequest($endpoint);
 			$request->setHeader('Authorization', 'Bearer ' . $accessToken);
+			$request->setTimeout(self::REQUEST_TIMEOUT);
 
 			if (!$request->send())
 				return null;
@@ -183,6 +186,7 @@
 		 */
 		protected function requestKeys(string $uri): ?\stdClass {
 			$request = new JSONRequest($uri);
+			$request->setTimeout(self::REQUEST_TIMEOUT);
 
 			if (!$request->send())
 				return null;

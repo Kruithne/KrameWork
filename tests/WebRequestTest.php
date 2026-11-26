@@ -241,4 +241,20 @@
 
 			unset($req);
 		}
+
+		/**
+		 * Test that a request fails after the timeout when the server does not respond.
+		 */
+		public function testTimeout() {
+			$server = stream_socket_server('tcp://127.0.0.1:0');
+			$req = new WebRequest('http://' . stream_socket_get_name($server, false) . '/');
+			$req->setTimeout(1);
+
+			$start = microtime(true);
+			$this->assertFalse(@$req->send());
+			$this->assertLessThan(5, microtime(true) - $start);
+
+			fclose($server);
+			unset($req);
+		}
 	}

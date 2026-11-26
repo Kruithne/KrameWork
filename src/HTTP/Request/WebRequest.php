@@ -62,6 +62,16 @@
 		}
 
 		/**
+		 * Set the maximum time to wait for the server.
+		 *
+		 * @api setTimeout
+		 * @param float $seconds Maximum number of seconds to wait.
+		 */
+		public function setTimeout(float $seconds): void {
+			$this->timeout = $seconds;
+		}
+
+		/**
 		 * Check if this request has a header set.
 		 *
 		 * @api hasHeader
@@ -159,6 +169,9 @@
 				$this->setHeader('Content-length', (string) \strlen($content));
 			}
 
+			if ($this->timeout !== null)
+				$params['timeout'] = $this->timeout;
+
 			$params['header'] = $this->compileHeaders();
 
 			$result = \file_get_contents($url, false, \stream_context_create(['http' => $params]));
@@ -240,4 +253,9 @@
 		 * @var array<string, string>
 		 */
 		protected array $headers;
+
+		/**
+		 * @var float|null
+		 */
+		protected ?float $timeout = null;
 	}
