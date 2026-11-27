@@ -21,6 +21,10 @@ If the account of an identity does not exist, the next login deletes the link an
 
 A state token protects each login against cross-site request forgery. A state token can be used one time, and is valid for `STATE_LIFETIME` (600) seconds.
 
+`getAuthorizationURL()` and `getLinkURL()` send the state token in the `oauth_state` cookie (`STATE_COOKIE_NAME`). The cookie is `HttpOnly` and `SameSite=Lax`, with the path `/`. `callback()` accepts a state only if it matches this cookie, and then deletes the cookie. This stops an attacker from sending a callback link of their own login to a different browser. Call `getAuthorizationURL()` or `getLinkURL()` before output starts, and use the same domain for the callback URL.
+
+A user can complete one login at a time in a browser. A new login replaces the state cookie, so the callback of an earlier login in a different tab fails with `INVALID_STATE`.
+
 Each login uses PKCE (`S256`) and a nonce. The token request sends the code verifier of the login. The ID token must contain the nonce of the login. This stops a stolen authorization code from being used in a different login.
 
 `OAuthManager` checks the signature, nonce, issuer, audience, expiry (`exp`), issue time (`iat`) and, if present, the `nbf` claim of the ID token. The token must be signed with RS256 by a key in the JWKS of the provider. The time claims can differ from the server clock by `CLOCK_SKEW` (60) seconds.
@@ -80,7 +84,7 @@ if (!$oauth->unlink($session->userID, 'google'))
 status | description
 --- | ---
 `SUCCESS` | The login or link is complete. `userID` and `claims` are set. `registered` is true for a new account. `linked` is true for a link.
-`INVALID_STATE` | The state token does not exist, was used or expired, or the user ID of a link does not match.
+`INVALID_STATE` | The state token does not exist, was used or expired, does not match the state cookie, or the user ID of a link does not match.
 `UNKNOWN_PROVIDER` | The provider of the state token is not configured.
 `TOKEN_EXCHANGE_FAILED` | The token endpoint did not return an ID token.
 `INVALID_ID_TOKEN` | The ID token is malformed, or the signature, nonce, issuer, audience or time claims are not valid.
@@ -104,13 +108,13 @@ parameter | type | description
 ##### > getProviders() : `string[]`
 Get the names of the providers.
 ##### > getAuthorizationURL() : `string|null`
-Start a login. Send the user to the returned URL. Returns null if the provider is unknown. This also deletes expired state tokens.
+Start a login. Send the user to the returned URL. Returns null if the provider is unknown. This sets the state cookie and deletes expired state tokens.
 
 parameter | type | description
 --- | --- | ---
 `$provider` | `string` | Name of the provider.
 ##### > getLinkURL() : `string|null`
-Start a link of an identity to an account. Send the user to the returned URL. Returns null if the provider is unknown.
+Start a link of an identity to an account. Send the user to the returned URL. Returns null if the provider is unknown. This sets the state cookie.
 
 parameter | type | description
 --- | --- | ---
@@ -130,7 +134,7 @@ parameter | type | description
 `$userID` | `int` | ID of the user account.
 `$provider` | `string` | Name of the provider.
 ##### > callback() : `OAuthResult`
-Complete a login or link with the `state` and `code` that the provider sent to the callback URL. This does not start a session. The result has a `status` (`OAuthStatus`), a `userID`, the `claims` of the ID token, `registered` and `linked`.
+Complete a login or link with the `state` and `code` that the provider sent to the callback URL. The state must match the state cookie. This deletes the state cookie. This does not start a session. The result has a `status` (`OAuthStatus`), a `userID`, the `claims` of the ID token, `registered` and `linked`.
 
 parameter | type | description
 --- | --- | ---

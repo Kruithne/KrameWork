@@ -56,6 +56,30 @@
 		}
 
 		/**
+		 * Test that a callback is rejected when the browser has no state cookie, so a callback link from a different browser does not log in.
+		 */
+		public function testCallbackWithoutStateCookieIsRejected() {
+			$oauth = $this->createManager();
+			$query = $this->start($oauth, 'google');
+			$oauth->tokens = (object) ['id_token' => $this->createToken($this->createClaims(['nonce' => $query['nonce']]))];
+			unset($_COOKIE[OAuthManager::STATE_COOKIE_NAME]);
+
+			$this->assertSame(OAuthStatus::INVALID_STATE, $oauth->callback($query['state'], 'code')->status);
+		}
+
+		/**
+		 * Test that a callback is rejected when its state is not the state in the cookie of the browser.
+		 */
+		public function testCallbackWithStateOfOtherBrowserIsRejected() {
+			$oauth = $this->createManager();
+			$attacker = $this->start($oauth, 'google');
+			$this->start($oauth, 'google');
+			$oauth->tokens = (object) ['id_token' => $this->createToken($this->createClaims(['nonce' => $attacker['nonce']]))];
+
+			$this->assertSame(OAuthStatus::INVALID_STATE, $oauth->callback($attacker['state'], 'code')->status);
+		}
+
+		/**
 		 * Test that an ID token with the nonce of a different login is rejected.
 		 */
 		public function testNonceOfOtherLoginIsRejected() {
@@ -467,18 +491,21 @@
 		 */
 		private function link(OAuthManager $oauth, int $userID, int $sessionUserID): OAuthResult {
 			\parse_str((string) \parse_url($oauth->getLinkURL('google', $userID), \PHP_URL_QUERY), $query);
+			$_COOKIE[OAuthManager::STATE_COOKIE_NAME] = $oauth->stateCookie;
 			$oauth->tokens = (object) ['id_token' => $this->createToken($this->createClaims(['nonce' => $query['nonce']]))];
 			return $oauth->callback($query['state'], 'code', $sessionUserID);
 		}
 
 		/**
 		 * Start a login and return the query parameters of the authorization URL.
+		 * The state cookie of the login is put in $_COOKIE, as a browser sends it to the callback.
 		 * @param OAuthManager $oauth OAuth manager.
 		 * @param string $provider Name of the provider.
 		 * @return array<string, string>
 		 */
 		private function start(OAuthManager $oauth, string $provider): array {
 			\parse_str((string) \parse_url($oauth->getAuthorizationURL($provider), \PHP_URL_QUERY), $query);
+			$_COOKIE[OAuthManager::STATE_COOKIE_NAME] = $oauth->stateCookie;
 			return $query;
 		}
 
@@ -530,6 +557,7 @@
 
 		/**
 		 * Create an OAuth manager on a new in-memory database. The manager returns set responses instead of network requests.
+		 * The manager keeps the last state cookie in stateCookie instead of sending a header.
 		 * The JWKS response contains the public test key with the key ID "test".
 		 * @param \Closure|null $race Runs one time before the first transaction, to simulate a parallel request.
 		 * @return OAuthManager
@@ -569,10 +597,16 @@
 				public ?\stdClass $jwks = null;
 				public int $keyRequests = 0;
 				public ?string $codeVerifier = null;
+				public ?string $stateCookie = null;
 
 				protected function requestTokens(OAuthProvider $provider, string $code, string $redirectURI, string $codeVerifier): ?\stdClass {
 					$this->codeVerifier = $codeVerifier;
 					return $this->tokens;
+				}
+
+				protected function sendStateCookie(string $state, int $expires): void {
+					if ($state !== '')
+						$this->stateCookie = $state;
 				}
 
 				protected function requestUserInfo(string $endpoint, string $accessToken): ?\stdClass {

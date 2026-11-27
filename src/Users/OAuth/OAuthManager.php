@@ -3,12 +3,14 @@
 
 	use KrameWork\Caching\IDataCache;
 	use KrameWork\Database\Driver\Generic;
+	use KrameWork\HTTP\HTTPContext;
 	use KrameWork\HTTP\Request\JSONRequest;
 	use KrameWork\HTTP\Request\WebRequest;
 	use KrameWork\Users\UserAccountFlags;
 
 	require_once(__DIR__ . '/../../Caching/IDataCache.php');
 	require_once(__DIR__ . '/../../Database/Driver/Generic.php');
+	require_once(__DIR__ . '/../../HTTP/HTTPContext.php');
 	require_once(__DIR__ . '/../../HTTP/Request/JSONRequest.php');
 	require_once(__DIR__ . '/../UserAccountFlags.php');
 	require_once(__DIR__ . '/OAuthProvider.php');
@@ -25,6 +27,7 @@
 	class OAuthManager
 	{
 		const STATE_LIFETIME = 600;
+		const STATE_COOKIE_NAME = 'oauth_state';
 		const KEYS_LIFETIME = 3600;
 		const KEYS_REFETCH_COOLDOWN = 300;
 		const REQUEST_TIMEOUT = 10;
@@ -116,7 +119,7 @@
 
 		/**
 		 * Complete an OAuth login or link with the state and code that the provider sent to the callback URL.
-		 * This does not start a session.
+		 * The state must match the state cookie of the browser. This does not start a session.
 		 *
 		 * @api callback
 		 * @param string $state State parameter of the callback.
@@ -126,6 +129,11 @@
 		 * @throws \Throwable
 		 */
 		public function callback(string $state, string $code, ?int $userID = null): OAuthResult {
+			$cookie = $_COOKIE[self::STATE_COOKIE_NAME] ?? null;
+			$this->sendStateCookie('', 1);
+			if (!\is_string($cookie) || !\hash_equals($cookie, $state))
+				return new OAuthResult(OAuthStatus::INVALID_STATE);
+
 			$row = $this->db->getRow('SELECT provider, redirect_uri, code_verifier, user_id, created FROM oauth_states WHERE state = ?', [$state]);
 			if ($row === null || $this->db->execute('DELETE FROM oauth_states WHERE state = ?', [$state]) !== 1)
 				return new OAuthResult(OAuthStatus::INVALID_STATE);
@@ -199,6 +207,22 @@
 		}
 
 		/**
+		 * Send the state cookie to the browser. The cookie uses SameSite=Lax, because the provider sends the user back with a cross-site redirect.
+		 *
+		 * @param string $state State token. An empty string with an expiry in the past deletes the cookie.
+		 * @param int $expires Expiry time of the cookie as a Unix timestamp.
+		 */
+		protected function sendStateCookie(string $state, int $expires): void {
+			\setcookie(self::STATE_COOKIE_NAME, $state, [
+				'expires' => $expires,
+				'path' => '/',
+				'secure' => HTTPContext::isSecure(),
+				'httponly' => true,
+				'samesite' => 'Lax'
+			]);
+		}
+
+		/**
 		 * Request the claims of the user from a UserInfo endpoint.
 		 *
 		 * @param string $endpoint UserInfo endpoint URL.
@@ -235,7 +259,7 @@
 		}
 
 		/**
-		 * Store a new state token and return the authorization URL of a provider.
+		 * Store a new state token, send it in the state cookie and return the authorization URL of a provider.
 		 *
 		 * @param string $provider Name of the provider.
 		 * @param int|null $userID ID of the user account to link the identity to. Null for a login.
@@ -255,6 +279,7 @@
 				'INSERT INTO oauth_states (state, provider, redirect_uri, code_verifier, user_id, created) VALUES (?, ?, ?, ?, ?, ?)',
 				[$state, $config->name, $this->callbackURL, $codeVerifier, $userID, $time]
 			);
+			$this->sendStateCookie($state, $time + self::STATE_LIFETIME);
 
 			return $config->authEndpoint . '?' . \http_build_query([
 				'client_id' => $config->clientID,
