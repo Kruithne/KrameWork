@@ -174,7 +174,7 @@
 		 * Get the options for the session cookie.
 		 *
 		 * @param int $expires Unix time when the cookie expires.
-		 * @return array{expires: int, path: string, secure: bool, httponly: bool, samesite: string}
+		 * @return array{expires: int, path: string, secure: bool, httponly: bool, samesite: 'Lax'}
 		 */
 		private function getCookieOptions(int $expires): array {
 			return [
