@@ -150,8 +150,8 @@
 				return new OAuthResult(OAuthStatus::UNKNOWN_PROVIDER);
 
 			$tokens = $this->requestTokens($provider, $code, \is_string($row->redirect_uri) ? $row->redirect_uri : '', $row->code_verifier);
-			$idToken = $tokens?->id_token ?? null;
-			if ($tokens === null || !\is_string($idToken))
+			$idToken = $tokens->id_token ?? null;
+			if (!\is_string($idToken))
 				return new OAuthResult(OAuthStatus::TOKEN_EXCHANGE_FAILED);
 
 			$claims = $this->decodeIDToken($provider, $idToken);
