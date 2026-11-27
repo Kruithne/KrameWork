@@ -121,6 +121,7 @@
 
 		/**
 		 * Check the e-mail address and password of a login attempt. This does not start a session.
+		 * Each attempt does one password hash operation, so the response time does not show if an account exists.
 		 *
 		 * @api verifyLogin
 		 * @param string $email E-mail address of the account.
@@ -129,11 +130,14 @@
 		 */
 		public function verifyLogin(string $email, Password $password): LoginResult {
 			$row = $this->db->getRow('SELECT id, password, flags FROM user_accounts WHERE email = ?', [self::normalizeEmail($email)]);
-			if ($row === null)
-				return new LoginResult(LoginStatus::NO_ACCOUNT);
+			$flags = $row !== null ? self::toInt($row->flags) : 0;
 
-			$flags = self::toInt($row->flags);
-			if (($flags & UserAccountFlags::OAUTH_ACCOUNT) !== 0 || !$password->verify(self::toString($row->password)))
+			if ($row === null || ($flags & UserAccountFlags::OAUTH_ACCOUNT) !== 0) {
+				self::spendHashTime($password);
+				return new LoginResult($row === null ? LoginStatus::NO_ACCOUNT : LoginStatus::INVALID_PASSWORD);
+			}
+
+			if (!$password->verify(self::toString($row->password)))
 				return new LoginResult(LoginStatus::INVALID_PASSWORD);
 
 			if (($flags & UserAccountFlags::ACCOUNT_DISABLED) !== 0)
@@ -431,6 +435,15 @@
 
 			$this->mailer->sendPasswordReset($userID, self::toString($row->email), $token);
 			return PasswordResetStatus::SUCCESS;
+		}
+
+		/**
+		 * Hash a password and discard the hash. This takes the same time as a password check against a stored hash.
+		 *
+		 * @param Password $password Password given for the account.
+		 */
+		private static function spendHashTime(Password $password): void {
+			$password->asHash();
 		}
 
 		/**

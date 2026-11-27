@@ -91,7 +91,7 @@ Call `createVerification()` to get a token for the verification. It sends a new 
 status | description
 --- | ---
 `SUCCESS` | The password is correct. `userID` is set.
-`NO_ACCOUNT` | No account has the e-mail address.
+`NO_ACCOUNT` | No account has the e-mail address. Do not show this to the user. Show the same message as for `INVALID_PASSWORD`.
 `INVALID_PASSWORD` | The password is incorrect, or the account is an OAuth account.
 `ACCOUNT_DISABLED` | The account has the `ACCOUNT_DISABLED` flag.
 `REQUIRES_PASSWORD_RESET` | The password is correct, but the account has the `FORCE_PASSWORD_RESET` flag. `userID` is set.
@@ -101,8 +101,8 @@ status | description
 status | description
 --- | ---
 `SUCCESS` | The token was sent, or the password was changed.
-`NO_ACCOUNT` | No account has the e-mail address or ID.
-`THROTTLED` | A token was sent less than `RESET_SEND_INTERVAL` (300) seconds ago.
+`NO_ACCOUNT` | No account has the e-mail address or ID. Do not show this to users that are not logged in.
+`THROTTLED` | A token was sent less than `RESET_SEND_INTERVAL` (300) seconds ago. Do not show this to users that are not logged in.
 `OAUTH_ACCOUNT` | The account is an OAuth account and has no password. Do not show this to users that are not logged in.
 `INVALID_TOKEN` | The token does not exist or was used.
 `TOKEN_EXPIRED` | The token is older than `RESET_LIFETIME` (86400) seconds.
@@ -141,7 +141,7 @@ parameter | type | description
 --- | --- | ---
 `$email` | `string` | E-mail address to check.
 ##### > verifyLogin() : `LoginResult`
-Check the e-mail address and password of a login attempt. This does not start a session. The result has a `status` (`LoginStatus`) and a `userID`.
+Check the e-mail address and password of a login attempt. This does not start a session. Each attempt does one password hash operation, so the response time does not show if an account exists. The result has a `status` (`LoginStatus`) and a `userID`.
 
 parameter | type | description
 --- | --- | ---
@@ -168,7 +168,7 @@ parameter | type | description
 `$token` | `string` | Verification token.
 `$force` | `bool` | Send the code even if it was sent recently. **Default: false**.
 ##### > requestPasswordReset() : `PasswordResetStatus`
-Send a password reset token to the account with an e-mail address.
+Send a password reset token to the account with an e-mail address. To keep e-mail addresses private, give the user the same response for each status. The mailer runs only for an account that exists. See [Getting Started](GettingStarted.md#reset-a-password).
 
 parameter | type | description
 --- | --- | ---

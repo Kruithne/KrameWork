@@ -226,19 +226,17 @@ A correct code verifies the account and logs the user in.
 ```
 
 #### Reset a password
-The request endpoint gives the same response when no account exists. This does not show which e-mail addresses have accounts.
+The request endpoint gives the same response for each status. Do not show `NO_ACCOUNT`, `THROTTLED` or `OAUTH_ACCOUNT` to the user, because these show which e-mail addresses have accounts.
+
+The mailer sends the token only for an account that exists. If the mailer sends during the request, the response time shows which e-mail addresses have accounts. To prevent this, put the mail in a queue, or send the response before the mail.
 ```php
 <?php
 	// reset-request.php
 	use KrameWork\HTTP\HTTPContext;
-	use KrameWork\Users\PasswordResetStatus;
 
 	require_once(__DIR__ . '/bootstrap.php');
 
-	$status = $users->requestPasswordReset((string) HTTPContext::getFormDataValue('email'));
-	if ($status === PasswordResetStatus::THROTTLED)
-		respond(['error' => 'Try again in 5 minutes']);
-
+	$users->requestPasswordReset((string) HTTPContext::getFormDataValue('email'));
 	respond(['success' => true]);
 ```
 

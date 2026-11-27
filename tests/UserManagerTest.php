@@ -91,6 +91,27 @@
 		}
 
 		/**
+		 * Test that a login for an e-mail address with no account takes as long as a login with an incorrect password.
+		 */
+		public function testLoginWithNoAccountTakesPasswordCheckTime() {
+			$users = $this->createManager();
+			$users->register('foo@bar.net', new Password('hunter2'));
+
+			$this->assertGreaterThan($this->timeLogin($users, 'foo@bar.net') / 2, $this->timeLogin($users, 'none@bar.net'));
+		}
+
+		/**
+		 * Test that a login for an OAuth account takes as long as a login with an incorrect password.
+		 */
+		public function testLoginWithOAuthAccountTakesPasswordCheckTime() {
+			$users = $this->createManager();
+			$users->register('foo@bar.net', new Password('hunter2'));
+			$this->db->execute('INSERT INTO user_accounts (email, password, flags, registered) VALUES (?, ?, ?, ?)', ['oauth@bar.net', '', UserAccountFlags::OAUTH_ACCOUNT, \time()]);
+
+			$this->assertGreaterThan($this->timeLogin($users, 'foo@bar.net') / 2, $this->timeLogin($users, 'oauth@bar.net'));
+		}
+
+		/**
 		 * Test that the verification is locked after the maximum number of incorrect codes, so the correct code no longer works.
 		 */
 		public function testVerificationIsLockedAfterMaxAttempts() {
@@ -358,6 +379,18 @@
 		 */
 		private function expireVerifications(): void {
 			$this->db->execute('UPDATE user_verification_codes SET created = created - ?', [UserManager::VERIFY_LIFETIME]);
+		}
+
+		/**
+		 * Get the time of a login attempt with an incorrect password.
+		 * @param UserManager $users User manager.
+		 * @param string $email E-mail address of the login attempt.
+		 * @return int Time in nanoseconds.
+		 */
+		private function timeLogin(UserManager $users, string $email): int {
+			$start = \hrtime(true);
+			$users->verifyLogin($email, new Password('wrong'));
+			return \hrtime(true) - $start;
 		}
 
 		/**
