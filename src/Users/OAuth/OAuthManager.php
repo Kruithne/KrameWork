@@ -328,7 +328,7 @@
 				}
 			}
 
-			if ($owner !== null && (int) $owner->id !== $userID)
+			if ($owner !== null && $owner['id'] !== $userID)
 				return new OAuthResult(OAuthStatus::IDENTITY_IN_USE);
 
 			return new OAuthResult(OAuthStatus::SUCCESS, $userID, $claims, false, true);
@@ -391,10 +391,10 @@
 			if ($account === null)
 				return null;
 
-			if (((int) $account->flags & UserAccountFlags::ACCOUNT_DISABLED) !== 0)
+			if (($account['flags'] & UserAccountFlags::ACCOUNT_DISABLED) !== 0)
 				return new OAuthResult(OAuthStatus::ACCOUNT_DISABLED);
 
-			return new OAuthResult(OAuthStatus::SUCCESS, (int) $account->id, $claims);
+			return new OAuthResult(OAuthStatus::SUCCESS, $account['id'], $claims);
 		}
 
 		/**
@@ -403,9 +403,9 @@
 		 *
 		 * @param string $provider Name of the provider.
 		 * @param string $subject Subject claim of the ID token.
-		 * @return \stdClass|null Null if the identity has no account.
+		 * @return array{id: int, flags: int}|null Null if the identity has no account.
 		 */
-		private function getIdentityAccount(string $provider, string $subject): ?\stdClass {
+		private function getIdentityAccount(string $provider, string $subject): ?array {
 			$account = $this->db->getRow(
 				'SELECT a.id, a.flags FROM oauth_accounts o LEFT JOIN user_accounts a ON a.id = o.user_id WHERE o.provider = ? AND o.provider_user_id = ?',
 				[$provider, $subject]
@@ -419,7 +419,7 @@
 				return null;
 			}
 
-			return $account;
+			return ['id' => (int) $account->id, 'flags' => (int) $account->flags];
 		}
 
 		/**
